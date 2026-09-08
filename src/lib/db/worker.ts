@@ -20,7 +20,12 @@ let sqlite3: Sqlite3Static | null = null;
 type Req = { id: number; op: string; sql?: string; params?: unknown[]; batch?: { sql: string; params?: unknown[] }[] };
 
 async function open(): Promise<void> {
-  sqlite3 = await sqlite3InitModule({ print: () => {}, printErr: () => {} });
+  // The published types declare no parameters, but the module does accept a
+  // config object; without it every SQLite notice lands in the console.
+  sqlite3 = await (sqlite3InitModule as (cfg?: unknown) => Promise<Sqlite3Static>)({
+    print: () => {},
+    printErr: () => {},
+  });
 
   if (!('installOpfsSAHPoolVfs' in sqlite3)) {
     throw new Error('UNSUPPORTED: this browser has no OPFS SyncAccessHandle support');

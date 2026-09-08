@@ -1,6 +1,9 @@
 ---
-import Island from '../learn/Tier.tsx';
+import Island, { type TierLevel } from '../learn/Tier.tsx';
+
+interface Props { level: TierLevel; title?: string }
+const props = Astro.props;
 ---
-<Island client:visible {...Astro.props}>
+<Island client:visible {...props}>
   <slot />
 </Island>

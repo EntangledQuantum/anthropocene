@@ -1,4 +1,4 @@
-import { type Deriv, type Integrator, type State, add, axpy } from './types.ts';
+import { type Deriv, type Integrator, type State, type Stepper, add, axpy } from './types.ts';
 import { newtonSolve } from './linalg.ts';
 
 /* ─────────────────────────────────────────────────────────────────────────

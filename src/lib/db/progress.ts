@@ -1,5 +1,22 @@
 import { db, localDay } from './client.ts';
 
+/* ── change signal ─────────────────────────────────────────────────────────
+   Any surface showing derived stats (the header rail, the review page) needs
+   to know when something was written. Writes happen from several unrelated
+   places — lesson widgets, the review queue — so a single module-level signal
+   is what keeps them in sync without coupling those places to each other.
+   ──────────────────────────────────────────────────────────────────────── */
+const progressListeners = new Set<() => void>();
+
+export function onProgressChange(fn: () => void): () => void {
+  progressListeners.add(fn);
+  return () => progressListeners.delete(fn);
+}
+
+export function notifyProgressChange(): void {
+  for (const fn of progressListeners) fn();
+}
+
 /* ── XP economy ────────────────────────────────────────────────────────────
    Deliberately modest and non-inflationary: XP tracks focused effort, not
    clicks. Getting something right on the first try is worth more than
@@ -58,6 +75,7 @@ export async function awardXp(
     `INSERT INTO xp_events (ts, day, lesson_id, widget_id, kind, amount) VALUES (?,?,?,?,?,?)`,
     [ts, localDay(ts), lessonId ?? null, widgetId ?? null, kind, amount],
   );
+  notifyProgressChange();
 }
 
 /** Records one widget interaction and its XP in a single transaction, so a
@@ -90,6 +108,7 @@ export async function recordAttempt(opts: {
     });
   }
   await db.batch(batch);
+  notifyProgressChange();
 }
 
 /** Has this widget already been solved? Used to render a completed widget as
@@ -134,6 +153,7 @@ export async function completeLesson(lessonId: string, tier: string, widgetsDone
       params: [ts, localDay(ts), lessonId, XP.lessonComplete],
     },
   ]);
+  notifyProgressChange();
   return true;
 }
 

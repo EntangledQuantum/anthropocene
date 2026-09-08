@@ -13,9 +13,13 @@ export const ACCENTS = {
 } as const;
 export type AccentName = keyof typeof ACCENTS;
 
+/** Accents usable for a data series or an interactive control. Excludes the
+ *  ink tones, which are for text and reference rules rather than series. */
+export type SeriesAccent = 'cyan' | 'magenta' | 'acid' | 'violet' | 'amber';
+
 /** Series colour cycle. Ordered so adjacent series stay distinguishable for
  *  the most common forms of colour-vision deficiency. */
-export const SERIES_COLORS: AccentName[] = ['cyan', 'magenta', 'acid', 'violet', 'amber'];
+export const SERIES_COLORS: SeriesAccent[] = ['cyan', 'magenta', 'acid', 'violet', 'amber'];
 
 export type Point = readonly [number, number];
 

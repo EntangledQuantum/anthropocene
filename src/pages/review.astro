@@ -8,13 +8,28 @@ import { buildGraph } from '../lib/graph/graph.ts';
    are authored as `<Recall id="…" concept="…">` inside lessons. */
 const graph = await buildGraph();
 
-const RECALL_RE = /<Recall\b[^>]*?\bid=["']([^"']+)["'][^>]*?(?:\bconcept=["']([^"']+)["'])?/g;
+/* Match the whole opening tag, then pull attributes out of it. A single
+   pattern with an optional `concept=` group does not work: the lazy `[^>]*?`
+   before it always prefers to match nothing, so the group never captures. */
+const RECALL_TAG = /<Recall\b([^>]*)>/g;
+const ATTR = (src: string, name: string) =>
+  new RegExp(`\\b${name}=["']([^"']+)["']`).exec(src)?.[1];
 
-const meta: Record<string, unknown> = {};
+interface CardMeta {
+  cardId: string;
+  lessonTitle: string;
+  lessonUrl: string;
+  conceptTitle?: string;
+  conceptBlurb?: string;
+}
+
+const meta: Record<string, CardMeta> = {};
 for (const lesson of graph.lessons.values()) {
   const body = lesson.entry.body ?? '';
-  for (const m of body.matchAll(RECALL_RE)) {
-    const [, cardId, conceptId] = m;
+  for (const m of body.matchAll(RECALL_TAG)) {
+    const cardId = ATTR(m[1], 'id');
+    const conceptId = ATTR(m[1], 'concept');
+    if (!cardId) continue;
     const concept = conceptId ? graph.concepts.get(conceptId) : undefined;
     meta[cardId] = {
       cardId,

@@ -144,19 +144,34 @@ export default function Plot({
   /* ── nearest-point lookup for the crosshair ────────────────────────────── */
   const nearest = useMemo(() => {
     if (!hover) return null;
-    let best: { s: Series; i: number; px: number; py: number; d2: number } | null = null;
-    series.forEach((s, si) => {
-      s.points.forEach((p, i) => {
-        if (!Number.isFinite(p[0]) || !Number.isFinite(p[1])) return;
+
+    // A plain loop rather than forEach: inside a callback, TypeScript narrows
+    // `best` to its null initialiser and never widens it again.
+    let bestS: Series | null = null;
+    let bestI = -1;
+    let bestX = 0;
+    let bestY = 0;
+    let bestD2 = Infinity;
+
+    for (const s of series) {
+      for (let i = 0; i < s.points.length; i++) {
+        const p = s.points[i];
+        if (!Number.isFinite(p[0]) || !Number.isFinite(p[1])) continue;
         const px = xScale(p[0]);
         const py = yScale(p[1]);
         const d2 = (px - hover.px) ** 2 + (py - hover.py) ** 2;
-        if (!best || d2 < best.d2) best = { s, i, px, py, d2 };
-      });
-    });
-    if (!best || best.d2 > 40 ** 2) return null;
-    const idx = series.indexOf(best.s);
-    return { ...best, color: colorOf(best.s.color, idx) };
+        if (d2 < bestD2) { bestS = s; bestI = i; bestX = px; bestY = py; bestD2 = d2; }
+      }
+    }
+
+    if (!bestS || bestD2 > 40 ** 2) return null;
+    return {
+      s: bestS,
+      i: bestI,
+      px: bestX,
+      py: bestY,
+      color: colorOf(bestS.color, series.indexOf(bestS)),
+    };
   }, [hover, series, xScale, yScale]);
 
   const gridStroke = 'rgba(58,48,84,0.55)';

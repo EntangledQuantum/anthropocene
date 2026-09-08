@@ -1,7 +1,7 @@
 ---
-// Wrapper so lessons can write <CancellationLab /> with no import and no client directive.
-// MDX components supplied through the `components` prop cannot carry
-// client:* directives themselves, so the directive lives here.
 import Island from '../viz/CancellationLab.tsx';
+
+interface Props { initial?: 'sqrt' | 'expm1' }
+const props = Astro.props;
 ---
-<Island client:visible {...Astro.props} />
+<Island client:visible {...props} />

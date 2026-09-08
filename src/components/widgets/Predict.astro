@@ -1,6 +1,12 @@
 ---
-import Island from '../learn/Predict.tsx';
+// Wrapper so lessons can write <Predict /> with no import and no client
+// directive: MDX components supplied through the `components` prop cannot
+// carry client:* directives themselves, so the directive lives here.
+import Island, { type PredictProps } from '../learn/Predict.tsx';
+
+type Props = Omit<PredictProps, 'children'>;
+const props = Astro.props as Props;
 ---
-<Island client:visible {...Astro.props}>
+<Island client:visible {...props}>
   <slot />
 </Island>

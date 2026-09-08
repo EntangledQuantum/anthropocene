@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { db, type DbStatus } from '../../lib/db/client.ts';
-import { summary, type ProgressSummary } from '../../lib/db/progress.ts';
+import { onProgressChange, summary, type ProgressSummary } from '../../lib/db/progress.ts';
 import { lesson } from '../../lib/lesson-store.ts';
 
 /** The persistent XP / streak readout in the header, plus the storage-status
@@ -14,9 +14,13 @@ export default function XpRail() {
     void db.open().then(async () => {
       if (db.available) setStats(await summary());
     });
-    // Widgets on a lesson page push updates through the shared store.
-    const unsub = lesson.subscribe(() => { if (lesson.progress) setStats(lesson.progress); });
-    return () => { off(); unsub(); };
+    // Lesson widgets push through the shared store; the review queue and any
+    // other writer go through the global progress signal.
+    const unsubLesson = lesson.subscribe(() => { if (lesson.progress) setStats(lesson.progress); });
+    const unsubProgress = onProgressChange(async () => {
+      if (db.available) setStats(await summary());
+    });
+    return () => { off(); unsubLesson(); unsubProgress(); };
   }, []);
 
   if (status === 'locked' || status === 'unsupported' || status === 'error') {

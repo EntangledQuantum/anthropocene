@@ -3,7 +3,7 @@ import {
   type Card, type Grade,
 } from 'ts-fsrs';
 import { db, localDay } from '../db/client.ts';
-import { awardXp, XP } from '../db/progress.ts';
+import { notifyProgressChange, XP } from '../db/progress.ts';
 
 /**
  * Spaced repetition over FSRS-6.
@@ -134,6 +134,7 @@ export async function grade(cardId: string, rating: Grade, now = new Date()): Pr
     },
   ]);
 
+  notifyProgressChange();
   return { nextDue: card.due, scheduledDays: card.scheduled_days, awarded: amount };
 }
 

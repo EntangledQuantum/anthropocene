@@ -53,14 +53,17 @@
     "esbuild": true
   },
   "devDependencies": {
+    "@astrojs/check": "^0.9.10",
     "@types/d3-array": "^3.2.2",
     "@types/d3-scale": "^4.0.9",
     "@types/d3-shape": "^3.2.0",
     "@types/katex": "^0.16.8",
+    "@types/node": "^26.5.0",
     "@types/three": "^0.185.4",
     "astro-pagefind": "^2.0.1",
     "pagefind": "^1.5.2",
     "tsx": "^4.23.13",
+    "typescript": "^6.0.3",
     "vitest": "^5.0.0"
   },
   "description": "A free, open-source, deeply interactive learning platform. Learn by doing, without the ceiling.",

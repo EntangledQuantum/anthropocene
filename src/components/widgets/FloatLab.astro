@@ -1,7 +1,4 @@
 ---
-// Wrapper so lessons can write <FloatLab /> with no import and no client directive.
-// MDX components supplied through the `components` prop cannot carry
-// client:* directives themselves, so the directive lives here.
 import Island from '../viz/FloatLab.tsx';
 ---
-<Island client:visible {...Astro.props} />
+<Island client:visible />

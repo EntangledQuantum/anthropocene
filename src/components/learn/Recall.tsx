@@ -8,8 +8,9 @@ export interface RecallProps {
   id: string;
   /** The concept this card interrogates, for mastery roll-ups. */
   concept?: string;
-  /** Supplied by Astro's named `front` slot — see widgets/Recall.astro. */
-  front: ReactNode;
+  /** Supplied by Astro's named `front` slot — see widgets/Recall.astro.
+   *  Optional in the type because MDX authors write it as a slot, not a prop. */
+  front?: ReactNode;
   children: ReactNode;
 }
 

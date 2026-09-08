@@ -9,38 +9,75 @@ import Search from 'astro-pagefind/components/Search.astro';
       Indexed at build time by Pagefind, which downloads only the fragments a query needs
       rather than the whole index up front.
     </p>
-    <Search id="search" className="pagefind-ui" uiOptions={{ showImages: false, excerptLength: 24 }} />
+    <Search className="pagefind-ui" />
   </div>
 </Base>
 
 <style is:global>
-  /* Pagefind ships its own UI; restyle it into the HUD language. */
-  .pagefind-ui {
-    --pagefind-ui-primary: var(--color-cyan);
-    --pagefind-ui-text: var(--color-ink);
-    --pagefind-ui-background: transparent;
-    --pagefind-ui-border: var(--color-rule);
-    --pagefind-ui-tag: var(--color-surface);
-    --pagefind-ui-border-width: 1px;
-    --pagefind-ui-border-radius: 2px;
-    --pagefind-ui-font: var(--font-sans);
+  /* Pagefind's searchbox renders into the light DOM with `pf-*` classes and
+     exposes its palette as custom properties. It ships a light theme by
+     default, which is wrong here — this site is dark-only. */
+  pagefind-searchbox {
+    --pf-font: var(--font-sans);
+    --pf-background: color-mix(in oklab, var(--color-surface) 92%, transparent);
+    --pf-border: var(--color-rule);
+    --pf-border-focus: var(--color-cyan);
+    --pf-border-radius: 2px;
+    --pf-hover: color-mix(in oklab, var(--color-cyan) 12%, transparent);
+    --pf-mark: color-mix(in oklab, var(--color-magenta) 30%, transparent);
+    --pf-text: var(--color-ink);
+    --pf-text-secondary: var(--color-ink-soft);
+    --pf-text-muted: var(--color-ink-faint);
+    --pf-skeleton: var(--color-raised);
+    --pf-skeleton-shine: var(--color-rule-bright);
+    --pf-outline-focus: var(--color-cyan);
+    --pf-outline-width: 2px;
+    --pf-shadow-sm: none;
+    --pf-shadow-md: 0 8px 30px -10px rgba(0, 0, 0, 0.8);
+    --pf-shadow-lg: 0 16px 50px -12px rgba(0, 0, 0, 0.85);
+    --pf-modal-backdrop: rgba(7, 6, 11, 0.8);
+    --pf-searchbox-max-width: 100%;
+    --pf-input-font-size: 0.95rem;
+    display: block;
   }
-  .pagefind-ui__search-input {
+
+  .pf-searchbox-input {
     background: var(--glass) !important;
     backdrop-filter: var(--glass-blur);
     color: var(--color-ink) !important;
     font-family: var(--font-mono) !important;
-    font-size: 0.95rem !important;
+    border-color: var(--color-rule) !important;
   }
-  .pagefind-ui__result {
-    border-top: 1px solid var(--color-rule) !important;
-    padding: 14px 0 !important;
+  .pf-searchbox-input::placeholder { color: var(--color-ink-ghost) !important; }
+
+  .pf-searchbox-dropdown {
+    background: color-mix(in oklab, var(--color-abyss) 96%, transparent) !important;
+    border-color: var(--color-rule) !important;
+    backdrop-filter: var(--glass-blur);
   }
-  .pagefind-ui__result-title a { color: var(--color-cyan) !important; font-family: var(--font-display); }
-  .pagefind-ui__result-excerpt { color: var(--color-ink-faint) !important; font-size: 0.9rem !important; }
-  .pagefind-ui__result-excerpt mark {
-    background: color-mix(in oklab, var(--color-magenta) 26%, transparent);
+
+  .pf-searchbox-result-title { color: var(--color-ink) !important; font-family: var(--font-display); }
+  .pf-searchbox-result-excerpt { color: var(--color-ink-faint) !important; }
+  .pf-searchbox-result[aria-selected='true'],
+  .pf-searchbox-result:hover {
+    background: color-mix(in oklab, var(--color-cyan) 12%, transparent) !important;
+    border-color: var(--color-cyan) !important;
+  }
+  .pf-searchbox-result mark,
+  .pf-searchbox-result-excerpt mark {
+    background: color-mix(in oklab, var(--color-magenta) 28%, transparent);
     color: var(--color-ink);
   }
-  .pagefind-ui__message { color: var(--color-ink-faint) !important; font-family: var(--font-mono); font-size: 0.8rem !important; }
+
+  .pf-searchbox-footer,
+  .pf-searchbox-status { color: var(--color-ink-ghost) !important; }
+  .pf-searchbox-footer-key,
+  .pf-trigger-key {
+    background: var(--color-raised) !important;
+    border-color: var(--color-rule) !important;
+    color: var(--color-ink-faint) !important;
+  }
+  .pf-skeleton, .pf-skeleton-title, .pf-skeleton-excerpt {
+    background: var(--color-raised) !important;
+  }
 </style>
