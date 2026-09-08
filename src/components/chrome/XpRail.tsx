@@ -74,7 +74,7 @@ export default function XpRail() {
       </span>
 
       {stats.dueCount > 0 && (
-        <a href={`${import.meta.env.BASE_URL.replace(/\/$/, '')}/review`} className="hud-label"
+        <a href={`${import.meta.env.BASE_URL.replace(/\/$/, '')}/review/`} className="hud-label"
            style={{ color: 'var(--color-amber)', textDecoration: 'none' }} title={`${stats.dueCount} cards due`}>
           ↺ {stats.dueCount}
         </a>

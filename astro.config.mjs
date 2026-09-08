@@ -16,7 +16,10 @@ const BASE = process.env.ANTHROPOCENE_BASE ?? '/anthropocene';
 export default defineConfig({
   site: SITE,
   base: BASE,
-  trailingSlash: 'ignore',
+  // GitHub Pages serves `<path>/index.html` and 301-redirects the
+  // slash-less form, so emitting the canonical form avoids a wasted
+  // round-trip on every internal link.
+  trailingSlash: 'always',
 
   markdown: {
     processor: satteri({

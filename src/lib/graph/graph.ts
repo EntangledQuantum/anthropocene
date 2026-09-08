@@ -92,7 +92,7 @@ export interface Graph {
 }
 
 const BASE = import.meta.env.BASE_URL.replace(/\/$/, '');
-const href = (...parts: string[]) => `${BASE}/${parts.join('/')}`;
+const href = (...parts: string[]) => `${BASE}/${parts.join('/')}/`;
 
 /** "computational-physics/02-derivatives/chapter" → parts before the filename. */
 const dirOf = (id: string) => id.split('/').slice(0, -1);

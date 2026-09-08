@@ -15,10 +15,10 @@ const { title, description, eyebrow, wide = false } = Astro.props;
 const base = import.meta.env.BASE_URL.replace(/\/$/, '');
 const nav = [
   { href: `${base}/`, label: 'index' },
-  { href: `${base}/learn`, label: 'paths' },
-  { href: `${base}/review`, label: 'review' },
-  { href: `${base}/graph`, label: 'graph' },
-  { href: `${base}/search`, label: 'search' },
+  { href: `${base}/learn/`, label: 'paths' },
+  { href: `${base}/review/`, label: 'review' },
+  { href: `${base}/graph/`, label: 'graph' },
+  { href: `${base}/search/`, label: 'search' },
 ];
 const here = Astro.url.pathname.replace(/\/$/, '');
 ---
