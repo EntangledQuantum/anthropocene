@@ -1,0 +1,5 @@
+title: 'Machine epsilon'
+blurb: 'The gap between 1 and the next representable double - the fundamental resolution of arithmetic.'
+notation: '\varepsilon \approx 2.22\times10^{-16}'
+tags:
+  - ch1

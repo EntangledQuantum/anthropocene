@@ -1,0 +1,94 @@
+---
+import '../styles/global.css';
+import XpRail from '../components/chrome/XpRail.tsx';
+import XpToasts from '../components/chrome/XpToasts.tsx';
+
+interface Props {
+  title: string;
+  description?: string;
+  /** Rendered in the header's left rail as breadcrumb-ish context. */
+  eyebrow?: string;
+  wide?: boolean;
+}
+
+const { title, description, eyebrow, wide = false } = Astro.props;
+const base = import.meta.env.BASE_URL.replace(/\/$/, '');
+const nav = [
+  { href: `${base}/`, label: 'index' },
+  { href: `${base}/learn`, label: 'paths' },
+  { href: `${base}/review`, label: 'review' },
+  { href: `${base}/graph`, label: 'graph' },
+  { href: `${base}/search`, label: 'search' },
+];
+const here = Astro.url.pathname.replace(/\/$/, '');
+---
+<html lang="en" data-theme="dark">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{title} · anthropocene</title>
+    {description && <meta name="description" content={description} />}
+    <meta name="color-scheme" content="dark" />
+    <link rel="icon" href={`${base}/favicon.svg`} type="image/svg+xml" />
+  </head>
+  <body>
+    <div style="position:relative;z-index:1;display:flex;flex-direction:column;min-height:100dvh">
+      <header
+        class="hud"
+        style="position:sticky;top:0;z-index:40;border-left:0;border-right:0;border-top:0;padding:0"
+      >
+        <div style={`max-width:${wide ? '1400px' : '1180px'};margin:0 auto;display:flex;align-items:center;gap:24px;padding:0 24px;height:52px`}>
+          <a href={`${base}/`} style="text-decoration:none;display:flex;align-items:baseline;gap:9px;flex-shrink:0">
+            <span style="font-family:var(--font-display);font-weight:700;font-size:15px;letter-spacing:-0.02em;color:var(--color-ink)" class="text-glow-magenta">
+              anthropocene
+            </span>
+            <span class="hud-label" style="color:var(--color-magenta)">◆</span>
+          </a>
+
+          <nav style="display:flex;gap:2px;flex:1;min-width:0;overflow-x:auto">
+            {nav.map((item) => {
+              const active = item.href.replace(/\/$/, '') === here;
+              return (
+                <a
+                  href={item.href}
+                  class="hud-label"
+                  style={`padding:6px 11px;text-decoration:none;border-radius:2px;white-space:nowrap;color:${active ? 'var(--color-cyan)' : 'var(--color-ink-faint)'};background:${active ? 'color-mix(in oklab,var(--color-cyan) 10%,transparent)' : 'transparent'}`}
+                >
+                  {item.label}
+                </a>
+              );
+            })}
+          </nav>
+
+          <div style="flex-shrink:0">
+            <!-- client:only — this reads OPFS, which has no server equivalent. -->
+            <XpRail client:only="react" />
+          </div>
+        </div>
+      </header>
+
+      {eyebrow && (
+        <div style="border-bottom:1px solid var(--color-rule)">
+          <div style={`max-width:${wide ? '1400px' : '1180px'};margin:0 auto;padding:7px 24px`}>
+            <span class="hud-label">{eyebrow}</span>
+          </div>
+        </div>
+      )}
+
+      <main style={`flex:1;max-width:${wide ? '1400px' : '1180px'};margin:0 auto;padding:0 24px;width:100%`}>
+        <slot />
+      </main>
+
+      <XpToasts client:only="react" />
+
+      <footer style="border-top:1px solid var(--color-rule);margin-top:80px">
+        <div style="max-width:1180px;margin:0 auto;padding:20px 24px;display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap">
+          <span class="hud-label">a free, open-source alternative to paying for curiosity</span>
+          <a class="hud-label" href="https://github.com/EntangledQuantum/anthropocene" style="color:var(--color-ink-faint);text-decoration:none">
+            github ↗
+          </a>
+        </div>
+      </footer>
+    </div>
+  </body>
+</html>

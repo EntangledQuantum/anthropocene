@@ -1,0 +1,5 @@
+title: 'Central difference'
+blurb: 'Straddles the point symmetrically so the leading error term cancels; second-order accurate for the same cost.'
+notation: '\frac{f(x+h)-f(x-h)}{2h}'
+tags:
+  - ch2

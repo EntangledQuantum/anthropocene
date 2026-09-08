@@ -1,0 +1,7 @@
+---
+// Wrapper so lessons can write <SolverLab /> with no import and no client directive.
+// MDX components supplied through the `components` prop cannot carry
+// client:* directives themselves, so the directive lives here.
+import Island from '../viz/SolverLab.tsx';
+---
+<Island client:visible {...Astro.props} />

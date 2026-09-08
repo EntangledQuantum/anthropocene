@@ -1,0 +1,4 @@
+title: 'Variational integrators'
+blurb: 'Discretise the ACTION rather than the equations of motion, and conservation laws follow automatically.'
+tags:
+  - ch5

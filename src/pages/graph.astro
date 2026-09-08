@@ -1,0 +1,111 @@
+---
+import Base from '../layouts/Base.astro';
+import { buildGraph } from '../lib/graph/graph.ts';
+
+const graph = await buildGraph();
+
+const concepts = [...graph.concepts.values()].sort((a, b) => a.title.localeCompare(b.title));
+const owned = concepts.filter((c) => c.ownerId);
+const unowned = concepts.filter((c) => !c.ownerId);
+
+const byKind = (k: string) => graph.issues.filter((i) => i.kind === k);
+const blocking = [...byKind('duplicate-owner'), ...byKind('cycle'), ...byKind('dangling-chapter'), ...byKind('orphan-concept')];
+const gaps = byKind('gap');
+
+// Deduplicate gaps by concept: several lessons often want the same missing idea.
+const gapByConcept = new Map<string, { concept: string; wanted: string[] }>();
+for (const g of gaps) {
+  const [, conceptId, lessonId] = /"([^"]+)" is required by (\S+)/.exec(g.message) ?? [];
+  if (!conceptId) continue;
+  const e = gapByConcept.get(conceptId) ?? { concept: conceptId, wanted: [] };
+  e.wanted.push(lessonId);
+  gapByConcept.set(conceptId, e);
+}
+---
+<Base title="Concept graph" description="Every concept, who owns it, and what is missing." eyebrow="the graph" wide>
+  <div style="padding:44px 0 0">
+    <h1 style="font-size:clamp(1.9rem,4.4vw,2.6rem);margin:0 0 12px">Concept graph</h1>
+    <p style="max-width:70ch;color:var(--color-ink-soft);font-size:1.04rem;line-height:1.65;margin:0 0 30px">
+      Every concept is owned by exactly <strong style="color:var(--color-ink)">one</strong> lesson — enforced at build time.
+      Any lesson needing it links there instead of re-teaching it. Anything required but unowned
+      shows up below as a gap, which is how the to-write queue stays honest.
+    </p>
+
+    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(126px,1fr));gap:1px;background:var(--color-rule);border:1px solid var(--color-rule);margin-bottom:36px">
+      {[
+        { k: concepts.length, l: 'concepts', c: 'cyan' },
+        { k: owned.length, l: 'taught', c: 'acid' },
+        { k: gapByConcept.size, l: 'gaps to write', c: 'amber' },
+        { k: unowned.length, l: 'unowned', c: 'violet' },
+        { k: blocking.length, l: 'build problems', c: blocking.length ? 'magenta' : 'ink-faint' },
+      ].map((s) => (
+        <div style="background:var(--color-abyss);padding:15px 18px">
+          <div class="readout" style={`font-size:1.6rem;color:var(--color-${s.c});line-height:1`}>{s.k}</div>
+          <div class="hud-label" style="margin-top:5px">{s.l}</div>
+        </div>
+      ))}
+    </div>
+
+    {blocking.length > 0 && (
+      <section class="hud hud-brackets" style="padding:16px 18px;margin-bottom:30px;border-color:var(--color-magenta)">
+        <span class="hud-label" style="color:var(--color-magenta)">◆ build problems</span>
+        <ul style="margin:10px 0 0;padding-left:18px;color:var(--color-ink-soft);font-size:0.92rem;line-height:1.7">
+          {blocking.map((i) => (
+            <li><strong style="color:var(--color-ink)">{i.message}</strong>{i.detail && <> — <span style="color:var(--color-ink-faint)">{i.detail}</span></>}</li>
+          ))}
+        </ul>
+      </section>
+    )}
+
+    {gapByConcept.size > 0 && (
+      <section style="margin-bottom:40px">
+        <h2 style="font-size:1.3rem;margin:0 0 6px">Gaps — the to-write queue</h2>
+        <p style="margin:0 0 16px;color:var(--color-ink-faint);font-size:0.94rem;max-width:70ch">
+          These concepts are required by a lesson but no lesson teaches them yet. This list is
+          generated, not maintained by hand, so it cannot go stale.
+        </p>
+        <div style="display:grid;gap:8px">
+          {[...gapByConcept.values()].map((g) => {
+            const c = graph.concepts.get(g.concept);
+            return (
+              <div class="hud" style="padding:12px 15px;border-color:var(--color-amber)">
+                <div style="display:flex;gap:10px;align-items:baseline;flex-wrap:wrap">
+                  <code style="color:var(--color-amber);font-size:0.86rem">{g.concept}</code>
+                  {c && <span style="color:var(--color-ink);font-size:0.95rem">{c.title}</span>}
+                  <span class="hud-label" style="margin-left:auto">needed by {g.wanted.length}</span>
+                </div>
+                {c && <p style="margin:6px 0 0;color:var(--color-ink-faint);font-size:0.88rem;line-height:1.55">{c.blurb}</p>}
+              </div>
+            );
+          })}
+        </div>
+      </section>
+    )}
+
+    <section>
+      <h2 style="font-size:1.3rem;margin:0 0 16px">All concepts</h2>
+      <div style="display:grid;gap:8px;grid-template-columns:repeat(auto-fit,minmax(330px,1fr))">
+        {concepts.map((c) => {
+          const owner = c.ownerId ? graph.lessons.get(c.ownerId) : null;
+          return (
+            <div class="hud" style="padding:13px 15px">
+              <div style="display:flex;gap:9px;align-items:baseline;flex-wrap:wrap;margin-bottom:5px">
+                <span style="color:var(--color-ink);font-size:1rem;font-family:var(--font-display);font-weight:600">{c.title}</span>
+                <span class="hud-label" style={`margin-left:auto;color:var(--color-${owner ? 'acid' : 'amber'})`}>
+                  {owner ? 'taught' : 'unwritten'}
+                </span>
+              </div>
+              <p style="margin:0 0 9px;color:var(--color-ink-faint);font-size:0.87rem;line-height:1.55">{c.blurb}</p>
+              <div style="display:flex;gap:10px;flex-wrap:wrap;align-items:baseline;border-top:1px solid var(--color-rule);padding-top:8px">
+                {owner
+                  ? <a href={owner.url} class="hud-label" style="color:var(--color-cyan);text-decoration:none">→ {owner.title}</a>
+                  : <span class="hud-label" style="color:var(--color-ink-ghost)">no lesson yet</span>}
+                {c.usedBy.length > 0 && <span class="hud-label" style="margin-left:auto">used by {c.usedBy.length}</span>}
+              </div>
+            </div>
+          );
+        })}
+      </div>
+    </section>
+  </div>
+</Base>

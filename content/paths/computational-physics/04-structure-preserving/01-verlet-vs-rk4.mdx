@@ -1,0 +1,233 @@
+---
+title: 'Why a worse method gives a better orbit'
+blurb: 'RK4 is fourth order. Velocity Verlet is second. Over a long orbit Verlet wins comprehensively, and the reason has nothing to do with accuracy.'
+order: 1
+tier: 'advanced'
+minutes: 30
+teaches:
+  - 'hamiltonian-systems'
+  - 'symplectic-integrator'
+  - 'symplectic-euler'
+  - 'velocity-verlet'
+  - 'energy-drift'
+  - 'shadow-hamiltonian'
+requires:
+  - 'rk4'
+  - 'forward-euler'
+  - 'order-of-accuracy'
+status: 'live'
+updated: 2026-09-08
+---
+
+Everything so far has ranked methods by order of accuracy. Higher order, smaller error,
+better method. That ranking is about to fail badly.
+
+Take a harmonic oscillator — the cleanest conservative system there is — and integrate
+it for a long time with RK4 (fourth order) and velocity Verlet (second order). Then look
+not at the trajectory but at the **energy**, which the true dynamics conserves exactly.
+
+<Predict
+  id="verlet-energy-predict"
+  question="Integrating a harmonic oscillator for 4000 time units at h = 0.1. What happens to the energy under RK4 (order 4) versus velocity Verlet (order 2)?"
+  options={[
+    { key: 'a', label: 'RK4 holds energy better — it is two orders more accurate', why: 'The natural prediction, and it is right about the SHORT run: RK4 tracks the trajectory far more accurately for the first few periods. Over thousands of periods it is wrong, and the reason is structural rather than about accuracy.' },
+    { key: 'b', label: 'Both drift, but RK4 drifts more slowly', why: 'Half right. RK4 does drift slowly. But Verlet does not drift at all — its energy error is bounded forever, which is a different kind of behaviour, not just a smaller number.' },
+    { key: 'c', label: 'RK4 loses energy steadily; Verlet oscillates within a fixed band forever', why: 'Correct. RK4 has a small error per step that always points the same way, so it accumulates without bound — secular drift. Verlet’s energy error oscillates within an envelope that never grows, no matter how long you run.' },
+    { key: 'd', label: 'Both conserve energy exactly — it is a linear problem', why: 'Linearity does not help. A general-purpose integrator has no knowledge of the conserved quantity and no reason to respect it.' },
+  ]}
+  correct="c"
+>
+
+Switch the view to **energy** and lengthen the run. The vertical axis is the relative
+change in total energy; the exact answer is a flat line at zero.
+
+<SolverLab
+  problem="oscillator"
+  methods={['forward-euler', 'rk4', 'symplectic-euler', 'velocity-verlet']}
+  initial={['rk4', 'velocity-verlet']}
+  views={['energy', 'phase', 'trajectory']}
+  view="energy"
+  h={0.1}
+  hRange={[0.01, 0.4]}
+  span={400}
+  exact={false}
+  caption="Relative energy error over time. RK4 walks steadily downward; Verlet oscillates inside a band that never widens. Switch to 'phase' to see what that means geometrically — Verlet's orbit closes, RK4's spirals in."
+/>
+
+</Predict>
+
+Two qualitatively different behaviours. RK4's energy error is smaller at first and then
+keeps growing. Verlet's is larger at first and then **stops**.
+
+That distinction — *bounded* versus *secular* — matters more than order for any long
+integration, and it is the difference between a solar-system model that stays a solar
+system and one where the planets slowly spiral into the sun.
+
+## One line of code
+
+Here is what makes Verlet different. Forward Euler, on a system with position $q$ and
+velocity $v$:
+
+```ts
+const vNext = v + h * a(q);      // both updates use the OLD position
+const qNext = q + h * v;         // and the OLD velocity
+```
+
+Symplectic Euler:
+
+```ts
+const vNext = v + h * a(q);      // update velocity first
+const qNext = q + h * vNext;     // then use the NEW velocity for position
+```
+
+That is the entire difference. One variable is updated before the other instead of both
+being updated from the old state. The order of accuracy is unchanged — both are first
+order — and yet one has bounded energy error forever and the other does not.
+
+Velocity Verlet is the second-order member of the same family:
+
+```ts
+const a  = accel(q);
+const qNext = q + h * v + 0.5 * h * h * a;      // half-step-aware position
+const aNext = accel(qNext);
+const vNext = v + 0.5 * h * (a + aNext);        // average the accelerations
+```
+
+<Recall id="symplectic-one-line" concept="symplectic-euler">
+  <div slot="front">What is the only difference between forward Euler and symplectic Euler, and why does it matter so much?</div>
+
+Forward Euler computes both updates from the old state. Symplectic Euler updates the
+velocity first, then uses that **already-updated** velocity to advance the position.
+
+```ts
+// forward Euler        // symplectic Euler
+v1 = v0 + h*a(q0);      v1 = v0 + h*a(q0);
+q1 = q0 + h*v0;         q1 = q0 + h*v1;   // ← uses v1, not v0
+```
+
+It matters because the reordered version is a **symplectic map**: it exactly preserves
+the phase-space area element that Hamiltonian flow preserves. Forward Euler expands that
+area every step, which shows up as energy growing without bound. Both methods are first
+order, so accuracy does not distinguish them at all — the structure does.
+
+</Recall>
+
+## Why bounded, not just small
+
+The explanation is the deepest idea in this path, and it reframes what a numerical
+method is.
+
+A symplectic integrator does not approximately solve your problem. It **exactly solves a
+nearby one**. There exists a modified Hamiltonian — the **shadow Hamiltonian** —
+
+$$
+\tilde{H} = H + h^p H_1 + h^{p+1} H_2 + \cdots
+$$
+
+such that the numerical trajectory lies (to exponentially small error, over exponentially
+long times) on exact orbits of $\tilde H$.
+
+Everything follows from that. $\tilde H$ is conserved exactly because it is a Hamiltonian
+and the method is its exact flow. And $\tilde H$ differs from the true $H$ by $\Order(h^p)$.
+So the true energy along the numerical trajectory stays within $\Order(h^p)$ of its
+initial value — **forever**. It oscillates as the trajectory moves around the shadow
+orbit, but it cannot wander off, because it is pinned to a conserved quantity.
+
+RK4 has no shadow Hamiltonian. It is not a symplectic map, so there is nothing pinning
+its energy, and the per-step error — though far smaller — accumulates in one direction.
+
+That is the whole story:
+
+- **RK4**: small error, no constraint → error accumulates linearly in time.
+- **Verlet**: larger error, but bounded by a conserved quantity → error never grows.
+
+Over ten periods RK4 wins easily. Over ten million, it is not close.
+
+## The orbit you can see it in
+
+The harmonic oscillator is clean but forgiving. A Kepler orbit with real eccentricity is
+where the difference becomes visceral: the perihelion passage is fast and tightly curved,
+and a fixed-step method has to survive it.
+
+<SolverLab
+  problem="kepler"
+  methods={['forward-euler', 'rk4', 'velocity-verlet']}
+  initial={['rk4', 'velocity-verlet']}
+  views={['phase', 'energy']}
+  view="phase"
+  h={0.01}
+  hRange={[0.001, 0.05]}
+  span={80}
+  exact={false}
+  caption="An e = 0.6 orbit in the x–y plane. Verlet's ellipse closes on itself. RK4's spirals inward as it bleeds energy. Forward Euler's spirals outward and escapes. Increase h and watch which one degrades gracefully."
+/>
+
+Verlet's ellipse precesses slightly — a phase error, which is second order and expected —
+but it stays an ellipse of the right *size*. RK4's ellipse shrinks. Given long enough,
+RK4's planet falls into the star, for no physical reason whatsoever.
+
+<Tier level="advanced" title="what symplectic actually means, and what it costs">
+
+Hamiltonian flow has a property stronger than energy conservation: it preserves the
+**symplectic 2-form** $\omega = \sum_i dq_i \wedge dp_i$. Geometrically, it preserves
+oriented area in each conjugate $(q_i, p_i)$ plane — Liouville's theorem, and the reason
+phase-space volume is conserved.
+
+A numerical method is symplectic when its update map preserves $\omega$ exactly, not
+approximately. For a one-degree-of-freedom system that reduces to the Jacobian of the
+step map having determinant exactly 1. Check it for symplectic Euler on the oscillator
+and you get exactly 1, with no $\Order(h^2)$ remainder. It is an algebraic identity, not
+an approximation.
+
+Backward error analysis then supplies the shadow Hamiltonian, and the bounded energy
+error follows.
+
+The constraints are real, and worth stating plainly:
+
+- **Fixed step size.** Varying $h$ breaks the conjugacy to a single shadow Hamiltonian
+  and reintroduces drift. Adaptive symplectic integration is genuinely hard, and the
+  usual answer is to change *time variable* instead (regularisation) rather than to change $h$.
+- **Separable Hamiltonians.** $H = T(p) + V(q)$ gives explicit methods. Non-separable
+  systems need implicit ones, which cost far more per step.
+- **No dissipation.** These methods encode conservative structure. Add friction and the
+  premise is gone.
+- **Trajectory accuracy is still only order $p$.** Verlet's *phase* error grows linearly
+  in time. If you need to know where the planet is on a specific date, high order still
+  matters; if you need to know the orbit is still an orbit, structure matters.
+
+Time-reversibility is a related and often sufficient property: velocity Verlet is
+reversible, and reversibility alone rules out the monotone drift that dissipation-free
+non-symplectic methods exhibit.
+
+</Tier>
+
+<Tier level="frontier" title="the broader programme">
+
+Symplectic integration is one instance of **geometric numerical integration**: build the
+discretisation so that structure is preserved exactly, and let accuracy be secondary.
+
+- **Variational integrators** discretise the *action* and derive the update from a
+  discrete Euler–Lagrange equation. Symplecticity and a discrete Noether theorem come out
+  automatically — conserved momenta stay conserved to machine precision. This is arguably
+  the cleaner derivation, and it extends to constrained and non-smooth mechanics.
+- **Lie-group integrators** keep the state on its manifold — a rotation stays a rotation,
+  rather than drifting off $SO(3)$ and needing re-orthonormalisation.
+- **Structure-preserving PDE discretisations** (mimetic finite differences, discrete
+  exterior calculus) preserve $\nabla\!\cdot\!B = 0$ or discrete vorticity exactly, which
+  is why long-run magnetohydrodynamics and climate models care.
+- **Structure-preserving machine learning** — Hamiltonian and Lagrangian neural networks —
+  builds the same constraint into learned dynamics, so a learned model conserves energy by
+  construction instead of by hoping the training data covered it.
+
+The through-line: *a discretisation that respects the structure of the problem beats a
+more accurate one that does not, whenever you integrate long enough.*
+
+</Tier>
+
+## What to carry forward
+
+- **Order of accuracy is not a total ordering of methods.** It measures short-term error
+  and says nothing about long-term qualitative behaviour.
+- Ask what the system **conserves**, and whether your method knows about it.
+- Bounded error and small error are different goals. Long integrations want the first.
+- The next chapter takes this further: methods that abandon time-stepping altogether.

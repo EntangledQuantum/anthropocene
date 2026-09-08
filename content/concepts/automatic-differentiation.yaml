@@ -1,0 +1,4 @@
+title: 'Automatic differentiation'
+blurb: 'Exact derivatives from the computational graph - neither symbolic nor finite-difference.'
+tags:
+  - ch5

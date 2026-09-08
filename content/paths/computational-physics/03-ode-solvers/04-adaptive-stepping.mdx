@@ -1,0 +1,36 @@
+---
+title: 'Letting the solver choose the step'
+blurb: 'Fixed steps waste effort where the solution is smooth and under-resolve where it is not. Estimate the local error each step and resize.'
+order: 4
+tier: 'advanced'
+minutes: 25
+teaches:
+  - 'adaptive-stepping'
+  - 'embedded-pairs'
+requires:
+  - 'rk4'
+  - 'butcher-tableau'
+  - 'local-truncation-error'
+status: 'draft'
+---
+
+:::note
+This lesson is **outlined but not yet written**. The concept graph already knows what it
+will own, so lessons downstream of it link here rather than re-teaching the material.
+Everything below is the plan.
+:::
+
+## Planned outline
+
+1. Estimating local error by taking the same interval two ways.
+2. Embedded pairs: two weight rows over shared stages, so the estimate is nearly free.
+3. Dormand-Prince 5(4) - what ode45 and SciPy RK45 actually run.
+4. The step size controller: PI control on the error, safety factors, rejected steps.
+5. Absolute versus relative tolerance, and why getting this wrong is the most common solver misuse.
+6. Dense output: interpolating within a step without shrinking it.
+
+## Interactives planned
+
+Each numbered point above gets at least one thing you can manipulate, not a figure. See
+`AGENTS.md` for the widget vocabulary and the rule that every lesson ships at least one
+graded interaction and one recall card.

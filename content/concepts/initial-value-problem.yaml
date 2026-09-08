@@ -1,0 +1,5 @@
+title: 'Initial value problem'
+blurb: 'A differential equation plus a starting state, which together determine the whole trajectory.'
+notation: '\deriv{y}{t} = f(t,y),\ y(t_0)=y_0'
+tags:
+  - ch3

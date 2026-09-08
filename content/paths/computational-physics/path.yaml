@@ -1,0 +1,16 @@
+title: 'Computational Physics'
+subtitle: 'from floating point to differentiable simulation'
+blurb: >-
+  Physics on a machine that cannot represent most numbers, cannot take a limit,
+  and has to finish. This path builds numerical solvers one at a time - Euler,
+  Runge-Kutta, implicit, symplectic - and then keeps going into the paradigms
+  that reframe the whole problem: spectral methods, variational integrators,
+  Monte Carlo, and differentiable physics.
+accent: 'magenta'
+status: 'live'
+chapters:
+  - '01-numerical-reality'
+  - '02-derivatives'
+  - '03-ode-solvers'
+  - '04-structure-preserving'
+  - '05-other-paradigms'

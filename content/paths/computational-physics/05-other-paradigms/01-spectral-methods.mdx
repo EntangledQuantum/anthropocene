@@ -1,0 +1,34 @@
+---
+title: 'Solving in frequency space'
+blurb: 'Stop approximating derivatives locally. Represent the whole solution in a Fourier basis, where differentiation is multiplication and accuracy is exponential.'
+order: 1
+tier: 'frontier'
+minutes: 30
+teaches:
+  - 'spectral-methods'
+requires:
+  - 'central-difference'
+  - 'order-of-accuracy'
+status: 'draft'
+---
+
+:::note
+This lesson is **outlined but not yet written**. The concept graph already knows what it
+will own, so lessons downstream of it link here rather than re-teaching the material.
+Everything below is the plan.
+:::
+
+## Planned outline
+
+1. Differentiation as multiplication by ik in Fourier space.
+2. Spectral accuracy: error falling faster than any power of h for smooth periodic functions.
+3. Why one discontinuity destroys it - the Gibbs phenomenon.
+4. Chebyshev bases for non-periodic domains.
+5. Split-step and pseudo-spectral methods for nonlinear PDEs.
+6. The cost: global coupling, FFT-shaped grids, hard boundary conditions.
+
+## Interactives planned
+
+Each numbered point above gets at least one thing you can manipulate, not a figure. See
+`AGENTS.md` for the widget vocabulary and the rule that every lesson ships at least one
+graded interaction and one recall card.

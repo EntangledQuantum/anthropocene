@@ -1,0 +1,5 @@
+title: 'Backward Euler'
+blurb: 'Evaluate the slope at the destination instead of the origin. Requires solving an equation, and buys unconditional stability.'
+notation: 'y_{n+1} = y_n + h f(t_{n+1}, y_{n+1})'
+tags:
+  - ch3

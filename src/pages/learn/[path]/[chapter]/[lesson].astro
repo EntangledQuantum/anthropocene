@@ -1,0 +1,64 @@
+---
+import { render } from 'astro:content';
+import LessonLayout from '../../../../layouts/Lesson.astro';
+import Predict from '../../../../components/widgets/Predict.astro';
+import Tune from '../../../../components/widgets/Tune.astro';
+import Recall from '../../../../components/widgets/Recall.astro';
+import Tier from '../../../../components/widgets/Tier.astro';
+import CodeChallenge from '../../../../components/widgets/CodeChallenge.astro';
+import Plot from '../../../../components/widgets/Plot.astro';
+import SolverLab from '../../../../components/widgets/SolverLab.astro';
+import ConvergenceLab from '../../../../components/widgets/ConvergenceLab.astro';
+import DerivativeLab from '../../../../components/widgets/DerivativeLab.astro';
+import FloatLab from '../../../../components/widgets/FloatLab.astro';
+import CancellationLab from '../../../../components/widgets/CancellationLab.astro';
+
+/** The authoring vocabulary: every lesson may use these with no import.
+ *  Adding a widget here is what makes it available to authors — see AGENTS.md. */
+const lessonComponents = {
+  Predict, Tune, Recall, Tier, CodeChallenge,
+  Plot, SolverLab, ConvergenceLab, DerivativeLab, FloatLab, CancellationLab,
+};
+import { buildGraph, prerequisitesOf, unlockedBy } from '../../../../lib/graph/graph.ts';
+
+export async function getStaticPaths() {
+  const graph = await buildGraph();
+
+  return [...graph.lessons.values()].map((lesson) => {
+    const path = graph.paths.find((p) => p.id === lesson.pathId)!;
+    const chapter = path.chapters.find((c) => c.id === lesson.chapterId)!;
+
+    // Previous/next follow the CHAPTER's reading order, not the global topo
+    // order — inside a chapter the author's sequence is the intended one.
+    const siblings = chapter.lessons;
+    const i = siblings.findIndex((l) => l.id === lesson.id);
+
+    return {
+      params: { path: lesson.pathId, chapter: chapter.slug, lesson: lesson.slug },
+      props: {
+        lesson,
+        path,
+        chapter,
+        prereqs: prerequisitesOf(graph, lesson.id),
+        unlocks: unlockedBy(graph, lesson.id),
+        prev: siblings[i - 1] ?? null,
+        next: siblings[i + 1] ?? null,
+      },
+    };
+  });
+}
+
+const { lesson, path, chapter, prereqs, unlocks, prev, next } = Astro.props;
+const { Content } = await render(lesson.entry);
+---
+<LessonLayout
+  lesson={lesson}
+  path={path}
+  chapter={chapter}
+  prereqs={prereqs}
+  unlocks={unlocks}
+  prev={prev}
+  next={next}
+>
+  <Content components={lessonComponents} />
+</LessonLayout>

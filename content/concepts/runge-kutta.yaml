@@ -1,0 +1,4 @@
+title: 'Runge-Kutta methods'
+blurb: 'Take several trial slopes inside one step and combine them so low-order error terms cancel.'
+tags:
+  - ch3

@@ -1,0 +1,4 @@
+title: 'Global error'
+blurb: 'The accumulated error at the end of a run. One order lower than the local error, because you take O(1/h) steps.'
+tags:
+  - ch3

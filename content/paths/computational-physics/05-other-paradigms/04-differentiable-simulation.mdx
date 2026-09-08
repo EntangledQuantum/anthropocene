@@ -1,0 +1,37 @@
+---
+title: 'Gradients through physics'
+blurb: 'Make the solver itself differentiable and simulation becomes something you can optimise through - inverse problems, control, and learned dynamics all follow.'
+order: 4
+tier: 'frontier'
+minutes: 32
+teaches:
+  - 'automatic-differentiation'
+  - 'differentiable-simulation'
+  - 'physics-informed-nn'
+requires:
+  - 'rk4'
+  - 'complex-step-differentiation'
+  - 'velocity-verlet'
+status: 'draft'
+---
+
+:::note
+This lesson is **outlined but not yet written**. The concept graph already knows what it
+will own, so lessons downstream of it link here rather than re-teaching the material.
+Everything below is the plan.
+:::
+
+## Planned outline
+
+1. Forward versus reverse mode AD, and why reverse mode gives an n-dimensional gradient for the price of one evaluation.
+2. Differentiating through an ODE solver: unrolling versus the adjoint method.
+3. Neural ODEs and the memory argument for adjoints.
+4. Physics-informed neural networks: making the PDE residual the loss.
+5. Where PINNs genuinely win, and where a classical solver still beats them badly.
+6. Learned solvers and structure-preserving networks - closing the loop with chapter 4.
+
+## Interactives planned
+
+Each numbered point above gets at least one thing you can manipulate, not a figure. See
+`AGENTS.md` for the widget vocabulary and the rule that every lesson ships at least one
+graded interaction and one recall card.

@@ -1,0 +1,349 @@
+@import "tailwindcss";
+@import "@fontsource-variable/space-grotesk";
+@import "@fontsource-variable/inter";
+@import "@fontsource-variable/jetbrains-mono";
+@import "katex/dist/katex.min.css";
+
+/* ── anthropocene design tokens ──────────────────────────────────────────────
+   Dark only. There is no light theme and there is no toggle.
+   Grimes / GMUNK "Oblivion UI": blacks and pinks, dense HUD chrome, bloom,
+   translucent layered glass. The chrome is maximalist; the reading column
+   stays calm. Math legibility wins every conflict.
+   ───────────────────────────────────────────────────────────────────────── */
+
+@theme {
+  /* Ground — near-black with a violet cast, never pure #000 */
+  --color-void:        #07060b;
+  --color-abyss:       #0b0912;
+  --color-surface:     #110e1a;
+  --color-raised:      #171326;
+
+  /* Accents */
+  --color-magenta:     #ff2f88;
+  --color-magenta-dim: #b81f60;
+  --color-cyan:        #4fe8ff;
+  --color-cyan-dim:    #2a9fb5;
+  --color-acid:        #b8ff3d;
+  --color-violet:      #9d6bff;
+  --color-amber:       #ffb545;
+
+  /* Ink */
+  --color-ink:         #f2eef7;
+  --color-ink-soft:    #b3aac4;
+  --color-ink-faint:   #6f6683;
+  --color-ink-ghost:   #453e56;
+
+  /* Hairlines */
+  --color-rule:        #241e36;
+  --color-rule-bright: #3a3054;
+
+  --font-display: "Space Grotesk Variable", ui-sans-serif, system-ui, sans-serif;
+  --font-sans:    "Inter Variable", ui-sans-serif, system-ui, sans-serif;
+  --font-mono:    "JetBrains Mono Variable", ui-monospace, SFMono-Regular, monospace;
+
+  --radius-hud: 2px;
+}
+
+:root {
+  color-scheme: dark;
+
+  --glass:        color-mix(in oklab, var(--color-surface) 62%, transparent);
+  --glass-raised: color-mix(in oklab, var(--color-raised) 74%, transparent);
+  --glass-blur:   blur(14px) saturate(1.25);
+
+  --bloom-magenta: 0 0 24px -4px color-mix(in oklab, var(--color-magenta) 55%, transparent);
+  --bloom-cyan:    0 0 24px -4px color-mix(in oklab, var(--color-cyan) 50%, transparent);
+
+  --grid-cell: 28px;
+  --measure: 68ch;
+}
+
+/* ── base ─────────────────────────────────────────────────────────────────── */
+
+html {
+  background: var(--color-void);
+  scrollbar-color: var(--color-rule-bright) transparent;
+}
+
+body {
+  margin: 0;
+  min-height: 100dvh;
+  background:
+    /* corner blooms */
+    radial-gradient(60rem 40rem at 12% -8%,  color-mix(in oklab, var(--color-magenta) 11%, transparent), transparent 65%),
+    radial-gradient(52rem 36rem at 94% 4%,   color-mix(in oklab, var(--color-violet)  10%, transparent), transparent 62%),
+    radial-gradient(46rem 34rem at 50% 108%, color-mix(in oklab, var(--color-cyan)     6%, transparent), transparent 60%),
+    var(--color-void);
+  background-attachment: fixed;
+  color: var(--color-ink);
+  font-family: var(--font-sans);
+  font-size: 16px;
+  line-height: 1.65;
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+
+/* The ambient measurement grid + scanlines. Purely decorative, never
+   interactive, and fully removed under reduced-motion/contrast preferences. */
+body::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  background-image:
+    linear-gradient(to right,  color-mix(in oklab, var(--color-rule) 46%, transparent) 1px, transparent 1px),
+    linear-gradient(to bottom, color-mix(in oklab, var(--color-rule) 46%, transparent) 1px, transparent 1px);
+  background-size: var(--grid-cell) var(--grid-cell);
+  mask-image: radial-gradient(130% 95% at 50% 0%, #000 12%, transparent 78%);
+  opacity: 0.5;
+}
+
+body::after {
+  content: "";
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  background: repeating-linear-gradient(
+    to bottom,
+    transparent 0 2px,
+    color-mix(in oklab, #000 26%, transparent) 2px 3px
+  );
+  opacity: 0.35;
+  mix-blend-mode: multiply;
+}
+
+@media (prefers-contrast: more) {
+  body::before, body::after { display: none; }
+}
+
+/* ── typography ───────────────────────────────────────────────────────────── */
+
+h1, h2, h3, h4, h5, h6 {
+  font-family: var(--font-display);
+  font-weight: 600;
+  letter-spacing: -0.02em;
+  line-height: 1.15;
+  text-wrap: balance;
+  color: var(--color-ink);
+}
+
+code, kbd, samp, pre { font-family: var(--font-mono); font-variant-ligatures: none; }
+
+a { color: var(--color-cyan); text-underline-offset: 3px; }
+a:hover { color: var(--color-magenta); }
+
+::selection { background: color-mix(in oklab, var(--color-magenta) 40%, transparent); color: #fff; }
+
+:focus-visible {
+  outline: 2px solid var(--color-cyan);
+  outline-offset: 2px;
+  border-radius: 2px;
+}
+
+/* ── HUD primitives ───────────────────────────────────────────────────────── */
+
+/* A translucent panel with hairline border. The workhorse surface. */
+.hud {
+  position: relative;
+  background: var(--glass);
+  backdrop-filter: var(--glass-blur);
+  -webkit-backdrop-filter: var(--glass-blur);
+  border: 1px solid var(--color-rule);
+  border-radius: var(--radius-hud);
+}
+
+/* Corner brackets — the Oblivion-UI tell. */
+.hud-brackets::before,
+.hud-brackets::after {
+  content: "";
+  position: absolute;
+  width: 9px; height: 9px;
+  border-color: var(--color-magenta);
+  opacity: 0.75;
+  pointer-events: none;
+}
+.hud-brackets::before { top: -1px;    left: -1px;  border-top: 1px solid;    border-left: 1px solid; }
+.hud-brackets::after  { bottom: -1px; right: -1px; border-bottom: 1px solid; border-right: 1px solid; }
+
+/* Dense monospace micro-label used all over the chrome. */
+.hud-label {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  font-weight: 500;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--color-ink-faint);
+}
+
+/* Numeric readout that must not jitter as digits change. */
+.readout {
+  font-family: var(--font-mono);
+  font-variant-numeric: tabular-nums;
+  font-feature-settings: "tnum" 1;
+}
+
+.glow-magenta { box-shadow: var(--bloom-magenta); }
+.glow-cyan    { box-shadow: var(--bloom-cyan); }
+
+.text-glow-magenta { text-shadow: 0 0 18px color-mix(in oklab, var(--color-magenta) 60%, transparent); }
+.text-glow-cyan    { text-shadow: 0 0 18px color-mix(in oklab, var(--color-cyan)    55%, transparent); }
+
+/* ── prose: the calm reading column ───────────────────────────────────────── */
+
+.prose-anth {
+  max-width: var(--measure);
+  color: var(--color-ink-soft);
+  font-size: 1.0625rem;
+}
+.prose-anth > * + * { margin-top: 1.15em; }
+.prose-anth strong  { color: var(--color-ink); font-weight: 600; }
+.prose-anth h2 {
+  margin-top: 2.75em; font-size: 1.6rem;
+  padding-bottom: 0.4em; border-bottom: 1px solid var(--color-rule);
+}
+.prose-anth h3 { margin-top: 2em; font-size: 1.2rem; color: var(--color-ink); }
+.prose-anth :is(ul, ol) { padding-left: 1.35em; }
+.prose-anth ul { list-style: none; }
+.prose-anth ul > li { position: relative; }
+.prose-anth ul > li::before {
+  content: "";
+  position: absolute; left: -1.05em; top: 0.7em;
+  width: 5px; height: 5px;
+  background: var(--color-magenta);
+  transform: rotate(45deg);
+}
+.prose-anth ol { list-style: decimal; }
+.prose-anth ol > li::marker { color: var(--color-magenta); font-family: var(--font-mono); font-size: 0.85em; }
+.prose-anth li + li { margin-top: 0.4em; }
+
+.prose-anth blockquote {
+  border-left: 2px solid var(--color-magenta);
+  padding: 0.1em 0 0.1em 1.1em;
+  color: var(--color-ink-soft);
+  font-style: normal;
+}
+
+.prose-anth :not(pre) > code {
+  font-size: 0.875em;
+  padding: 0.15em 0.42em;
+  background: color-mix(in oklab, var(--color-cyan) 11%, transparent);
+  border: 1px solid color-mix(in oklab, var(--color-cyan) 20%, transparent);
+  border-radius: 2px;
+  color: var(--color-cyan);
+  white-space: nowrap;
+}
+
+.prose-anth pre {
+  background: color-mix(in oklab, var(--color-abyss) 88%, transparent) !important;
+  border: 1px solid var(--color-rule);
+  border-radius: var(--radius-hud);
+  padding: 1rem 1.15rem;
+  overflow-x: auto;
+  font-size: 0.85rem;
+  line-height: 1.7;
+}
+
+.prose-anth table { width: 100%; border-collapse: collapse; font-size: 0.9rem; display: block; overflow-x: auto; }
+.prose-anth :is(th, td) { padding: 0.55em 0.85em; border-bottom: 1px solid var(--color-rule); text-align: left; }
+.prose-anth th { font-family: var(--font-mono); font-size: 0.72rem; letter-spacing: 0.1em; text-transform: uppercase; color: var(--color-ink-faint); }
+
+.prose-anth hr { border: 0; border-top: 1px solid var(--color-rule); margin: 2.5em 0; }
+
+/* ── math ─────────────────────────────────────────────────────────────────── */
+
+.math-display {
+  margin: 1.6em 0;
+  padding: 0.6em 0;
+  overflow-x: auto;
+  overflow-y: hidden;
+  color: var(--color-ink);
+}
+.katex { font-size: 1.06em; }
+.katex-display { margin: 0; }
+.prose-anth .katex { color: var(--color-ink); }
+
+/* ── motion ───────────────────────────────────────────────────────────────── */
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+  body::after { display: none; }
+}
+
+/* ── interactive controls ─────────────────────────────────────────────────
+   Styled globally rather than per-component so every widget in every lesson
+   shares one instrument language.
+   ───────────────────────────────────────────────────────────────────────── */
+
+.anth-btn {
+  --btn-accent: var(--color-cyan);
+  appearance: none;
+  cursor: pointer;
+  padding: 5px 11px;
+  background: color-mix(in oklab, var(--btn-accent) 8%, transparent);
+  border: 1px solid color-mix(in oklab, var(--btn-accent) 32%, transparent);
+  border-radius: var(--radius-hud);
+  color: var(--color-ink-soft);
+  transition: background 120ms ease, border-color 120ms ease, color 120ms ease;
+}
+.anth-btn:hover:not(:disabled) {
+  background: color-mix(in oklab, var(--btn-accent) 18%, transparent);
+  border-color: color-mix(in oklab, var(--btn-accent) 60%, transparent);
+  color: var(--color-ink);
+}
+.anth-btn[data-active="true"] {
+  background: color-mix(in oklab, var(--btn-accent) 24%, transparent);
+  border-color: var(--btn-accent);
+  color: #fff;
+  box-shadow: 0 0 14px -4px var(--btn-accent);
+}
+.anth-btn:disabled { opacity: 0.38; cursor: not-allowed; }
+
+.anth-slider {
+  appearance: none;
+  width: 100%;
+  height: 22px;
+  margin: 2px 0 0;
+  background: transparent;
+  cursor: grab;
+}
+.anth-slider:active { cursor: grabbing; }
+
+.anth-slider::-webkit-slider-runnable-track {
+  height: 2px;
+  background: linear-gradient(to right, var(--color-magenta-dim), var(--color-rule-bright));
+}
+.anth-slider::-moz-range-track {
+  height: 2px;
+  background: linear-gradient(to right, var(--color-magenta-dim), var(--color-rule-bright));
+}
+.anth-slider::-webkit-slider-thumb {
+  appearance: none;
+  width: 11px; height: 11px;
+  margin-top: -4.5px;
+  background: var(--color-cyan);
+  border: 0;
+  border-radius: 50%;
+  box-shadow: 0 0 10px -1px var(--color-cyan);
+}
+.anth-slider::-moz-range-thumb {
+  width: 11px; height: 11px;
+  background: var(--color-cyan);
+  border: 0;
+  border-radius: 50%;
+  box-shadow: 0 0 10px -1px var(--color-cyan);
+}
+
+/* Widgets sit outside the prose measure — they get the full column. */
+.not-prose { max-width: none; }
+
+@keyframes anth-toast {
+  from { opacity: 0; transform: translateY(8px) scale(0.97); }
+  to   { opacity: 1; transform: none; }
+}

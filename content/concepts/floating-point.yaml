@@ -1,0 +1,5 @@
+title: 'Floating-point numbers'
+blurb: 'Reals are stored as a sign, a finite mantissa and an exponent, so almost every number you write down is approximated.'
+notation: 'x = m \cdot 2^{e}'
+tags:
+  - ch1

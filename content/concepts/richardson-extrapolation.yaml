@@ -1,0 +1,4 @@
+title: 'Richardson extrapolation'
+blurb: 'Combine two step sizes so the leading error term cancels algebraically, buying an order for free.'
+tags:
+  - ch2

@@ -1,0 +1,4 @@
+title: 'Embedded Runge-Kutta pairs'
+blurb: 'Two methods of different order sharing stage evaluations, so the error estimate is nearly free.'
+tags:
+  - ch3

@@ -1,0 +1,34 @@
+---
+title: 'Conditioning versus stability'
+blurb: 'Two different questions that get confused constantly: is the problem sensitive, or is my algorithm sloppy? One you can fix, the other you cannot.'
+order: 2
+tier: 'core'
+minutes: 20
+teaches:
+  - 'conditioning'
+  - 'numerical-stability'
+requires:
+  - 'floating-point'
+  - 'catastrophic-cancellation'
+status: 'draft'
+---
+
+:::note
+This lesson is **outlined but not yet written**. The concept graph already knows what it
+will own, so lessons downstream of it link here rather than re-teaching the material.
+Everything below is the plan.
+:::
+
+## Planned outline
+
+1. The condition number of a problem, and why it is a property of the question rather than the method.
+2. Backward stability: a stable algorithm gives the exact answer to a nearby question.
+3. Worked case: solving a nearly singular 2x2 system, where no algorithm can rescue you.
+4. Worked case: the quadratic formula, where the naive root is unstable and the rearranged one is not.
+5. Rule of thumb: relative error ≤ condition number x machine epsilon, for a backward-stable algorithm.
+
+## Interactives planned
+
+Each numbered point above gets at least one thing you can manipulate, not a figure. See
+`AGENTS.md` for the widget vocabulary and the rule that every lesson ships at least one
+graded interaction and one recall card.

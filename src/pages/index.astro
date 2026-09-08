@@ -1,0 +1,83 @@
+---
+import Base from '../layouts/Base.astro';
+import { buildGraph } from '../lib/graph/graph.ts';
+
+const graph = await buildGraph();
+const live = [...graph.lessons.values()].filter((l) => l.status === 'live');
+const gaps = graph.issues.filter((i) => i.kind === 'gap').length;
+const base = import.meta.env.BASE_URL.replace(/\/$/, '');
+---
+<Base title="Learn by doing, at depth" description="A free, open-source, interactive learning platform for advanced technical material.">
+  <section style="padding:72px 0 56px;max-width:74ch">
+    <span class="hud-label" style="color:var(--color-magenta)">◆ free · open source · no account · works offline</span>
+    <h1 style="font-size:clamp(2.4rem,6.5vw,4rem);line-height:1.05;margin:16px 0 22px">
+      Learn by doing,<br />
+      <span class="text-glow-magenta">without the ceiling.</span>
+    </h1>
+    <p style="font-size:1.2rem;line-height:1.65;color:var(--color-ink-soft);margin:0 0 18px">
+      Interactive lessons where the visualization <em>is</em> the explanation. Predict what a
+      simulation will do, watch it prove you wrong, then implement the thing yourself and be
+      graded on whether it actually works.
+    </p>
+    <p style="font-size:1.05rem;line-height:1.65;color:var(--color-ink-faint);margin:0 0 32px">
+      Every topic runs from foundation to frontier on one page. Nothing is taught twice —
+      lessons link through a concept graph. Progress, XP and spaced repetition live in your
+      browser and never touch a server.
+    </p>
+    <div style="display:flex;gap:10px;flex-wrap:wrap">
+      <a href={`${base}/learn/computational-physics`} class="anth-btn hud-label" style="text-decoration:none;padding:11px 20px;--btn-accent:var(--color-magenta)">
+        start with computational physics →
+      </a>
+      <a href={`${base}/graph`} class="anth-btn hud-label" style="text-decoration:none;padding:11px 20px">
+        see the concept graph
+      </a>
+    </div>
+  </section>
+
+  <section style="display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:1px;background:var(--color-rule);border:1px solid var(--color-rule);margin-bottom:64px">
+    {[
+      { k: graph.paths.length, l: 'learning paths' },
+      { k: live.length, l: 'lessons written' },
+      { k: graph.concepts.size, l: 'concepts mapped' },
+      { k: gaps, l: 'known gaps' },
+    ].map((s) => (
+      <div style="background:var(--color-abyss);padding:18px 20px">
+        <div class="readout" style="font-size:1.9rem;color:var(--color-cyan);line-height:1">{s.k}</div>
+        <div class="hud-label" style="margin-top:6px">{s.l}</div>
+      </div>
+    ))}
+  </section>
+
+  <section style="margin-bottom:72px">
+    <h2 style="font-size:1.5rem;margin:0 0 24px">How it works</h2>
+    <div style="display:grid;gap:16px;grid-template-columns:repeat(auto-fit,minmax(260px,1fr))">
+      {[
+        { t: 'Predict, then confront', d: 'You commit to an answer before the simulation runs. Being wrong on purpose is the mechanism — reading that RK4 loses energy teaches nothing next to predicting it will not, and watching it.', a: 'magenta' },
+        { t: 'Implement, and be measured', d: 'Code challenges are graded by measuring the convergence order your implementation actually achieves. Any correct method passes; a plausible one that is secretly second-order does not.', a: 'cyan' },
+        { t: 'Foundation to frontier', d: 'One page carries the first-pass explanation and the graduate treatment of the same idea. You choose the depth; the platform does not choose it for you.', a: 'violet' },
+        { t: 'Recall, scheduled', d: 'Cards are authored inline where the idea appears and scheduled with FSRS-6. A review item can be an interactive prediction, not just a front and a back.', a: 'acid' },
+        { t: 'One concept, one owner', d: 'A concept is taught by exactly one lesson, enforced at build time. Everything else links to it — so the graph stays a graph and the material never repeats itself.', a: 'amber' },
+        { t: 'Yours, locally', d: 'XP, streaks and review state live in SQLite in your browser. No account, no server, no subscription. Export the file whenever you want.', a: 'cyan' },
+      ].map((c) => (
+        <div class="hud hud-brackets" style="padding:18px 20px">
+          <h3 style={`margin:0 0 9px;font-size:1.06rem;color:var(--color-${c.a})`}>{c.t}</h3>
+          <p style="margin:0;color:var(--color-ink-faint);font-size:0.92rem;line-height:1.62">{c.d}</p>
+        </div>
+      ))}
+    </div>
+  </section>
+
+  <section style="margin-bottom:40px">
+    <h2 style="font-size:1.5rem;margin:0 0 20px">Paths</h2>
+    <div style="display:grid;gap:14px;grid-template-columns:repeat(auto-fit,minmax(300px,1fr))">
+      {graph.paths.map((p) => (
+        <a href={p.url} class="hud" style="padding:18px 20px;text-decoration:none;display:block">
+          <span class="hud-label" style={`color:var(--color-${p.accent})`}>◆ {p.subtitle}</span>
+          <h3 style="margin:9px 0 8px;font-size:1.3rem;color:var(--color-ink)">{p.title}</h3>
+          <p style="margin:0 0 14px;color:var(--color-ink-faint);font-size:0.92rem;line-height:1.6">{p.blurb}</p>
+          <span class="hud-label">{p.chapters.length} chapters · {p.lessons.length} lessons</span>
+        </a>
+      ))}
+    </div>
+  </section>
+</Base>

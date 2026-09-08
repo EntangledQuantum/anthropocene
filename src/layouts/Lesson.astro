@@ -1,0 +1,91 @@
+---
+import Base from './Base.astro';
+import LessonRuntime from '../components/chrome/LessonRuntime.tsx';
+import type { LessonNode, PathNode, ChapterNode } from '../lib/graph/graph.ts';
+
+interface Props {
+  lesson: LessonNode;
+  path: PathNode;
+  chapter: ChapterNode;
+  prereqs: LessonNode[];
+  next: LessonNode | null;
+  prev: LessonNode | null;
+  unlocks: LessonNode[];
+}
+
+const { lesson, path, chapter, prereqs, next, prev, unlocks } = Astro.props;
+const TIER_TONE: Record<string, string> = {
+  foundation: 'var(--color-cyan)',
+  core: 'var(--color-ink-soft)',
+  advanced: 'var(--color-violet)',
+  frontier: 'var(--color-magenta)',
+};
+---
+<Base
+  title={lesson.title}
+  description={lesson.blurb}
+  eyebrow={`${path.title} / ${chapter.title}`}
+>
+  <article style="padding:36px 0 0">
+    <header style="margin-bottom:34px">
+      <div style="display:flex;align-items:center;gap:12px;flex-wrap:wrap;margin-bottom:12px">
+        <span class="hud-label" style={`color:${TIER_TONE[lesson.tier]}`}>◆ {lesson.tier}</span>
+        <span class="hud-label">{lesson.minutes} min</span>
+        {lesson.runtime === 'python' && (
+          <span class="hud-label" style="color:var(--color-amber)">python runtime</span>
+        )}
+        {lesson.status === 'draft' && (
+          <span class="hud-label" style="color:var(--color-amber)">draft</span>
+        )}
+      </div>
+
+      <h1 style="font-size:clamp(1.9rem,4.4vw,2.7rem);margin:0 0 12px" class="text-glow-magenta">
+        {lesson.title}
+      </h1>
+      <p style="max-width:64ch;color:var(--color-ink-soft);font-size:1.08rem;line-height:1.6;margin:0">
+        {lesson.blurb}
+      </p>
+
+      {prereqs.length > 0 && (
+        <div class="hud" style="margin-top:22px;padding:11px 14px">
+          <span class="hud-label" style="display:block;margin-bottom:7px">assumes you already have</span>
+          <div style="display:flex;flex-wrap:wrap;gap:8px">
+            {prereqs.map((p) => (
+              <a href={p.url} class="hud-label anth-btn" style="text-decoration:none;--btn-accent:var(--color-cyan)">
+                {p.title}
+              </a>
+            ))}
+          </div>
+        </div>
+      )}
+    </header>
+
+    <div class="prose-anth" style="margin-bottom:56px">
+      <slot />
+    </div>
+
+    <LessonRuntime
+      client:only="react"
+      lessonId={lesson.id}
+      tier={lesson.tier}
+      title={lesson.title}
+      widgets={lesson.widgets}
+      unlocks={unlocks.map((u) => ({ title: u.title, url: u.url, blurb: u.blurb }))}
+    />
+
+    <nav style="display:grid;grid-template-columns:1fr 1fr;gap:14px;margin:44px 0 24px">
+      {prev ? (
+        <a href={prev.url} class="hud" style="padding:13px 16px;text-decoration:none;display:block">
+          <span class="hud-label" style="display:block;margin-bottom:4px">← previous</span>
+          <span style="color:var(--color-ink)">{prev.title}</span>
+        </a>
+      ) : <span />}
+      {next ? (
+        <a href={next.url} class="hud hud-brackets" style="padding:13px 16px;text-decoration:none;display:block;text-align:right">
+          <span class="hud-label" style="display:block;margin-bottom:4px;color:var(--color-magenta)">next →</span>
+          <span style="color:var(--color-ink)">{next.title}</span>
+        </a>
+      ) : <span />}
+    </nav>
+  </article>
+</Base>

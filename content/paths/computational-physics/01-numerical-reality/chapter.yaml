@@ -1,0 +1,9 @@
+title: 'Numerical Reality'
+question: 'What is a number, once it has to fit in 64 bits?'
+blurb: >-
+  Before any solver, the substrate. Floating point is not "real numbers with a
+  small error" - it is a different arithmetic, with its own failure modes. The
+  distinction between a badly conditioned problem and an unstable algorithm is
+  the single most useful idea in the field, and it belongs first.
+order: 1
+status: 'live'

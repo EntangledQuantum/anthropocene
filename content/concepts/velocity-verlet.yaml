@@ -1,0 +1,4 @@
+title: 'Velocity Verlet'
+blurb: 'Second-order, symplectic, time-reversible. The standard integrator for molecular dynamics and N-body.'
+tags:
+  - ch4

@@ -1,0 +1,4 @@
+title: 'Spectral methods'
+blurb: 'Represent the solution in a Fourier or polynomial basis and get exponential accuracy for smooth problems.'
+tags:
+  - ch5

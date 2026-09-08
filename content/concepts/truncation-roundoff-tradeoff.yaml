@@ -1,0 +1,4 @@
+title: 'The truncation/roundoff tradeoff'
+blurb: 'Shrinking h cuts truncation error but amplifies roundoff, so accuracy bottoms out at a finite optimal step.'
+tags:
+  - ch2

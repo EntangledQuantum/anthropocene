@@ -1,0 +1,233 @@
+---
+title: 'Differentiating a function you can only sample'
+blurb: 'Taylor gives you the formula and the error term in one line. Then floating point takes the error term back, and the result is the most important curve in the subject.'
+order: 1
+tier: 'core'
+minutes: 25
+teaches:
+  - 'forward-difference'
+  - 'central-difference'
+  - 'order-of-accuracy'
+  - 'truncation-roundoff-tradeoff'
+requires:
+  - 'floating-point'
+  - 'machine-epsilon'
+  - 'catastrophic-cancellation'
+status: 'live'
+updated: 2026-09-08
+---
+
+The definition of a derivative is a limit:
+
+$$
+f'(x) = \lim_{h \to 0} \frac{f(x+h) - f(x)}{h}
+$$
+
+A machine cannot take a limit. It can only pick some small $h$ and evaluate the
+quotient. The entire question is: **which $h$**, and how wrong are you?
+
+## Where the error term comes from
+
+Taylor expand $f(x+h)$ about $x$:
+
+$$
+f(x+h) = f(x) + h f'(x) + \frac{h^2}{2} f''(x) + \frac{h^3}{6} f'''(x) + \cdots
+$$
+
+Rearranging for $f'(x)$:
+
+$$
+\frac{f(x+h) - f(x)}{h} = f'(x) + \frac{h}{2} f''(x) + \Order(h^2)
+$$
+
+So the **forward difference** is off by $\frac{h}{2} f''(x)$ — an error proportional to
+$h$. Halve the step, halve the error. That is what *first order* means, and the
+constant is not mysterious: it is literally half the second derivative.
+
+Now do the same thing with a step in each direction and subtract:
+
+$$
+f(x+h) - f(x-h) = 2h f'(x) + \frac{h^3}{3} f'''(x) + \cdots
+$$
+
+Every even-powered term cancels by symmetry — including the $h^2 f''$ term that was
+the leading error before. Divide through:
+
+$$
+\frac{f(x+h) - f(x-h)}{2h} = f'(x) + \frac{h^2}{6} f'''(x) + \Order(h^4)
+$$
+
+The **central difference** is second order, for the same two function evaluations.
+That is not a small improvement. At $h = 10^{-4}$ it is roughly ten thousand times
+more accurate, at identical cost.
+
+<Predict
+  id="fd-order-guess"
+  question="Both schemes cost two evaluations of f. If you shrink h by a factor of 10, what happens to each error?"
+  options={[
+    { key: 'a', label: 'Forward falls 10×, central falls 10×', why: 'This would be true if both were first order. The symmetry of the central difference kills the leading term, so it does better than that.' },
+    { key: 'b', label: 'Forward falls 10×, central falls 100×', why: 'Correct. Error ~ h¹ against error ~ h², so a factor of 10 in h gives 10 and 100 respectively. On log-log axes these are straight lines of slope 1 and 2.' },
+    { key: 'c', label: 'Forward falls 100×, central falls 10×', why: 'Backwards — the central difference is the more accurate of the two.' },
+    { key: 'd', label: 'Both keep falling forever as h → 0', why: 'This is the intuition almost everyone brings, and it is the one this lesson is about to break.' },
+  ]}
+  correct="b"
+>
+
+Option (d) is the interesting wrong answer, and it is worth sitting with, because
+everything above is exact mathematics and it genuinely does say the error goes to zero.
+
+It just isn't what happens.
+
+</Predict>
+
+## The curve that breaks the intuition
+
+Watch what the error actually does as $h$ shrinks over fifteen orders of magnitude.
+
+<DerivativeLab
+  target="sin"
+  caption="Error against step size, log-log. Left branch: truncation error, falling as h^p exactly as Taylor promises. Right branch: roundoff, rising as ε/h. The amber rules mark the theoretically optimal step for each order."
+/>
+
+The left half is the theory working perfectly — straight lines whose slopes are the
+orders we just derived, 1 and 2 and 4.
+
+Then every curve turns around.
+
+The reason is the previous lesson. The numerator $f(x+h) - f(x)$ is a **difference of
+nearly equal numbers**, and as $h \to 0$ they become more nearly equal. Each is known
+to a relative precision of $\varepsilon$, so the absolute error in the numerator is about
+$\varepsilon |f(x)|$ no matter how small $h$ gets. Dividing by $h$ then *amplifies* it:
+
+$$
+\text{roundoff error} \approx \frac{\varepsilon |f(x)|}{h}
+$$
+
+Total error is the sum of the two effects, and they pull opposite ways:
+
+$$
+E(h) \approx \underbrace{C h^{p}}_{\text{truncation}} + \underbrace{\frac{\varepsilon}{h}}_{\text{roundoff}}
+$$
+
+Differentiate, set to zero, and you get the optimal step and the best error you can
+possibly achieve:
+
+$$
+h^{*} \sim \varepsilon^{1/(p+1)}, \qquad E(h^{*}) \sim \varepsilon^{p/(p+1)}
+$$
+
+For the forward difference ($p = 1$) that is $h^* \approx 10^{-8}$ and an error around
+$10^{-8}$ — **you can never get more than half your digits back**, no matter how
+carefully you choose $h$. For the central difference ($p=2$), $h^* \approx 6 \times 10^{-6}$
+with error near $10^{-11}$.
+
+<Tune
+  id="fd-find-optimum"
+  scenario="fd-optimum"
+  prompt="Find the step size where the forward difference is at its most accurate. You are looking for the bottom of the valley, not the left edge of the plot."
+  hint="Balance C·h against ε/h. With p = 1 the optimum sits near the square root of machine epsilon."
+  explanation="h* ≈ √ε ≈ 1.5×10⁻⁸, so log₁₀ h ≈ −7.8. Below this, the subtraction in the numerator has already destroyed more digits than the smaller step recovers. This is why 'just use a smaller h' is not general advice — for first-order differences it stops helping around 10⁻⁸ and actively hurts after."
+/>
+
+<Recall id="fd-uc-curve" concept="truncation-roundoff-tradeoff" >
+  <div slot="front">Why does making <code>h</code> smaller eventually make a finite-difference derivative <em>worse</em>?</div>
+
+Two error sources move in opposite directions as $h$ shrinks:
+
+- **Truncation** error $\sim C h^p$ comes from cutting the Taylor series short. It *falls*.
+- **Roundoff** error $\sim \varepsilon/h$ comes from subtracting nearly equal numbers and
+  then dividing by a tiny quantity. It *rises*.
+
+Their sum has a minimum at $h^* \sim \varepsilon^{1/(p+1)}$. Past that point you are
+paying more in lost significant digits than you gain in a better approximation to the
+limit.
+
+</Recall>
+
+<Tier level="advanced" title="two ways to cheat the tradeoff entirely">
+
+The U-curve looks like a law of nature. It is not — it is a consequence of *forming a
+difference*. Remove the subtraction and the right-hand branch disappears.
+
+**Richardson extrapolation.** If you know the error expands in known powers of $h$, you
+can cancel the leading term algebraically. For the central difference,
+
+$$
+D(h) = f'(x) + c_2 h^2 + c_4 h^4 + \cdots
+$$
+
+Evaluate at $h$ and $h/2$, then take the combination that eliminates $c_2$:
+
+$$
+\frac{4 D(h/2) - D(h)}{3} = f'(x) + \Order(h^4)
+$$
+
+Two second-order estimates, combined, give a fourth-order one. Iterating this is
+**Romberg** integration's differentiation cousin, and the same trick reappears in ODE
+solvers as extrapolation methods.
+
+**Complex-step differentiation.** This one is close to magic. If $f$ is analytic and you
+can evaluate it in complex arithmetic, expand along the imaginary axis:
+
+$$
+f(x + ih) = f(x) + ih f'(x) - \frac{h^2}{2} f''(x) - \frac{i h^3}{6} f'''(x) + \cdots
+$$
+
+Take the imaginary part and divide by $h$:
+
+$$
+\frac{\mathrm{Im}\, f(x+ih)}{h} = f'(x) - \frac{h^2}{6} f'''(x) + \cdots
+$$
+
+Second-order accurate — and crucially, **there is no subtraction anywhere**. Nothing
+cancels. So $h$ can be $10^{-200}$ and the estimate is accurate to full machine
+precision. Turn the dashed curve on below and watch it simply refuse to bend.
+
+<DerivativeLab
+  target="sin"
+  schemes={['forward', 'central']}
+  complexStepCurve={true}
+  caption="The acid-green dashed line is the complex-step estimate. It has no right-hand branch at all, because it never subtracts two nearby numbers."
+/>
+
+The cost is real: $f$ must be analytic and implemented generically enough to accept
+complex inputs. When that holds — and in scientific code it often does — the technique
+gives derivatives at machine precision with one extra evaluation, and it was the
+standard trick for verifying hand-written Jacobians before automatic differentiation
+became routine.
+
+</Tier>
+
+<Tier level="frontier" title="why nobody does this in modern practice">
+
+For gradients of real programs, finite differences have largely been displaced by
+**automatic differentiation**, which computes derivatives by applying the chain rule to
+the computation graph itself. AD is exact to machine precision, costs a small constant
+factor over the function evaluation, and — decisively — computes a gradient in $n$
+dimensions for roughly the cost of *one* function evaluation in reverse mode, where
+finite differences need $n+1$.
+
+Finite differences have not disappeared, though. They remain the tool of choice when:
+
+- $f$ is a black box you cannot instrument (a legacy binary, an experiment, a vendor solver);
+- you are **verifying** an analytic or AD gradient, where an independent method matters more than precision;
+- you are discretising a PDE in *space*, where the finite-difference stencil is the
+  numerical method rather than a way to estimate a derivative — and there $h$ is set by
+  the grid, not by the U-curve.
+
+That last case is the one that carries forward. The stencils here are the same objects
+that appear in finite-difference and finite-volume PDE solvers; the difference is that
+there, $h$ is a modelling choice, and the roundoff branch never comes into play.
+
+</Tier>
+
+## What to carry forward
+
+- **Order of accuracy** is a slope on a log-log plot, and you should always measure it
+  rather than trust it. A method claiming fourth order that measures 2.1 has a bug.
+- **Symmetry buys accuracy for free.** The central difference costs the same as the
+  forward difference and is an order better. That idea reappears constantly.
+- **Smaller is not always better.** Every method with a subtraction in it has a floor.
+
+Next: the same machinery, but instead of estimating one derivative, we use it to follow
+a trajectory forward in time.

@@ -1,0 +1,197 @@
+---
+title: 'The numbers you do not have'
+blurb: 'Your machine cannot represent 0.1, cannot represent most of the reals, and its arithmetic is not associative. Everything else in this path is built on top of that.'
+order: 1
+tier: 'foundation'
+minutes: 18
+teaches:
+  - 'floating-point'
+  - 'machine-epsilon'
+  - 'catastrophic-cancellation'
+requires: []
+status: 'live'
+updated: 2026-09-08
+---
+
+Start with the thing everyone has seen and nobody is told the reason for.
+
+```js
+0.1 + 0.2 === 0.3   // false
+0.1 + 0.2           // 0.30000000000000004
+```
+
+The usual explanation — "floating point is inexact" — is true and useless. It suggests
+a small random fuzz sprinkled over otherwise-real numbers. What is actually happening
+is sharper than that, and once you see it, the rest of numerical computing stops being
+a list of gotchas and becomes a single consistent story.
+
+A `double` is 64 bits: one sign bit, eleven exponent bits, and fifty-two mantissa bits,
+encoding
+
+$$
+x = (-1)^{s} \times 1.m \times 2^{e}
+$$
+
+That is a **finite set**. There are at most $2^{64}$ doubles, and the real line is not
+finite, so almost every real number you can name is simply not in the set. $0.1$ is not
+in the set — in binary it is the repeating fraction $0.0\overline{0011}$, and it gets
+rounded to the nearest available neighbour before your program does anything at all.
+
+<FloatLab />
+
+Drag that up past $2^{53}$ and watch the last readout. The gap between neighbouring
+doubles becomes larger than 1, which means consecutive integers stop existing:
+`x + 1 === x` evaluates to `true`, and no error is raised. The number simply has
+nowhere to go.
+
+<Predict
+  id="fp-spacing"
+  question="You add 1.0 to a double, one billion times in a loop, starting from 2^53. What do you end up with?"
+  options={[
+    { key: 'a', label: 'Exactly 2^53 + 10^9', why: 'This is what exact arithmetic gives, and what almost everyone predicts.' },
+    { key: 'b', label: 'Roughly 2^53 + 10^9, with a small accumulated error', why: 'A reasonable guess, but it assumes each addition does SOMETHING. Above 2^53 many of them do not.' },
+    { key: 'c', label: 'Exactly 2^53 — the loop has no effect at all', why: 'Correct. At 2^53 the gap between doubles is exactly 2, so adding 1 rounds to nearest-even and lands back where it started. Every single iteration is a no-op.' },
+    { key: 'd', label: 'Infinity, from accumulated overflow', why: 'Overflow needs about 2^1024. We are nowhere near it.' },
+  ]}
+  correct="c"
+>
+
+The relative gap is what stays constant, not the absolute one. That constant is
+**machine epsilon**: the distance from $1$ to the next representable double.
+
+$$
+\varepsilon = 2^{-52} \approx 2.22 \times 10^{-16}
+$$
+
+Roughly sixteen significant decimal digits — everywhere, at every magnitude. Which
+means the natural way to measure error is *relative*, and the natural way to lose
+accuracy is to do something that destroys significant digits.
+
+</Predict>
+
+## The one operation that actually hurts
+
+Multiplication and division are well behaved: relative errors add, slowly. Addition is
+fine too. **Subtracting two nearly equal numbers is the operation that destroys you.**
+
+If $a$ and $b$ agree to twelve digits, then $a - b$ has only four meaningful digits
+left — and the arithmetic will hand you a result with sixteen digits printed, of which
+twelve are noise promoted to the front. Nothing warns you. The result *looks* fine.
+
+<CancellationLab />
+
+Both expressions in that panel are the same function. Not approximately the same —
+*identically* the same, provably, by algebra. Only one of them survives contact with
+a machine, because only one of them avoids forming a difference of near-equal
+quantities.
+
+This is the distinction the whole field rests on:
+
+- **Conditioning** is a property of the *problem*. Some questions genuinely amplify
+  input error, and no algorithm can rescue them.
+- **Stability** is a property of the *algorithm*. Two algorithms for the same
+  well-conditioned problem can differ by ten orders of magnitude, as you just saw.
+
+<Recall id="fp-cancellation" concept="catastrophic-cancellation">
+  <div slot="front">Why does <code>√(x+1) − √x</code> lose accuracy for large <code>x</code>, and what is the fix?</div>
+
+For large $x$, $\sqrt{x+1}$ and $\sqrt{x}$ agree in almost every significant digit, so
+their difference cancels the leading digits and leaves rounding noise scaled up to the
+front of the answer.
+
+The fix is to remove the subtraction algebraically, by multiplying through by the
+conjugate:
+
+$$
+\sqrt{x+1} - \sqrt{x} = \frac{1}{\sqrt{x+1} + \sqrt{x}}
+$$
+
+Now the only operations are addition, a square root, and a division — none of which
+cancel. The rewritten form is accurate to machine precision for every $x$.
+
+</Recall>
+
+<Tier level="advanced" title="why the error is not random, and why associativity fails">
+
+It is tempting to model rounding as noise. It is not noise — it is a deterministic
+function, and that has consequences.
+
+IEEE-754 guarantees that each individual operation is **correctly rounded**: the result
+is the exact mathematical answer, rounded once to the nearest representable double.
+So for a single operation,
+
+$$
+\mathrm{fl}(a \circ b) = (a \circ b)(1 + \delta), \qquad |\delta| \le \tfrac{1}{2}\varepsilon
+$$
+
+Every operation is individually near-perfect. Error analysis is entirely about how
+these $\delta$ terms *compound*, and the compounding is where the interesting behaviour
+lives.
+
+One immediate consequence: floating-point addition is **not associative**.
+
+```js
+(0.1 + 0.2) + 0.3   // 0.6000000000000001
+0.1 + (0.2 + 0.3)   // 0.6
+```
+
+Which is not a bug — both results are correctly rounded. It means the *order of
+summation is part of the algorithm*. Summing a million values ascending, descending,
+or pairwise gives three different answers, and the spread between them can dwarf
+$\varepsilon$.
+
+This is why **Kahan summation** exists: carry a running compensation term for the low
+-order bits discarded at each step, and the error stops growing with $n$.
+
+```js
+function kahanSum(xs) {
+  let sum = 0;
+  let c = 0;                    // the bits we dropped last time
+  for (const x of xs) {
+    const y = x - c;            // put them back
+    const t = sum + y;          // this addition loses the low bits of y...
+    c = (t - sum) - y;          // ...and this recovers exactly what was lost
+    sum = t;
+  }
+  return sum;
+}
+```
+
+The line `c = (t - sum) - y` is exactly the kind of expression an optimising compiler
+would love to simplify to zero. It is zero in real arithmetic. It is *not* zero in
+floating point, and that residue is the entire point — which is why aggressive
+fast-math flags break this function.
+
+</Tier>
+
+<Tier level="frontier" title="what people actually do now">
+
+The 64-bit double is no longer the default everywhere it used to be.
+
+- **Mixed precision.** Modern GPUs run `float16` and `bfloat16` many times faster than
+  `float64`. `bfloat16` keeps all eight exponent bits of a `float32` and throws away
+  mantissa instead — it trades precision for *range*, because in practice overflow
+  kills a training run and a few lost digits do not. Iterative refinement lets you do
+  the bulk of the work in low precision and recover high-precision answers.
+- **Posits** and other alternative encodings vary precision with magnitude, giving more
+  accuracy near 1 where most computation lives.
+- **Interval arithmetic** carries a rigorous bracket around every value, so the
+  computation reports its own uncertainty instead of leaving you to estimate it.
+- **Compensated algorithms** (Kahan, Neumaier, two-sum) recover most of the lost
+  precision at a small constant cost, and are what good library `sum` implementations
+  are quietly doing.
+
+</Tier>
+
+## What to carry forward
+
+Every method in this path is going to make errors. The useful question is never
+"is there error" — there always is — but **which of the two kinds is dominant**, and
+what happens to it next:
+
+- **Truncation error**, from replacing a limit with a finite step. Shrinks as you refine.
+- **Roundoff error**, from finite precision. *Grows* as you refine, because refining
+  means more operations and smaller differences.
+
+Those two pull in opposite directions. The next lesson is where they collide head-on,
+and where the collision produces the single most important picture in the subject.

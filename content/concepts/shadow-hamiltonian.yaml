@@ -1,0 +1,5 @@
+title: 'The shadow Hamiltonian'
+blurb: 'A symplectic method solves a slightly different problem EXACTLY, which is why its energy error stays bounded.'
+notation: '\tilde H = H + \Order(h^p)'
+tags:
+  - ch4

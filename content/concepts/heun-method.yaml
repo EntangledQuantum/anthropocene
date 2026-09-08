@@ -1,0 +1,4 @@
+title: 'Heun''s method'
+blurb: 'Predict with Euler, then correct with the average of both slopes. Second order for two evaluations.'
+tags:
+  - ch3

@@ -1,0 +1,5 @@
+title: 'Order of accuracy'
+blurb: 'The exponent p in error = O(h^p): how fast the error falls when you refine the step.'
+notation: '\Order(h^p)'
+tags:
+  - ch2

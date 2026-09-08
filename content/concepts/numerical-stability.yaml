@@ -1,0 +1,4 @@
+title: 'Numerical stability'
+blurb: 'A property of the ALGORITHM: whether it amplifies the errors it makes along the way.'
+tags:
+  - ch1

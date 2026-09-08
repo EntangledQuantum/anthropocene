@@ -1,0 +1,4 @@
+title: 'Symplectic integrators'
+blurb: 'Methods that exactly preserve the geometric structure of Hamiltonian flow, rather than merely approximating the trajectory.'
+tags:
+  - ch4

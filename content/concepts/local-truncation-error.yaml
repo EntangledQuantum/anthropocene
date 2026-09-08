@@ -1,0 +1,5 @@
+title: 'Local truncation error'
+blurb: 'The error committed by a single step, assuming everything before it was exact.'
+notation: '\tau_n'
+tags:
+  - ch3

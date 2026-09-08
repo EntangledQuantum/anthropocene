@@ -1,0 +1,220 @@
+---
+title: 'Forward Euler, and why it is not enough'
+blurb: 'The simplest possible integrator. Worth studying not because you will use it, but because every failure mode of every later method is already visible here in its purest form.'
+order: 1
+tier: 'core'
+minutes: 25
+teaches:
+  - 'initial-value-problem'
+  - 'forward-euler'
+  - 'local-truncation-error'
+  - 'global-error'
+requires:
+  - 'forward-difference'
+  - 'order-of-accuracy'
+status: 'live'
+updated: 2026-09-08
+---
+
+An **initial value problem** gives you the slope everywhere and the state at one moment:
+
+$$
+\deriv{y}{t} = f(t, y), \qquad y(t_0) = y_0
+$$
+
+You know which way the trajectory is heading from any point. You want the trajectory.
+
+The obvious move is to trust the slope for a short while:
+
+$$
+y_{n+1} = y_n + h\, f(t_n, y_n)
+$$
+
+That is **forward Euler**, and it is the finite difference from the previous chapter
+rearranged. It is also, in code, almost nothing:
+
+```ts
+export const forwardEuler = {
+  step: (f, t, y, h) => axpy(h, f(t, y), y),   // y + h·f(t, y)
+};
+```
+
+That is the actual implementation this page runs. Every curve below comes from it.
+
+## Two kinds of error, and the factor that connects them
+
+Taylor again. Over one step, assuming $y_n$ was exact:
+
+$$
+y(t_{n+1}) = y_n + h f(t_n, y_n) + \frac{h^2}{2} y''(\xi)
+$$
+
+So a single step is wrong by $\frac{h^2}{2} y''$ — the **local truncation error**,
+which is $\Order(h^2)$.
+
+But you do not take one step. To cross a fixed interval $T$ you take $N = T/h$ of them,
+and the errors accumulate:
+
+$$
+\text{global error} \approx N \times \Order(h^2) = \frac{T}{h} \times \Order(h^2) = \Order(h)
+$$
+
+**The global error is one order worse than the local error.** That factor of $1/h$ is
+the reason a method described as "$\Order(h^{p+1})$ per step" is called a $p$-th order
+method. It applies to every integrator in this chapter.
+
+<ConvergenceLab
+  problem="decay"
+  methods={['forward-euler', 'heun', 'rk4']}
+  initial={['forward-euler']}
+  caption="Endpoint error against step size for y' = −y. Forward Euler's fitted slope is 1: halving h halves the error, and no more. Switch on the others to see what higher order looks like — but note the vertical scale before you conclude anything about cost."
+/>
+
+Slope 1. Ten times the work buys ten times the accuracy — a terrible exchange rate, and
+the reason nobody integrates anything serious with Euler.
+
+<Predict
+  id="euler-error-shape"
+  question="You integrate y' = −y from t = 0 to t = 5 with forward Euler. Where in the run is the error largest?"
+  options={[
+    { key: 'a', label: 'At the start, where the solution changes fastest', why: 'The solution does change fastest here, so the LOCAL error per step is largest at the start. But that is not where the accumulated error peaks.' },
+    { key: 'b', label: 'At the end, because errors accumulate monotonically', why: 'Errors do accumulate, but this problem is contracting: the flow pulls trajectories together, so old errors decay as you go.' },
+    { key: 'c', label: 'Somewhere in the middle', why: 'Correct — and for a reason worth having. Early on, the local error per step is large but there has been little accumulation. Late on, accumulation has happened but the contracting flow (y′ = −y pulls trajectories together) has damped the old errors away. The two effects peak in between.' },
+    { key: 'd', label: 'Uniformly spread across the interval', why: 'This would need the local error and the damping to cancel exactly, which is not generic.' },
+  ]}
+  correct="c"
+>
+
+Switch the view to **error** and watch the shape. Then try a genuinely stiff λ and see
+the hump move toward the start.
+
+<SolverLab
+  problem="decay"
+  methods={['forward-euler', 'heun', 'rk4']}
+  initial={['forward-euler']}
+  views={['trajectory', 'error']}
+  h={0.25}
+  hRange={[0.005, 0.6]}
+  span={5}
+  caption="Forward Euler on exponential decay. The dashed line is the exact solution. Drag h and watch both the accuracy and — past h = 2 — the stability."
+/>
+
+</Predict>
+
+## The failure that is not about accuracy
+
+Here is the part that matters more than the order.
+
+Apply forward Euler to $y' = -\lambda y$ with $\lambda > 0$. The exact solution decays
+to zero. The numerical one satisfies
+
+$$
+y_{n+1} = y_n - h\lambda y_n = (1 - h\lambda) y_n
+$$
+
+so after $n$ steps, $y_n = (1 - h\lambda)^n y_0$. This decays only if
+$|1 - h\lambda| < 1$, which means
+
+$$
+h < \frac{2}{\lambda}
+$$
+
+Cross that threshold and the computed solution does not merely become inaccurate — it
+**grows without bound**, oscillating in sign, while the true solution decays quietly to
+zero. There is no warning and no partial credit. It is a cliff.
+
+<Tune
+  id="euler-stability-cliff"
+  scenario="euler-stability"
+  prompt="This is y' = −50y, whose exact solution (dashed) is essentially zero after t = 0.2. Find the step size where forward Euler stops decaying and starts blowing up."
+  hint="The condition is |1 − hλ| < 1 with λ = 50. Solve for the h where that first fails."
+  explanation="h = 2/λ = 0.04. Below it, |1 − hλ| < 1 and the numerical solution decays. Above it, the amplification factor exceeds 1 in magnitude and every step multiplies the error again — the solution explodes while alternating sign. Note what this threshold does NOT depend on: how accurate you wanted to be. λ alone sets it."
+/>
+
+That distinction is the whole reason the rest of this chapter exists:
+
+- **Accuracy** asks how close you are, and improves smoothly as $h$ shrinks.
+- **Stability** asks whether you are bounded at all, and fails discontinuously.
+
+When $\lambda$ is large — a **stiff** problem — the stability limit can force a step
+size thousands of times smaller than accuracy alone would need. You end up spending all
+your computation resolving a transient that decayed to nothing in the first microsecond.
+That is the problem implicit methods exist to solve.
+
+<Recall id="euler-stability-card" concept="forward-euler">
+  <div slot="front">For <code>y' = −λy</code>, what step size does forward Euler require, and is it an accuracy limit or a stability limit?</div>
+
+The amplification factor per step is $1 - h\lambda$, so the method is stable only when
+
+$$
+|1 - h\lambda| < 1 \iff h < \frac{2}{\lambda}
+$$
+
+It is a **stability** limit, not an accuracy one. It does not soften if you are willing
+to accept a worse answer — above the threshold the solution diverges regardless of your
+error tolerance. For stiff problems (large $\lambda$) this forces an absurdly small $h$
+and is the entire motivation for implicit methods.
+
+</Recall>
+
+## Build it yourself
+
+Now write the step function. It is graded by **measuring the order of accuracy your
+implementation actually achieves** — so any correct formulation passes, and a plausible
+one that is secretly wrong does not.
+
+<CodeChallenge
+  id="euler-implement"
+  prompt="Implement one forward Euler step. You are given f(t, y) → State, the current time t, the current state y (an array), and the step size h. Return the new state."
+  starter={`// y_{n+1} = y_n + h * f(t_n, y_n)
+// f(t, y) returns an array the same length as y.
+
+const slope = f(t, y);
+return y.map((yi, i) => yi + h * 0);   // ← fix this`}
+  expectedOrder={1}
+  hint="You already have the slope. Each component of the new state is the old component plus h times the matching slope component."
+  solution={`const slope = f(t, y);
+return y.map((yi, i) => yi + h * slope[i]);`}
+/>
+
+<Tier level="advanced" title="the stability region, and why it is a picture in the complex plane">
+
+The scalar test equation $y' = \lambda y$ looks too simple to say anything general. It
+is not, and the reason is linearisation: near a solution, a system behaves like
+$y' = Jy$ for the Jacobian $J$, and diagonalising $J$ decouples it into independent
+scalar problems — one per **eigenvalue**. Those eigenvalues are complex in general.
+
+So the right question is: for which complex $z = h\lambda$ does the method stay bounded?
+For forward Euler the amplification factor is $R(z) = 1 + z$, and the **stability
+region** is
+
+$$
+|1 + z| < 1
+$$
+
+a disc of radius 1 centred at $-1$. Two consequences fall straight out:
+
+- Real negative $\lambda$: the disc reaches from $0$ to $-2$ on the real axis, recovering $h\lambda < 2$.
+- **Purely imaginary** $\lambda$ — an undamped oscillator — lies on the imaginary axis,
+  which touches the disc only at the origin. Forward Euler is unstable for *every*
+  $h > 0$ on an oscillator. It does not merely lose accuracy; the amplitude grows without
+  bound. You saw exactly this if you ran the oscillator problem above.
+
+This is why "which method" is often decided by *where your eigenvalues are*, not by the
+order of accuracy. A method whose stability region contains the whole left half-plane is
+called **A-stable**, and no explicit method is.
+
+</Tier>
+
+## What to carry forward
+
+Forward Euler is not a bad method because someone made a mistake. It is the honest
+consequence of using the only information you have — the slope at the point you are
+standing on. Everything that follows is an answer to a specific complaint about it:
+
+- *first order is too slow* → sample the slope more than once per step (Heun, RK4)
+- *the stability limit is intolerable* → evaluate the slope at the destination (implicit methods)
+- *a fixed h is wasteful* → estimate the error and resize (adaptive stepping)
+- *energy drifts on long runs* → preserve the geometry, not the trajectory (symplectic methods)
+
+Next: the first of those.

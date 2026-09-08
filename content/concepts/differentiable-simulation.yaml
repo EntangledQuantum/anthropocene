@@ -1,0 +1,4 @@
+title: 'Differentiable simulation'
+blurb: 'Make the solver itself differentiable, so gradients flow through physics and you can optimise through time.'
+tags:
+  - ch5

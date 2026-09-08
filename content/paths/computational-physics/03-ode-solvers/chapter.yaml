@@ -1,0 +1,9 @@
+title: 'ODE Solvers, One by One'
+question: 'Given the slope everywhere, how do you find the path?'
+blurb: >-
+  Every integrator here is a different answer to one question: you know f, and
+  you want y. We build them in order - Euler, Heun, RK4, then implicit methods -
+  and each one exists because the previous one failed in a specific,
+  reproducible way you will have seen for yourself.
+order: 3
+status: 'live'

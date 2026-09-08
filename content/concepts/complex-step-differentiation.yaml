@@ -1,0 +1,5 @@
+title: 'Complex-step differentiation'
+blurb: 'Step into the imaginary direction to get a derivative with no subtraction, and therefore no cancellation at all.'
+notation: '\frac{\mathrm{Im}\,f(x+ih)}{h}'
+tags:
+  - ch2

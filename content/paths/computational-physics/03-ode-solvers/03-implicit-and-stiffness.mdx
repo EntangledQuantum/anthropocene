@@ -1,0 +1,36 @@
+---
+title: 'Stiffness, and evaluating the slope where you are going'
+blurb: 'When the fastest mode in the system forces a step size thousands of times smaller than accuracy needs. The fix costs a nonlinear solve per step and is worth it.'
+order: 3
+tier: 'advanced'
+minutes: 30
+teaches:
+  - 'backward-euler'
+  - 'a-stability'
+  - 'stiffness'
+requires:
+  - 'forward-euler'
+  - 'rk4'
+status: 'draft'
+---
+
+:::note
+This lesson is **outlined but not yet written**. The concept graph already knows what it
+will own, so lessons downstream of it link here rather than re-teaching the material.
+Everything below is the plan.
+:::
+
+## Planned outline
+
+1. A concrete stiff system: two modes with timescales separated by 10^6.
+2. Backward Euler, and why the unknown appearing on both sides is the whole point.
+3. Solving the implicit step with Newton, and why fixed-point iteration fails exactly when you need it.
+4. Stability regions in the complex plane; A-stability and L-stability.
+5. The implicit trapezoid rings on stiff modes while backward Euler damps them - L-stability made visible.
+6. BDF methods and what production stiff solvers actually use.
+
+## Interactives planned
+
+Each numbered point above gets at least one thing you can manipulate, not a figure. See
+`AGENTS.md` for the widget vocabulary and the rule that every lesson ships at least one
+graded interaction and one recall card.

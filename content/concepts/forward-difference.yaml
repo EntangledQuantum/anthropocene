@@ -1,0 +1,5 @@
+title: 'Forward difference'
+blurb: 'Approximates a derivative from two samples one step apart; first-order accurate.'
+notation: '\frac{f(x+h)-f(x)}{h}'
+tags:
+  - ch2

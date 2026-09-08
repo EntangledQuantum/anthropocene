@@ -1,0 +1,33 @@
+---
+title: 'Thermodynamics from mechanics'
+blurb: 'Integrate enough particles for long enough and macroscopic quantities emerge from the trajectory. This is where symplectic integration stops being elegant and becomes mandatory.'
+order: 3
+tier: 'frontier'
+minutes: 30
+teaches:
+  - 'molecular-dynamics'
+requires:
+  - 'velocity-verlet'
+  - 'energy-drift'
+status: 'draft'
+---
+
+:::note
+This lesson is **outlined but not yet written**. The concept graph already knows what it
+will own, so lessons downstream of it link here rather than re-teaching the material.
+Everything below is the plan.
+:::
+
+## Planned outline
+
+1. Pair potentials, cutoffs, neighbour lists, and periodic boundary conditions.
+2. Why velocity Verlet is the universal choice here and RK4 is essentially never used.
+3. Thermostats and barostats, and how they deliberately break symplecticity.
+4. Ergodicity, time averages versus ensemble averages.
+5. Scaling to GPUs, and where the compute actually goes.
+
+## Interactives planned
+
+Each numbered point above gets at least one thing you can manipulate, not a figure. See
+`AGENTS.md` for the widget vocabulary and the rule that every lesson ships at least one
+graded interaction and one recall card.

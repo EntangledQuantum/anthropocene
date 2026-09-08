@@ -1,0 +1,9 @@
+---
+// `front` is a named slot rather than a prop: a prompt often wants inline
+// math or code, and JSX cannot be passed across the island boundary.
+import Island from '../learn/Recall.tsx';
+---
+<Island client:visible {...Astro.props}>
+  <slot name="front" slot="front" />
+  <slot />
+</Island>

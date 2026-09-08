@@ -1,0 +1,9 @@
+title: 'Structure-Preserving Integrators'
+question: 'Why does a worse method give a better orbit?'
+blurb: >-
+  RK4 is fourth order; velocity Verlet is second. Over a long orbit Verlet wins
+  anyway, and not by a little. This chapter is where accuracy stops being the
+  only axis - some methods approximate the trajectory, and others preserve the
+  geometry the trajectory lives in.
+order: 4
+status: 'live'

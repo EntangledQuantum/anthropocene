@@ -1,0 +1,4 @@
+title: 'Symplectic Euler'
+blurb: 'Forward Euler with the position update using the ALREADY-UPDATED velocity. One reordering, entirely different long-run behaviour.'
+tags:
+  - ch4

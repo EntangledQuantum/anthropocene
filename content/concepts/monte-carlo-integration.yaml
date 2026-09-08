@@ -1,0 +1,5 @@
+title: 'Monte Carlo integration'
+blurb: 'Trade determinism for dimension-independence: error falls as 1/sqrt(N) no matter how many dimensions.'
+notation: '\Order(N^{-1/2})'
+tags:
+  - ch5

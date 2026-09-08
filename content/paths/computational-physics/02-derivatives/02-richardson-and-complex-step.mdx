@@ -1,0 +1,35 @@
+---
+title: 'Buying an order for free'
+blurb: 'Richardson extrapolation cancels the leading error term algebraically. Complex-step differentiation removes the subtraction entirely, and with it the whole roundoff branch.'
+order: 2
+tier: 'advanced'
+minutes: 25
+teaches:
+  - 'richardson-extrapolation'
+  - 'complex-step-differentiation'
+requires:
+  - 'central-difference'
+  - 'order-of-accuracy'
+  - 'truncation-roundoff-tradeoff'
+status: 'draft'
+---
+
+:::note
+This lesson is **outlined but not yet written**. The concept graph already knows what it
+will own, so lessons downstream of it link here rather than re-teaching the material.
+Everything below is the plan.
+:::
+
+## Planned outline
+
+1. Richardson: combine D(h) and D(h/2) so the leading h^p term cancels.
+2. Building a Romberg-style tableau, and where it stops helping.
+3. Complex-step: expand along the imaginary axis, take the imaginary part, never subtract.
+4. Why complex step needs f to be analytic and generically implemented.
+5. How both relate to automatic differentiation, which supersedes them for instrumented code.
+
+## Interactives planned
+
+Each numbered point above gets at least one thing you can manipulate, not a figure. See
+`AGENTS.md` for the widget vocabulary and the rule that every lesson ships at least one
+graded interaction and one recall card.

@@ -1,0 +1,33 @@
+---
+title: 'When randomness beats determinism'
+blurb: 'Every deterministic quadrature rule degrades exponentially with dimension. Monte Carlo error is O(N^-1/2) in any number of dimensions, which eventually makes it the only option.'
+order: 2
+tier: 'frontier'
+minutes: 28
+teaches:
+  - 'monte-carlo-integration'
+requires:
+  - 'floating-point'
+status: 'draft'
+---
+
+:::note
+This lesson is **outlined but not yet written**. The concept graph already knows what it
+will own, so lessons downstream of it link here rather than re-teaching the material.
+Everything below is the plan.
+:::
+
+## Planned outline
+
+1. The curse of dimensionality, quantified against a grid-based rule.
+2. Why the O(N^-1/2) rate does not depend on dimension at all.
+3. Importance sampling and control variates: reducing the constant, never the rate.
+4. Markov chain Monte Carlo, detailed balance, and Metropolis-Hastings.
+5. Quasi-Monte Carlo: low-discrepancy sequences that beat the square-root rate for smooth integrands.
+6. Where this lives in physics: path integrals, lattice QCD, statistical mechanics.
+
+## Interactives planned
+
+Each numbered point above gets at least one thing you can manipulate, not a figure. See
+`AGENTS.md` for the widget vocabulary and the rule that every lesson ships at least one
+graded interaction and one recall card.

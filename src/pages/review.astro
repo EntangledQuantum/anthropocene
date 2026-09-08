@@ -1,0 +1,38 @@
+---
+import Base from '../layouts/Base.astro';
+import ReviewQueue from '../components/chrome/ReviewQueue.tsx';
+import { buildGraph } from '../lib/graph/graph.ts';
+
+/* Card metadata is resolved at build time from the concept graph and handed to
+   the client, so the review page needs no content fetch of its own. Card ids
+   are authored as `<Recall id="…" concept="…">` inside lessons. */
+const graph = await buildGraph();
+
+const RECALL_RE = /<Recall\b[^>]*?\bid=["']([^"']+)["'][^>]*?(?:\bconcept=["']([^"']+)["'])?/g;
+
+const meta: Record<string, unknown> = {};
+for (const lesson of graph.lessons.values()) {
+  const body = lesson.entry.body ?? '';
+  for (const m of body.matchAll(RECALL_RE)) {
+    const [, cardId, conceptId] = m;
+    const concept = conceptId ? graph.concepts.get(conceptId) : undefined;
+    meta[cardId] = {
+      cardId,
+      lessonTitle: lesson.title,
+      lessonUrl: lesson.url,
+      conceptTitle: concept?.title,
+      conceptBlurb: concept?.blurb,
+    };
+  }
+}
+---
+<Base title="Review" description="Spaced repetition over everything you have met." eyebrow="spaced repetition">
+  <div style="padding:44px 0 0;max-width:70ch">
+    <h1 style="font-size:clamp(1.9rem,4.4vw,2.6rem);margin:0 0 12px">Review</h1>
+    <p style="color:var(--color-ink-soft);font-size:1.04rem;line-height:1.65;margin:0 0 32px">
+      Cards are created where you first meet an idea and scheduled with FSRS-6. Reviewing
+      sends you back to the idea in context rather than to an isolated fact.
+    </p>
+    <ReviewQueue client:only="react" meta={meta} />
+  </div>
+</Base>

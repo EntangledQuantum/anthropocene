@@ -1,0 +1,4 @@
+title: 'Physics-informed neural networks'
+blurb: 'Train a network whose loss is the PDE residual, turning solving into optimisation.'
+tags:
+  - ch5

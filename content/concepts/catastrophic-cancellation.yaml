@@ -1,0 +1,4 @@
+title: 'Catastrophic cancellation'
+blurb: 'Subtracting two nearly equal numbers annihilates the leading digits and promotes rounding noise into the answer.'
+tags:
+  - ch1

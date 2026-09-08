@@ -1,0 +1,5 @@
+title: 'Forward Euler'
+blurb: 'Step along the tangent you can see right now. The simplest integrator, and the one whose failures teach the most.'
+notation: 'y_{n+1} = y_n + h f(t_n, y_n)'
+tags:
+  - ch3

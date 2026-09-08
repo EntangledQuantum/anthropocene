@@ -1,0 +1,10 @@
+title: 'Derivatives Without Calculus'
+question: 'How do you differentiate a function you can only sample?'
+blurb: >-
+  Finite differences are the bridge from continuous mathematics to something a
+  machine can execute, and they carry the tension that runs through the whole
+  path: the same h that reduces truncation error amplifies roundoff. This is
+  where order of accuracy stops being notation and starts being a slope you
+  can measure.
+order: 2
+status: 'live'

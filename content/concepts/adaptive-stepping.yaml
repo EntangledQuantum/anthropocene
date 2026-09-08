@@ -1,0 +1,4 @@
+title: 'Adaptive step size control'
+blurb: 'Estimate the local error each step and resize h to hold it near a tolerance.'
+tags:
+  - ch3

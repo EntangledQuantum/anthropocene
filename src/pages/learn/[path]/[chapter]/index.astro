@@ -1,0 +1,46 @@
+---
+import Base from '../../../../layouts/Base.astro';
+import { buildGraph } from '../../../../lib/graph/graph.ts';
+
+export async function getStaticPaths() {
+  const graph = await buildGraph();
+  return graph.paths.flatMap((path) =>
+    path.chapters.map((chapter) => ({
+      params: { path: path.id, chapter: chapter.slug },
+      props: { path, chapter },
+    })),
+  );
+}
+
+const { path, chapter } = Astro.props;
+const TIER_TONE: Record<string, string> = {
+  foundation: 'var(--color-cyan)', core: 'var(--color-ink-soft)',
+  advanced: 'var(--color-violet)', frontier: 'var(--color-magenta)',
+};
+---
+<Base title={chapter.title} description={chapter.blurb} eyebrow={path.title}>
+  <div style="padding:40px 0 0;max-width:80ch">
+    <a href={path.url} class="hud-label" style="text-decoration:none;color:var(--color-ink-faint)">← {path.title}</a>
+    <h1 style="font-size:clamp(1.8rem,4vw,2.5rem);margin:14px 0 12px">{chapter.title}</h1>
+    {chapter.question && (
+      <p style="font-size:1.15rem;color:var(--color-magenta);line-height:1.55;margin:0 0 14px;font-family:var(--font-display)">
+        {chapter.question}
+      </p>
+    )}
+    <p style="color:var(--color-ink-soft);font-size:1.05rem;line-height:1.65;margin:0 0 32px">{chapter.blurb}</p>
+
+    <div style="display:grid;gap:10px">
+      {chapter.lessons.map((l, i) => (
+        <a href={l.url} class="hud" style="padding:15px 17px;text-decoration:none;display:block">
+          <div style="display:flex;align-items:baseline;gap:12px;flex-wrap:wrap;margin-bottom:5px">
+            <span class="readout hud-label" style="color:var(--color-magenta)">{String(i + 1).padStart(2, '0')}</span>
+            <span style="color:var(--color-ink);font-size:1.06rem;font-family:var(--font-display);font-weight:600">{l.title}</span>
+            <span class="hud-label" style={`color:${TIER_TONE[l.tier]}`}>{l.tier}</span>
+            <span class="hud-label" style="margin-left:auto">{l.minutes} min</span>
+          </div>
+          <p style="margin:0;color:var(--color-ink-faint);font-size:0.92rem;line-height:1.55">{l.blurb}</p>
+        </a>
+      ))}
+    </div>
+  </div>
+</Base>

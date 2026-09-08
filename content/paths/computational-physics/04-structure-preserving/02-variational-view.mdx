@@ -1,0 +1,35 @@
+---
+title: 'Discretising the action instead of the equations'
+blurb: 'Variational integrators derive the update from a discrete least-action principle. Symplecticity and conserved momenta then follow automatically rather than being imposed.'
+order: 2
+tier: 'frontier'
+minutes: 30
+teaches:
+  - 'variational-integrators'
+  - 'time-reversibility'
+requires:
+  - 'velocity-verlet'
+  - 'hamiltonian-systems'
+  - 'shadow-hamiltonian'
+status: 'draft'
+---
+
+:::note
+This lesson is **outlined but not yet written**. The concept graph already knows what it
+will own, so lessons downstream of it link here rather than re-teaching the material.
+Everything below is the plan.
+:::
+
+## Planned outline
+
+1. The continuous action, and least action as the source of the equations of motion.
+2. A discrete Lagrangian, and the discrete Euler-Lagrange equations.
+3. Recovering velocity Verlet from a midpoint discrete Lagrangian - it was variational all along.
+4. The discrete Noether theorem: conserved momenta to machine precision, not to O(h^p).
+5. Where this beats symplectic-by-construction: constraints, contact, non-smooth mechanics.
+
+## Interactives planned
+
+Each numbered point above gets at least one thing you can manipulate, not a figure. See
+`AGENTS.md` for the widget vocabulary and the rule that every lesson ships at least one
+graded interaction and one recall card.

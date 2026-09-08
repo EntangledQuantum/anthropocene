@@ -1,0 +1,5 @@
+title: 'Hamiltonian systems'
+blurb: 'Mechanics written so that a single function H generates the flow, and phase-space volume is conserved.'
+notation: '\dot q = \pderiv{H}{p},\ \dot p = -\pderiv{H}{q}'
+tags:
+  - ch4

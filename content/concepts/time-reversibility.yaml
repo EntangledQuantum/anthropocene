@@ -1,0 +1,4 @@
+title: 'Time reversibility'
+blurb: 'Running the integrator backwards returns you exactly to where you started.'
+tags:
+  - ch4
