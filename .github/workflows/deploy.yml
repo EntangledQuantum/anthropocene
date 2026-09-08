@@ -1,0 +1,56 @@
+name: deploy
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: pages
+  cancel-in-progress: true
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+
+      - uses: actions/setup-node@v5
+        with:
+          node-version: 24
+          cache: npm
+
+      - run: npm ci
+
+      # The numerics tests assert the pedagogical claims the lessons make
+      # (orders of accuracy, stability thresholds, energy drift). A failure
+      # here means a lesson is teaching something false, so it blocks deploy.
+      - name: Test numerics
+        run: npm test
+
+      # Concept-graph rules: single owner per concept, no cycles, no
+      # unresolved requires, per-lesson interaction requirements.
+      - name: Check content
+        run: npm run content:check
+
+      - name: Build
+        run: npm run build:only
+
+      - uses: actions/upload-pages-artifact@v4
+        with:
+          path: dist
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - id: deployment
+        uses: actions/deploy-pages@v4
