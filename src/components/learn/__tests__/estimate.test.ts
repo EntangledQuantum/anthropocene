@@ -75,6 +75,10 @@ describe('estimate scenarios agree with the prose that quotes them', () => {
     expect(t).toBeLessThan(1e-10);
     expect(t).toBeGreaterThan(0);
   });
+
+  it('PIC opposing-pair transfer leaves KE = 1/16', () => {
+    expect(ESTIMATE_SCENARIOS['mpm-pic-ke'].truth()).toBeCloseTo(0.0625, 12);
+  });
 });
 
 describe('every scenario is answerable on its own slider', () => {

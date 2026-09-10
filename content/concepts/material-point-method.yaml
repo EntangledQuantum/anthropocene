@@ -1,3 +1,29 @@
 title: 'material point method'
-blurb: 'TODO: one sentence, plain language.'
-tags: []
+blurb: 'History lives on particles. Derivatives live on a disposable background grid. The mesh cannot tangle because it is thrown away every step.'
+notation: 'P2G \to grid solve \to G2P \to reset'
+tags:
+  - ch6
+misconceptions:
+  - id: 'throw-away-loses-material'
+    name: 'Throwing the mesh away throws the material away.'
+    signal: 'Expects a reset grid to forget the solid — no stress, no bounce, a pile of independent particles.'
+    correction: 'The material is the particles. They carry mass, velocity, and the deformation gradient F. The mesh is a scratchpad for ∇·σ, rebuilt from the particles each step and discarded after G2P.'
+  - id: 'grid-stores-history'
+    name: 'The background grid is the solid.'
+    signal: 'Looks for plastic strain, F, or damage on the nodes, or treats a node that had mass last step as still material.'
+    correction: 'After G2P the grid is gone. A node with mass this step may be empty next step. History that has to survive a step has to live on a particle.'
+  - id: 'pic-conserves-energy'
+    name: 'PIC transfers conserve energy because they conserve mass and momentum.'
+    signal: 'Treats scatter-gather as a lossless map, and is surprised when two particles shooting toward each other in a cell lose almost all their kinetic energy.'
+    correction: 'Hats sum to one, so Σ m_i = Σ m_p and Σ m_i v_i = Σ m_p v_p. Kinetic energy is ½ m v², a different projector. PIC is a low-pass filter on velocity; FLIP keeps the increment so the energy survives.'
+  - id: 'mesh-must-follow'
+    name: 'A solid has to be meshed with a mesh that follows the material.'
+    signal: 'Reaches for updated-Lagrangian FEM, then remeshes when the Jacobian goes negative, and does not see the third option.'
+    correction: 'That is one honest option, and remeshing is its cost. MPM splits the job: particles follow the material, the grid stays Cartesian because it is not asked to persist.'
+references:
+  - label: 'Sulsky, Chen, Schreyer (1994), Comput. Methods Appl. Mech. Engrg. 118'
+    url: 'https://doi.org/10.1016/0045-7825(94)00033-4'
+  - label: 'Jiang, Schroeder, Teran (2016), J. Comput. Phys. 338 — APIC'
+    url: 'https://doi.org/10.1016/j.jcp.2017.02.050'
+  - label: 'de Vaucorbeil, Nguyen, Sinaie, Wu (2020), Adv. Appl. Mech. — MPM after 25 years'
+    url: 'https://doi.org/10.1016/bs.aams.2019.11.001'

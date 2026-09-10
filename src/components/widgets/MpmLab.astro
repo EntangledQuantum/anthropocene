@@ -1,0 +1,5 @@
+---
+import Island, { type MpmLabProps } from '../viz/MpmLab.tsx';
+const props = Astro.props as MpmLabProps;
+---
+<Island client:visible {...props} />

@@ -1,53 +1,161 @@
 ---
 title: 'Particles that borrow a grid'
 blurb: 'Material points carry history. A reset background grid computes derivatives. Mesh tangling disappears because the mesh is thrown away every step.'
-order: 1
+order: 6
 tier: 'advanced'
-minutes: 18
+minutes: 16
 teaches:
   - 'material-point-method'
 requires:
   - 'velocity-verlet'
   - 'pde'
 runtime: 'none'
-status: 'draft'
+status: 'live'
+updated: 2026-09-10
 ---
 
-Open with the tension, not the definition. What does the reader currently believe that
-this lesson is going to complicate?
+A Lagrangian mesh follows the material. That is the honest description of a solid, and it is how FEM works, and after enough deformation the elements invert. Snow, a landslide, a jelly hitting the floor — the Jacobian goes negative and the run dies.
 
-## The idea
-
-Build it up. Use `$inline$` and `$$display$$` for math.
+The material point method looks like cheating: **throw the mesh away every step.** Keep the particles.
 
 <Predict
-  id="06-material-point-first-prediction"
-  question="Ask something the reader can be productively wrong about."
+  id="mpm-keep-or-reset"
+  question="You discard the computational mesh at the end of every step and rebuild it from the particles. What happens to the solid?"
   options={[
-    { key: 'a', label: 'The intuitive answer', why: 'Why it is tempting, and exactly where it breaks.' },
-    { key: 'b', label: 'The correct answer', why: 'Why it is right, in one or two sentences.' },
+    { key: 'a', misconception: 'throw-away-loses-material', label: 'It forgets it is a solid. Stress lived on the mesh, so a reset is a pile of independent particles.', why: 'Tempting, and it would be true if the mesh owned the constitutive state. It does not. Mass, velocity, and the deformation gradient F sit on the particles. The mesh is a scratchpad for ∇·σ.' },
+    { key: 'b', misconception: 'mesh-must-follow', label: 'You cannot. A solid has to be meshed with a mesh that follows the material, then remeshed when it tangles.', why: 'That is one honest option — updated-Lagrangian FEM plus remeshing. MPM splits the job instead: particles follow the material, the grid stays Cartesian because it is not asked to persist.' },
+    { key: 'c', label: 'The solid is fine. History rode on the particles; the grid was only borrowed for derivatives.', why: 'Correct. P2G scatters mass and momentum onto a fresh Cartesian grid, the grid takes a momentum step, G2P writes velocity and ∇v back, and the mesh is discarded. Nothing that has to survive the step was stored there.' },
+    { key: 'd', misconception: 'grid-stores-history', label: 'The grid still has to carry F from step to step, so "throwing it away" is a figure of speech — you really advect the nodes and remap.', why: 'Some Eulerian methods do that. MPM does not. After G2P the nodal mass, velocity, and force are gone. A node that had mass this step may be empty next step.' },
+  ]}
+  correct="c"
+>
+
+Toggle **keep the mesh** and watch the free-surface quads invert. Toggle **reset grid** and the same particles keep bouncing on a grid that is Cartesian every frame.
+
+<MpmLab
+  caption="Left: particles and the mesh they are borrowing. Right, top: nodal mass and velocity after P2G. Right, bottom: one particle and the four hat weights that scatter it. Click a particle to track it. Step phase to watch P2G, the grid solve, then G2P as three views of one state."
+/>
+
+</Predict>
+
+Occupied nodes follow the drop. Empty nodes stay. The cells at the free surface shear until a Jacobian goes through zero — unless you snap every node back to the lattice at the end of G2P. That snap is the method.
+
+## Who owns what
+
+A continuum solid wants two contradictory things from a mesh. The mesh must follow the material, so history has an owner. The mesh must stay nice, so $\nabla N_i$ stays well-defined. FEM picks the first and remeshes. An Eulerian grid picks the second and smears the first across cells.
+
+MPM refuses the choice.
+
+- **Particles** (Lagrangian): mass $m_p$, velocity $v_p$, deformation gradient $F_p$, rest volume. These persist.
+- **Grid** (Eulerian, disposable): mass $m_i$, velocity $v_i$, internal force from $\nabla\cdot\sigma$. Used for one solve, then thrown away.
+
+The transfer is the whole algorithm.
+
+<RankOrder
+  id="mpm-step-order"
+  prompt="One explicit MPM step. Put the four beats in the order they actually run."
+  lowLabel="first"
+  highLabel="last"
+  items={[
+    { key: 'p2g', label: 'P2G — scatter particle mass and momentum onto the nodes', why: 'The grid starts empty. Hats N_i(x_p) deposit m_p and m_p v_p. Force from V_0 P ∇N_i lands on the same nodes.' },
+    { key: 'grid', label: 'Grid solve — v_i ← v_i + Δt (f_i / m_i + g), then sticky walls', why: 'Derivatives are cheap on a Cartesian lattice. This is an explicit momentum step, the same family as velocity Verlet, not a particle force loop.' },
+    { key: 'g2p', label: 'G2P — interpolate v_i back, update F from ∇v, advect the particles', why: 'PIC overwrites v_p with the interpolated field; FLIP adds only the increment. Positions follow the grid velocity. F ← (I + Δt ∇v) F.' },
+    { key: 'reset', label: 'Discard the grid — snap nodes back to the Cartesian lattice', why: 'Last. The particles have everything they need. Next step begins with an empty, un-tangled mesh.' },
+  ]}
+  correct={['p2g', 'grid', 'g2p', 'reset']}
+  explanation="P2G builds the scratchpad, the grid takes the physics step, G2P writes the result onto the owners of history, and the scratchpad is returned. Keep-the-mesh is the same first three beats with the fourth skipped — and that is when the Jacobian goes negative."
+/>
+
+The grid step is an explicit update of nodal momentum. The [velocity Verlet](../../structure-preserving/verlet-vs-rk4/) lesson already owns the question of whether an integrator's energy error is bounded or secular; do not re-open it here. What is new is *who carries the state* — and, in a moment, the fact that the transfer itself is a filter.
+
+<Classify
+  id="mpm-who-carries"
+  prompt="Each of these either lives on a particle (and survives the step) or lives on the grid (and is thrown away). Sorting them is the method."
+  buckets={[
+    { key: 'particle', label: 'particle — persists', accent: 'cyan' },
+    { key: 'grid', label: 'grid — discarded after G2P', accent: 'magenta' },
+  ]}
+  items={[
+    { key: 'mass', label: 'mass m_p', bucket: 'particle', why: 'Fixed on the particle. Partition of unity makes nodal mass sum to the same number, but the owner is the particle.' },
+    { key: 'F', label: 'deformation gradient F', bucket: 'particle', why: 'History. Updated from the grid velocity gradient, then carried forward. The next grid never sees the old F directly.' },
+    { key: 'stress', label: 'first Piola–Kirchhoff P(F)', bucket: 'particle', why: 'Constitutive. Neo-Hookean here; snow plasticity would live here too. Evaluated at the particle, scattered as a force.' },
+    { key: 'mi', label: 'nodal mass m_i', bucket: 'grid', why: 'Rebuilt by P2G every step. A node that is heavy now may be empty next step.' },
+    { key: 'vi', label: 'nodal velocity v_i', bucket: 'grid', why: 'The unknown of the momentum solve. Written back by G2P, then forgotten.' },
+    { key: 'force', label: 'nodal internal force f_i = −Σ V_0 P ∇N_i', bucket: 'grid', why: 'Why you borrowed the grid: derivatives of the hats. Gone after the solve.' },
+  ]}
+  explanation="If it has to remember the material, it is a particle field. If it is a derivative or a one-step unknown, it is a grid field. Mixing those up is how people 'store stress on the nodes' and then wonder why a reset deletes the solid."
+/>
+
+<Recall id="mpm-borrow-card" concept="material-point-method">
+  <div slot="front">What is thrown away every MPM step, and what is not?</div>
+
+The **grid** is thrown away: nodal mass, velocity, and force are scratch. The **particles** are not: they carry mass, velocity, and $F$ (and any plastic history). P2G builds the grid from the particles, the grid takes a momentum step, G2P writes velocity and $\nabla v$ back, and the mesh is discarded so it cannot tangle.
+
+</Recall>
+
+## Two particles, one cell
+
+Bilinear hats in 2D, linear hats in 1D: $N_i(x) = 1 - |x - x_i|/h$ on a support of one cell. Inside a cell they sum to one.
+
+$$
+\sum_i N_i(x_p) = 1
+\qquad\Rightarrow\qquad
+\sum_i m_i = \sum_p m_p
+$$
+
+Mass on the grid equals mass on the particles after P2G. Momentum too. That is partition of unity, not magic.
+
+It does **not** protect kinetic energy. Two particles of mass 1, velocities $+1$ and $-1$, in the same cell of width 1, at $x = 0.25$ and $x = 0.75$. Hats $0.75$ and $0.25$. After P2G the two nodes hold $v = \pm 1/2$. PIC G2P writes $v_p = \pm 1/4$.
+
+<Estimate
+  id="mpm-pic-ke"
+  scenario="mpm-pic-ke"
+  prompt="That opposing pair starts with KE = 1. After one PIC scatter-gather, with no forces, how much kinetic energy is left?"
+  explanation="A sixteenth. PIC replaced each particle velocity with a weighted average of the nodal field, and that field had already averaged the two particles against each other. Mass and momentum were conserved; ½mv² is a different projector. Transfers are filters."
+/>
+
+FLIP does the other thing: it adds only the *change* in the interpolated field. With no grid forces that change is zero, so FLIP keeps $v_p$ and keeps the energy. The blend $\alpha$ interpolates.
+
+$$
+v_p \leftarrow (1-\alpha)\,v_{\mathrm{PIC}} + \alpha\,v_{\mathrm{FLIP}}
+$$
+
+<Tune
+  id="mpm-flip-half"
+  scenario="mpm-flip-half"
+  prompt="Same opposing pair. Drag the FLIP fraction α until half the original kinetic energy survives the transfer."
+  hint="PIC (α = 0) leaves 1/16. FLIP (α = 1) leaves all of it. Half is not the midpoint of α, because KE is quadratic in v."
+  explanation="v(α) = 1/4 + (3/4)α, and KE / KE₀ = v². Half remaining is v = 1/√2, so α = (1/√2 − 1/4) / (3/4) sits near 0.61, not 0.5. The curve in the lab is the same function the drop is using for G2P."
+/>
+
+<Predict
+  id="mpm-pic-vs-flip"
+  question="On the drop, α near 1 (FLIP) vs α = 0 (PIC). After the jelly hits the floor, what do you see?"
+  options={[
+    { key: 'a', misconception: 'pic-conserves-energy', label: 'No difference that matters. Both transfers conserve mass and momentum, so the bounce is the same.', why: 'They do conserve mass and momentum. The bounce is an energy question. PIC has already thrown most of the impact kinetic energy away in the scatter-gather, so the drop puddles. FLIP keeps the increment, so it rebounds — and looks noisier, because particle modes the grid cannot see are never filtered out.' },
+    { key: 'b', label: 'PIC puddles. FLIP bounces, with more noise.', why: 'Correct. PIC is a low-pass filter on velocity, applied every step: stable, dissipative, a dead jelly. FLIP adds only Δv_i: energetic, and it accumulates velocity noise the hats cannot represent. Graphics codes blend them; APIC stores an affine C_p so you can keep energy without the noise.' },
+    { key: 'c', label: 'FLIP puddles. PIC is the one that conserves, so it bounces cleanly.', why: 'Backwards. Conservation of mass/momentum is not conservation of ½mv². PIC is the dissipative one. Drag α on the drop if you want the picture rather than the names.' },
+    { key: 'd', label: 'Both explode. The constitutive model cannot take a collision either way.', why: 'The neo-Hookean P = μ(F − F^{−T}) + λ log(J) F^{−T} is fine at this stiffness. What changes with α is how much of the impact energy the transfer is allowed to keep.' },
   ]}
   correct="b"
 >
 
-The payoff, revealed only after they commit. Usually a simulation.
+Drag $\alpha$ on the drop. PIC is a puddle. FLIP is a bounce with speckle. The grid and the particles are still one state.
 
 </Predict>
 
-<Recall id="06-material-point-card" concept="material-point-method">
-  <div slot="front">The question to answer from memory in three months.</div>
+<Tier level="advanced" title="cell-crossing, and why you do not get interpolation and conservation for free">
 
-The answer, written so it teaches rather than merely confirms.
+Bilinear hats are $C^0$. $N_i$ is continuous; $\nabla N_i$ jumps when a particle crosses a node. The internal force $f_i = -\sum V_0 P \nabla N_i$ therefore jumps, even if $F$ is smooth. That is **cell-crossing noise**, the original MPM artefact. GIMP, CPDI, and B-splines exist to give $\nabla N$ more support so the jump goes away. They are different transfers, not a different idea.
 
-</Recall>
+The deeper trade: a transfer that interpolates velocity exactly (PIC, particles recover $v_i$ at a node) is a projection, and projections dissipate. A transfer that conserves energy and angular momentum with a *lumped* mass (APIC: each particle carries an affine $C_p$, and P2G scatters $v_p + C_p(x_i - x_p)$) does not interpolate a general field exactly. You pick. Jiang, Schroeder, Teran 2016 is the paper; the one-line version is that **lumped-mass PIC cannot conserve angular momentum**, and the affine is what buys it back.
 
-<Tier level="advanced">
-
-The treatment for someone who already has the working version. Derivations, edge cases,
-the reason the standard explanation is a simplification.
+This lesson's drop uses bilinear PIC/FLIP and neo-Hookean elasticity. Snow (Stomakhin 2013) is the same transfers with a plastic projection on $F$. DEM and SPH are different animals: no borrowed grid.
 
 </Tier>
 
 ## What to carry forward
 
-Two or three lines connecting to what comes next.
+History lives on particles. Derivatives live on a disposable grid. P2G, solve, G2P, reset — the mesh cannot tangle because it is not the same mesh tomorrow.
+
+PIC filters, FLIP keeps the increment, and the blend $\alpha$ is a choice about energy versus noise, not about whether the solid still exists.

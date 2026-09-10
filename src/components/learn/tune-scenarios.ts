@@ -35,6 +35,7 @@ import {
   maxAbsDiv,
   subtractGradient,
 } from '../../lib/numerics/projection.ts';
+import { flipWhereKeFraction, opposingKeRemaining } from '../../lib/numerics/mpm.ts';
 
 /**
  * Named scenarios for `<Tune>`.
@@ -588,6 +589,38 @@ const projJacobiOnePercent: TuneScenario = {
   },
 };
 
+/* PIC (α = 0) kills the opposing pair's KE; FLIP (α = 1) keeps it. Hunt the
+   blend where half survives — a number the transfer, not a material, sets. */
+const mpmFlipHalfKe: TuneScenario = {
+  param: {
+    key: 'flip', label: 'FLIP fraction', symbol: 'α', min: 0, max: 1, step: 0.02, value: 0.15,
+    hint: '0 overwrites particle velocity with the interpolated grid field (PIC). 1 adds only the grid increment (FLIP).',
+  },
+  target: flipWhereKeFraction(0.5),
+  tolerance: 0.12,
+  x: { label: 'α', domain: [0, 1] },
+  y: { label: 'KE / KE₀', domain: [0, 1.08] },
+  rules: [{ y: 0.5, label: 'half remains' }],
+  compute: (flip: number) => {
+    const curve: [number, number][] = [];
+    for (let k = 0; k <= 40; k++) {
+      const a = k / 40;
+      curve.push([a, opposingKeRemaining(a)]);
+    }
+    const ke = opposingKeRemaining(flip);
+    return {
+      series: [
+        { key: 'curve', label: 'remaining KE', color: 'cyan', points: curve },
+        { key: 'you', label: 'your α', color: 'magenta', style: 'dots', width: 6, points: [[flip, ke]] },
+      ],
+      readouts: [
+        { label: 'α', value: flip.toFixed(2) },
+        { label: 'KE / KE₀', value: ke.toFixed(3) },
+      ],
+    };
+  },
+};
+
 export const TUNE_SCENARIOS: Record<string, TuneScenario> = {
   'fd-optimum': fdOptimum,
   'euler-stability': eulerStability,
@@ -601,4 +634,5 @@ export const TUNE_SCENARIOS: Record<string, TuneScenario> = {
   'cfl-heat-r': cflHeatR,
   'ghost-neumann-value': ghostNeumannValue,
   'proj-jacobi-1pct': projJacobiOnePercent,
+  'mpm-flip-half': mpmFlipHalfKe,
 };

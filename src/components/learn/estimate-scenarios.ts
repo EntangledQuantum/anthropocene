@@ -11,6 +11,7 @@ import { maxStableHeatDt } from '../../lib/numerics/pde1d.ts';
 import { solveError } from '../../lib/numerics/stencil-bc.ts';
 import { naiveFdToFemL2Ratio } from '../../lib/numerics/fem1d.ts';
 import { leftoverMaxDiv } from '../../lib/numerics/projection.ts';
+import { opposingKeRemaining } from '../../lib/numerics/mpm.ts';
 
 /**
  * Named quantities for `<Estimate>`.
@@ -246,6 +247,19 @@ const projLeftoverDiv: EstimateScenario = {
   truth: () => leftoverMaxDiv('mixed', 'spectral'),
 };
 
+const mpmPicKe: EstimateScenario = {
+  quantity: 'kinetic energy remaining after one PIC P2G–G2P of two mass-1 particles at v = ±1 in the same cell (KE₀ = 1)',
+  logRange: [-3, 0.3],
+  logStart: 0,
+  withinFactor: 3,
+  landmarks: [
+    { value: 1, label: 'all of it' },
+    { value: 0.25, label: 'a quarter' },
+    { value: 0.0625, label: '1/16' },
+  ],
+  truth: () => opposingKeRemaining(0),
+};
+
 export const ESTIMATE_SCENARIOS: Record<string, EstimateScenario> = {
   'euler-work-1e6': eulerWorkFor1e6,
   'rk4-work-1e6': rk4WorkFor1e6,
@@ -260,4 +274,5 @@ export const ESTIMATE_SCENARIOS: Record<string, EstimateScenario> = {
   'ghost-naive-ratio-n32': ghostNaiveRatioN32,
   'fem-fd-l2-ratio': femFdL2Ratio,
   'proj-leftover-div': projLeftoverDiv,
+  'mpm-pic-ke': mpmPicKe,
 };
