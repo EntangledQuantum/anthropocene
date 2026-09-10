@@ -2,6 +2,7 @@ import { endpointError } from '../../lib/numerics/convergence.ts';
 import { forwardEuler, rk4 } from '../../lib/numerics/ode.ts';
 import { decay } from '../../lib/numerics/problems.ts';
 import { condInf, ill2x2, remainingDigits } from '../../lib/numerics/conditioning.ts';
+import { SPECTRAL_TARGETS, smallestK } from '../../lib/numerics/spectral.ts';
 
 /**
  * Named quantities for `<Estimate>`.
@@ -99,9 +100,25 @@ const ill2x2Digits: EstimateScenario = {
   truth: () => remainingDigits(condInf(ill2x2().A)),
 };
 
+/* How many Fourier modes does spectral accuracy actually need? Finite-difference
+   instinct says thousands. The answer is a dozen. */
+const specModesForEps: EstimateScenario = {
+  quantity: 'Fourier modes K needed so that ||S_K − e^{sin x}||_∞ drops below 10⁻¹² on [0, 2π]',
+  logRange: [0, 4],
+  logStart: 2.4,
+  withinFactor: 2.5,
+  landmarks: [
+    { value: 12, label: 'a dozen' },
+    { value: 100, label: '100' },
+    { value: 1000, label: '1000' },
+  ],
+  truth: () => smallestK(SPECTRAL_TARGETS.expSin, 1e-12),
+};
+
 export const ESTIMATE_SCENARIOS: Record<string, EstimateScenario> = {
   'euler-work-1e6': eulerWorkFor1e6,
   'rk4-work-1e6': rk4WorkFor1e6,
   'double-digits': doubleDigits,
   'ill-2x2-digits': ill2x2Digits,
+  'spec-modes-for-eps': specModesForEps,
 };

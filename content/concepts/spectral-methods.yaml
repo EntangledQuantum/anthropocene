@@ -1,4 +1,21 @@
 title: 'Spectral methods'
-blurb: 'Represent the solution in a Fourier or polynomial basis and get exponential accuracy for smooth problems.'
+blurb: 'A global Fourier or polynomial basis turns differentiation into multiplication by ik; for smooth periodic functions the error falls faster than any power of N, until a jump brings Gibbs and first-order decay.'
+notation: '\hat{u}^{\prime}_k = ik\,\hat{u}_k'
 tags:
   - ch5
+misconceptions:
+  - id: 'wider-stencil-is-spectral'
+    name: 'A spectral method is just a very wide finite-difference stencil, so it buys a few extra orders of accuracy.'
+    signal: 'Expects the N = 16 Fourier derivative to be somewhat better than central difference, like five-point versus two-point, not many orders of magnitude better.'
+    correction: 'The trigonometric interpolant is a global object. Its error for an analytic periodic function is not O(N^{-p}) for some fixed p — it is O(e^{-αN}), faster than every algebraic order, until roundoff. That is a different kind of convergence, not a wider stencil.'
+  - id: 'gibbs-dies-with-n'
+    name: 'The ringing at a jump dies as you add modes, the way a finer grid damps a wiggle.'
+    signal: 'Adds modes to a sawtooth and waits for the overshoot to go away.'
+    correction: 'Gibbs overshoot is about 9% of the jump for every truncated Fourier series of a discontinuity. Extra modes squeeze the ringing into a narrower neighbourhood of the jump; the height of the first peak does not fall. Away from the jump the rate is first order, not exponential.'
+  - id: 'spectral-always-better'
+    name: 'Spectral methods are always more accurate than finite differences, so you should use them whenever you can afford the FFT.'
+    signal: 'Reaches for a Fourier basis on a shock, a corner, or a non-periodic interval.'
+    correction: 'Spectral accuracy requires smoothness and, for Fourier, periodicity. One jump anywhere is felt by every mode. Complex geometry and genuine discontinuities are where local stencils (or spectral elements) earn their keep.'
+references:
+  - label: 'Trefethen, Spectral Methods in MATLAB (SIAM, 2000)'
+    url: 'https://people.maths.ox.ac.uk/trefethen/spectral.html'

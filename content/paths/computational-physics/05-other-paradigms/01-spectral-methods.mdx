@@ -1,34 +1,207 @@
 ---
 title: 'Solving in frequency space'
-blurb: 'Stop approximating derivatives locally. Represent the whole solution in a Fourier basis, where differentiation is multiplication and accuracy is exponential.'
+blurb: 'Build a function from Fourier modes and watch the error fall off a cliff — then add one jump and watch Gibbs pull it back to first order.'
 order: 1
 tier: 'frontier'
-minutes: 30
+minutes: 16
 teaches:
   - 'spectral-methods'
 requires:
   - 'central-difference'
   - 'order-of-accuracy'
-status: 'draft'
+status: 'live'
+updated: 2026-09-10
 ---
 
-:::note
-This lesson is **outlined but not yet written**. The concept graph already knows what it
-will own, so lessons downstream of it link here rather than re-teaching the material.
-Everything below is the plan.
-:::
+You already know how to differentiate from samples: look left, look right, divide.
+That stencil is **local**. Each derivative uses two neighbours and ignores the rest.
 
-## Planned outline
+Here is a different bet. Treat the samples as the values of one trigonometric
+polynomial — a sum of sines and cosines that fits every point at once — and
+differentiate *that*. Every sample talks to every other sample. Differentiation
+becomes multiplication by $ik$ in frequency space.
 
-1. Differentiation as multiplication by ik in Fourier space.
-2. Spectral accuracy: error falling faster than any power of h for smooth periodic functions.
-3. Why one discontinuity destroys it - the Gibbs phenomenon.
-4. Chebyshev bases for non-periodic domains.
-5. Split-step and pseudo-spectral methods for nonlinear PDEs.
-6. The cost: global coupling, FFT-shaped grids, hard boundary conditions.
+<Predict
+  id="spec-fd-vs-spectral"
+  question="Sixteen equally spaced samples of exp(sin x) on [0, 2π]. Central difference uses two neighbours per point. The Fourier spectral derivative uses all sixteen. How do the max errors compare?"
+  options={[
+    { key: 'a', misconception: 'wider-stencil-is-spectral', label: 'Spectral is a bit better — it is a wider stencil, maybe two extra orders', why: 'The natural guess if you think of spectral methods as high-order finite differences. A five-point stencil is two extra orders. This is not that. At N = 16 the central-difference error is about 10⁻¹; the spectral derivative is about 10⁻⁷.' },
+    { key: 'b', label: 'About the same — they are looking at the same sixteen numbers', why: 'Same data, different question. Central difference asks what the two nearest samples imply. Spectral asks what unique trigonometric polynomial of degree 8 passes through all sixteen, then differentiates that polynomial exactly.' },
+    { key: 'c', label: 'Spectral is better by many orders of magnitude', why: 'Correct. On this function at N = 16 the spectral error is smaller by a factor of about 10⁵. That gap is not one extra order. It is a different kind of convergence.' },
+    { key: 'd', label: 'Central difference wins — a global fit overfits sixteen points', why: 'The interpolant is not overfitting. There is exactly one trigonometric polynomial of degree ≤ 8 through sixteen periodic samples, and for an analytic periodic function it is already indistinguishable from the true function.' },
+  ]}
+  correct="c"
+>
 
-## Interactives planned
+The gap is not "a wider stencil, one more order". It is what happens when the basis
+can see the whole function at once.
 
-Each numbered point above gets at least one thing you can manipulate, not a figure. See
-`AGENTS.md` for the widget vocabulary and the rule that every lesson ships at least one
-graded interaction and one recall card.
+</Predict>
+
+## Add modes until it snaps
+
+You are about to keep Fourier modes one at a time and watch $S_K$ approach
+$\exp(\sin x)$. First, commit to the shape of the error.
+
+<SketchCurve
+  id="spec-smooth-cliff"
+  scenario="spec-smooth-cliff"
+  prompt="exp(sin x) on [0, 2π]. Sketch log₁₀ of the max error of S_K against K, from 2 to 20 modes. It starts near 10⁻¹ at K = 2."
+  hint="This is not a straight line of slope −2 or −4. Analytic periodic functions have Fourier coefficients that die faster than exponentially."
+  explanation="A cliff, then a floor. By K = 8 the error is already 10⁻⁸; by K = 12 it is under 10⁻¹² and floating point has nothing left to give. No fixed power of K falls like that — that is what 'faster than any order' means, and it is why sixteen points beat a second-order stencil by five digits."
+/>
+
+The cyan curve is the truncated Fourier series $S_K$ — the function you get by
+keeping modes $|k| \le K$. The faint curve is the truth. The plot on the right is
+the same state: max error against $K$. Start at $K = 2$. Add modes.
+
+<SpectralLab
+  initial="smooth"
+  caption="One state, two views. Left: exp(sin x) and its truncated Fourier series S_K. Right: max |S_K − f| against K, with the same-grid central difference in magenta for scale. Click a spectrum bar or drag K."
+/>
+
+For a smooth periodic function the error does not pick an order. It falls **faster
+than every power of** $K$, then sits on the roundoff floor. That is spectral
+accuracy.
+
+The mechanism is one line. If
+
+$$
+u(x) = \sum_k \hat{u}_k e^{ikx}
+$$
+
+then
+
+$$
+u'(x) = \sum_k ik\,\hat{u}_k e^{ikx}
+$$
+
+A derivative is a multiplier. Sample, DFT, multiply by $ik$, inverse DFT. No
+stencil. The Nyquist mode of an even grid is a cosine whose sine-derivative
+vanishes at every node, so that slot is set to zero:
+
+```ts
+const spec = dft(samples);
+const kappa = waveNumbers(n);          // 0, 1, …, n/2−1, 0, 1−n/2, …, −1
+for (let k = 0; k < n; k++) {
+  const wr = -kappa[k] * spec.im[k];   // multiply by iκ
+  const wi =  kappa[k] * spec.re[k];
+  spec.re[k] = wr;
+  spec.im[k] = wi;
+}
+return idft(spec).re;
+```
+
+<Estimate
+  id="spec-modes-for-eps"
+  scenario="spec-modes-for-eps"
+  prompt="How many Fourier modes does that cliff actually need to reach twelve digits on exp(sin x)?"
+  explanation="Twelve. Not a thousand, not a hundred. The coefficients of exp(sin x) are Bessel functions I_K(1) and they have already fallen under 10⁻¹² by K = 12. Finite-difference instinct — more points, more digits, slowly — is the wrong picture for an analytic periodic function."
+/>
+
+## Now break it with one jump
+
+The catch is the word *smooth*. Fourier modes are global and $2\pi$-periodic. A
+single jump is a singularity on the real axis, and every mode feels it.
+
+<Predict
+  id="spec-jump-predict"
+  question="You replace exp(sin x) with a sawtooth — the same smoothness everywhere except one jump of height π. What happens to the error as you add modes?"
+  options={[
+    { key: 'a', misconception: 'spectral-always-better', label: 'Still a cliff — one point cannot wreck a global fit', why: 'A jump is not one bad sample. It is a singularity that the periodic extension carries around the whole circle. Every coefficient feels it: they decay as 1/k instead of exponentially.' },
+    { key: 'b', label: 'The overshoot at the jump stays about 9%; away from it the error falls like 1/K', why: 'Correct. That persistent overshoot is the Gibbs phenomenon. Extra modes squeeze the ringing into a narrower neighbourhood of the jump; they do not lower the first peak. Off the jump you get first-order accuracy — the same rate as a forward difference.' },
+    { key: 'c', misconception: 'gibbs-dies-with-n', label: 'The ringing dies as K grows, the way a finer grid damps a wiggle', why: 'The wiggle gets narrower, which looks like damping if you watch one fixed x away from the jump. The height of the first peak is a constant fraction of the jump for every K. It does not die.' },
+    { key: 'd', label: 'Error grows — more modes make Gibbs worse', why: 'Tempting if you have seen the derivative of a jump, which does get worse (the ringing is steeper). The interpolant itself does not blow up. Its max-norm error is a wall; away from the jump the error slowly falls.' },
+  ]}
+  correct="b"
+>
+
+Draw that rate before you toggle anything.
+
+</Predict>
+
+<SketchCurve
+  id="spec-jump-rate"
+  scenario="spec-jump-rate"
+  prompt="Sawtooth, error of S_K measured away from the jump. Sketch log₁₀(error) against log₁₀ K, from K = 8 to about 80. It starts near 10⁻⁰·⁸ at K = 8."
+  hint="On log-log axes a rate of 1/K is a straight line of slope −1. A cliff would drop off the bottom of this plot."
+  explanation="A line of slope −1. The Fourier coefficients of a jump decay as 1/k, so truncating at K leaves an error of order 1/K — first order, the same algebraic rate a forward difference buys with a local stencil. Spectral accuracy is gone, and no extra modes bring it back."
+/>
+
+Now toggle **one jump** in the lab above. The same modes that reconstructed
+$e^{\sin x}$ to machine precision now ring at the discontinuity. The spectrum bars
+no longer die. The error plot's cliff becomes a shallow slope, and a muted wall
+sits near $\pi/2$ because a continuous $S_K$ cannot match a jump in max-norm.
+
+The overshoot itself is a theorem, not a bug. For a jump of height $a$, every
+truncated Fourier series overshoots by
+
+$$
+\left(\frac{1}{\pi}\mathrm{Si}(\pi) - \tfrac{1}{2}\right) a \approx 0.0895\, a
+$$
+
+about nine percent, forever. Extra modes move the first peak closer to the jump.
+They do not lower it.
+
+<Classify
+  id="spec-global-vs-local"
+  prompt="Each situation below either wants a global basis (Fourier / Chebyshev) or a local stencil. The distinction is the whole method."
+  buckets={[
+    { key: 'global', label: 'global basis', accent: 'cyan' },
+    { key: 'local', label: 'local stencil', accent: 'magenta' },
+  ]}
+  items={[
+    { key: 'wave', label: 'Analytic periodic wave on a circle', bucket: 'global', why: 'The textbook spectral case: smooth, periodic, Fourier coefficients already under the floor by a dozen modes.' },
+    { key: 'shock', label: 'A shock in a conservation law', bucket: 'local', why: 'A jump. Gibbs will ring over the whole domain; the rate collapses to first order. Local stencils (or a limiter, or DG) isolate the discontinuity.' },
+    { key: 'heat', label: 'Heat equation on a periodic interval', bucket: 'global', why: 'u_t = u_xx becomes û_k′ = −k² û_k. The same multiplier idea, and the solution gets smoother with time, which spectral methods love.' },
+    { key: 'corner', label: 'Solution with a kink in the first derivative', bucket: 'local', why: 'A discontinuity in u′ makes coefficients decay as 1/k² — better than a jump, nowhere near exponential. The kink is a real-axis singularity.' },
+    { key: 'geometry', label: 'Smooth solution on a complicated domain', bucket: 'local', why: 'Fourier wants a torus. Chebyshev wants a square. Complex geometry is why FEM and spectral elements exist: high order, locally.' },
+    { key: 'fft', label: 'You can afford an FFT and the residual is analytic and periodic', bucket: 'global', why: 'This is the question the method is built for. Differentiation is O(N log N) and the error falls off a cliff.' },
+  ]}
+  explanation="Double the modes. If the error falls off a cliff, a global basis is the right idea. If it hits a wall, the function was not as smooth as the basis needed, and a local stencil will waste less."
+/>
+
+<Recall id="spec-accuracy-card" concept="spectral-methods">
+  <div slot="front">What happens to Fourier spectral accuracy when the function has a single jump?</div>
+
+The rate collapses from exponential to first order, and the partial sums ring at
+the discontinuity — Gibbs overshoot of about 9% of the jump, which does not die
+with $K$.
+
+Spectral accuracy needs smoothness *and* periodicity. A jump is a singularity on
+the real axis; every mode feels it. Away from the jump the truncated series
+converges like $1/K$, the same algebraic rate a forward difference already had.
+
+</Recall>
+
+<Tier level="advanced" title="non-periodic intervals: Chebyshev, not Fourier">
+
+Fourier needs the function to be periodic *and* smooth. A perfectly smooth $u$ on
+$[a,b]$ is not smooth when you wrap it: $u(a)$ and $u(b)$ generally disagree, and
+that wrap is a jump. Gibbs eats the whole interval.
+
+The polynomial analogue on $[-1,1]$ is a **Chebyshev** basis. Nodes cluster at the
+endpoints,
+
+$$
+x_j = \cos(\pi j / N), \qquad j = 0,\ldots,N
+$$
+
+which is what stops the Runge phenomenon that equispaced polynomial interpolation
+walks into. Differentiation is a dense $(N+1)\times(N+1)$ matrix — still a global
+coupling, still exponential accuracy for analytic $u$, still destroyed by a jump.
+
+The clustering is not a quirk. It is the image of equispaced Fourier nodes under
+$x = \cos\theta$. Chebyshev *is* Fourier, after a cosine map. That is why the
+same spectral-accuracy theorem applies, and why the same Gibbs wall appears the
+moment $u$ fails to be smooth.
+
+</Tier>
+
+## What to carry forward
+
+A local stencil buys a power of $h$. A global basis buys a cliff — or a wall.
+
+The question that decides which you wanted: **if you double the modes, does the
+error fall off a cliff or hit a wall?** Smooth and periodic, cliff. One jump,
+wall, and first order from there on.

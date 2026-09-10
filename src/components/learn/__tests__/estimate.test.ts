@@ -37,6 +37,10 @@ describe('estimate scenarios agree with the prose that quotes them', () => {
     expect(t).toBeGreaterThan(6);
     expect(t).toBeLessThan(8.5);
   });
+
+  it('e^{sin x} needs a dozen Fourier modes for 10^{-12} ("Twelve")', () => {
+    expect(ESTIMATE_SCENARIOS['spec-modes-for-eps'].truth()).toBe(12);
+  });
 });
 
 describe('every scenario is answerable on its own slider', () => {

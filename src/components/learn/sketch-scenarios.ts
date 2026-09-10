@@ -3,6 +3,7 @@ import { forwardEuler, rk4, integrate, velocityVerlet, trapezoid } from '../../l
 import { invariantDrift } from '../../lib/numerics/convergence.ts';
 import { decay, oscillator, TWO_RATE_FAST } from '../../lib/numerics/problems.ts';
 import { SCHEMES, TARGETS, complexStep, diffSweep, hSweep } from '../../lib/numerics/diff.ts';
+import { SPECTRAL_TARGETS, modalSweep } from '../../lib/numerics/spectral.ts';
 
 /**
  * Named targets for `<SketchCurve>`.
@@ -167,6 +168,37 @@ const trapezoidRing: SketchScenario = {
   },
 };
 
+/* Spectral accuracy of e^{sin x}: log10(error) vs K. A cliff, then the
+   roundoff floor — not a power-law slope. Drawing this is the whole point. */
+const specSmoothCliff: SketchScenario = {
+  xLabel: 'K (highest mode)',
+  yLabel: 'log₁₀ |error|',
+  xRange: [2, 20],
+  yRange: [-16, 0],
+  tolerance: 2.1,
+  anchors: [{ x: 2, y: -1.3, label: 'K = 2' }],
+  truth: () =>
+    modalSweep(SPECTRAL_TARGETS.expSin, Array.from({ length: 19 }, (_, i) => i + 2))
+      .map((p) => ({ x: p.n, y: Math.log10(p.error) })),
+};
+
+/* Truncated Fourier series of a sawtooth, error away from the jump, log-log.
+   A line of slope −1: first order. The tempting sketch is another cliff. */
+const specJumpSlope: SketchScenario = {
+  xLabel: 'log₁₀ K',
+  yLabel: 'log₁₀ |error| away from jump',
+  xRange: [0.9, 1.9],
+  yRange: [-2.4, 0],
+  tolerance: 0.38,
+  anchors: [{ x: 0.9, y: -0.81, label: 'K = 8' }],
+  truth: () =>
+    modalSweep(
+      SPECTRAL_TARGETS.sawtooth,
+      Array.from({ length: 73 }, (_, i) => i + 8),
+      { excludeRadius: 0.5 },
+    ).map((p) => ({ x: Math.log10(p.n), y: Math.log10(p.error) })),
+};
+
 export const SKETCH_SCENARIOS: Record<string, SketchScenario> = {
   'fd-u-curve': fdUCurve,
   'euler-convergence': eulerConvergence,
@@ -175,4 +207,6 @@ export const SKETCH_SCENARIOS: Record<string, SketchScenario> = {
   'euler-unstable': eulerUnstable,
   'cstep-no-u': cstepNoU,
   'trapezoid-ring': trapezoidRing,
+  'spec-smooth-cliff': specSmoothCliff,
+  'spec-jump-slope': specJumpSlope,
 };
