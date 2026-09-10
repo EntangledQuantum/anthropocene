@@ -4,6 +4,7 @@ import { decay } from '../../lib/numerics/problems.ts';
 import { condInf, ill2x2, remainingDigits } from '../../lib/numerics/conditioning.ts';
 import { SPECTRAL_TARGETS, smallestK } from '../../lib/numerics/spectral.ts';
 import { gridEvaluations } from '../../lib/numerics/monte-carlo.ts';
+import { recoverDecayLambda } from '../../lib/numerics/adjoint.ts';
 
 /**
  * Named quantities for `<Estimate>`.
@@ -131,6 +132,21 @@ const gridCostD10N4: EstimateScenario = {
   truth: () => gridEvaluations(4, 10),
 };
 
+/* Four adjoint steps from a deliberately bad guess. The number is computed
+   from the same recoverDecayLambda the inverse lab runs — not typed in. */
+const recoveredLambdaError: EstimateScenario = {
+  quantity: '|λ − 2| after 4 adjoint gradient steps, starting from λ = 0.5 on y′ = −λy',
+  logRange: [-4, 0.5],
+  logStart: 0,
+  withinFactor: 4,
+  landmarks: [
+    { value: 1, label: 'still at the start' },
+    { value: 0.1, label: 'a tenth' },
+    { value: 0.001, label: 'a thousandth' },
+  ],
+  truth: () => Math.abs(recoverDecayLambda(2, 0.5, { steps: 4, method: 'rk4' }).lambda - 2),
+};
+
 export const ESTIMATE_SCENARIOS: Record<string, EstimateScenario> = {
   'euler-work-1e6': eulerWorkFor1e6,
   'rk4-work-1e6': rk4WorkFor1e6,
@@ -138,4 +154,5 @@ export const ESTIMATE_SCENARIOS: Record<string, EstimateScenario> = {
   'ill-2x2-digits': ill2x2Digits,
   'spec-modes-for-eps': specModesForEps,
   'grid-cost-d10-n4': gridCostD10N4,
+  'ad-recovered-lambda': recoveredLambdaError,
 };

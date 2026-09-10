@@ -1,4 +1,13 @@
 title: 'Physics-informed neural networks'
-blurb: 'Train a network whose loss is the PDE residual, turning solving into optimisation.'
+blurb: 'Train a network whose loss is the PDE residual. Matching the data is not the same as solving the equation — the residual is what you still have to check.'
+notation: '\mathcal{L} = \|u_t + \mathcal{N}[u]\|^2'
 tags:
   - ch5
+misconceptions:
+  - id: 'pinn-fit-solves-pde'
+    name: 'A network that matches the data has solved the equation.'
+    signal: 'Reads a pretty field as a solution and skips the residual plot.'
+    correction: 'Interpolation can hit every sample and still have an O(1) residual between them. The PINN is physics-informed only because the loss is that residual. If you do not plot it, you have lifted the weights.'
+references:
+  - label: 'Raissi, Perdikaris, Karniadakis, J. Comput. Phys. 378 (2019)'
+    url: 'https://doi.org/10.1016/j.jcp.2018.10.045'

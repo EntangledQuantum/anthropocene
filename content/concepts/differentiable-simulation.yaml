@@ -1,4 +1,15 @@
 title: 'Differentiable simulation'
-blurb: 'Make the solver itself differentiable, so gradients flow through physics and you can optimise through time.'
+blurb: 'Make the solver itself a function you can differentiate, so a mismatch between a trajectory and a target becomes a gradient you can walk downhill.'
+notation: '\nabla_\theta L = \lambda^\top \partial f/\partial\theta'
 tags:
   - ch5
+misconceptions:
+  - id: 'ad-curve-above-means-lambda-large'
+    name: 'If the simulated decay sits above the data, λ is too large.'
+    signal: 'Moves the rate the wrong way after looking at a pair of exponential curves.'
+    correction: 'Larger λ decays faster, so the curve sits lower. A simulation above the data is decaying too slowly: λ is too small. The adjoint has this sign built in.'
+references:
+  - label: 'Chen et al., Neural Ordinary Differential Equations (NeurIPS 2018)'
+    url: 'https://arxiv.org/abs/1806.07366'
+  - label: 'Giles, Collected matrix derivative results for forward and reverse mode AD'
+    url: 'https://people.maths.ox.ac.uk/gilesm/files/NA-08-01.pdf'

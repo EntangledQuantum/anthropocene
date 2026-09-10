@@ -1,9 +1,9 @@
 ---
 title: 'Gradients through physics'
-blurb: 'Make the solver itself differentiable and simulation becomes something you can optimise through - inverse problems, control, and learned dynamics all follow.'
+blurb: 'A solver is a function from parameters to a trajectory. Reverse-mode through that function turns a mismatch into a direction you can walk — and a pretty fit is not a solution until the residual says so.'
 order: 4
 tier: 'frontier'
-minutes: 32
+minutes: 16
 teaches:
   - 'automatic-differentiation'
   - 'differentiable-simulation'
@@ -12,26 +12,204 @@ requires:
   - 'rk4'
   - 'complex-step-differentiation'
   - 'velocity-verlet'
-status: 'draft'
+status: 'live'
+updated: 2026-09-10
 ---
 
-:::note
-This lesson is **outlined but not yet written**. The concept graph already knows what it
-will own, so lessons downstream of it link here rather than re-teaching the material.
-Everything below is the plan.
-:::
+You guess a decay rate, you simulate, and the curve sits **above** the data. It is
+dying too slowly. One number produced that curve. Which way do you move it?
 
-## Planned outline
+<Predict
+  id="ad-sign-of-lambda"
+  question="y′ = −λy. The simulated trajectory sits above the measured one. Is λ too small or too large?"
+  options={[
+    { key: 'a', misconception: 'ad-curve-above-means-lambda-large', label: 'λ is too large — the simulation overshoots', why: 'Overshoot is the wrong picture. A larger λ makes the exponential steeper, so the curve sits lower, not higher.' },
+    { key: 'b', label: 'λ is too small — the simulation is decaying too slowly', why: 'Correct. y(t) = e^{−λt} falls faster when λ grows. A curve above the data has not fallen enough, so you increase λ. The adjoint has this sign built in.' },
+    { key: 'c', label: 'You cannot tell from the picture — you need the residual of the ODE', why: 'The residual of a correct solve is a discretisation error, tiny. The two curves disagree because the parameter is wrong, not because the stepper failed.' },
+    { key: 'd', label: 'λ is fine; shorten the step size', why: 'Step size moves discretisation error. These two curves are different functions, not the same function resolved better.' },
+  ]}
+  correct="b"
+>
 
-1. Forward versus reverse mode AD, and why reverse mode gives an n-dimensional gradient for the price of one evaluation.
-2. Differentiating through an ODE solver: unrolling versus the adjoint method.
-3. Neural ODEs and the memory argument for adjoints.
-4. Physics-informed neural networks: making the PDE residual the loss.
-5. Where PINNs genuinely win, and where a classical solver still beats them badly.
-6. Learned solvers and structure-preserving networks - closing the loop with chapter 4.
+Drag the magenta handle. The whole target follows. Then descend — the current
+solve walks until the two curves lock. The bowl underneath is the same state,
+seen from parameter space.
 
-## Interactives planned
+<InverseLab
+  system="decay"
+  caption="One parameter, one adjoint scalar, two views. Switch to the oscillator when you want the same machinery in different clothes."
+/>
 
-Each numbered point above gets at least one thing you can manipulate, not a figure. See
-`AGENTS.md` for the widget vocabulary and the rule that every lesson ships at least one
-graded interaction and one recall card.
+</Predict>
+
+The solver is a function $\theta \mapsto y(t;\theta)$. Distance to the target is a
+scalar
+
+$$
+L(\theta) = \frac{1}{2N}\sum_n \bigl(y_n(\theta) - y_n^\star\bigr)^2
+$$
+
+and $\nabla L$ is a direction. You just watched gradient descent follow it.
+
+<SketchCurve
+  id="ad-loss-bowl"
+  scenario="ad-decay-loss-bowl"
+  prompt="Sketch L(λ) for observations generated at λ = 2. It is exactly zero there."
+  hint="One minimum, touching the axis at the true value. Steeper on the small-λ side — a slow exponential is a worse miss than a slightly fast one."
+  explanation="The trajectory mismatch and this bowl are the same number. Reverse-mode through the stepper is how you get the slope of the bowl without perturbing λ by hand."
+/>
+
+## One reverse sweep, not n
+
+Finite-difference the whole solver and you pay one extra forward run per
+parameter. Reverse-mode AD — the discrete adjoint — seeds the scalar $L$ and
+sweeps the computational graph **backward**. The whole gradient then costs a
+small constant times one evaluation, however many parameters you have.
+
+<Predict
+  id="ad-n-solves"
+  question="A scalar mismatch L, 200 material parameters. Besides the forward solve, how many extra solves does reverse-mode need for ∇L?"
+  options={[
+    { key: 'a', misconception: 'ad-n-params-n-solves', label: '200 — one perturbation per parameter', why: 'That is forward-mode, and it is finite differences. Reverse-mode does not perturb the inputs. It seeds the output.' },
+    { key: 'b', label: '400 — central difference, two hits per parameter', why: 'Central differences are more accurate forward-mode, and twice as expensive. Still linear in n.' },
+    { key: 'c', label: 'One reverse sweep', why: 'Correct. L is a scalar, so one reverse pass produces every partial. That is why adjoints exist in weather, aerodynamics, and seismic inversion.' },
+    { key: 'd', label: '200² — you need the full Jacobian', why: 'The Jacobian of a 200-to-1 map is a row. Reverse-mode computes that row directly. You never form 200² entries.' },
+  ]}
+  correct="c"
+/>
+
+<Classify
+  id="ad-forward-vs-reverse"
+  prompt="Each of these is either a Jacobian–vector product (forward) or a vector–Jacobian product (reverse). The distinction is which end of the graph you seed."
+  buckets={[
+    { key: 'forward', label: 'forward-mode — seed an input', accent: 'cyan' },
+    { key: 'reverse', label: 'reverse-mode — seed an output', accent: 'magenta' },
+  ]}
+  items={[
+    { key: 'complex', label: 'Complex-step differentiation', bucket: 'forward', why: 'One extra evaluation per input, along the imaginary axis. Forward-mode in costume.' },
+    { key: 'dual', label: 'Dual numbers / tangent linear', bucket: 'forward', why: 'Push a perturbation forward through every operation. Cost scales with the number of inputs.' },
+    { key: 'disc', label: 'Discrete adjoint through the stepper', bucket: 'reverse', why: 'The chain rule run backward on the stored (or checkpointed) stages. One reverse sweep for a scalar L.' },
+    { key: 'node', label: 'Neural ODE adjoint (Chen et al.)', bucket: 'reverse', why: 'The continuous version of the same reverse sweep: solve an adjoint ODE backward from dL/dy(T).' },
+    { key: 'jvp', label: 'Jacobian–vector product', bucket: 'forward', why: 'J v. The definition of forward-mode.' },
+    { key: 'vjp', label: 'Vector–Jacobian product', bucket: 'reverse', why: 'v⊤ J. The definition of reverse-mode. For a scalar L the vector is 1 and you get the gradient.' },
+  ]}
+  explanation="When L is a scalar — a mismatch, a drag, a likelihood — reverse-mode wins as soon as you have more than a handful of parameters. Forward-mode (and complex-step) still win when you have many outputs and few inputs, and they remain the independent check."
+/>
+
+## The reverse sweep is the stepper, backwards
+
+For $y' = -\lambda y$ under forward Euler, $y_{n+1} = (1 - h\lambda)\, y_n$.
+The reverse sweep is those two multiplies, read right to left:
+
+```ts
+// adj[n] already holds dL/dy_n from the mismatch
+for (let n = N - 1; n >= 0; n--) {
+  dLambda += adj[n + 1] * (-h * y[n]);   // ∂y_{n+1}/∂λ
+  adj[n]  += adj[n + 1] * (1 - h * lambda); // ∂y_{n+1}/∂y_n
+}
+```
+
+RK4 is the same chain rule with four stages. The platform's adjoint and a
+complex-step of the same trajectory agree to roughly $10^{-8}$; that check is
+the reason the Richardson lesson taught you a derivative with no subtraction.
+You do not re-derive it here — you **use** it as the independent probe.
+
+<Estimate
+  id="ad-recovered-error"
+  scenario="ad-recovered-lambda"
+  prompt="Four adjoint steps from λ = 0.5, targeting λ = 2. How far is the guess from 2 when those four steps stop?"
+  explanation="Around 0.014. The bowl is smooth and 1-D, so a handful of steps from a bad guess is already on the floor. The same walk, animated, is what you ran in the inverse lab."
+/>
+
+<Recall id="ad-reverse-one-line" concept="automatic-differentiation">
+  <div slot="front">When is reverse-mode cheaper than finite-differencing a solver, and by what factor?</div>
+
+Whenever the quantity of interest is a **scalar** (a loss, a drag, a likelihood)
+and you have more than a few parameters. Reverse-mode is one extra reverse
+sweep, cost $\sim 2$–$4$ forwards, independent of $n$. Finite differences cost
+$n+1$ forwards. At $n = 200$ that is two orders of magnitude.
+
+</Recall>
+
+## Memory is a choice
+
+Chen, Rubanova, Bettencourt and Duvenaud (2018) made this reverse sweep famous
+as a *Neural ODE*: parameterise $f_\theta$, let a black-box solver produce
+$y(T)$, train $\theta$ by an adjoint ODE solved backward from $\partial L/\partial y(T)$.
+The advertised trick is memory. You do not store the forward trajectory — you
+reconstruct it by integrating $f$ backward from $y(T)$.
+
+<Predict
+  id="ad-neural-ode-memory"
+  question="The Neural ODE adjoint claims O(1) memory in the number of steps, by reconstructing y(t) backward. What is the catch?"
+  options={[
+    { key: 'a', misconception: 'ad-must-unroll', label: 'No catch — that is why everyone uses it', why: 'The paper's algorithm is real. The reconstruction is not free, and for a general nonlinear f it is not stable. Treating the slogan as a guarantee is the trap.' },
+    { key: 'b', label: 'Reverse-time reconstruction of a general nonlinear ODE is unstable; checkpointing is the honest version', why: 'Correct. Gholami, Keutzer and Biros (ANODE) documented the instability. You save y at a few checkpoints and restart forward from those, which is discrete reverse-mode with a memory/compute trade. O(1) memory was the aspiration, not the method you ship.' },
+    { key: 'c', label: 'It only works for linear ODEs, so Neural ODEs are a special case of RK4', why: 'The adjoint ODE is well-defined for nonlinear f. The reconstruction, not the adjoint itself, is what breaks.' },
+    { key: 'd', label: 'You still store every RK stage, so memory is O(steps) anyway', why: 'Vanilla backpropagation-through-the-solver does store stages. The adjoint method is specifically the attempt not to. The catch is numerical, not bookkeeping.' },
+  ]}
+  correct="b"
+/>
+
+The same reverse sweep recovers $\omega$ in $\ddot q = -\omega^2 q$. Switch the
+lab to the oscillator, drag the target, descend. A long window makes that loss
+non-convex — trajectories wrap and a far-off $\omega$ can look locally better.
+Inverse problems are ill-posed; regularisation is a method, not a disclaimer.
+The short window in the widget is the well-posed costume of the same idea.
+
+<Tier level="frontier" title="PINNs: the loss is a residual you can see">
+
+A physics-informed network does not replace the solver. It replaces the
+**unknown function** with a network $\hat u_\theta(x,t)$, and it trains $\theta$
+by making the PDE residual small at collocation points:
+
+$$
+\mathcal{L}(\theta) = \bigl\| \hat u_t + \mathcal{N}[\hat u] \bigr\|^2 + \text{data / IC / BC}
+$$
+
+That is Raissi, Perdikaris, Karniadakis (2019). The residual is the loss. If
+you drop it, you have interpolation, and interpolation is not a solution.
+
+<Predict
+  id="ad-pinn-pretty"
+  question="A network matches samples of e^{−t} to about 10^{-4}. What can you say about the residual of ŷ′ + ŷ?"
+  options={[
+    { key: 'a', misconception: 'pinn-fit-solves-pde', label: 'The residual is also about 10^{-4} — it fitted the solution', why: 'Fitting values does not constrain derivatives. A polynomial through three points of e^{−t} looks like a decay and has an O(10^{-1}) residual of y′ + y.' },
+    { key: 'b', label: 'The residual can still be O(1) between the samples', why: 'Correct. Interpolation hits the nodes and says nothing about ŷ′ + ŷ in between. That is why a PINN plots the residual, and why a surrogate that does not is theatre.' },
+    { key: 'c', label: 'The residual is identically zero — an interpolant of a solution is a solution', why: 'Only the exact function satisfies the ODE everywhere. A polynomial through samples of a solution is a different function.' },
+    { key: 'd', label: 'You cannot define a residual without a mesh, so the question does not apply', why: 'A collocation residual is pointwise: evaluate ŷ′ + ŷ at any t you like. No mesh required, which is the PINN's one real advantage, and not a reason to skip the check.' },
+  ]}
+  correct="b"
+>
+
+<PinnLab caption="Toggle interpolant / data-only / residual-trained. The values can lie on top of e^{−t} while the residual plot refuses to sit on zero. Train the residual net further and watch that plot flatten." />
+
+</Predict>
+
+A classical RK4 step on this ODE has a residual at roundoff. The network is
+doing something else: it is **optimising** a residual. Sometimes that is the
+right tool — irregular domains, inverse coefficients mixed into $\theta$, a
+fast surrogate you will actually verify. Sometimes it is cognitive offloading
+with extra steps. The product rule from the thesis still applies: do not lift
+the residual unless you are still checking it.
+
+<Recall id="ad-pinn-checks-residual" concept="physics-informed-nn">
+  <div slot="front">What does a PINN actually minimise, and why is a pretty field not evidence it worked?</div>
+
+The loss is the PDE residual (plus data / IC / BC), evaluated at collocation
+points. A pretty field is a statement about values. The equation is a statement
+about derivatives. Those can disagree, and the residual plot is how you find
+out. If you do not plot it, you did not solve anything.
+
+</Recall>
+
+</Tier>
+
+## What to carry forward
+
+- A solver is a map from parameters to a trajectory. Reverse-mode through that
+  map is one extra reverse sweep when the mismatch is a scalar.
+- The two pictures to keep: two curves locking as a marker slides down a bowl;
+  a residual plot that does not go quiet just because the values matched.
+- Complex-step (already yours) is the independent check of the adjoint. A PINN
+  that is not checked against a residual is a fit, not a solve.

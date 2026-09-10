@@ -1,4 +1,17 @@
 title: 'Automatic differentiation'
-blurb: 'Exact derivatives from the computational graph - neither symbolic nor finite-difference.'
+blurb: 'Exact derivatives from the computational graph — neither symbolic nor finite-difference. Reverse mode gives an n-dimensional gradient for about the cost of one extra evaluation when the output is scalar.'
+notation: '\bar x = J^\top \bar y'
 tags:
   - ch5
+misconceptions:
+  - id: 'ad-n-params-n-solves'
+    name: 'To get n derivatives you need n extra solves.'
+    signal: 'Counts one perturbation per parameter, even when the quantity of interest is a single number.'
+    correction: 'That is forward-mode (and finite differences). Reverse mode seeds the scalar output and sweeps the graph backward once, so the whole gradient costs a small constant times one evaluation, independent of n.'
+  - id: 'ad-must-unroll'
+    name: 'Differentiating a solver means storing every step of the forward run.'
+    signal: 'Treats backpropagation-through-time as the only option, and concludes long integrations are undifferentiable.'
+    correction: 'The discrete adjoint is reverse-mode through the stepper. You can checkpoint, or — with caveats — reconstruct the forward state by solving backward. Storage is a choice, not a law.'
+references:
+  - label: 'Griewank & Walther, Evaluating Derivatives (SIAM)'
+    url: 'https://epubs.siam.org/doi/book/10.1137/1.9780898717761'

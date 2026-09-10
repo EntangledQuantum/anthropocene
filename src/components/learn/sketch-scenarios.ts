@@ -5,6 +5,7 @@ import { decay, oscillator, TWO_RATE_FAST } from '../../lib/numerics/problems.ts
 import { SCHEMES, TARGETS, complexStep, diffSweep, hSweep } from '../../lib/numerics/diff.ts';
 import { SPECTRAL_TARGETS, modalSweep } from '../../lib/numerics/spectral.ts';
 import { mcRmse } from '../../lib/numerics/monte-carlo.ts';
+import { decayForward, decayLoss } from '../../lib/numerics/adjoint.ts';
 
 /**
  * Named targets for `<SketchCurve>`.
@@ -217,6 +218,22 @@ const mcErrorVsN: SketchScenario = {
   truth: () => sample(80, 1.5, 4.5, (logN) => Math.log10(mcRmse(1, 10 ** logN))),
 };
 
+/* Inverse-problem loss L(λ) against observations generated at λ = 2.
+   A bowl touching zero at the true value — the other view of the trajectory
+   mismatch. Same code the inverse lab walks downhill on. */
+const decayLossBowl: SketchScenario = {
+  xLabel: 'λ',
+  yLabel: 'L(λ)',
+  xRange: [0.25, 4],
+  yRange: [-0.01, 0.12],
+  tolerance: 0.028,
+  anchors: [{ x: 2, y: 0, label: 'true λ' }],
+  truth: () => {
+    const yObs = decayForward(2).y;
+    return sample(80, 0.25, 4, (lambda) => decayLoss(decayForward(lambda).y, yObs));
+  },
+};
+
 export const SKETCH_SCENARIOS: Record<string, SketchScenario> = {
   'fd-u-curve': fdUCurve,
   'euler-convergence': eulerConvergence,
@@ -228,4 +245,5 @@ export const SKETCH_SCENARIOS: Record<string, SketchScenario> = {
   'spec-smooth-cliff': specSmoothCliff,
   'spec-jump-slope': specJumpSlope,
   'mc-error-vs-n': mcErrorVsN,
+  'ad-decay-loss-bowl': decayLossBowl,
 };

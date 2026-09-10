@@ -41,6 +41,12 @@ describe('estimate scenarios agree with the prose that quotes them', () => {
   it('e^{sin x} needs a dozen Fourier modes for 10^{-12} ("Twelve")', () => {
     expect(ESTIMATE_SCENARIOS['spec-modes-for-eps'].truth()).toBe(12);
   });
+
+  it('four adjoint steps from 0.5 toward 2 leave |λ−2| around 0.014', () => {
+    const t = ESTIMATE_SCENARIOS['ad-recovered-lambda'].truth();
+    expect(t).toBeGreaterThan(0.005);
+    expect(t).toBeLessThan(0.04);
+  });
 });
 
 describe('every scenario is answerable on its own slider', () => {

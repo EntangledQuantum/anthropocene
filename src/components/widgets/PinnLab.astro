@@ -1,0 +1,7 @@
+---
+import Island, { type PinnLabProps } from '../viz/PinnLab.tsx';
+
+type Props = Omit<PinnLabProps, 'children'>;
+const props = Astro.props as Props;
+---
+<Island client:visible {...props} />

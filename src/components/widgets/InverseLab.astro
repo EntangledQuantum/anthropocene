@@ -1,0 +1,7 @@
+---
+import Island, { type InverseLabProps } from '../viz/InverseLab.tsx';
+
+type Props = Omit<InverseLabProps, 'children'>;
+const props = Astro.props as Props;
+---
+<Island client:visible {...props} />
