@@ -1,7 +1,7 @@
 ---
 title: 'When A is not SPD'
 blurb: 'CG needed A-inner-products. GMRES minimises ‖r‖₂ over the same Krylov plane and works when A is not symmetric. The cost is storing the whole basis.'
-order: 1
+order: 6
 tier: 'advanced'
 minutes: 16
 teaches:
@@ -10,44 +10,152 @@ requires:
   - 'krylov'
   - 'qr-factorization'
 runtime: 'none'
-status: 'draft'
+status: 'live'
+updated: 2026-09-10
 ---
 
-Open with the tension, not the definition. What does the reader currently believe that
-this lesson is going to complicate?
-
-## The idea
-
-Build it up. Use `$inline$` and `$$display$$` for math.
+Same 16-unknown Dirichlet Poisson. [CG finished it in 16 steps](/anthropocene/learn/linear-algebra/iterative/krylov/). You add a wind: $-u'' + c u'$. The three-point stencil is no longer symmetric. $A$ is not SPD.
 
 <Predict
-  id="06-gmres-first-prediction"
-  question="Ask something the reader can be productively wrong about."
+  id="gm-nonsym-sixteen"
+  question="After 16 steps on this 16-unknown convection–diffusion, what has happened to the residual?"
   options={[
-    { key: 'a', label: 'The intuitive answer', why: 'Why it is tempting, and exactly where it breaks.' },
-    { key: 'b', label: 'The correct answer', why: 'Why it is right, in one or two sentences.' },
+    { key: 'a', misconception: 'cg-works-anyway', label: 'CG is at roundoff. n steps still fill Rⁿ; wind is only a first derivative', why: "K_n is still Rⁿ. CG does not get to use it. The short recurrence needed A-inner-products, and those died with symmetry. The residual climbs." },
+    { key: 'b', label: 'GMRES is at roundoff; CG residual has grown', why: "Correct. GMRES minimises ‖r‖₂ over K_k and is exact at k = n. CG's three-term update is not conjugacy on this A, so the residual grows." },
+    { key: 'c', misconception: 'gmres-needs-at', label: 'GMRES cannot start — a nonsymmetric method needs Aᵀ', why: "BiCG needs Aᵀ. GMRES never applies it. Arnoldi orthogonalises Av against the basis already stored, with the Euclidean inner product." },
+    { key: 'd', misconception: 'gmres-min-energy', label: 'Both drop. GMRES is CG with a different name, same energy', why: "Different objective. CG minimises ‖e‖_A, which is not a norm once A is not SPD. GMRES minimises ‖r‖₂ over the same plane. Watch CG climb." },
   ]}
   correct="b"
 >
 
-The payoff, revealed only after they commit. Usually a simulation.
+Drag $c$ to 0: both crash at $k = n$. Drag it back. Magenta climbs; cyan cliffs. The Hessenberg view is the cost of that cliff.
+
+<GmresLab
+  n={16}
+  wind={48}
+  k0={16}
+  caption="n = 16 convection–diffusion. Cyan is full GMRES. Magenta is CG on the same matvecs. Orchid is GMRES(4): same 16 steps, at most 4 vectors in RAM. Toggle Hessenberg — it grows, then restart wipes it."
+/>
 
 </Predict>
 
-<Recall id="06-gmres-card" concept="gmres">
-  <div slot="front">The question to answer from memory in three months.</div>
+## Same plane, different inner product
 
-The answer, written so it teaches rather than merely confirms.
+$K_k = \operatorname{span}\{r, Ar, \ldots, A^{k-1}r\}$ is still everything $k$ matvecs can tell you. [CG](/anthropocene/learn/linear-algebra/iterative/krylov/) picked the $A$-best point in $x_0 + K_k$. That $A$-norm needs $A$ SPD.
+
+GMRES keeps the plane and changes the question:
+
+$$
+x_k = \arg\min_{x \in x_0 + K_k} \|b - Ax\|_2.
+$$
+
+Arnoldi builds an orthonormal basis $V_k$ of that plane and a $(k+1)\times k$ upper Hessenberg $\bar H$ with $A V_k = V_{k+1}\bar H$. The least-squares problem on $\bar H$ is [Householder QR](/anthropocene/learn/linear-algebra/factorizations/qr/) of a postcard. The last entry of the rotated right-hand side *is* $\|r\|_k$. You know the residual before you form $x$.
+
+```ts
+let w = applyA(V[j]);
+for (const vi of V) w = axpy(-dot(w, vi), vi, w);  // modified Gram–Schmidt
+V.push(scale(w, 1 / norm2(w)));
+// QR of H̄: min ‖β e₁ − H̄ y‖, then x = x₀ + V y
+```
+
+One new vector per step. Every previous vector stays.
+
+<Predict
+  id="gm-what-min"
+  question="At step k, what does GMRES actually minimise, and over what?"
+  options={[
+    { key: 'a', misconception: 'gmres-min-energy', label: '‖e‖_A over x₀ + K_k — the CG objective, now legal without SPD', why: "‖e‖_A is not a norm when A is not SPD. GMRES never forms it. The Euclidean residual is the quantity that still makes sense." },
+    { key: 'b', label: '‖r‖₂ over x₀ + K_k — the smallest Euclidean residual those k matvecs can buy', why: "Correct. r is orthogonal to A K_k. That is the normal equation of the least-squares problem on the Hessenberg." },
+    { key: 'c', label: '‖r‖₂ over all of Rⁿ. The Hessenberg is a cheap A⁻¹', why: "Over all of Rⁿ the minimiser is x* and you would be done in one step. GMRES only searches the plane it has earned. At k = n the plane is Rⁿ and then it is done." },
+    { key: 'd', misconception: 'gmres-needs-at', label: '‖Aᵀ r‖₂. Nonsymmetric residual needs the adjoint', why: "No adjoint. The inner products in Arnoldi are vᵢ · (A vⱼ), Euclidean, stored basis against one matvec." },
+  ]}
+  correct="b"
+>
+
+On SPD, both methods finish at $k = n$, so the residuals match at roundoff. On the way, GMRES's Euclidean residual is the smaller one — it is the quantity being minimised.
+
+</Predict>
+
+<SketchCurve
+  id="gm-residual-sketch"
+  scenario="gm-residual-nonsym"
+  prompt="n = 16, windy. Sketch log₁₀ ‖r‖₂ for full GMRES against k. It starts at log₁₀ ‖r₀‖. Draw through k = 16."
+  hint="The Euclidean residual is monotone. CG on this A climbs; do not draw that. The plane fills at k = n."
+  explanation="A plateau, a drop around k = 11, then the floor at k = 16. Monotone the whole way. CG on the same axes is a line going up. The cliff is K_n = Rⁿ, same as CG on SPD — but you stored 16 vectors to get it."
+/>
+
+## The cost is the basis
+
+CG kept two vectors and a three-term recurrence. That was the gift of conjugacy. GMRES has no such gift: each new Arnoldi vector is orthogonalised against **every** previous one, and they all stay in RAM.
+
+<RankOrder
+  id="gm-memory-rank"
+  prompt="At step k = 12 on this n = 16 problem, rank the methods by vectors stored."
+  lowLabel="fewest vectors"
+  highLabel="most vectors"
+  items={[
+    { key: 'jacobi', label: 'Jacobi', why: "One iterate. A fixed average of neighbours. No basis." },
+    { key: 'cg', label: 'CG', why: "Residual and search direction. The short recurrence never needed more — and on this A that is also why CG is wrong." },
+    { key: 'm4', label: 'GMRES(4)', why: "Restart threw the basis away at k = 4, 8, 12. At most four vectors, always." },
+    { key: 'full', label: 'full GMRES', why: "Twelve Arnoldi vectors, length n. Next step makes thirteen. At k = n you hold the whole space." },
+  ]}
+  correct={['jacobi', 'cg', 'm4', 'full']}
+  explanation="CG is two vectors and a lie, on this A. Full GMRES is k vectors and the true minimiser. Restart is the knob between them."
+/>
+
+Restart every $m$ steps: discard $V$, take the current $x$ as the new $x_0$, build a fresh plane from the leftover residual. You cap RAM at $m$ vectors. You also cap the search: the minimiser over $K_k$ is gone.
+
+<Tune
+  id="gm-restart-m"
+  scenario="gm-restart-m"
+  prompt="n = 16, windy, 16 matvecs. Drag the restart length m until ‖r‖ at the end first drops below 10⁻⁵."
+  hint="GMRES(4) is almost flat. Full GMRES (m = 16) is already on the floor. The cliff is not a better line search — it is keeping the basis."
+  explanation="m = 11. Below that, 16 steps of GMRES(m) stall well above 10⁻⁵. Full GMRES has been at roundoff since k = 16 because it kept every vector. Restart trades that optimality for RAM."
+/>
+
+<Estimate
+  id="gm-stored-restart"
+  scenario="gm-stored-restart"
+  prompt="GMRES(4) on this n = 16 windy problem. After 40 steps, how many vectors are in RAM?"
+  explanation="Four. Restart threw the basis away ten times. The iteration index is 40; the storage cap is m. Full GMRES at the same k would be holding 40 vectors of length 16, and would already have finished at k = 16."
+/>
+
+<Classify
+  id="gm-classify"
+  prompt="Each statement is a property of one method. Sort them."
+  buckets={[
+    { key: 'cg', label: 'CG', accent: 'magenta' },
+    { key: 'gmres', label: 'GMRES', accent: 'cyan' },
+  ]}
+  items={[
+    { key: 'energy', label: 'minimises ‖e‖_A over x₀ + K_k', bucket: 'cg', why: 'The A-norm of the error. Needs A SPD so that this is a norm.' },
+    { key: 'euclid', label: 'minimises ‖r‖₂ over x₀ + K_k', bucket: 'gmres', why: 'The Euclidean residual. Legal for any invertible A.' },
+    { key: 'short', label: 'three-term recurrence, two or three vectors', bucket: 'cg', why: 'Conjugacy collapses the history. That is the gift, and it is SPD-only.' },
+    { key: 'basis', label: 'stores the whole Arnoldi basis', bucket: 'gmres', why: 'Each new vector is orthogonalised against every previous one. They stay.' },
+    { key: 'spd', label: 'needs A symmetric positive definite', bucket: 'cg', why: 'Otherwise pᵀAp is not an inner product and the short recurrence is not conjugacy.' },
+    { key: 'nonsym', label: 'works when A is not symmetric', bucket: 'gmres', why: 'Arnoldi never needed A = Aᵀ. The inner products are Euclidean.' },
+    { key: 'restart', label: 'restart trades the global minimiser for a RAM cap', bucket: 'gmres', why: 'GMRES(m) discards V every m steps. Residual can stall. That is the price.' },
+  ]}
+  explanation="Same Krylov plane. CG picks the A-best point and stores almost nothing, and dies when A is not SPD. GMRES picks the Euclidean-best point, stores the basis, and can throw that basis away."
+/>
+
+<Recall id="gm-recall-gmres" concept="gmres">
+  <div slot="front">What does GMRES minimise at step k, over what set, and what is the cost?</div>
+
+GMRES minimises $\|b-Ax\|_2$ over $x \in x_0 + K_k$. Arnoldi builds an orthonormal basis of that plane; the least-squares problem is QR of a tiny Hessenberg. The cost is storing every basis vector. Restart every $m$ steps caps RAM at $m$ and gives up the global minimiser.
 
 </Recall>
 
-<Tier level="advanced">
+<Tier level="advanced" title="Givens without x, positive-real vs SPD, and a stall">
 
-The treatment for someone who already has the working version. Derivations, edge cases,
-the reason the standard explanation is a simplification.
+The Givens QR of $\bar H$ rotates the right-hand side $\beta e_1$ into $g$. Then $\|r_k\|_2 = |g_{k+1}|$ — the residual of a problem you have not formed $x$ for. That is why a GMRES log can be honest at every step without an extra matvec.
+
+Convection–diffusion is *positive real*: $x^\top A x = x^\top(-\nabla^2)x > 0$, so CG's $p^\top A p$ stays positive and the loop does not break. It just is not CG. A $90^\circ$ rotation $A = R(\pi/2)\,\mathrm{diag}(2,1/2)$ is worse: $p^\top A p$ is a rounding hair, and two CG steps send $\|r\|$ to $10^{16}$. GMRES is exact at $k = 2$.
+
+If the residual stalls with $m$ already large, the next question is not "more iterations." It is: is $A$ bad, is the preconditioner bad, or is the physics singular? GMRES will not invent a solution that is not in the range.
 
 </Tier>
 
 ## What to carry forward
 
-Two or three lines connecting to what comes next.
+$K_k$ is still the plane. GMRES picks the Euclidean-best residual in it, so $A$ need not be SPD. You store the whole basis. Restart trades that optimality for RAM. The picture to keep is the Hessenberg growing by one column per step — and collapsing when you cannot afford it.

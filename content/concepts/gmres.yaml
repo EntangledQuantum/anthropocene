@@ -1,3 +1,29 @@
-title: 'gmres'
-blurb: 'TODO: one sentence, plain language.'
-tags: []
+title: 'GMRES'
+blurb: 'Minimise the Euclidean residual over the Krylov plane. Works when A is not SPD. You store the whole basis.'
+notation: 'x_k = \arg\min_{x \in x_0+K_k} \|b-Ax\|_2'
+tags:
+  - linalg
+misconceptions:
+  - id: 'cg-works-anyway'
+    name: 'CG still finishes in n steps; symmetry was never the point.'
+    signal: 'Treats finite termination as a fact about dimension, independent of the inner product CG actually uses.'
+    correction: 'CG’s short recurrence needs A-inner-products, so A must be SPD. Without that, the three-term update is not conjugacy, and the residual can grow. Dimension n still fills K_n — GMRES uses it; CG does not.'
+  - id: 'gmres-needs-at'
+    name: 'A nonsymmetric method needs A transpose.'
+    signal: 'Looks for Aᵀ, or names BiCG / QMR as the only option once A is not SPD.'
+    correction: 'GMRES never applies Aᵀ. Arnoldi orthogonalises against previous basis vectors with Euclidean inner products of Av. BiCG is the method that needs a second Krylov space from Aᵀ.'
+  - id: 'gmres-min-energy'
+    name: 'GMRES minimises the same energy as CG, just without needing SPD.'
+    signal: 'Names ‖e‖_A as the GMRES objective, or treats GMRES as “CG for nonsymmetric A”.'
+    correction: 'CG minimises ‖e‖_A. GMRES minimises ‖r‖₂ over the same plane. Those are different points in K_k. On SPD they both finish at k = n; on the way, GMRES’s Euclidean residual is the smaller one.'
+  - id: 'restart-keeps-optimality'
+    name: 'Restarting every m steps keeps the same minimiser and just saves RAM.'
+    signal: 'Expects GMRES(m) to match full GMRES at the same k, or treats restart as a free compression.'
+    correction: 'Each restart throws the basis away and starts a new Krylov plane from the current residual. You lose the global minimiser over K_k. Residual can stall. That is the price of the RAM.'
+references:
+  - label: 'Saad & Schultz, GMRES: a generalized minimal residual algorithm for solving nonsymmetric linear systems (1986)'
+    url: 'https://doi.org/10.1137/0907058'
+  - label: 'Saad, Iterative Methods for Sparse Linear Systems, ch. 6'
+    url: 'https://doi.org/10.1137/1.9780898718003'
+  - label: 'Trefethen & Bau, Numerical Linear Algebra, Lecture 35'
+    url: 'https://doi.org/10.1137/1.9780898719574'

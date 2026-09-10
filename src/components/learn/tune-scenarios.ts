@@ -48,6 +48,9 @@ import { atanShift, basinRightEdge, fateOf, newtonRun } from '../../lib/numerics
 import {
   PHI, flattenSigma2ForKappa, kappa2, lessonEllipse,
 } from '../../lib/numerics/svd.ts';
+import {
+  DEMO_WIND, GMRES_N, convectionProblem, gmresHistory, restartNeeded,
+} from '../../lib/numerics/gmres.ts';
 
 /**
  * Named scenarios for `<Tune>`.
@@ -862,6 +865,56 @@ const svdFlattenKappa: TuneScenario = {
   },
 };
 
+/* Hunt the restart length m where GMRES(m) on the n = 16 windy problem
+   first drives ‖r‖ below 10⁻⁵ in 16 steps. Full GMRES is already there;
+   m = 4 is not. The cliff is the whole basis, not a better line search. */
+const gmTuneProb = convectionProblem(GMRES_N, DEMO_WIND);
+const gmTuneFull = gmresHistory(gmTuneProb.applyA, gmTuneProb.b, GMRES_N);
+const gmRestartCliff = restartNeeded(gmTuneProb.applyA, gmTuneProb.b, 1e-5, GMRES_N);
+const gmRestartM: TuneScenario = {
+  param: {
+    key: 'm',
+    label: 'restart length',
+    symbol: 'm',
+    min: 1,
+    max: 16,
+    step: 1,
+    value: 4,
+    hint: 'GMRES(m) throws the basis away every m steps. Full GMRES is m = n.',
+  },
+  target: gmRestartCliff,
+  tolerance: 0.6,
+  x: { label: 'k', domain: [0, 16] },
+  y: { label: 'log₁₀ ‖r‖₂', domain: [-16.5, 1.2] },
+  rules: [{ y: -5, label: '10⁻⁵', color: 'magenta' }],
+  compute: (mRaw: number) => {
+    const m = Math.max(1, Math.min(16, Math.round(mRaw)));
+    const rest = gmresHistory(gmTuneProb.applyA, gmTuneProb.b, GMRES_N, m);
+    const last = rest[GMRES_N]!;
+    return {
+      series: [
+        {
+          key: 'full', label: 'full GMRES', color: 'cyan', muted: true,
+          points: gmTuneFull.map((s) => [s.k, Math.log10(Math.max(s.residualNorm, 1e-18))] as const),
+        },
+        {
+          key: 'rst', label: `GMRES(${m})`, color: 'orchid', style: 'line+dots', width: 2,
+          points: rest.map((s) => [s.k, Math.log10(Math.max(s.residualNorm, 1e-18))] as const),
+        },
+        {
+          key: 'you', label: 'your end', color: 'orchid', style: 'dots', width: 6,
+          points: [[GMRES_N, Math.log10(Math.max(last.residualNorm, 1e-18))]],
+        },
+      ],
+      readouts: [
+        { label: 'm', value: String(m) },
+        { label: 'stored', value: String(last.stored) },
+        { label: '‖r‖₁₆', value: last.residualNorm.toExponential(2) },
+      ],
+    };
+  },
+};
+
 export const TUNE_SCENARIOS: Record<string, TuneScenario> = {
   'fd-optimum': fdOptimum,
   'euler-stability': eulerStability,
@@ -882,4 +935,5 @@ export const TUNE_SCENARIOS: Record<string, TuneScenario> = {
   'qr-lost-column': qrLostColumn,
   'nt-basin-edge': ntBasinEdge,
   'svd-flatten-kappa': svdFlattenKappa,
+  'gm-restart-m': gmRestartM,
 };

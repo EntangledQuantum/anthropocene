@@ -19,6 +19,7 @@ import {
 import { twoGridHistory } from '../../lib/numerics/multigrid.ts';
 import { SKETCH_X0, atanShift, logResidualHistory } from '../../lib/numerics/newton.ts';
 import { demoPicture, droppedSigma } from '../../lib/numerics/svd.ts';
+import { DEMO_WIND, GMRES_N, convectionProblem, gmresHistory } from '../../lib/numerics/gmres.ts';
 
 /**
  * Named targets for `<SketchCurve>`.
@@ -426,6 +427,20 @@ const svdResidualVsRank: SketchScenario = {
   })),
 };
 
+/* Full GMRES on n = 16 convection–diffusion. Plateau, then a cliff near
+   k = n — monotone, unlike CG on the same A, which climbs. */
+const gmWindy = convectionProblem(GMRES_N, DEMO_WIND);
+const gmWindyHist = gmresHistory(gmWindy.applyA, gmWindy.b, GMRES_N);
+const gmResidualSketch: SketchScenario = {
+  xLabel: 'k',
+  yLabel: 'log₁₀ ‖r‖₂',
+  xRange: [0, 16],
+  yRange: [-16.5, 1],
+  tolerance: 2.0,
+  anchors: [{ x: 0, y: Math.log10(Math.max(gmWindyHist[0]!.residualNorm, 1e-18)), label: '‖r₀‖' }],
+  truth: () => gmWindyHist.map((s) => ({ x: s.k, y: Math.log10(Math.max(s.residualNorm, 1e-18)) })),
+};
+
 export const SKETCH_SCENARIOS: Record<string, SketchScenario> = {
   'fd-u-curve': fdUCurve,
   'euler-convergence': eulerConvergence,
@@ -451,4 +466,5 @@ export const SKETCH_SCENARIOS: Record<string, SketchScenario> = {
   'mg-residual-cycles': mgResidualCycles,
   'nt-residual-catch': ntResidualCatch,
   'svd-residual-vs-rank': svdResidualVsRank,
+  'gm-residual-nonsym': gmResidualSketch,
 };

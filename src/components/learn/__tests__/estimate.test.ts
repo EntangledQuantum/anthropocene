@@ -123,6 +123,10 @@ describe('estimate scenarios agree with the prose that quotes them', () => {
   it('rank-2 leftover of the 8×8 picture is σ₃ = 0.4, not σ₁', () => {
     expect(ESTIMATE_SCENARIOS['svd-rank2-residual'].truth()).toBeCloseTo(0.4, 8);
   });
+
+  it('GMRES(4) still stores 4 vectors after 40 steps, not 40', () => {
+    expect(ESTIMATE_SCENARIOS['gm-stored-restart'].truth()).toBe(4);
+  });
 });
 
 describe('every scenario is answerable on its own slider', () => {

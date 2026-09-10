@@ -22,6 +22,7 @@ import { twoGridReduction } from '../../lib/numerics/multigrid.ts';
 import { QR_EPS, gramCond2Exact } from '../../lib/numerics/qr.ts';
 import { CATCH_X0, atanShift, stepsUntil } from '../../lib/numerics/newton.ts';
 import { pictureResidual2 } from '../../lib/numerics/svd.ts';
+import { DEMO_RESTART, DEMO_WIND, GMRES_N, convectionProblem, gmres } from '../../lib/numerics/gmres.ts';
 
 /**
  * Named quantities for `<Estimate>`.
@@ -395,6 +396,24 @@ const svdRank2Residual: EstimateScenario = {
   truth: () => pictureResidual2(2),
 };
 
+/* Restart caps RAM. After 40 steps of GMRES(4) you still hold 4 vectors,
+   not 40. The tempting count is the iteration index. */
+const gmStoredRestart: EstimateScenario = {
+  quantity: 'vectors stored after 40 steps of GMRES(4) on the n = 16 windy convection–diffusion',
+  logRange: [0, 2],
+  logStart: 1.4,
+  withinFactor: 2,
+  landmarks: [
+    { value: 4, label: 'm = 4' },
+    { value: 16, label: 'n' },
+    { value: 40, label: 'k = 40' },
+  ],
+  truth: () => {
+    const { applyA, b } = convectionProblem(GMRES_N, DEMO_WIND);
+    return gmres(applyA, b, { maxIter: 40, restart: DEMO_RESTART }).at(-1)!.stored;
+  },
+};
+
 export const ESTIMATE_SCENARIOS: Record<string, EstimateScenario> = {
   'euler-work-1e6': eulerWorkFor1e6,
   'rk4-work-1e6': rk4WorkFor1e6,
@@ -419,4 +438,5 @@ export const ESTIMATE_SCENARIOS: Record<string, EstimateScenario> = {
   'qr-kappa-ata': qrKappaAtA,
   'nt-steps-to-eps': ntStepsToEps,
   'svd-rank2-residual': svdRank2Residual,
+  'gm-stored-restart': gmStoredRestart,
 };

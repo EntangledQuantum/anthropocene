@@ -1,0 +1,10 @@
+---
+// Wrapper so lessons can write <GmresLab /> with no import and no client
+// directive: MDX components supplied through the `components` prop cannot
+// carry client:* directives themselves, so the directive lives here.
+import Island, { type GmresLabProps } from '../viz/GmresLab.tsx';
+
+type Props = Omit<GmresLabProps, 'children'>;
+const props = Astro.props as Props;
+---
+<Island client:visible {...props} />
