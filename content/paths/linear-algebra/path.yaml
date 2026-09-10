@@ -7,3 +7,4 @@ status: 'live'
 chapters:
   - '01-operators'
   - '02-iterative'
+  - '03-factorizations'
