@@ -1,7 +1,7 @@
 ---
 title: 'Making a velocity field incompressible'
 blurb: 'A fluid step that ignores divergence grows a sink. The pressure Poisson projection is the constraint, not a cleanup.'
-order: 1
+order: 5
 tier: 'advanced'
 minutes: 16
 teaches:
@@ -11,44 +11,193 @@ requires:
   - 'pde'
   - 'cfl-condition'
 runtime: 'none'
-status: 'draft'
+status: 'live'
+updated: 2026-09-10
 ---
 
-Open with the tension, not the definition. What does the reader currently believe that
-this lesson is going to complicate?
-
-## The idea
-
-Build it up. Use `$inline$` and `$$display$$` for math.
+A dye blob in a velocity field that looks like a swirl. Incompressible means
+the blob keeps its area.
 
 <Predict
-  id="05-pressure-projection-first-prediction"
-  question="Ask something the reader can be productively wrong about."
+  id="proj-blob-shrink"
+  question="This field looks like a vortex. After a few time units, what happens to the blob's area?"
   options={[
-    { key: 'a', label: 'The intuitive answer', why: 'Why it is tempting, and exactly where it breaks.' },
-    { key: 'b', label: 'The correct answer', why: 'Why it is right, in one or two sentences.' },
+    { key: 'a', misconception: 'swirl-means-incompressible', label: 'It stays. Swirl is incompressible — the blob only rotates.', why: "Appearance is not the constraint. Helmholtz will split this field into a vortex plus a sink. The sink is what you cannot see in the arrows, and it is what eats the area." },
+    { key: 'b', label: 'It shrinks. A sink is hiding in the swirl.', why: 'Correct. Area changes at the rate of the integral of ∇·u over the blob. The heatmap on the right is that integrand. Cyan is a sink, sitting where the blob sits.' },
+    { key: 'c', label: 'It grows. A vortex flings fluid outward.', why: 'Centrifugal intuition from rigid-body rotation. A true vortex is a stream function: it shears, it does not source. Growth would be a source, magenta on the heatmap.' },
+    { key: 'd', label: 'It shears into a filament and keeps its area.', why: 'That is what a pure vortex does, and what this field will do after you project. Right now the sink is still in it, so area is not conserved.' },
   ]}
   correct="b"
 >
 
-The payoff, revealed only after they commit. Usually a simulation.
+Arrows and heatmap are one field. Magenta is a source, cyan a sink. The blob
+is a ring of tracers; $A/A_0$ is a real shoelace area, not a fit.
+
+<ProjectionLab
+  field="mixed"
+  project={false}
+  lockField={true}
+  lockProject={true}
+  stir={false}
+  caption="Mixed field, no projection. The swirl is real. So is the sink. Area falls because ∇·u is not zero where the dye sits."
+/>
 
 </Predict>
 
-<Recall id="05-pressure-projection-card" concept="pressure-projection">
-  <div slot="front">The question to answer from memory in three months.</div>
+Toggle **project**. The arrows change. The heatmap goes black. The blob stops
+shrinking and only shears.
 
-The answer, written so it teaches rather than merely confirms.
+<ProjectionLab
+  field="mixed"
+  project={true}
+  caption="Same field, Helmholtz-projected. Click to stir a vortex; shift-click plants a sink. Watch max |∇·u| and A/A₀ together."
+/>
+
+Incompressibility is not a look. It is $\nabla\cdot u = 0$, and in two
+dimensions that is area.
+
+## Commit to the decay
+
+Before the split has a name, draw what the sink does.
+
+<SketchCurve
+  id="proj-area-sketch"
+  scenario="proj-blob-area"
+  prompt="Mixed field, no projection. Sketch the dye-blob area A/A₀ from t = 0 to t = 1. It starts at exactly 1."
+  hint="The blob sits on a sink. Area changes as the integral of ∇·u, which is not small and not zero."
+  explanation="A steady slide to about a third. Not a filament that keeps its area, not a bounded wobble. Compression is the integral of the leftover divergence, and it accumulates."
+/>
+
+## One Poisson solve
+
+Any velocity splits uniquely (periodic, mean-zero potential) as
+
+$$
+u^* = u + \nabla\phi,\qquad \nabla\cdot u = 0.
+$$
+
+Take the divergence of both sides and you have Poisson: $\Delta\phi = \nabla\cdot u^*$.
+Subtract the gradient. That is the Helmholtz projection. Pressure *is* $\phi$
+(up to a factor of $\Delta t$).
+
+On a staggered MAC grid the split is discrete-exact: curl of a gradient is
+identically zero, div of a curl is identically zero.
+
+```ts
+div[i, j] = (u[i, j] - u[i - 1, j]) / h
+           + (v[i, j] - v[i, j - 1]) / h;
+
+// Δφ = div, then
+u[i, j] -= (phi[i + 1, j] - phi[i, j]) / h;
+v[i, j] -= (phi[i, j + 1] - phi[i, j]) / h;
+```
+
+<Predict
+  id="proj-div-roundoff"
+  question="One spectral Poisson solve, then subtract ∇φ. What is max |∇·u| on this 24×24 MAC grid?"
+  options={[
+    { key: 'a', misconception: 'projection-is-approximate', label: 'About ten times smaller. Projection is a smoother, not an identity.', why: 'Jacobi sweeps of Poisson are a smoother. The Helmholtz map itself is a projection: P² = P, and discrete div of the result is the residual of Poisson. Spectral Poisson has no residual except roundoff.' },
+    { key: 'b', label: 'Roundoff. The discrete split is exact on this grid.', why: 'Correct. The 5-point eigenmodes invert Δ exactly on the torus (the constant mode is pinned to zero). Leftover max |∇·u| is ~10⁻¹⁴, not 10⁻².' },
+    { key: 'c', misconception: 'mean-velocity-kills-div', label: 'Unchanged — you only subtracted a gradient, and gradients do not affect the arrows you see.', why: 'The arrows you see *are* the gradient that got removed, plus the swirl that stayed. The heatmap is the other view of the same subtraction. A constant subtracted from u would leave div alone; a gradient is the opposite.' },
+    { key: 'd', label: 'Machine zero on a collocated grid, but MAC leaves a checkerboard.', why: 'Backwards. The collocated checkerboard lives in the kernel of a centred gradient, so Poisson cannot see it. MAC puts p at centres and u on faces, which is why the split is exact here.' },
+  ]}
+  correct="b"
+/>
+
+<Estimate
+  id="proj-leftover-div"
+  scenario="proj-leftover-div"
+  prompt="Same mixed field, n = 24, one spectral projection. Land on the leftover max |∇·u|."
+  explanation="Around 5×10⁻¹⁴. That is roundoff on a 24² Poisson solve, not a modelling tolerance. If a code reports 10⁻³ after 'projection', it did not finish the Poisson solve."
+/>
+
+## What the split keeps
+
+<Classify
+  id="proj-helmholtz-sort"
+  prompt="Helmholtz projection of a periodic MAC field. What happens to each velocity?"
+  buckets={[
+    { key: 'kept', label: 'unchanged (already div-free)', accent: 'ok' },
+    { key: 'killed', label: 'killed (pure gradient)', accent: 'magenta' },
+    { key: 'split', label: 'split: swirl kept, sink gone', accent: 'cyan' },
+  ]}
+  items={[
+    { key: 'vortex', label: 'pure vortex (stream function)', bucket: 'kept', why: 'Discrete curl of a vertex stream function has div identically zero. There is nothing for Poisson to subtract.' },
+    { key: 'sink', label: 'pure sink (gradient of a bump)', bucket: 'killed', why: 'The whole field is ∇φ. Poisson recovers φ, subtracts it, and the velocity is zero.' },
+    { key: 'uniform', label: 'uniform translation', bucket: 'kept', why: 'A constant has div zero and curl zero. It is already in the kernel of the constraint.' },
+    { key: 'mixed', label: 'vortex plus sink', bucket: 'split', why: 'This is the field you started with. Projection keeps the stream-function part and kills the potential part. The blob stops shrinking and still shears.' },
+  ]}
+  explanation="The projection does not 'clean up' a swirl. It throws away the gradient and leaves whatever was already divergence-free."
+/>
+
+Subtracting the mean velocity is not on that list. A constant is already
+div-free, so removing it does not touch $\nabla\cdot u$. The projection
+subtracts a *field* — the gradient of the Poisson solution.
+
+<Recall id="proj-pressure-card" concept="pressure-projection">
+  <div slot="front">What does the Helmholtz projection solve for, and what does it subtract?</div>
+
+Solve $\Delta\phi = \nabla\cdot u^*$ for a mean-zero potential, then set
+$u = u^* - \nabla\phi$. The result is divergence-free to the residual of that
+Poisson solve — roundoff, if you actually solve it. Pressure is $\phi$ (times
+density over $\Delta t$). It is the Lagrange multiplier of $\nabla\cdot u = 0$.
 
 </Recall>
 
-<Tier level="advanced">
+## The constraint belongs in the map
 
-The treatment for someone who already has the working version. Derivations, edge cases,
-the reason the standard explanation is a simplification.
+A pendulum that leaves the circle is not a slightly wrong pendulum. A velocity
+that leaves $\nabla\cdot u = 0$ is not a slightly wrong fluid. Same structure,
+different clothing — the [constraint as a map](../../structure-preserving/constraints/),
+not a cleanup.
+
+Chorin (1968) writes the incompressible step as: advance ignoring pressure,
+then project. The Poisson solve is how the *next* velocity is required to
+land on the constraint. Skipping it, or doing it "when div looks bad", is
+integrating a different PDE.
+
+<Predict
+  id="proj-constraint-map"
+  question="You project only every tenth step, because max |∇·u| still looks small. What did you just simulate?"
+  options={[
+    { key: 'a', misconception: 'pressure-is-cleanup', label: 'The incompressible flow, with a cheaper Poisson budget. Div is a residual you tidy.', why: 'On the nine steps you skipped, the map was the compressible one. The blob lost area it will not get back. A constraint applied later does not un-simulate the walk, any more than dividing by |q| un-does RK4 leaving the circle.' },
+    { key: 'b', label: 'A compressible flow that you occasionally snap back. The skipped steps already changed the object.', why: 'Correct. ∇·u = 0 is a property of the discrete map, not a look of the residual. Pressure belongs inside every step because every next state is either a fluid or it is not.' },
+    { key: 'c', label: 'The same as SHAKE: a projection after the step is the constrained integrator.', why: "SHAKE chooses λ so the Verlet step itself lands on g(q_{n+1}) = 0. Chorin's split is a predictor then a projection — closer to 'RK4 then project' in time, which is a different map. The shared idea is that the constraint belongs in the next state, not that every projection is SHAKE." },
+    { key: 'd', label: 'Nothing changes. The projection is idempotent, so doing it less often is free.', why: 'Idempotent means P(P(u)) = P(u), on the same field. Advecting with the unprojected field produces a different u* every step. P of that new field is not "the same fluid, sampled less often."' },
+  ]}
+  correct="b"
+/>
+
+<Tier level="advanced" title="Jacobi is not the projection, and Chorin is first order in time">
+
+Iterative Poisson is how most codes actually invert $\Delta$. Each Jacobi
+sweep locally averages the residual. The lowest mode of a periodic 5-point
+Laplacian damps like $\cos^2(\pi/n)$, so leftover $\max|\nabla\cdot u|$ falls
+slowly. Hunt the sweep count that first drops it to one percent of the start.
+
+<Tune
+  id="proj-jacobi-1pct"
+  scenario="proj-jacobi-1pct"
+  prompt="Mixed field, 16×16 MAC, Jacobi on the pressure Poisson. Find the sweep count where leftover max |∇·u| first hits 1% of the raw field."
+  hint="The curve is the lowest eigenmode leaking. A handful of sweeps looks like progress and is not the projection."
+  explanation="Around seventy sweeps on this 16² grid. Spectral projection sits at roundoff after one solve. If leftover div is 10⁻², you did not project — you smoothed."
+/>
+
+Collocated (non-staggered) $p$ and $u$ leave a checkerboard in the kernel of
+the centred gradient, so Poisson cannot see it. MAC was Harlow and Welch's
+answer in 1965: put the variables where the stencils make $\mathrm{curl}\,\mathrm{grad} = 0$
+and $\mathrm{div}\,\mathrm{curl} = 0$ identities, not approximations.
+
+Chorin's time split is first order: the predictor ignores $\nabla p$, so the
+boundary sees the wrong pressure and a numerical boundary layer forms. Later
+incremental schemes (van Kan, Bell–Colella–Glaz) put a lagged pressure in the
+predictor. That is a better map. It is still a map whose job is to land on
+$\nabla\cdot u = 0$.
 
 </Tier>
 
 ## What to carry forward
 
-Two or three lines connecting to what comes next.
+Helmholtz: $u^* = u + \nabla\phi$ with $\nabla\cdot u = 0$. Pressure is the
+multiplier of that constraint. If the discrete map does not land on it, the
+next state is a compressible blob that happens to look swirly.

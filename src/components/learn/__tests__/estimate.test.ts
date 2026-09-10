@@ -69,6 +69,12 @@ describe('estimate scenarios agree with the prose that quotes them', () => {
     expect(t).toBeGreaterThan(15);
     expect(t).toBeLessThan(50);
   });
+
+  it('spectral Helmholtz leftover max|div| is roundoff, not 10⁻³', () => {
+    const t = ESTIMATE_SCENARIOS['proj-leftover-div'].truth();
+    expect(t).toBeLessThan(1e-10);
+    expect(t).toBeGreaterThan(0);
+  });
 });
 
 describe('every scenario is answerable on its own slider', () => {

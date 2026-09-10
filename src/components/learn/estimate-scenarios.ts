@@ -10,6 +10,7 @@ import { heatKernelRatio } from '../../lib/numerics/pde-types.ts';
 import { maxStableHeatDt } from '../../lib/numerics/pde1d.ts';
 import { solveError } from '../../lib/numerics/stencil-bc.ts';
 import { naiveFdToFemL2Ratio } from '../../lib/numerics/fem1d.ts';
+import { leftoverMaxDiv } from '../../lib/numerics/projection.ts';
 
 /**
  * Named quantities for `<Estimate>`.
@@ -231,6 +232,20 @@ const femFdL2Ratio: EstimateScenario = {
   truth: () => naiveFdToFemL2Ratio(),
 };
 
+const projLeftoverDiv: EstimateScenario = {
+  quantity: 'max |∇·u| after one spectral Helmholtz projection of the mixed 24×24 MAC field',
+  logRange: [-16, 0],
+  logStart: -2,
+  withinFactor: 1000,
+  landmarks: [
+    { value: 1, label: 'the raw field' },
+    { value: 1e-3, label: 'a thousandth' },
+    { value: 1e-8, label: 'tiny' },
+    { value: 1e-15, label: 'roundoff' },
+  ],
+  truth: () => leftoverMaxDiv('mixed', 'spectral'),
+};
+
 export const ESTIMATE_SCENARIOS: Record<string, EstimateScenario> = {
   'euler-work-1e6': eulerWorkFor1e6,
   'rk4-work-1e6': rk4WorkFor1e6,
@@ -244,4 +259,5 @@ export const ESTIMATE_SCENARIOS: Record<string, EstimateScenario> = {
   'cfl-heat-dt-n200': heatFtcsDtN200,
   'ghost-naive-ratio-n32': ghostNaiveRatioN32,
   'fem-fd-l2-ratio': femFdL2Ratio,
+  'proj-leftover-div': projLeftoverDiv,
 };

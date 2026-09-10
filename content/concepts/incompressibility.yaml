@@ -1,3 +1,13 @@
 title: 'incompressibility'
-blurb: 'TODO: one sentence, plain language.'
-tags: []
+blurb: 'A velocity whose divergence is zero. In two dimensions that is exactly area preservation: a dye blob may shear, it may not shrink.'
+notation: '\nabla\cdot u = 0'
+tags:
+  - ch6
+misconceptions:
+  - id: 'swirl-means-incompressible'
+    name: 'If the arrows look like a vortex, the field is incompressible.'
+    signal: 'Reads a swirl as ∇·u = 0, or is surprised when a dye blob in a "vortex" loses area.'
+    correction: 'Appearance is not the constraint. Helmholtz splits any field into a divergence-free swirl plus a gradient (a source or sink). A mixed field looks like a vortex and still compresses. The heatmap of ∇·u is the other view of the same arrows.'
+references:
+  - label: 'Helmholtz, on integrals of the hydrodynamic equations (1858)'
+    url: 'https://doi.org/10.1515/crll.1858.55.25'

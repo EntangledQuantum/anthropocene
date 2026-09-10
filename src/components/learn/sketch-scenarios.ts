@@ -10,6 +10,7 @@ import { runPendulum } from '../../lib/numerics/constraints.ts';
 import { dependenceWidth } from '../../lib/numerics/pde-types.ts';
 import { errorSweep } from '../../lib/numerics/stencil-bc.ts';
 import { HAT_SKETCH_INDEX, HAT_SKETCH_NODES, hat } from '../../lib/numerics/fem1d.ts';
+import { runBlob } from '../../lib/numerics/projection.ts';
 
 /**
  * Named targets for `<SketchCurve>`.
@@ -296,6 +297,21 @@ const femHat: SketchScenario = {
   truth: () => sample(80, 0, 1, (x) => hat(HAT_SKETCH_NODES, HAT_SKETCH_INDEX, x)),
 };
 
+const projBlobArea: SketchScenario = {
+  xLabel: 't',
+  yLabel: 'A / A₀',
+  xRange: [0, 1],
+  yRange: [0, 1.15],
+  tolerance: 0.14,
+  anchors: [{ x: 0, y: 1, label: 'A₀' }],
+  truth: () => {
+    const run = runBlob({ field: 'mixed', project: false, tEnd: 1 });
+    const stride = Math.max(1, Math.floor(run.length / 80));
+    return run.filter((_, i) => i % stride === 0 || i === run.length - 1)
+      .map((s) => ({ x: s.t, y: s.area / s.area0 }));
+  },
+};
+
 export const SKETCH_SCENARIOS: Record<string, SketchScenario> = {
   'fd-u-curve': fdUCurve,
   'euler-convergence': eulerConvergence,
@@ -313,4 +329,5 @@ export const SKETCH_SCENARIOS: Record<string, SketchScenario> = {
   'pde-wave-width': waveDodWidth,
   'ghost-naive-slope': ghostNaiveErrorSlope,
   'fem-hat': femHat,
+  'proj-blob-area': projBlobArea,
 };

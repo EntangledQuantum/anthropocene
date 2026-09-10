@@ -26,6 +26,15 @@ import { densityAtVanishingPressure, latticePressure } from '../../lib/numerics/
 import { hWhereRadiusFallsBelow, pendulumRadiusAt } from '../../lib/numerics/constraints.ts';
 import { runAdvection, runHeat } from '../../lib/numerics/pde1d.ts';
 import { neumannGhostTarget, residualWithTrialGhost } from '../../lib/numerics/stencil-bc.ts';
+import {
+  cloneMac,
+  divergence,
+  jacobiItersUntil,
+  jacobiSweep,
+  makeField,
+  maxAbsDiv,
+  subtractGradient,
+} from '../../lib/numerics/projection.ts';
 
 /**
  * Named scenarios for `<Tune>`.
@@ -523,6 +532,62 @@ const ghostNeumannValue: TuneScenario = {
   },
 };
 
+/* ── Jacobi is not the Helmholtz projection ─────────────────────────────
+   Local averaging of the Poisson residual. The leftover max|div| drops,
+   slowly, because the lowest mode of the 5-point Laplacian is barely
+   damped. Spectral projection sits at roundoff after one solve. */
+
+const JACOBI_N = 16;
+const JACOBI_MAX = 160;
+const jacobiLeftover = (() => {
+  const g = makeField('mixed', JACOBI_N);
+  const div0 = maxAbsDiv(g);
+  const rhs = divergence(g);
+  let phi: Float64Array = new Float64Array(JACOBI_N * JACOBI_N);
+  const pts: (readonly [number, number])[] = [[0, Math.log10(Math.max(div0, 1e-16))]];
+  for (let k = 1; k <= JACOBI_MAX; k++) {
+    phi = jacobiSweep(phi, rhs, JACOBI_N, 1 / JACOBI_N);
+    const trial = cloneMac(g);
+    subtractGradient(trial, phi);
+    pts.push([k, Math.log10(Math.max(maxAbsDiv(trial), 1e-16))]);
+  }
+  return { pts, div0, target: jacobiItersUntil(0.01, JACOBI_N, 'mixed') };
+})();
+
+const projJacobiOnePercent: TuneScenario = {
+  param: {
+    key: 'iters', label: 'Jacobi sweeps', symbol: 'k', min: 4, max: JACOBI_MAX, step: 1, value: 16,
+    hint: 'Each sweep locally averages the Poisson residual. The slow mode is the one that takes forever.',
+  },
+  target: jacobiLeftover.target,
+  tolerance: 0.18,
+  x: { label: 'Jacobi sweeps', domain: [0, JACOBI_MAX] },
+  y: { label: 'log₁₀ max |∇·u|', domain: [-3.2, 0.5] },
+  rules: [
+    { y: Math.log10(jacobiLeftover.div0 * 0.01), label: '1% of start', color: 'magenta' },
+  ],
+  compute: (iters: number) => {
+    const k = Math.max(0, Math.min(JACOBI_MAX, Math.round(iters)));
+    const pt = jacobiLeftover.pts[k]!;
+    return {
+      series: [
+        {
+          key: 'curve', label: 'Jacobi leftover', color: 'cyan',
+          points: jacobiLeftover.pts,
+        },
+        {
+          key: 'you', label: 'your k', color: 'magenta', style: 'dots', width: 5,
+          points: [pt],
+        },
+      ],
+      readouts: [
+        { label: 'k', value: String(k) },
+        { label: 'max |∇·u|', value: (10 ** pt[1]).toExponential(2) },
+      ],
+    };
+  },
+};
+
 export const TUNE_SCENARIOS: Record<string, TuneScenario> = {
   'fd-optimum': fdOptimum,
   'euler-stability': eulerStability,
@@ -535,4 +600,5 @@ export const TUNE_SCENARIOS: Record<string, TuneScenario> = {
   'cfl-upwind-cliff': cflUpwindCliff,
   'cfl-heat-r': cflHeatR,
   'ghost-neumann-value': ghostNeumannValue,
+  'proj-jacobi-1pct': projJacobiOnePercent,
 };

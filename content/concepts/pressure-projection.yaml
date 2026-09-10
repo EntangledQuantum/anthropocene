@@ -1,3 +1,25 @@
 title: 'pressure projection'
-blurb: 'TODO: one sentence, plain language.'
-tags: []
+blurb: 'Split a velocity into a divergence-free part plus a gradient. Pressure is the potential of that gradient — the Lagrange multiplier of ∇·u = 0.'
+notation: 'u = u^* - \nabla\phi,\quad \Delta\phi = \nabla\cdot u^*'
+tags:
+  - ch6
+misconceptions:
+  - id: 'projection-is-approximate'
+    name: 'Projection makes divergence smaller, not machine-zero.'
+    signal: 'Treats Helmholtz as a smoother, or expects leftover max|div| around 10⁻² after a Poisson solve.'
+    correction: 'On a MAC grid the discrete Helmholtz split is exact. Spectral Poisson sends max|div| to roundoff. What looks like "approximate" leftover is an unfinished iterative solve, not a property of the projection.'
+  - id: 'pressure-is-cleanup'
+    name: 'Pressure is a cleanup you apply when divergence looks bad.'
+    signal: 'Plans to advect freely and project when the residual is large, or treats the Poisson solve as optional post-processing.'
+    correction: '∇·u = 0 is a constraint of the next velocity. If the discrete map is not required to land on it, the next state is already a compressible flow. Pressure is the multiplier inside the map, not a tidy-up.'
+  - id: 'mean-velocity-kills-div'
+    name: 'Subtracting the mean velocity (or the mean divergence) is the projection.'
+    signal: 'Removes a constant from u and expects the heatmap to go black, or subtracts ⟨∇·u⟩ cellwise.'
+    correction: 'A constant velocity is already divergence-free, so removing it does not touch ∇·u. The projection subtracts a gradient — the solution of Poisson — not a number.'
+references:
+  - label: 'Chorin, Numerical solution of the Navier–Stokes equations (1968)'
+    url: 'https://doi.org/10.1090/S0025-5718-1968-0242392-2'
+  - label: 'Harlow & Welch, MAC staggered grid (1965)'
+    url: 'https://doi.org/10.1063/1.1761178'
+  - label: 'Guermond, Minev, Shen, overview of projection methods (2006)'
+    url: 'https://doi.org/10.1016/j.cma.2005.10.010'
