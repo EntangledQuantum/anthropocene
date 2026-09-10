@@ -44,7 +44,7 @@ export default function ReviewQueue({ meta }: { meta: Record<string, CardMeta> }
   if (!db.available) {
     return (
       <Panel title="review">
-        <p style={{ margin: 0, color: 'var(--color-amber)' }}>
+        <p style={{ margin: 0, color: 'var(--sig-warn)' }}>
           Local storage is unavailable here, so there is no review schedule to show.
           {' '}Lessons still work in full — only progress tracking needs the database.
         </p>
@@ -69,7 +69,7 @@ export default function ReviewQueue({ meta }: { meta: Record<string, CardMeta> }
     return (
       <>
         <Panel title="review">
-          <p style={{ margin: '0 0 6px', fontSize: '1.1rem', color: 'var(--color-acid)' }}>
+          <p style={{ margin: '0 0 6px', fontSize: '1.1rem', color: 'var(--sig-ok)' }}>
             {done > 0 ? `Queue cleared — ${done} card${done === 1 ? '' : 's'} reviewed.` : 'Nothing due right now.'}
           </p>
           <p style={{ margin: 0, color: 'var(--color-ink-faint)', fontSize: '0.94rem' }}>
@@ -91,7 +91,7 @@ export default function ReviewQueue({ meta }: { meta: Record<string, CardMeta> }
     <>
       <Panel
         title={`review — ${i + 1} of ${queue.length}`}
-        right={<span className="hud-label" style={{ color: 'var(--color-violet)' }}>{stateLabel.toLowerCase()}</span>}
+        right={<span className="hud-label" style={{ color: 'var(--color-iris)' }}>{stateLabel.toLowerCase()}</span>}
       >
         {m ? (
           <>
@@ -123,13 +123,13 @@ export default function ReviewQueue({ meta }: { meta: Record<string, CardMeta> }
 
         <div style={{ marginTop: 18, paddingTop: 14, borderTop: '1px solid var(--color-rule)' }}>
           {!revealed ? (
-            <Button accent="violet" onClick={() => setRevealed(true)}>reveal</Button>
+            <Button accent="iris" onClick={() => setRevealed(true)}>reveal</Button>
           ) : (
             <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap' }}>
               {options.map((o) => (
                 <Button
                   key={o.rating}
-                  accent={o.rating === Rating.Again ? 'magenta' : o.rating === Rating.Hard ? 'amber' : o.rating === Rating.Good ? 'cyan' : 'acid'}
+                  accent={o.rating === Rating.Again ? 'magenta' : o.rating === Rating.Hard ? 'warn' : o.rating === Rating.Good ? 'cyan' : 'ok'}
                   onClick={() => void rate(o.rating)}
                   title={`next review in ${humanInterval(new Date(), o.due)}`}
                 >
@@ -151,9 +151,9 @@ function Stats({ stats, total }: { stats: ProgressSummary; total: number }) {
       <Panel title="you">
         <ReadoutRow>
           <Readout label="streak" value={`${stats.streak} d`} accent="magenta" />
-          <Readout label="today" value={`${stats.todayXp} / ${stats.goal} xp`} accent={stats.todayXp >= stats.goal ? 'acid' : 'cyan'} />
+          <Readout label="today" value={`${stats.todayXp} / ${stats.goal} xp`} accent={stats.todayXp >= stats.goal ? 'ok' : 'cyan'} />
           <Readout label="total xp" value={stats.totalXp.toLocaleString()} />
-          <Readout label="level" value={`${stats.level} · ${stats.levelXp}/${stats.nextLevelXp}`} accent="violet" />
+          <Readout label="level" value={`${stats.level} · ${stats.levelXp}/${stats.nextLevelXp}`} accent="iris" />
           <Readout label="lessons done" value={String(stats.lessonsComplete)} />
           <Readout label="cards" value={String(total)} />
           <Readout label="longest streak" value={`${stats.longestStreak} d`} />

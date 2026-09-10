@@ -1,5 +1,6 @@
 ---
 import Base from '../../../layouts/Base.astro';
+import PathJourney from '../../../components/chrome/PathJourney.tsx';
 import { buildGraph } from '../../../lib/graph/graph.ts';
 
 export async function getStaticPaths() {
@@ -8,55 +9,34 @@ export async function getStaticPaths() {
 }
 
 const { path } = Astro.props;
-const totalLessons = path.lessons.length;
 const hours = (path.minutes / 60).toFixed(1);
+
+// Serialised for the client island; keep it to what the journey actually renders.
+const chapters = path.chapters.map((c) => ({
+  id: c.id,
+  title: c.title,
+  question: c.question,
+  url: c.url,
+  lessons: c.lessons.map((l) => ({
+    id: l.id, title: l.title, blurb: l.blurb, url: l.url,
+    minutes: l.minutes, tier: l.tier, status: l.status,
+  })),
+}));
 ---
 <Base title={path.title} description={path.blurb} eyebrow="learning path">
-  <div style="padding:44px 0 0">
-    <header style="max-width:74ch;margin-bottom:44px">
+  <div style="padding:56px 0 0">
+    <header style="max-width:64ch;margin-bottom:52px">
       <span class="hud-label" style={`color:var(--color-${path.accent})`}>◆ {path.subtitle}</span>
-      <h1 style="font-size:clamp(2.1rem,5vw,3.1rem);margin:12px 0 16px" class="text-glow-magenta">{path.title}</h1>
-      <p style="color:var(--color-ink-soft);font-size:1.12rem;line-height:1.7;margin:0 0 20px">{path.blurb}</p>
-      <div style="display:flex;gap:22px;flex-wrap:wrap">
+      <h1 style="font-size:clamp(2.2rem,5vw,3.2rem);margin:14px 0 20px" class="text-glow-magenta">{path.title}</h1>
+      <p style="color:var(--color-ink-soft);font-size:1.16rem;line-height:1.7;margin:0 0 24px">{path.blurb}</p>
+      <div style="display:flex;gap:26px;flex-wrap:wrap">
         <span class="hud-label">{path.chapters.length} chapters</span>
-        <span class="hud-label">{totalLessons} lessons</span>
+        <span class="hud-label">{path.lessons.length} lessons</span>
         <span class="hud-label">≈ {hours} h</span>
       </div>
     </header>
 
-    <div style="display:grid;gap:16px">
-      {path.chapters.map((chapter, i) => (
-        <section class="hud hud-brackets" style="padding:18px 20px">
-          <div style="display:flex;align-items:baseline;gap:13px;flex-wrap:wrap;margin-bottom:8px">
-            <span class="readout hud-label" style={`color:var(--color-${path.accent});font-size:12px`}>
-              {String(i + 1).padStart(2, '0')}
-            </span>
-            <a href={chapter.url} style="text-decoration:none">
-              <h2 style="margin:0;font-size:1.3rem;color:var(--color-ink)">{chapter.title}</h2>
-            </a>
-            <span class="hud-label" style="margin-left:auto">{chapter.lessons.length} lessons · {chapter.minutes} min</span>
-          </div>
-
-          {chapter.question && (
-            <p style="margin:0 0 10px;color:var(--color-magenta);font-family:var(--font-display);font-size:1rem">
-              {chapter.question}
-            </p>
-          )}
-          <p style="margin:0 0 14px;color:var(--color-ink-faint);font-size:0.94rem;line-height:1.6">{chapter.blurb}</p>
-
-          <div style="display:flex;flex-direction:column;gap:1px;border-top:1px solid var(--color-rule);padding-top:10px">
-            {chapter.lessons.length === 0 ? (
-              <span class="hud-label" style="color:var(--color-ink-ghost)">outlined — not yet written</span>
-            ) : chapter.lessons.map((l) => (
-              <a href={l.url} style="display:flex;gap:11px;align-items:baseline;padding:6px 0;text-decoration:none;color:var(--color-ink-soft)">
-                <span class="hud-label" style="color:var(--color-ink-ghost)">·</span>
-                <span style="flex:1">{l.title}</span>
-                <span class="hud-label">{l.minutes}m</span>
-              </a>
-            ))}
-          </div>
-        </section>
-      ))}
-    </div>
+    <!-- client:only — the journey reflects local progress, which has no server equivalent -->
+    <PathJourney client:only="react" chapters={chapters} accent={path.accent} />
   </div>
 </Base>

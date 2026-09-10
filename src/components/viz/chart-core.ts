@@ -2,24 +2,38 @@ import { scaleLinear, scaleLog, type ScaleContinuousNumeric } from 'd3-scale';
 
 /** Accent names map to the CSS custom properties in global.css, so charts and
  *  chrome can never drift apart. */
+/** The palette, addressed by MEANING. Mirrors the tokens in global.css —
+ *  charts and CSS must never drift apart. See AGENTS.md §11. */
 export const ACCENTS = {
-  magenta: '#ff2f88',
-  cyan: '#4fe8ff',
-  acid: '#b8ff3d',
-  violet: '#9d6bff',
-  amber: '#ffb545',
-  ink: '#f2eef7',
-  faint: '#6f6683',
+  /* the series ramp: one analogous arc, aqua → magenta */
+  aqua: '#7ff0e4',
+  cyan: '#4fd8e8',
+  iris: '#8f9cf5',
+  orchid: '#cf7ce8',
+  magenta: '#ff4d9e',
+
+  /* state, and only state — deliberately outside the ramp so a verdict never
+     reads as just another series */
+  ok: '#9fe870',
+  warn: '#ffc46b',
+
+  ink: '#f6f2fb',
+  faint: '#8d84a6',
 } as const;
 export type AccentName = keyof typeof ACCENTS;
 
-/** Accents usable for a data series or an interactive control. Excludes the
- *  ink tones, which are for text and reference rules rather than series. */
-export type SeriesAccent = 'cyan' | 'magenta' | 'acid' | 'violet' | 'amber';
+/** Accents legal for a data series or an interactive control. Excludes the
+ *  state colours and the ink tones by construction. */
+export type SeriesAccent = 'cyan' | 'magenta' | 'iris' | 'orchid' | 'aqua';
 
-/** Series colour cycle. Ordered so adjacent series stay distinguishable for
- *  the most common forms of colour-vision deficiency. */
-export const SERIES_COLORS: SeriesAccent[] = ['cyan', 'magenta', 'acid', 'violet', 'amber'];
+/** Series colour cycle. Ordered so adjacent series stay separable while the
+ *  set still reads as one family. */
+export const SERIES_COLORS: SeriesAccent[] = ['cyan', 'magenta', 'iris', 'orchid', 'aqua'];
+
+/** What an interactive CONTROL or readout may be tinted. Controls are allowed
+ *  the state colours because a button genuinely does report state; a data
+ *  series is not, because "correct" is not a series. */
+export type ControlAccent = SeriesAccent | 'ok' | 'warn';
 
 export type Point = readonly [number, number];
 

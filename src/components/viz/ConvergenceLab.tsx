@@ -124,7 +124,7 @@ export default function ConvergenceLab({
               <Readout
                 key={method.key}
                 label={`${method.label} · theory ${result.claimedOrder}`}
-                accent={ok ? colorFor(method.key) : 'amber'}
+                accent={ok ? colorFor(method.key) : 'warn'}
                 value={`measured ${formatValue(result.observedOrder, 3)}`}
               />
             );

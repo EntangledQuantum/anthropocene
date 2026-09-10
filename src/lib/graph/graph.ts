@@ -52,7 +52,7 @@ export interface PathNode {
   title: string;
   subtitle: string;
   blurb: string;
-  accent: 'magenta' | 'cyan' | 'acid' | 'violet' | 'amber';
+  accent: 'magenta' | 'cyan' | 'iris' | 'orchid' | 'aqua';
   status: 'draft' | 'live';
   chapters: ChapterNode[];
   lessons: LessonNode[];

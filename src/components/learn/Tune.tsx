@@ -58,7 +58,7 @@ export default function Tune({
       <Panel
         title="tune"
         right={
-          <span className="hud-label" style={{ color: done ? 'var(--color-acid)' : 'var(--color-ink-faint)' }}>
+          <span className="hud-label" style={{ color: done ? 'var(--sig-ok)' : 'var(--color-ink-faint)' }}>
             {done ? 'found it' : verdict === 'miss' ? 'not yet' : 'find the threshold'}
           </span>
         }
@@ -73,7 +73,7 @@ export default function Tune({
           <Slider spec={param} value={value} onChange={(v) => { setValue(v); setVerdict('none'); }} />
           <div style={{ display: 'flex', gap: 6 }}>
             {hint && !done && (
-              <Button onClick={() => setShowHint(true)} accent="amber">hint</Button>
+              <Button onClick={() => setShowHint(true)} accent="warn">hint</Button>
             )}
             <Button onClick={check} accent="magenta" disabled={done}>
               {done ? 'solved' : 'check'}
@@ -82,7 +82,7 @@ export default function Tune({
         </div>
 
         {showHint && !done && hint && (
-          <p style={{ marginTop: 10, fontSize: '0.86rem', color: 'var(--color-amber)', lineHeight: 1.6 }}>
+          <p style={{ marginTop: 10, fontSize: '0.86rem', color: 'var(--sig-warn)', lineHeight: 1.6 }}>
             {hint}
           </p>
         )}
@@ -103,7 +103,7 @@ export default function Tune({
         {readouts && readouts.length > 0 && (
           <ReadoutRow>
             {readouts.map((r) => <Readout key={r.label} label={r.label} value={r.value} />)}
-            {done && <Readout label="target" value={formatValue(target, 4)} accent="acid" />}
+            {done && <Readout label="target" value={formatValue(target, 4)} accent="ok" />}
           </ReadoutRow>
         )}
       </Panel>

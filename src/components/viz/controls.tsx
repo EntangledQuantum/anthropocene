@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useRef, useState, type ReactNode } from 'react';
-import { formatValue, type SeriesAccent } from './chart-core.ts';
+import { formatValue, type ControlAccent } from './chart-core.ts';
 
 /* ── parameter model ───────────────────────────────────────────────────────
    Every simulation in the platform is driven by a declared parameter set, so
@@ -79,7 +79,7 @@ export function Button({
   children, onClick, active, accent = 'cyan', disabled, title,
 }: {
   children: ReactNode; onClick?: () => void; active?: boolean;
-  accent?: SeriesAccent; disabled?: boolean; title?: string;
+  accent?: ControlAccent; disabled?: boolean; title?: string;
 }) {
   return (
     <button
@@ -96,7 +96,7 @@ export function Button({
 export function Toggle({
   options, value, onChange, multiple = false,
 }: {
-  options: { key: string; label: string; accent?: SeriesAccent }[];
+  options: { key: string; label: string; accent?: ControlAccent }[];
   value: string[];
   onChange: (next: string[]) => void;
   multiple?: boolean;
@@ -144,7 +144,7 @@ export function Panel({ title, children, right }: { title?: string; children: Re
 }
 
 export function Readout({ label, value, accent = 'ink', mono = true }: {
-  label: string; value: ReactNode; accent?: SeriesAccent | 'ink'; mono?: boolean;
+  label: string; value: ReactNode; accent?: ControlAccent | 'ink'; mono?: boolean;
 }) {
   return (
     <div style={{ display: 'flex', flexDirection: 'column', gap: 1, minWidth: 0 }}>

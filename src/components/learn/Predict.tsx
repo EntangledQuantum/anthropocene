@@ -68,7 +68,7 @@ export default function Predict({
       <Panel
         title="predict"
         right={
-          <span className="hud-label" style={{ color: revealed ? (isRight ? 'var(--color-acid)' : 'var(--color-amber)') : 'var(--color-ink-faint)' }}>
+          <span className="hud-label" style={{ color: revealed ? (isRight ? 'var(--sig-ok)' : 'var(--sig-warn)') : 'var(--color-ink-faint)' }}>
             {revealed ? (isRight ? 'correct' : 'not quite') : multiple ? 'select all' : 'commit first'}
           </span>
         }
@@ -83,7 +83,7 @@ export default function Predict({
             const right = answers.includes(o.key);
             const tone = !revealed
               ? chosen ? 'var(--color-cyan)' : 'var(--color-rule)'
-              : right ? 'var(--color-acid)'
+              : right ? 'var(--sig-ok)'
               : chosen ? 'var(--color-magenta)'
               : 'var(--color-rule)';
 

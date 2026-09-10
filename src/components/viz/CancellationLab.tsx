@@ -80,15 +80,15 @@ export default function CancellationLab({ initial = 'sqrt' as CaseKey }) {
             <pre style={{ margin: 0, padding: '8px 10px', fontSize: 12, background: 'color-mix(in oklab,var(--color-abyss) 88%,transparent)', border: '1px solid var(--color-rule)', overflowX: 'auto' }}><code>{c.naiveSrc}</code></pre>
           </div>
           <div>
-            <span className="hud-label" style={{ color: 'var(--color-acid)', display: 'block', marginBottom: 5 }}>rearranged</span>
-            <pre style={{ margin: 0, padding: '8px 10px', fontSize: 12, background: 'color-mix(in oklab,var(--color-abyss) 88%,transparent)', border: '1px solid var(--color-acid)', overflowX: 'auto' }}><code>{c.stableSrc}</code></pre>
+            <span className="hud-label" style={{ color: 'var(--sig-ok)', display: 'block', marginBottom: 5 }}>rearranged</span>
+            <pre style={{ margin: 0, padding: '8px 10px', fontSize: 12, background: 'color-mix(in oklab,var(--color-abyss) 88%,transparent)', border: '1px solid var(--sig-ok)', overflowX: 'auto' }}><code>{c.stableSrc}</code></pre>
           </div>
         </div>
 
         <ReadoutRow>
           <Readout label="worst relative error" value={formatValue(worst, 3)} accent="magenta" />
           <Readout label="machine epsilon" value={Number.EPSILON.toExponential(2)} accent="ink" />
-          <Readout label="digits lost" value={`≈ ${Math.max(0, Math.round(Math.log10(worst / Number.EPSILON)))}`} accent="amber" />
+          <Readout label="digits lost" value={`≈ ${Math.max(0, Math.round(Math.log10(worst / Number.EPSILON)))}`} accent="warn" />
         </ReadoutRow>
 
         <p style={{ margin: '12px 0 0', fontSize: '0.88rem', lineHeight: 1.65, color: 'var(--color-ink-soft)' }}>

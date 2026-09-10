@@ -32,7 +32,7 @@ export default function XpRail() {
     return (
       <span
         className="hud-label"
-        style={{ color: 'var(--color-amber)', whiteSpace: 'nowrap' }}
+        style={{ color: 'var(--sig-warn)', whiteSpace: 'nowrap' }}
         title={
           status === 'locked'
             ? 'The progress database allows one tab at a time. Close the other tab and reload to track XP here.'
@@ -59,23 +59,23 @@ export default function XpRail() {
         <span style={{ width: 56, height: 3, background: 'var(--color-rule-bright)', position: 'relative', overflow: 'hidden' }}>
           <span style={{
             position: 'absolute', inset: 0, width: `${pct}%`,
-            background: hit ? 'var(--color-acid)' : 'var(--color-cyan)',
-            boxShadow: `0 0 8px ${hit ? 'var(--color-acid)' : 'var(--color-cyan)'}`,
+            background: hit ? 'var(--sig-ok)' : 'var(--color-cyan)',
+            boxShadow: `0 0 8px ${hit ? 'var(--sig-ok)' : 'var(--color-cyan)'}`,
             transition: 'width 400ms ease',
           }} />
         </span>
-        <span className="readout hud-label" style={{ color: hit ? 'var(--color-acid)' : 'var(--color-ink-soft)' }}>
+        <span className="readout hud-label" style={{ color: hit ? 'var(--sig-ok)' : 'var(--color-ink-soft)' }}>
           {stats.todayXp}
         </span>
       </span>
 
-      <span className="hud-label" title={`Level ${stats.level}`} style={{ color: 'var(--color-violet)' }}>
+      <span className="hud-label" title={`Level ${stats.level}`} style={{ color: 'var(--color-iris)' }}>
         L{stats.level}
       </span>
 
       {stats.dueCount > 0 && (
         <a href={`${import.meta.env.BASE_URL.replace(/\/$/, '')}/review/`} className="hud-label"
-           style={{ color: 'var(--color-amber)', textDecoration: 'none' }} title={`${stats.dueCount} cards due`}>
+           style={{ color: 'var(--sig-warn)', textDecoration: 'none' }} title={`${stats.dueCount} cards due`}>
           ↺ {stats.dueCount}
         </a>
       )}

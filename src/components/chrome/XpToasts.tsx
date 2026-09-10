@@ -17,7 +17,7 @@ export default function XpToasts() {
       {toasts.map((t) => (
         <div key={t.id} className="hud hud-brackets glow-magenta"
           style={{ padding: '7px 13px', display: 'flex', alignItems: 'baseline', gap: 9, animation: 'anth-toast 260ms ease-out' }}>
-          <span className="readout" style={{ color: 'var(--color-acid)', fontSize: 15, fontWeight: 600 }}>+{t.amount}</span>
+          <span className="readout" style={{ color: 'var(--sig-ok)', fontSize: 15, fontWeight: 600 }}>+{t.amount}</span>
           <span className="hud-label">{t.label}</span>
         </div>
       ))}

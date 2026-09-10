@@ -64,7 +64,7 @@ export default function DerivativeLab({
       out.push({
         key: 'complex-step',
         label: 'Complex step — no cancellation',
-        color: 'acid',
+        color: 'ok',
         dash: [5, 3],
         points: hs.map((h) => {
           const est = complexStep(target.fComplex!, target.x0, h);

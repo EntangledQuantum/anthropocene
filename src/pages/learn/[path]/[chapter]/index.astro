@@ -15,7 +15,7 @@ export async function getStaticPaths() {
 const { path, chapter } = Astro.props;
 const TIER_TONE: Record<string, string> = {
   foundation: 'var(--color-cyan)', core: 'var(--color-ink-soft)',
-  advanced: 'var(--color-violet)', frontier: 'var(--color-magenta)',
+  advanced: 'var(--color-iris)', frontier: 'var(--color-magenta)',
 };
 ---
 <Base title={chapter.title} description={chapter.blurb} eyebrow={path.title}>

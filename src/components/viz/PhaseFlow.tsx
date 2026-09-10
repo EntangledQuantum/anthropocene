@@ -366,7 +366,7 @@ export default function PhaseFlow({
         title={`phase-space transport — ${system.label}`}
         right={
           <div style={{ display: 'flex', gap: 6, flexWrap: 'wrap' }}>
-            <Button onClick={() => setRunning(!running)} accent={running ? 'amber' : 'acid'}>
+            <Button onClick={() => setRunning(!running)} accent={running ? 'warn' : 'ok'}>
               {running ? 'pause' : 'play'}
             </Button>
             <Button onClick={() => { setRunning(false); seed(); }}>reset</Button>
@@ -374,7 +374,7 @@ export default function PhaseFlow({
         }
       >
         {!supported && (
-          <p style={{ color: 'var(--color-amber)', margin: '0 0 12px' }}>
+          <p style={{ color: 'var(--sig-warn)', margin: '0 0 12px' }}>
             The field background needs WebGL2; the particles still work.
           </p>
         )}
@@ -412,7 +412,7 @@ export default function PhaseFlow({
                   key={m.key}
                   active={m.key === methodKey}
                   onClick={() => setMethodKey(m.key)}
-                  accent={m.symplectic ? 'acid' : 'cyan'}
+                  accent={m.symplectic ? 'ok' : 'cyan'}
                   title={m.symplectic ? 'symplectic' : 'not symplectic'}
                 >
                   {m.label}
@@ -427,10 +427,10 @@ export default function PhaseFlow({
           <Readout
             label="area change"
             value={`${driftPct >= 0 ? '+' : ''}${formatValue(driftPct, 3)} %`}
-            accent={preserved ? 'acid' : Math.abs(drift) > 0.1 ? 'magenta' : 'amber'}
+            accent={preserved ? 'ok' : Math.abs(drift) > 0.1 ? 'magenta' : 'warn'}
           />
           <Readout label="steps taken" value={stats.steps.toLocaleString()} />
-          <Readout label="symplectic?" value={method.symplectic ? 'yes' : 'no'} accent={method.symplectic ? 'acid' : 'amber'} />
+          <Readout label="symplectic?" value={method.symplectic ? 'yes' : 'no'} accent={method.symplectic ? 'ok' : 'warn'} />
         </ReadoutRow>
 
         <p style={{ margin: '14px 0 0', fontSize: '0.98rem', lineHeight: 1.6, color: 'var(--color-ink-soft)' }}>

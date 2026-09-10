@@ -1,5 +1,26 @@
 # AGENTS.md — the formula for adding content
 
+## Read this first
+
+**[`docs/learning-with-visualizations-thesis.md`](docs/learning-with-visualizations-thesis.md)
+is required reading before you design a lesson.** It is the doctrine; this file is the
+house rules that implement it. Where the two disagree, the thesis wins and this file is
+the bug.
+
+The one line to carry: **the visualization is the question.** The learner is placed inside
+the problem, and interaction is not decoration after an explanation — interaction *is* the
+explanation, happening in their hands. A lesson is a sequenced chain of small decisions
+that force the idea to assemble itself. Symbols arrive after the idea has a body.
+
+Two companion queues:
+
+- **[`LEARNING-PLAN.md`](LEARNING-PLAN.md)** — content to write, ordered basic → advanced.
+- **[`PLATFORM-GAPS.md`](PLATFORM-GAPS.md)** — where we currently fall short of the thesis.
+
+Both are queues. Ship the thing, delete the entry, same commit.
+
+---
+
 This is the contract. Everyone adding a lesson follows it, human or agent. Most of it is
 enforced by `npm run content:check`, which the build runs first and which fails the build
 on violation.
@@ -39,6 +60,10 @@ Nobody hand-writes an RK4 step in 2026. Asking them to is testing the one part o
 skill that is now free, and it is testing it badly — a learner who cannot type the
 formula from memory may understand it perfectly, and one who can type it may understand
 nothing.
+
+The thesis backs this structurally: its list of solvable input types (§5.5) contains no
+"write the function". Every entry is a *decision in a visual world* — drag, plot, reshape,
+estimate, classify, choose between competing interpretations.
 
 What is genuinely scarce is the judgement a model will not exercise for you:
 
@@ -353,7 +378,23 @@ except inside shader source, where CSS variables cannot reach.
 
 ---
 
-## 12. Before you commit
+## 12. The quality bar
+
+Thesis §11 is the acceptance test for any lesson. Run it honestly. **If a lesson fails two
+of these, rewrite it — do not ship and iterate.**
+
+- **Eight minutes.** A rusty, curious adult sits down cold and has one genuine "oh" inside eight minutes.
+- **Mute.** Hide the prose and the explanations. Do the interactives alone still teach something?
+- **Transfer.** Change the story and the numbers. Does it still work, or was the screenshot memorised?
+- **Representation.** Can the learner show the idea two ways?
+- **Struggle.** Is a wrong path possible, visible, and recoverable without a lecture?
+- **Silence.** Could you remove 30% of the words and lose nothing? Then remove them.
+- **Pride.** Would a serious person send this to a friend because the *idea* is beautiful?
+- **Tomorrow.** Is there a picture left in their head tomorrow?
+
+---
+
+## 13. Before you commit
 
 ```bash
 npm run content:check    # graph rules, gaps, per-lesson requirements
@@ -364,8 +405,9 @@ npm run build            # runs content:check first
 Then read the lesson in a browser and actually do the interactions. If you were not
 tempted by a wrong answer anywhere, the predictions are too easy.
 
-If you changed the landing page or the design system, **regenerate the screenshot**:
+If you changed the landing page or the design system, **regenerate the screenshots**:
 
 ```bash
-npm run screenshot       # writes docs/landing.png, which README embeds
+npm run screenshot                                    # docs/landing.png (README embeds it)
+npm run screenshot -- /learn/computational-physics/ path-journey
 ```

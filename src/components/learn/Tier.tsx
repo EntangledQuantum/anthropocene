@@ -5,7 +5,7 @@ export type TierLevel = 'foundation' | 'core' | 'advanced' | 'frontier';
 const TONE: Record<TierLevel, string> = {
   foundation: 'var(--color-cyan)',
   core: 'var(--color-ink-soft)',
-  advanced: 'var(--color-violet)',
+  advanced: 'var(--color-iris)',
   frontier: 'var(--color-magenta)',
 };
 

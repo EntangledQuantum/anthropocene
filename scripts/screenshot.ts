@@ -1,11 +1,12 @@
 /**
  * Regenerates the landing-page screenshot that README embeds.
  *
- *   npm run screenshot
+ *   npm run screenshot                       # landing page -> docs/landing.png
+ *   npm run screenshot -- <path> <name>      # any route -> docs/<name>.png
  *
- * Builds, serves `dist/`, and captures the hero at desktop width. Run this
- * whenever the landing page or the design system changes — a README showing
- * an old design is worse than one showing none.
+ * Serves `dist/` and captures at desktop width. Run this whenever the landing
+ * page or the design system changes — a README showing an old design is worse
+ * than one showing none.
  *
  * Headed Chromium is required: the landing background is a WebGL point cloud,
  * and the headless shell has no GPU, so a headless capture would show an
@@ -60,6 +61,12 @@ async function main() {
   }
   mkdirSync(OUT_DIR, { recursive: true });
 
+  // Optional route + output name, so this doubles as a general capture tool.
+  const [routeArg, nameArg] = process.argv.slice(2).filter((a) => !a.startsWith('-'));
+  const route = routeArg ?? '/';
+  const name = nameArg ?? 'landing';
+  const target = `http://localhost:${PORT}${BASE}${route.startsWith('/') ? route : `/${route}`}`;
+
   const server = serve();
   await new Promise<void>((r) => server.listen(PORT, r));
 
@@ -74,12 +81,12 @@ async function main() {
       colorScheme: 'dark',
     });
 
-    await page.goto(URL_, { waitUntil: 'networkidle' });
+    await page.goto(target, { waitUntil: 'networkidle' });
     // Let the attractor integrate, fade in, and settle.
     await wait(5000);
 
-    await page.screenshot({ path: join(OUT_DIR, 'landing.png') });
-    console.log('wrote docs/landing.png');
+    await page.screenshot({ path: join(OUT_DIR, `${name}.png`) });
+    console.log(`wrote docs/${name}.png  (${target})`);
 
     await browser.close();
   } finally {

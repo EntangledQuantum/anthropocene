@@ -263,7 +263,7 @@ export default function SketchCurve({
         right={
           <span
             className="hud-label"
-            style={{ color: !submitted ? 'var(--color-ink-faint)' : correct ? 'var(--color-acid)' : 'var(--color-amber)' }}
+            style={{ color: !submitted ? 'var(--color-ink-faint)' : correct ? 'var(--sig-ok)' : 'var(--sig-warn)' }}
           >
             {!submitted ? 'draw across the whole plot' : correct ? 'close enough' : 'not the shape'}
           </span>
@@ -308,7 +308,7 @@ export default function SketchCurve({
             </Button>
           )}
           <Button onClick={reset}>{submitted ? 'try again' : 'clear'}</Button>
-          {hint && !submitted && <Button onClick={() => setShowHint(true)} accent="amber">hint</Button>}
+          {hint && !submitted && <Button onClick={() => setShowHint(true)} accent="warn">hint</Button>}
           {submitted && (
             <span className="hud-label" style={{ display: 'inline-flex', gap: 14, marginLeft: 4 }}>
               <span style={{ color: 'var(--color-cyan)' }}>—— yours</span>
@@ -318,13 +318,13 @@ export default function SketchCurve({
         </div>
 
         {showHint && !submitted && hint && (
-          <p style={{ marginTop: 12, fontSize: '0.96rem', color: 'var(--color-amber)', lineHeight: 1.6 }}>{hint}</p>
+          <p style={{ marginTop: 12, fontSize: '0.96rem', color: 'var(--sig-warn)', lineHeight: 1.6 }}>{hint}</p>
         )}
 
         {submitted && (
           <>
             <ReadoutRow>
-              <Readout label="mean deviation" value={formatValue(deviation ?? 0, 3)} accent={correct ? 'acid' : 'amber'} />
+              <Readout label="mean deviation" value={formatValue(deviation ?? 0, 3)} accent={correct ? 'ok' : 'warn'} />
               <Readout label="needed under" value={formatValue(spec.tolerance, 3)} />
               <Readout label="units" value={spec.yLabel} />
             </ReadoutRow>

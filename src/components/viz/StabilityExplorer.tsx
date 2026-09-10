@@ -307,7 +307,7 @@ export default function StabilityExplorer({
         }
       >
         {!supported && (
-          <p style={{ color: 'var(--color-amber)', margin: '0 0 12px' }}>
+          <p style={{ color: 'var(--sig-warn)', margin: '0 0 12px' }}>
             This view needs WebGL2, which this browser did not provide.
           </p>
         )}
@@ -369,7 +369,7 @@ export default function StabilityExplorer({
               className="hud-label"
               style={{
                 position: 'absolute', right: 10, top: 8, pointerEvents: 'none',
-                color: stable ? 'var(--color-acid)' : 'var(--color-magenta)',
+                color: stable ? 'var(--sig-ok)' : 'var(--color-magenta)',
               }}
             >
               {stable ? 'stable here' : 'unstable here'}
@@ -413,9 +413,9 @@ export default function StabilityExplorer({
 
         <ReadoutRow>
           <Readout label="z = hλ" value={`${formatValue(z[0], 3)} ${z[1] >= 0 ? '+' : '−'} ${formatValue(Math.abs(z[1]), 3)}i`} accent="ink" />
-          <Readout label="|R(z)|" value={formatValue(mag, 4)} accent={stable ? 'acid' : 'magenta'} />
-          <Readout label="verdict" value={stable ? 'stable' : 'unstable'} accent={stable ? 'acid' : 'magenta'} />
-          <Readout label="A-stable?" value={method.aStable ? 'yes' : 'no'} accent={method.aStable ? 'acid' : 'amber'} />
+          <Readout label="|R(z)|" value={formatValue(mag, 4)} accent={stable ? 'ok' : 'magenta'} />
+          <Readout label="verdict" value={stable ? 'stable' : 'unstable'} accent={stable ? 'ok' : 'magenta'} />
+          <Readout label="A-stable?" value={method.aStable ? 'yes' : 'no'} accent={method.aStable ? 'ok' : 'warn'} />
         </ReadoutRow>
 
         <p style={{ margin: '14px 0 0', fontSize: '0.98rem', lineHeight: 1.6, color: 'var(--color-ink-soft)' }}>

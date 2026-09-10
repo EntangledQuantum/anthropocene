@@ -66,7 +66,7 @@ export default function FloatLab() {
               {info.bits.split('').map((b, i) => {
                 const zone = i === 0 ? 'sign' : i <= 11 ? 'exp' : 'mant';
                 const tone =
-                  zone === 'sign' ? 'var(--color-amber)'
+                  zone === 'sign' ? 'var(--sig-warn)'
                   : zone === 'exp' ? 'var(--color-magenta)'
                   : 'var(--color-cyan)';
                 return (
@@ -80,7 +80,7 @@ export default function FloatLab() {
               })}
             </div>
             <div style={{ display: 'flex', gap: 2, marginTop: 5, minWidth: 'max-content' }}>
-              <span className="hud-label" style={{ width: 9, color: 'var(--color-amber)' }}>s</span>
+              <span className="hud-label" style={{ width: 9, color: 'var(--sig-warn)' }}>s</span>
               <span className="hud-label" style={{ width: 11 * 11, color: 'var(--color-magenta)', paddingLeft: 4 }}>exponent (11)</span>
               <span className="hud-label" style={{ color: 'var(--color-cyan)', paddingLeft: 4 }}>mantissa (52)</span>
             </div>
@@ -89,11 +89,11 @@ export default function FloatLab() {
           <ReadoutRow>
             <Readout label="value" value={x.toExponential(4)} accent="ink" />
             <Readout label="gap to next (1 ulp)" value={info.ulp.toExponential(3)} accent="cyan" />
-            <Readout label="relative gap" value={(info.ulp / x).toExponential(2)} accent="violet" />
+            <Readout label="relative gap" value={(info.ulp / x).toExponential(2)} accent="iris" />
             <Readout
               label="consecutive integers?"
               value={integersGone ? 'lost' : 'intact'}
-              accent={integersGone ? 'magenta' : 'acid'}
+              accent={integersGone ? 'magenta' : 'ok'}
             />
           </ReadoutRow>
 

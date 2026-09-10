@@ -13,8 +13,14 @@ import { useEffect, useRef, useState } from 'react';
    Deliberately a small number of CONTINUOUS lines rather than a dense point
    cloud. An earlier version drew 90k individual points; it was legible as an
    image but it read as visual noise next to body text, and a busy background
-   beside prose is the thing this design is supposed to avoid. Smooth ribbons
-   with a slow gradient carry the same shape and sit still.
+   beside prose is the thing this design is supposed to avoid.
+
+   MONOCHROME, on purpose. An earlier pass swept the whole palette along each
+   curve, which made an elegant object look cheap — several unrelated hues at
+   once reads as decoration. One hue with luminance varying along a travelling
+   pulse reads as light. The motion carries the interest that colour was
+   failing to carry: glowing heads run along each trajectory and fade behind
+   themselves, so the attractor looks lit rather than painted.
 
    Raw WebGL2 rather than three.js: this is a handful of static curves and one
    camera, and 600 KB of scene graph would be a poor trade for a background.
@@ -26,7 +32,7 @@ const DT = 0.0042;
 
 const SIGMA = 10, RHO = 28, BETA = 8 / 3;
 
-interface Ribbon { positions: Float32Array; nexts: Float32Array; sides: Float32Array; shades: Float32Array; counts: number[]; offsets: number[] }
+interface Ribbon { positions: Float32Array; nexts: Float32Array; sides: Float32Array; shades: Float32Array; seeds: Float32Array; counts: number[]; offsets: number[] }
 
 /** Integrates the trajectories and expands each into a triangle strip. */
 function buildRibbons(): Ribbon {
@@ -37,6 +43,7 @@ function buildRibbons(): Ribbon {
   const nexts = new Float32Array(total * 3);
   const sides = new Float32Array(total);
   const shades = new Float32Array(total);
+  const seeds = new Float32Array(total);
   const counts: number[] = [];
   const offsets: number[] = [];
 
@@ -94,13 +101,14 @@ function buildRibbons(): Ribbon {
         nexts[v * 3 + 2] = path[j * 3 + 2];
         sides[v] = side;
         shades[v] = i / STEPS;
+        seeds[v] = trail * 0.37;      // desynchronise the pulses per trajectory
         v++;
       }
     }
     counts.push(vertsPerTrail);
   }
 
-  return { positions, nexts, sides, shades, counts, offsets };
+  return { positions, nexts, sides, shades, seeds, counts, offsets };
 }
 
 const VERT = `#version 300 es
@@ -108,6 +116,7 @@ in vec3 a_pos;
 in vec3 a_next;
 in float a_side;
 in float a_shade;
+in float a_seed;
 
 uniform mat4 u_mvp;
 uniform float u_width;     // half-width in clip units
@@ -115,6 +124,7 @@ uniform float u_aspect;
 
 out float v_shade;
 out float v_depth;
+out float v_seed;
 
 void main() {
   vec4 clip = u_mvp * vec4(a_pos, 1.0);
@@ -134,6 +144,7 @@ void main() {
   gl_Position = clip;
 
   v_shade = a_shade;
+  v_seed = a_seed;
   v_depth = clamp(1.0 - (clip.w - 24.0) / 74.0, 0.0, 1.0);
 }`;
 
@@ -142,23 +153,36 @@ precision highp float;
 
 in float v_shade;
 in float v_depth;
+in float v_seed;
 out vec4 outColor;
 
 uniform float u_fade;
+uniform float u_time;
 
-/* A slow sweep across the palette rather than a fast cycle: fast cycling is
-   what made the point-cloud version read as confetti. */
-vec3 iridescent(float t) {
-  vec3 magenta = vec3(1.000, 0.302, 0.620);
-  vec3 iris    = vec3(0.655, 0.545, 0.980);
-  vec3 cyan    = vec3(0.361, 0.882, 0.902);
-  t = clamp(t, 0.0, 1.0);
-  return t < 0.5 ? mix(magenta, iris, t / 0.5) : mix(iris, cyan, (t - 0.5) / 0.5);
-}
+/* Monochrome. One hue, and the only thing that varies is how hot it is —
+   deep magenta at rest, rising through rose to near-white at a pulse head.
+   Varying luminance within a single hue reads as light; varying hue reads as
+   paint, and paint is what made the previous version look cheap. */
+const vec3 EMBER = vec3(0.62, 0.10, 0.30);   // resting line
+const vec3 FLARE = vec3(1.00, 0.72, 0.86);   // pulse head
+
+const float PULSES = 3.0;    // travelling glows per trajectory
+const float SPEED  = 0.055;
+const float TAIL   = 11.0;   // higher = shorter, sharper tail
 
 void main() {
-  vec3 col = iridescent(v_shade);
-  float a = (0.05 + 0.26 * v_depth) * u_fade;
+  // Position within a repeating pulse cycle. 0 at the head, rising along the
+  // tail behind it, so exp(-p * TAIL) gives a comet that fades backwards.
+  float p = fract((v_shade - u_time * SPEED) * PULSES + v_seed);
+  float comet = exp(-p * TAIL);
+
+  vec3 col = mix(EMBER, FLARE, comet);
+
+  // The resting line is barely there; the pulse is what you actually see.
+  float base = 0.035 + 0.10 * v_depth;
+  float glow = comet * (0.30 + 0.55 * v_depth);
+  float a = (base + glow) * u_fade;
+
   outColor = vec4(col * a, a);
 }`;
 
@@ -230,12 +254,14 @@ export default function AttractorField() {
       bind(rib.nexts, 'a_next', 3),
       bind(rib.sides, 'a_side', 1),
       bind(rib.shades, 'a_shade', 1),
+      bind(rib.seeds, 'a_seed', 1),
     ];
 
     const uMvp = gl.getUniformLocation(prog, 'u_mvp');
     const uWidth = gl.getUniformLocation(prog, 'u_width');
     const uAspect = gl.getUniformLocation(prog, 'u_aspect');
     const uFade = gl.getUniformLocation(prog, 'u_fade');
+    const uTime = gl.getUniformLocation(prog, 'u_time');
 
     gl.enable(gl.BLEND);
     gl.blendFunc(gl.ONE, gl.ONE_MINUS_SRC_ALPHA);
@@ -288,6 +314,8 @@ export default function AttractorField() {
       gl.uniform1f(uWidth, 0.0016);
       gl.uniform1f(uAspect, aspect);
       gl.uniform1f(uFade, fade * (1 - scrollEased * 0.6));
+      // Frozen under reduced-motion: the pulses become static highlights.
+      gl.uniform1f(uTime, reduced ? 0.0 : t);
 
       for (let i = 0; i < rib.counts.length; i++) {
         gl.drawArrays(gl.TRIANGLE_STRIP, rib.offsets[i], rib.counts[i]);

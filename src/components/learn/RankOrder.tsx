@@ -75,7 +75,7 @@ export default function RankOrder({
       <Panel
         title="put these in order"
         right={
-          <span className="hud-label" style={{ color: !checked ? 'var(--color-ink-faint)' : isRight ? 'var(--color-acid)' : 'var(--color-amber)' }}>
+          <span className="hud-label" style={{ color: !checked ? 'var(--color-ink-faint)' : isRight ? 'var(--sig-ok)' : 'var(--sig-warn)' }}>
             {!checked ? 'drag, or use the arrows' : isRight ? 'correct' : 'not yet'}
           </span>
         }
@@ -88,7 +88,7 @@ export default function RankOrder({
           {order.map((key, idx) => {
             const item = items.find((i) => i.key === key)!;
             const rightSpot = checked && correct[idx] === key;
-            const tone = !checked ? 'var(--color-rule)' : rightSpot ? 'var(--color-acid)' : 'var(--color-magenta)';
+            const tone = !checked ? 'var(--color-rule)' : rightSpot ? 'var(--sig-ok)' : 'var(--color-magenta)';
             return (
               <div key={key}>
                 <div

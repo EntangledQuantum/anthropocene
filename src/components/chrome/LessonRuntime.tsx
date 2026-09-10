@@ -37,7 +37,7 @@ export default function LessonRuntime({ lessonId, tier, title, widgets, unlocks 
   return (
     <section className="hud hud-brackets" style={{ padding: '16px 18px' }}>
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'baseline', gap: 16, flexWrap: 'wrap' }}>
-        <span className="hud-label" style={{ color: complete ? 'var(--color-acid)' : 'var(--color-magenta)' }}>
+        <span className="hud-label" style={{ color: complete ? 'var(--sig-ok)' : 'var(--color-magenta)' }}>
           {complete ? '◆ lesson complete' : '◇ progress'}
         </span>
         <span className="readout hud-label" style={{ color: 'var(--color-ink-soft)' }}>
@@ -48,8 +48,8 @@ export default function LessonRuntime({ lessonId, tier, title, widgets, unlocks 
       <div style={{ height: 3, background: 'var(--color-rule-bright)', marginTop: 10, position: 'relative', overflow: 'hidden' }}>
         <div style={{
           position: 'absolute', inset: 0, width: `${pct}%`,
-          background: complete ? 'var(--color-acid)' : 'var(--color-cyan)',
-          boxShadow: `0 0 10px ${complete ? 'var(--color-acid)' : 'var(--color-cyan)'}`,
+          background: complete ? 'var(--sig-ok)' : 'var(--color-cyan)',
+          boxShadow: `0 0 10px ${complete ? 'var(--sig-ok)' : 'var(--color-cyan)'}`,
           transition: 'width 400ms ease',
         }} />
       </div>

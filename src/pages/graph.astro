@@ -34,9 +34,9 @@ for (const g of gaps) {
     <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(126px,1fr));gap:1px;background:var(--color-rule);border:1px solid var(--color-rule);margin-bottom:36px">
       {[
         { k: concepts.length, l: 'concepts', c: 'cyan' },
-        { k: owned.length, l: 'taught', c: 'acid' },
-        { k: gapByConcept.size, l: 'gaps to write', c: 'amber' },
-        { k: unowned.length, l: 'unowned', c: 'violet' },
+        { k: owned.length, l: 'taught', c: 'ok' },
+        { k: gapByConcept.size, l: 'gaps to write', c: 'warn' },
+        { k: unowned.length, l: 'unowned', c: 'iris' },
         { k: blocking.length, l: 'build problems', c: blocking.length ? 'magenta' : 'ink-faint' },
       ].map((s) => (
         <div style="background:var(--color-abyss);padding:15px 18px">
@@ -68,9 +68,9 @@ for (const g of gaps) {
           {[...gapByConcept.values()].map((g) => {
             const c = graph.concepts.get(g.concept);
             return (
-              <div class="hud" style="padding:12px 15px;border-color:var(--color-amber)">
+              <div class="hud" style="padding:12px 15px;border-color:var(--sig-warn)">
                 <div style="display:flex;gap:10px;align-items:baseline;flex-wrap:wrap">
-                  <code style="color:var(--color-amber);font-size:0.86rem">{g.concept}</code>
+                  <code style="color:var(--sig-warn);font-size:0.86rem">{g.concept}</code>
                   {c && <span style="color:var(--color-ink);font-size:0.95rem">{c.title}</span>}
                   <span class="hud-label" style="margin-left:auto">needed by {g.wanted.length}</span>
                 </div>
@@ -91,7 +91,7 @@ for (const g of gaps) {
             <div class="hud" style="padding:13px 15px">
               <div style="display:flex;gap:9px;align-items:baseline;flex-wrap:wrap;margin-bottom:5px">
                 <span style="color:var(--color-ink);font-size:1rem;font-family:var(--font-display);font-weight:600">{c.title}</span>
-                <span class="hud-label" style={`margin-left:auto;color:var(--color-${owner ? 'acid' : 'amber'})`}>
+                <span class="hud-label" style={`margin-left:auto;color:var(--color-${owner ? 'ok' : 'warn'})`}>
                   {owner ? 'taught' : 'unwritten'}
                 </span>
               </div>

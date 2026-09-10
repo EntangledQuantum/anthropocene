@@ -49,7 +49,7 @@ const paths = defineCollection({
     subtitle: z.string(),
     blurb: z.string(),
     /** Two-accent gradient key used for the path's chrome. */
-    accent: z.enum(['magenta', 'cyan', 'acid', 'violet', 'amber']).default('magenta'),
+    accent: z.enum(['magenta', 'cyan', 'iris', 'orchid', 'aqua']).default('magenta'),
     /** Ordered chapter directory names. Chapters not listed here still build,
      *  they just sort last — so a half-finished path is never a broken build. */
     chapters: z.array(z.string()).default([]),

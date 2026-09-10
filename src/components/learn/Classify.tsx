@@ -9,7 +9,7 @@ import { useWidget } from '../../lib/use-lesson.ts';
 export interface ClassifyProps {
   id: string;
   prompt: string;
-  buckets: { key: string; label: string; accent?: 'cyan' | 'magenta' | 'acid' | 'violet' | 'amber' }[];
+  buckets: { key: string; label: string; accent?: 'cyan' | 'magenta' | 'ok' | 'iris' | 'warn' }[];
   items: { key: string; label: string; bucket: string; why?: string }[];
   explanation?: string;
 }
@@ -45,7 +45,7 @@ export default function Classify({ id, prompt, buckets, items, explanation }: Cl
       <Panel
         title="sort these"
         right={
-          <span className="hud-label" style={{ color: !checked ? 'var(--color-ink-faint)' : isRight ? 'var(--color-acid)' : 'var(--color-amber)' }}>
+          <span className="hud-label" style={{ color: !checked ? 'var(--color-ink-faint)' : isRight ? 'var(--sig-ok)' : 'var(--sig-warn)' }}>
             {!checked ? `${unplaced.length} left` : isRight ? 'all correct' : 'some are misplaced'}
           </span>
         }
@@ -98,14 +98,14 @@ export default function Classify({ id, prompt, buckets, items, explanation }: Cl
                           style={{
                             display: 'flex', alignItems: 'center', gap: 8,
                             padding: '7px 10px', fontSize: '0.96rem',
-                            border: `1px solid ${bad ? 'var(--color-magenta)' : ok ? 'var(--color-acid)' : 'var(--color-rule-bright)'}`,
+                            border: `1px solid ${bad ? 'var(--color-magenta)' : ok ? 'var(--sig-ok)' : 'var(--color-rule-bright)'}`,
                             borderRadius: 'var(--radius-hud)',
                             background: 'color-mix(in oklab, var(--color-surface) 62%, transparent)',
                             color: 'var(--color-ink)',
                             cursor: done ? 'default' : 'pointer',
                           }}
                         >
-                          {checked && <span style={{ color: ok ? 'var(--color-acid)' : 'var(--color-magenta)' }}>{ok ? '✓' : '✕'}</span>}
+                          {checked && <span style={{ color: ok ? 'var(--sig-ok)' : 'var(--color-magenta)' }}>{ok ? '✓' : '✕'}</span>}
                           {i.label}
                         </div>
                         {bad && i.why && (

@@ -37,7 +37,7 @@ export default function Recall({ id, concept, front, children }: RecallProps) {
     <div className="not-prose" style={{ margin: '1.75rem 0' }}>
       <Panel
         title="recall"
-        right={<span className="hud-label" style={{ color: 'var(--color-violet)' }}>scheduled for review</span>}
+        right={<span className="hud-label" style={{ color: 'var(--color-iris)' }}>scheduled for review</span>}
       >
         <div style={{ color: 'var(--color-ink)', fontSize: '1rem', lineHeight: 1.6 }}>{front}</div>
 
@@ -53,7 +53,7 @@ export default function Recall({ id, concept, front, children }: RecallProps) {
           </div>
         ) : (
           <div style={{ marginTop: 12 }}>
-            <Button onClick={() => setRevealed(true)} accent="violet">reveal</Button>
+            <Button onClick={() => setRevealed(true)} accent="iris">reveal</Button>
           </div>
         )}
       </Panel>

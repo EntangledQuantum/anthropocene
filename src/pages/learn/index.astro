@@ -22,7 +22,7 @@ const graph = await buildGraph();
             <span class="hud-label">{path.chapters.length} ch</span>
             <span class="hud-label">{path.lessons.length} lessons</span>
             <span class="hud-label">≈ {(path.minutes / 60).toFixed(1)} h</span>
-            {path.status === 'draft' && <span class="hud-label" style="color:var(--color-amber);margin-left:auto">draft</span>}
+            {path.status === 'draft' && <span class="hud-label" style="color:var(--sig-warn);margin-left:auto">draft</span>}
           </div>
         </a>
       ))}
