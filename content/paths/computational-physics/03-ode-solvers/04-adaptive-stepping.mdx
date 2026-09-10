@@ -3,7 +3,7 @@ title: 'Letting the solver choose the step'
 blurb: 'Fixed steps waste effort where the solution is smooth and under-resolve where it is not. Estimate the local error each step and resize.'
 order: 4
 tier: 'advanced'
-minutes: 25
+minutes: 16
 teaches:
   - 'adaptive-stepping'
   - 'embedded-pairs'
@@ -11,26 +11,172 @@ requires:
   - 'rk4'
   - 'butcher-tableau'
   - 'local-truncation-error'
-status: 'draft'
+runtime: 'none'
+status: 'live'
+updated: 2026-09-10
 ---
 
-:::note
-This lesson is **outlined but not yet written**. The concept graph already knows what it
-will own, so lessons downstream of it link here rather than re-teaching the material.
-Everything below is the plan.
-:::
+A pulse sits in a quiet interval. Most of the time the solution is almost flat. Then it stands up and sits back down.
 
-## Planned outline
+You have been picking one step size for the whole run. Drag the tolerance instead, and watch *where* the steps go.
 
-1. Estimating local error by taking the same interval two ways.
-2. Embedded pairs: two weight rows over shared stages, so the estimate is nearly free.
-3. Dormand-Prince 5(4) - what ode45 and SciPy RK45 actually run.
-4. The step size controller: PI control on the error, safety factors, rejected steps.
-5. Absolute versus relative tolerance, and why getting this wrong is the most common solver misuse.
-6. Dense output: interpolating within a step without shrinking it.
+<AdaptiveLab
+  caption="Top: the pulse, with a dot at every accepted step. Bottom: the step size that produced it. Magenta dots are rejected attempts — time did not advance there. The readout 'fixed at min h' is what you would pay to use the smallest of those steps everywhere."
+/>
 
-## Interactives planned
+The step size is not a number you pick. It is a curve.
 
-Each numbered point above gets at least one thing you can manipulate, not a figure. See
-`AGENTS.md` for the widget vocabulary and the rule that every lesson ships at least one
-graded interaction and one recall card.
+<Predict
+  id="adapt-why-h-drops"
+  question="Why does h drop at the peak of the pulse, not on the flats?"
+  options={[
+    { key: 'a', misconception: 'bigger-y-needs-more-digits', label: 'y is larger there, so relative tolerance demands more digits', why: 'Tempting, and it would be the story if the pulse were a tall linear ramp. A large but gently bent stretch is cheap. What costs is curvature: the slope changing across the step.' },
+    { key: 'b', label: 'The slope is changing fast, so the two solutions in the pair disagree more', why: 'Correct. The error estimate is how much two methods of different order diverge on this interval. When the vector field is bending, they diverge; when it is not, they agree and h is allowed to grow.' },
+    { key: 'c', misconception: 'smaller-h-everywhere', label: 'The solver is being conservative — it saw a feature and will now stay at that small h', why: 'Watch the plot after the peak. h grows back. A controller that locked in the smallest h would be the fixed-step method you already have, just with extra ceremony.' },
+    { key: 'd', label: 'There are more output points at the peak, so the line looks denser — h is actually constant', why: 'The dots are the accepted steps. Count them. The solver really is taking smaller steps; that is the whole point of the lower panel.' },
+  ]}
+  correct="b"
+/>
+
+## Two solutions, one set of stages
+
+You cannot compute the local truncation error — that would need the exact solution. You can *estimate* it: take the same interval two ways and subtract.
+
+The smallest pair is Euler and Heun, sharing $k_1$:
+
+$$
+\begin{aligned}
+k_1 &= f(t_n, y_n) \\
+k_2 &= f(t_n + h,\; y_n + h k_1) \\
+y_{\mathrm{Euler}} &= y_n + h k_1 \\
+y_{\mathrm{Heun}} &= y_n + \tfrac{h}{2}(k_1 + k_2)
+\end{aligned}
+$$
+
+Their difference is $\tfrac{h}{2}(k_2 - k_1)$: half a step times how much the slope changed. If the slope barely moved, the interval was easy.
+
+An **embedded pair** is this idea with the stages already paid for. Two weight rows $b$ and $\hat b$ over the same $k_i$. The second solution is a few fused multiply-adds, not a second integration.
+
+<Predict
+  id="adapt-double-h"
+  question="An order-4 method has local error O(h⁵). You double the step. What should the local error do?"
+  options={[
+    { key: 'a', misconception: 'local-error-scales-like-global', label: 'Double — error is proportional to h', why: 'That would be a first-order local error, which is not even consistent. Local truncation error of a method of order p is O(h^{p+1}), one power above the global error.' },
+    { key: 'b', misconception: 'local-error-scales-like-global', label: '×16 — RK4 is fourth order, and 2⁴ = 16', why: 'That is the GLOBAL error. One step of an order-p method is accurate to O(h^{p+1}); the missing power is the one that accumulates into global error over ~1/h steps.' },
+    { key: 'c', label: '×32, because local error is O(h⁵) and 2⁵ = 32', why: 'Correct. That exponent is what the controller inverts: to cut the local error in half you do not halve h, you take h ← h · 2^{-1/5} ≈ 0.87 h.' },
+    { key: 'd', label: '×8 — three powers, like a Taylor remainder after the quadratic term', why: 'That is the local error of an order-2 method (Heun, midpoint). RK4 cancels two more powers.' },
+  ]}
+  correct="c"
+/>
+
+<Recall id="adapt-embedded-recall" concept="embedded-pairs">
+  <div slot="front">What is an embedded Runge–Kutta pair, and why is the error estimate almost free?</div>
+
+Two weight rows over the **same** stage evaluations, giving methods of order $p$ and $p-1$ (or $p$ and $p+1$). Their difference is the local-error estimate. You already computed the $k_i$; the second solution is a different weighted sum, not a different integration.
+
+Dormand–Prince 5(4) — `ode45` in MATLAB, `RK45` in SciPy — is this: seven stages, two rows, advance with the 5th-order solution, estimate with the 4th. The 7th stage is FSAL (first-same-as-last), so an accepted step costs six $f$-evaluations, not seven.
+
+</Recall>
+
+Dormand and Prince (1980) chose the coefficients to make the *fifth*-order solution accurate, then used the fourth-order companion only as a check. You advance with the better answer. That choice is why this pair, not Fehlberg's, became the default.
+
+## The controller, including the steps it throws away
+
+Each step produces a scaled error
+
+$$
+e = \mathrm{rms}\!\left(\frac{|y_5 - y_4|}{\texttt{atol} + \texttt{rtol}\,|y|}\right)
+$$
+
+Target: $e \approx 1$. If $e > 1$ the trial was too big — **reject it**, shrink $h$, retry from the same point. The solution does not move. If $e \le 1$, accept and grow $h$.
+
+<Predict
+  id="adapt-reject"
+  question="You start this pulse with h = 0.5 and a tight tolerance. The first attempted step:"
+  options={[
+    { key: 'a', misconception: 'reject-means-broken', label: 'Fails, and the solver stops — a rejected step is an error', why: 'Rejecting is the controller working, not crashing. Production solvers reject routinely, especially on the first step when h₀ is a guess.' },
+    { key: 'b', label: 'Is rejected, h shrinks, and the solver retries from the same (t, y)', why: 'Correct. Look at the magenta dots on the step-size plot: they sit at the t where the attempt started, and the cyan curve continues from there with a smaller h. Time did not advance.' },
+    { key: 'c', label: 'Is accepted anyway, then h is reduced on the next step', why: 'Some crude controllers do that, and they take a step they already know is too big. A production controller refuses to advance until the estimate is under tolerance.' },
+    { key: 'd', label: 'Succeeds, because Dormand–Prince is fifth order and 0.5 is not large', why: 'Order tells you how error falls as h → 0, not whether one particular trial is under tolerance. Tighten the slider; the first oversized attempt turns magenta.' },
+  ]}
+  correct="b"
+/>
+
+Tighten the slider until magenta dots appear. They are part of the method.
+
+The elementary resize is $h \leftarrow h \cdot (1/e)^{1/5}$, times a safety factor 0.9 so you aim a little under the tolerance rather than skating on it. A PI controller also looks at the *previous* error, so $h$ does not ring when the step sits near a stability boundary (Gustafsson 1988). That is what this page is actually running.
+
+## What the two tolerances mean
+
+`rtol` is significant digits. `atol` is "I do not care below this." The scale in the denominator is $\texttt{atol} + \texttt{rtol}\,|y|$ — whichever is larger wins.
+
+On a solution of size ~1, `atol = 10^{-3}` and `rtol = 10^{-9}` is the same budget as `tol = 10^{-3}`. The tiny rtol never bites. Getting this backwards is the most common way to misuse `ode45`.
+
+<AdaptiveLab
+  splitTol={true}
+  caption="Decouple the two. On this pulse, |y| is ~10⁻⁴ on the flats and ~1 at the peak — so atol owns the tails and rtol owns the crest. Watch which slider actually moves the step-size curve."
+/>
+
+<Classify
+  id="adapt-what-is-what"
+  prompt="Each of these is either how you estimate the error, or how you act on that estimate. The pair is a tableau; the controller is a policy."
+  buckets={[
+    { key: 'pair', label: 'the pair (the tableau)', accent: 'cyan' },
+    { key: 'ctrl', label: 'the controller (the policy)', accent: 'magenta' },
+  ]}
+  items={[
+    { key: 'rows', label: 'Two weight rows over shared stages', bucket: 'pair', why: 'That is the definition of an embedded pair. The stages are the expensive part; the second row is arithmetic.' },
+    { key: 'diff', label: 'Error estimate = y₅ − y₄', bucket: 'pair', why: 'Once the two solutions exist, the estimate is their difference. Nothing about resizing lives here.' },
+    { key: 'fsal', label: 'The 7th stage is k₁ of the next accepted step (FSAL)', bucket: 'pair', why: 'A property of these particular coefficients: A’s last row equals b, so k₇ is free next time.' },
+    { key: 'rej', label: 'Rejecting a step when e > 1 and retrying from the same point', bucket: 'ctrl', why: 'The pair already produced both solutions. Whether you keep the step is a policy.' },
+    { key: 'pi', label: 'Using the previous error as well as the current one (PI control)', bucket: 'ctrl', why: 'Gustafsson’s contribution. Same pair, quieter h sequence.' },
+    { key: 'scale', label: 'Scaling the difference by atol + rtol |y| before comparing to 1', bucket: 'ctrl', why: 'The pair gives you a vector of raw differences. Turning that into a single e that means "on tolerance" is the controller, and it is where most misuse lives.' },
+  ]}
+  explanation="A different pair (Bogacki–Shampine, Cash–Karp, Fehlberg) changes the estimate. A different controller on the same pair changes which steps you take. When a run is slow, name which side you are looking at before you turn knobs."
+/>
+
+<RankOrder
+  id="adapt-tol-cost"
+  prompt="Same pulse, Dormand–Prince 5(4). Rank these by number of accepted steps, fewest first."
+  lowLabel="fewest accepted steps"
+  highLabel="most accepted steps"
+  items={[
+    { key: 'loose', label: 'adaptive, atol = rtol = 10⁻³', why: 'A dozen steps. The pulse is resolved just enough; the flats are almost a single stride.' },
+    { key: 'mid', label: 'adaptive, atol = rtol = 10⁻⁵', why: 'Roughly twice the loose run. Tightening tol by 100 does not cost 100×, because the controller exponent is 1/5.' },
+    { key: 'tight', label: 'adaptive, atol = rtol = 10⁻⁷', why: 'Tighter still, and still concentrated at the pulse. The flats do not get the same multiplier.' },
+    { key: 'fixed', label: 'fixed step equal to the smallest h the 10⁻⁷ run used', why: 'Pulse-prices, paid on the flats. That is the method you have been running until this lesson, and it is why the adaptive run is cheaper at similar accuracy.' },
+  ]}
+  correct={['loose', 'mid', 'tight', 'fixed']}
+  explanation="The last entry is the 'just be safe' instinct, made visible. You already computed the small h the pulse needed; using it everywhere throws away the information. Work scales roughly as tol^{-1/5} for this pair, not as 1/tol — another two digits costs about 2.5×, not 100×."
+/>
+
+<Recall id="adapt-tol-recall" concept="adaptive-stepping">
+  <div slot="front">What does a solver actually hold near the tolerance — local error or global error?</div>
+
+**Local.** $e \le 1$ is a statement about this step, scaled by $\texttt{atol} + \texttt{rtol}\,|y|$. Global error is those locals accumulated and then amplified by the problem; it is typically larger, and no explicit RK pair stamps a digit count on $y(T)$. If you need a global bound, tighten the local tolerance and verify, or use a method that estimates global error on purpose.
+
+</Recall>
+
+<Tier level="advanced" title="Why the controller is PI, not just I">
+
+The elementary rule $h \leftarrow h \cdot (1/e)^{1/5}$ treats the current error as if the problem were the same on the next interval. When you are limited by *stability* rather than accuracy — $h$ sitting on the edge of the stability region — that assumption is wrong, and $h$ oscillates: too big, reject, too small, grow, too big again.
+
+Gustafsson's PI controller adds a term in the previous error, which damps that oscillation. SciPy's `RK45` uses a pure I-controller; Hairer's `dopri5` and SciPy's `DOP853` use PI. The pair is the same idea either way. The production detail is the memory.
+
+On a rejected step you fall back to I-control: a stale previous error must not be allowed to *grow* $h$.
+
+</Tier>
+
+<Tier level="frontier" title="You do not adapt Verlet this way">
+
+Changing $h$ every step on a symplectic integrator destroys the shadow Hamiltonian — the hidden nearby energy that was the whole point of using Verlet. Adaptive RK is the right default for a nonstiff IVP you want to some tolerance. It is the wrong default for a long orbit you want to stay an orbit.
+
+Dense output is the other production footnote: Dormand–Prince comes with a polynomial that interpolates inside an accepted step, so you can plot a smooth curve without shrinking $h$ to the output grid. `ode45`'s `Refine` option is that interpolant, not extra steps.
+
+</Tier>
+
+## What to carry forward
+
+- Local error ≈ the difference of two solutions on the **same** stages. That is an embedded pair.
+- $h$ is a curve: tight where the slope is changing, loose where it is not. Using the smallest of those $h$ everywhere is how you waste the budget.
+- `atol` and `rtol` are different questions. The scale is their sum; whichever is larger is the one you actually set.

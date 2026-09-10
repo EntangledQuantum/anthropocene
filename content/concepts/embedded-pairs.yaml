@@ -1,4 +1,21 @@
-title: 'Embedded Runge-Kutta pairs'
+title: 'Embedded Runge–Kutta pairs'
 blurb: 'Two methods of different order sharing stage evaluations, so the error estimate is nearly free.'
+notation: 'e_n = \hat y_{n+1} - y_{n+1}'
 tags:
   - ch3
+misconceptions:
+  - id: 'two-independent-runs'
+    name: 'Estimating the error means taking the step twice with two different methods.'
+    signal: 'Thinks adaptive RK45 costs as much as RK5 plus RK4, run separately.'
+    correction: 'The two methods share the same stage evaluations. Only the weight row changes. The second solution is a few fused multiply-adds, not a second integration.'
+  - id: 'advance-with-lower-order'
+    name: 'Advance with the lower-order solution, because that is the one whose error you estimated.'
+    signal: 'Treats the 4th-order result as the answer and the 5th-order as a check.'
+    correction: 'Dormand and Prince minimised the error of the 5th-order solution on purpose. You advance with that one (local extrapolation) and use the difference only as an estimate. Fehlberg did the opposite; that is why ode45 is Dormand–Prince, not RKF45.'
+  - id: 'local-error-scales-like-global'
+    name: 'Doubling the step doubles the local error, or multiplies it by 2^p.'
+    signal: 'Confuses local truncation error O(h^{p+1}) with global error O(h^p), or thinks error is proportional to h.'
+    correction: 'A method of order p has local error O(h^{p+1}). For RK4 that is h^5, so doubling h multiplies the local error by 32. That exponent is what the step-size controller inverts.'
+references:
+  - label: 'Dormand & Prince 1980, A family of embedded Runge–Kutta formulae'
+    url: 'https://doi.org/10.1016/0771-050X(80)90013-3'

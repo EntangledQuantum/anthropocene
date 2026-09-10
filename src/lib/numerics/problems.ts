@@ -134,6 +134,30 @@ export function lotkaVolterra(a = 1.5, b = 1, c = 3, d = 1): Problem {
   };
 }
 
+/** A bump sitting in a quiet interval. Exact solution y = sech(μ(t − t★)).
+ *  Adaptive methods should spend their steps at the peak and coast on the
+ *  flats — that contrast is the whole argument for letting h vary. */
+export function sechPulse(mu = 10, tPeak = 1): Problem {
+  const sech = (z: number) => {
+    const e = Math.exp(-Math.abs(z));
+    return (2 * e) / (1 + e * e);
+  };
+  return {
+    key: 'sech-pulse',
+    label: `Sech pulse (μ = ${mu})`,
+    latex: String.raw`y = \mathrm{sech}\bigl(\mu(t-t_\star)\bigr)`,
+    f: (t, y) => {
+      const z = mu * (t - tPeak);
+      return [-mu * Math.tanh(z) * y[0]];
+    },
+    y0: [sech(mu * (0 - tPeak))],
+    t0: 0,
+    span: 2,
+    exact: (t) => [sech(mu * (t - tPeak))],
+    labels: ['y'],
+  };
+}
+
 export const PROBLEMS: Record<string, () => Problem> = {
   decay: () => decay(1),
   oscillator: () => oscillator(1),
@@ -145,4 +169,5 @@ export const PROBLEMS: Record<string, () => Problem> = {
     const p = decay(TWO_RATE_FAST);
     return { ...p, span: 2, key: 'stiff-decay' };
   },
+  'sech-pulse': () => sechPulse(),
 };

@@ -1,4 +1,27 @@
 title: 'Adaptive step size control'
 blurb: 'Estimate the local error each step and resize h to hold it near a tolerance.'
+notation: 'h_{\mathrm{new}} = h\,(\mathrm{tol}/e)^{1/(p+1)}'
 tags:
   - ch3
+misconceptions:
+  - id: 'smaller-h-everywhere'
+    name: 'Pick the smallest step the problem needs and use it everywhere.'
+    signal: 'Sets h from the transient and pays that cost on the flats.'
+    correction: 'The local error tells you, each step, whether this interval is easy or hard. Using the hard-interval h on the easy intervals is how you waste most of the budget.'
+  - id: 'tol-is-global-error'
+    name: 'The tolerance is a bound on the error at the end of the run.'
+    signal: 'Sets rtol = 1e-6 and expects six correct digits in y(T).'
+    correction: 'The controller holds the LOCAL error near the tolerance. Global error is those locals accumulated and amplified by the problem, and is typically larger. Tightening tol tightens each step; it does not stamp a digit count on the endpoint.'
+  - id: 'reject-means-broken'
+    name: 'A rejected step means the solver is failing.'
+    signal: 'Treats a rejected attempt as an error, or thinks a good solver never retries.'
+    correction: 'Rejecting is the controller working. The trial was too big, so it shrinks h and retries from the same point. The solution does not advance until the estimate is under tolerance.'
+  - id: 'bigger-y-needs-more-digits'
+    name: 'h shrinks where y is large, because large values need more digits.'
+    signal: 'Reads a step-size dip at a pulse as a relative-tolerance effect rather than a curvature effect.'
+    correction: 'The pair disagrees when the SLOPE is changing, not when y is large. A large but linear stretch is cheap. A small but sharply bent stretch is expensive.'
+references:
+  - label: 'Dormand & Prince 1980, A family of embedded Runge–Kutta formulae'
+    url: 'https://doi.org/10.1016/0771-050X(80)90013-3'
+  - label: 'Gustafsson, Lundh & Söderlind 1988, A PI stepsize control'
+    url: 'https://doi.org/10.1007/BF01934091'
