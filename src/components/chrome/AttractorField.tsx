@@ -1,76 +1,140 @@
 import { useEffect, useRef, useState } from 'react';
 
 /* ─────────────────────────────────────────────────────────────────────────
-   The landing-page background: a Lorenz attractor, drifting and reacting to
-   scroll.
+   The landing-page background: a Lorenz attractor drawn as a few smooth
+   ribbons, drifting and reacting to scroll.
 
-   Chosen because it is the subject matter rather than decoration bolted on.
-   The Lorenz system is the canonical example of why numerical integration is
-   hard — deterministic, bounded, and impossible to predict far ahead — so the
-   thing behind the headline is the thing the site teaches.
+   Chosen because it is the subject matter rather than decoration bolted on —
+   the Lorenz system is the canonical example of why numerical integration is
+   hard, so the thing behind the headline is the thing the site teaches. It is
+   integrated with RK4 because forward Euler visibly distorts the attractor,
+   which would be an embarrassing thing to ship here.
 
-   Written against raw WebGL2 rather than three.js: this is a static point
-   cloud with one rotating camera, and pulling ~600 KB of scene graph onto the
-   landing page to draw it would be a poor trade for a background.
+   Deliberately a small number of CONTINUOUS lines rather than a dense point
+   cloud. An earlier version drew 90k individual points; it was legible as an
+   image but it read as visual noise next to body text, and a busy background
+   beside prose is the thing this design is supposed to avoid. Smooth ribbons
+   with a slow gradient carry the same shape and sit still.
+
+   Raw WebGL2 rather than three.js: this is a handful of static curves and one
+   camera, and 600 KB of scene graph would be a poor trade for a background.
    ───────────────────────────────────────────────────────────────────────── */
 
-const N = 90_000;      // integration steps, one point each
-const DT = 0.0035;
+const TRAILS = 5;          // separate trajectories
+const STEPS = 5200;        // points per trajectory
+const DT = 0.0042;
 
-/** Classic Lorenz parameters — the ones that give the butterfly. */
 const SIGMA = 10, RHO = 28, BETA = 8 / 3;
 
-function buildAttractor(): { positions: Float32Array; shades: Float32Array } {
-  const positions = new Float32Array(N * 3);
-  const shades = new Float32Array(N);
+interface Ribbon { positions: Float32Array; nexts: Float32Array; sides: Float32Array; shades: Float32Array; counts: number[]; offsets: number[] }
 
-  let x = 0.9, y = 0, z = 1.2;
+/** Integrates the trajectories and expands each into a triangle strip. */
+function buildRibbons(): Ribbon {
+  const vertsPerTrail = STEPS * 2;
+  const total = vertsPerTrail * TRAILS;
 
-  // RK4 on the Lorenz system. Euler visibly distorts the attractor's shape at
-  // this step size, which would be an embarrassing thing to ship on the
-  // landing page of a numerical-methods site.
+  const positions = new Float32Array(total * 3);
+  const nexts = new Float32Array(total * 3);
+  const sides = new Float32Array(total);
+  const shades = new Float32Array(total);
+  const counts: number[] = [];
+  const offsets: number[] = [];
+
   const f = (a: number, b: number, c: number) =>
     [SIGMA * (b - a), a * (RHO - c) - b, a * b - BETA * c] as const;
 
-  for (let i = 0; i < N; i++) {
-    const k1 = f(x, y, z);
-    const k2 = f(x + (DT / 2) * k1[0], y + (DT / 2) * k1[1], z + (DT / 2) * k1[2]);
-    const k3 = f(x + (DT / 2) * k2[0], y + (DT / 2) * k2[1], z + (DT / 2) * k2[2]);
-    const k4 = f(x + DT * k3[0], y + DT * k3[1], z + DT * k3[2]);
+  let v = 0;
+  for (let trail = 0; trail < TRAILS; trail++) {
+    offsets.push(v);
 
-    x += (DT / 6) * (k1[0] + 2 * k2[0] + 2 * k3[0] + k4[0]);
-    y += (DT / 6) * (k1[1] + 2 * k2[1] + 2 * k3[1] + k4[1]);
-    z += (DT / 6) * (k1[2] + 2 * k2[2] + 2 * k3[2] + k4[2]);
+    // Nearby initial conditions: they track together, then separate. That
+    // divergence is the attractor's whole point, and it is what gives the
+    // ribbons their layered structure.
+    let x = 0.9 + trail * 0.0009;
+    let y = 0.4;
+    let z = 1.2;
 
-    positions[i * 3] = x;
-    positions[i * 3 + 1] = y;
-    positions[i * 3 + 2] = z - 25;    // centre the body of the attractor
-    shades[i] = i / N;                // colour along the trajectory, not by position
+    // Discard the transient so every ribbon starts on the attractor itself.
+    for (let i = 0; i < 1500; i++) {
+      const k1 = f(x, y, z);
+      const k2 = f(x + (DT / 2) * k1[0], y + (DT / 2) * k1[1], z + (DT / 2) * k1[2]);
+      const k3 = f(x + (DT / 2) * k2[0], y + (DT / 2) * k2[1], z + (DT / 2) * k2[2]);
+      const k4 = f(x + DT * k3[0], y + DT * k3[1], z + DT * k3[2]);
+      x += (DT / 6) * (k1[0] + 2 * k2[0] + 2 * k3[0] + k4[0]);
+      y += (DT / 6) * (k1[1] + 2 * k2[1] + 2 * k3[1] + k4[1]);
+      z += (DT / 6) * (k1[2] + 2 * k2[2] + 2 * k3[2] + k4[2]);
+    }
+
+    const path = new Float32Array(STEPS * 3);
+    for (let i = 0; i < STEPS; i++) {
+      path[i * 3] = x;
+      path[i * 3 + 1] = y;
+      path[i * 3 + 2] = z - 25;          // centre the attractor body
+
+      const k1 = f(x, y, z);
+      const k2 = f(x + (DT / 2) * k1[0], y + (DT / 2) * k1[1], z + (DT / 2) * k1[2]);
+      const k3 = f(x + (DT / 2) * k2[0], y + (DT / 2) * k2[1], z + (DT / 2) * k2[2]);
+      const k4 = f(x + DT * k3[0], y + DT * k3[1], z + DT * k3[2]);
+      x += (DT / 6) * (k1[0] + 2 * k2[0] + 2 * k3[0] + k4[0]);
+      y += (DT / 6) * (k1[1] + 2 * k2[1] + 2 * k3[1] + k4[1]);
+      z += (DT / 6) * (k1[2] + 2 * k2[2] + 2 * k3[2] + k4[2]);
+    }
+
+    // Two vertices per path point, offset either side of the curve in the
+    // shader. The last point reuses its own position as `next`, giving a
+    // zero-length tangent that the shader falls back on.
+    for (let i = 0; i < STEPS; i++) {
+      const j = Math.min(i + 1, STEPS - 1);
+      for (const side of [1, -1]) {
+        positions[v * 3] = path[i * 3];
+        positions[v * 3 + 1] = path[i * 3 + 1];
+        positions[v * 3 + 2] = path[i * 3 + 2];
+        nexts[v * 3] = path[j * 3];
+        nexts[v * 3 + 1] = path[j * 3 + 1];
+        nexts[v * 3 + 2] = path[j * 3 + 2];
+        sides[v] = side;
+        shades[v] = i / STEPS;
+        v++;
+      }
+    }
+    counts.push(vertsPerTrail);
   }
-  return { positions, shades };
+
+  return { positions, nexts, sides, shades, counts, offsets };
 }
 
 const VERT = `#version 300 es
 in vec3 a_pos;
+in vec3 a_next;
+in float a_side;
 in float a_shade;
 
 uniform mat4 u_mvp;
-uniform float u_size;
-uniform float u_reveal;
+uniform float u_width;     // half-width in clip units
+uniform float u_aspect;
 
 out float v_shade;
 out float v_depth;
 
 void main() {
   vec4 clip = u_mvp * vec4(a_pos, 1.0);
+  vec4 clipNext = u_mvp * vec4(a_next, 1.0);
+
+  // Expand perpendicular to the curve in SCREEN space, so the ribbon keeps a
+  // constant visual width regardless of depth. Aspect correction keeps it from
+  // going oval on a wide viewport.
+  vec2 ndc = clip.xy / max(clip.w, 1e-4);
+  vec2 ndcNext = clipNext.xy / max(clipNext.w, 1e-4);
+  vec2 delta = (ndcNext - ndc) * vec2(u_aspect, 1.0);
+
+  vec2 dir = length(delta) > 1e-6 ? normalize(delta) : vec2(1.0, 0.0);
+  vec2 normal = vec2(-dir.y, dir.x) / vec2(u_aspect, 1.0);
+
+  clip.xy += normal * a_side * u_width * clip.w;
   gl_Position = clip;
 
-  // Perspective-correct point size, clamped so near points do not become blobs.
-  float d = max(clip.w, 0.001);
-  gl_PointSize = clamp(u_size / d, 1.0, 5.5);
-
   v_shade = a_shade;
-  v_depth = clamp(1.0 - (d - 20.0) / 70.0, 0.0, 1.0);
+  v_depth = clamp(1.0 - (clip.w - 24.0) / 74.0, 0.0, 1.0);
 }`;
 
 const FRAG = `#version 300 es
@@ -82,53 +146,38 @@ out vec4 outColor;
 
 uniform float u_fade;
 
+/* A slow sweep across the palette rather than a fast cycle: fast cycling is
+   what made the point-cloud version read as confetti. */
 vec3 iridescent(float t) {
   vec3 magenta = vec3(1.000, 0.302, 0.620);
   vec3 iris    = vec3(0.655, 0.545, 0.980);
   vec3 cyan    = vec3(0.361, 0.882, 0.902);
-  vec3 aqua    = vec3(0.604, 0.961, 0.941);
-  t = fract(t);
-  if (t < 0.34) return mix(magenta, iris, t / 0.34);
-  if (t < 0.68) return mix(iris, cyan, (t - 0.34) / 0.34);
-  return mix(cyan, aqua, (t - 0.68) / 0.32);
+  t = clamp(t, 0.0, 1.0);
+  return t < 0.5 ? mix(magenta, iris, t / 0.5) : mix(iris, cyan, (t - 0.5) / 0.5);
 }
 
 void main() {
-  // Round, soft-edged points. Square points read as noise at this density.
-  vec2 d = gl_PointCoord - 0.5;
-  float r = length(d);
-  if (r > 0.5) discard;
-  float soft = 1.0 - smoothstep(0.16, 0.5, r);
-
-  vec3 col = iridescent(v_shade * 1.6);
-  float a = soft * (0.12 + 0.46 * v_depth) * u_fade;
+  vec3 col = iridescent(v_shade);
+  float a = (0.05 + 0.26 * v_depth) * u_fade;
   outColor = vec4(col * a, a);
 }`;
 
-/** Column-major perspective * lookAt * rotateY, built by hand to avoid a
- *  matrix library for four multiplications. */
 function mvp(aspect: number, yaw: number, pitch: number, dist: number): Float32Array {
   const fov = 1.05, near = 0.1, far = 400;
   const f = 1 / Math.tan(fov / 2);
-
   const cy = Math.cos(yaw), sy = Math.sin(yaw);
   const cp = Math.cos(pitch), sp = Math.sin(pitch);
 
-  // rotate about Y then X, then translate away from the camera
-  const r = [
-    cy, sp * sy, -cp * sy,
-    0, cp, sp,
-    sy, -sp * cy, cp * cy,
-  ];
+  const r = [cy, sp * sy, -cp * sy, 0, cp, sp, sy, -sp * cy, cp * cy];
 
   const m = new Float32Array(16);
   const p00 = f / aspect, p11 = f;
   const p22 = (far + near) / (near - far), p23 = (2 * far * near) / (near - far);
 
-  m[0] = p00 * r[0];  m[1] = p11 * r[3];  m[2] = p22 * r[6];             m[3] = -r[6];
-  m[4] = p00 * r[1];  m[5] = p11 * r[4];  m[6] = p22 * r[7];             m[7] = -r[7];
-  m[8] = p00 * r[2];  m[9] = p11 * r[5];  m[10] = p22 * r[8];            m[11] = -r[8];
-  m[12] = 0;          m[13] = 0;          m[14] = p22 * -dist + p23;     m[15] = dist;
+  m[0] = p00 * r[0];  m[1] = p11 * r[3];  m[2] = p22 * r[6];          m[3] = -r[6];
+  m[4] = p00 * r[1];  m[5] = p11 * r[4];  m[6] = p22 * r[7];          m[7] = -r[7];
+  m[8] = p00 * r[2];  m[9] = p11 * r[5];  m[10] = p22 * r[8];         m[11] = -r[8];
+  m[12] = 0;          m[13] = 0;          m[14] = p22 * -dist + p23;  m[15] = dist;
   return m;
 }
 
@@ -140,7 +189,7 @@ export default function AttractorField() {
     const canvas = canvasRef.current;
     if (!canvas) return;
 
-    const gl = canvas.getContext('webgl2', { antialias: false, alpha: true, premultipliedAlpha: true });
+    const gl = canvas.getContext('webgl2', { antialias: true, alpha: true, premultipliedAlpha: true });
     if (!gl) { setOk(false); return; }
 
     const compile = (type: number, src: string) => {
@@ -163,38 +212,40 @@ export default function AttractorField() {
     gl.linkProgram(prog);
     if (!gl.getProgramParameter(prog, gl.LINK_STATUS)) { setOk(false); return; }
 
-    const { positions, shades } = buildAttractor();
-
+    const rib = buildRibbons();
     const vao = gl.createVertexArray();
     gl.bindVertexArray(vao);
 
-    const posBuf = gl.createBuffer();
-    gl.bindBuffer(gl.ARRAY_BUFFER, posBuf);
-    gl.bufferData(gl.ARRAY_BUFFER, positions, gl.STATIC_DRAW);
-    const aPos = gl.getAttribLocation(prog, 'a_pos');
-    gl.enableVertexAttribArray(aPos);
-    gl.vertexAttribPointer(aPos, 3, gl.FLOAT, false, 0, 0);
-
-    const shadeBuf = gl.createBuffer();
-    gl.bindBuffer(gl.ARRAY_BUFFER, shadeBuf);
-    gl.bufferData(gl.ARRAY_BUFFER, shades, gl.STATIC_DRAW);
-    const aShade = gl.getAttribLocation(prog, 'a_shade');
-    gl.enableVertexAttribArray(aShade);
-    gl.vertexAttribPointer(aShade, 1, gl.FLOAT, false, 0, 0);
+    const bind = (data: Float32Array, name: string, size: number) => {
+      const buf = gl.createBuffer();
+      gl.bindBuffer(gl.ARRAY_BUFFER, buf);
+      gl.bufferData(gl.ARRAY_BUFFER, data, gl.STATIC_DRAW);
+      const loc = gl.getAttribLocation(prog, name);
+      gl.enableVertexAttribArray(loc);
+      gl.vertexAttribPointer(loc, size, gl.FLOAT, false, 0, 0);
+      return buf;
+    };
+    const buffers = [
+      bind(rib.positions, 'a_pos', 3),
+      bind(rib.nexts, 'a_next', 3),
+      bind(rib.sides, 'a_side', 1),
+      bind(rib.shades, 'a_shade', 1),
+    ];
 
     const uMvp = gl.getUniformLocation(prog, 'u_mvp');
-    const uSize = gl.getUniformLocation(prog, 'u_size');
+    const uWidth = gl.getUniformLocation(prog, 'u_width');
+    const uAspect = gl.getUniformLocation(prog, 'u_aspect');
     const uFade = gl.getUniformLocation(prog, 'u_fade');
 
     gl.enable(gl.BLEND);
-    gl.blendFunc(gl.ONE, gl.ONE_MINUS_SRC_ALPHA);   // premultiplied, additive-ish glow
+    gl.blendFunc(gl.ONE, gl.ONE_MINUS_SRC_ALPHA);
 
     const reduced = window.matchMedia?.('(prefers-reduced-motion: reduce)').matches ?? false;
+    const dpr = Math.min(window.devicePixelRatio || 1, 2);
 
-    let dpr = Math.min(window.devicePixelRatio || 1, 1.75);
     const resize = () => {
-      const w = canvas.clientWidth, h = canvas.clientHeight;
-      const W = Math.round(w * dpr), H = Math.round(h * dpr);
+      const W = Math.round(canvas.clientWidth * dpr);
+      const H = Math.round(canvas.clientHeight * dpr);
       if (canvas.width !== W || canvas.height !== H) {
         canvas.width = W; canvas.height = H;
         gl.viewport(0, 0, W, H);
@@ -204,8 +255,6 @@ export default function AttractorField() {
     ro.observe(canvas);
     resize();
 
-    // Scroll drives the camera. Smoothed, because raw scroll position makes
-    // the motion feel jittery and cheap.
     let scrollTarget = 0;
     let scrollEased = 0;
     const onScroll = () => {
@@ -222,23 +271,27 @@ export default function AttractorField() {
     const frame = (now: number) => {
       const t = (now - t0) / 1000;
       scrollEased += (scrollTarget - scrollEased) * 0.06;
-      fade = Math.min(fade + 0.012, 1);          // gentle fade-in on load
+      fade = Math.min(fade + 0.011, 1);
 
       resize();
       gl.clearColor(0, 0, 0, 0);
       gl.clear(gl.COLOR_BUFFER_BIT);
 
-      const yaw = reduced ? 0.7 : 0.7 + t * 0.045 + scrollEased * 2.4;
-      const pitch = -0.22 + scrollEased * 0.55;
-      const dist = 56 - scrollEased * 16;
+      const aspect = canvas.width / Math.max(canvas.height, 1);
+      const yaw = reduced ? 0.7 : 0.7 + t * 0.035 + scrollEased * 2.2;
+      const pitch = -0.2 + scrollEased * 0.5;
+      const dist = 58 - scrollEased * 14;
 
       gl.useProgram(prog);
       gl.bindVertexArray(vao);
-      gl.uniformMatrix4fv(uMvp, false, mvp(canvas.width / Math.max(canvas.height, 1), yaw, pitch, dist));
-      gl.uniform1f(uSize, 260 * dpr);
-      // Fades out as the reader scrolls into the text, so it never competes.
-      gl.uniform1f(uFade, fade * (1 - scrollEased * 0.55));
-      gl.drawArrays(gl.POINTS, 0, N);
+      gl.uniformMatrix4fv(uMvp, false, mvp(aspect, yaw, pitch, dist));
+      gl.uniform1f(uWidth, 0.0016);
+      gl.uniform1f(uAspect, aspect);
+      gl.uniform1f(uFade, fade * (1 - scrollEased * 0.6));
+
+      for (let i = 0; i < rib.counts.length; i++) {
+        gl.drawArrays(gl.TRIANGLE_STRIP, rib.offsets[i], rib.counts[i]);
+      }
 
       raf = requestAnimationFrame(frame);
     };
@@ -249,8 +302,7 @@ export default function AttractorField() {
       window.removeEventListener('scroll', onScroll);
       ro.disconnect();
       gl.deleteProgram(prog);
-      gl.deleteBuffer(posBuf);
-      gl.deleteBuffer(shadeBuf);
+      for (const b of buffers) gl.deleteBuffer(b);
       gl.deleteVertexArray(vao);
     };
   }, []);
@@ -265,7 +317,6 @@ export default function AttractorField() {
         inset: 0,
         zIndex: 0,
         pointerEvents: 'none',
-        // Held off the reading column so the text never sits on top of detail.
         maskImage:
           'radial-gradient(82% 88% at 76% 30%, #000 24%, transparent 78%), linear-gradient(90deg, transparent 0%, transparent 38%, #000 60%)',
         WebkitMaskImage:
