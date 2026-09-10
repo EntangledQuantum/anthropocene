@@ -1,0 +1,6 @@
+---
+import Island, { type RichardsonTableauProps } from '../learn/RichardsonTableau.tsx';
+type Props = Omit<RichardsonTableauProps, 'children'>;
+const props = Astro.props as Props;
+---
+<Island client:visible {...props} />

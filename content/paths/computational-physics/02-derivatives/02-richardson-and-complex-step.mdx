@@ -1,9 +1,9 @@
 ---
 title: 'Buying an order for free'
-blurb: 'Richardson extrapolation cancels the leading error term algebraically. Complex-step differentiation removes the subtraction entirely, and with it the whole roundoff branch.'
+blurb: 'Two wrong answers, algebraically combined, cancel the leading error. Complex-step never subtracts, and the roundoff branch of the U-curve refuses to appear.'
 order: 2
 tier: 'advanced'
-minutes: 25
+minutes: 16
 teaches:
   - 'richardson-extrapolation'
   - 'complex-step-differentiation'
@@ -11,25 +11,166 @@ requires:
   - 'central-difference'
   - 'order-of-accuracy'
   - 'truncation-roundoff-tradeoff'
-status: 'draft'
+status: 'live'
+updated: 2026-09-10
 ---
 
-:::note
-This lesson is **outlined but not yet written**. The concept graph already knows what it
-will own, so lessons downstream of it link here rather than re-teaching the material.
-Everything below is the plan.
-:::
+You measured this derivative twice. Both answers are too high. The coarser one is more too-high. Combining them can beat both — if you pick the right pair.
 
-## Planned outline
+<Predict
+  id="rich-two-wrongs"
+  question="A central difference at step h is too high by about C h². The same method at h/2 is too high by about C h²/4. Both wrong, same direction. What should you do with them?"
+  options={[
+    { key: 'a', misconception: 'averaging-cancels-error', label: 'Average them. Opposite errors should cancel.', why: 'The errors are not opposite — they point the same way. Averaging two overestimates is still an overestimate, biased by (5/8) C h².' },
+    { key: 'b', misconception: 'throw-away-coarse', label: 'Keep only the finer one. The coarser estimate is strictly worse.', why: 'The coarser one is worse as an answer, but it is information. How much the estimate moved when you halved h tells you the size of the leading error, which you can then subtract off.' },
+    { key: 'c', label: 'Form (4 D(h/2) − D(h))/3. The h² pieces cancel.', why: 'Correct. The leading errors are in the ratio 4:1, so this linear combination kills them and leaves O(h⁴). Two second-order answers buy a fourth-order one.' },
+    { key: 'd', label: 'Subtract them and divide by 2. Two wrongs make a right.', why: 'D(h/2) − D(h) is almost pure error — you have thrown the derivative itself away along with the noise.' },
+  ]}
+  correct="c"
+/>
 
-1. Richardson: combine D(h) and D(h/2) so the leading h^p term cancels.
-2. Building a Romberg-style tableau, and where it stops helping.
-3. Complex-step: expand along the imaginary axis, take the imaginary part, never subtract.
-4. Why complex step needs f to be analytic and generically implemented.
-5. How both relate to automatic differentiation, which supersedes them for instrumented code.
+The expansion is even powers, because a central difference is symmetric:
 
-## Interactives planned
+$$
+\begin{aligned}
+D(h) &= f'(x) + c_2 h^2 + c_4 h^4 + \cdots \\
+D(h/2) &= f'(x) + c_2 \tfrac{h^2}{4} + c_4 \tfrac{h^4}{16} + \cdots
+\end{aligned}
+$$
 
-Each numbered point above gets at least one thing you can manipulate, not a figure. See
-`AGENTS.md` for the widget vocabulary and the rule that every lesson ships at least one
-graded interaction and one recall card.
+Four copies of the fine estimate minus one copy of the coarse one:
+
+$$
+\frac{4\, D(h/2) - D(h)}{3} = f'(x) + \Order(h^4)
+$$
+
+That is **Richardson extrapolation**. The same trick, iterated, is the tableau Romberg used for integrals.
+
+Column 0 below is already computed: four central differences of $\sin x$ at $x = 1$, each $h$ half the one above. Click two adjacent rows and combine. The leading error should vanish. A skipped row, with the same weights, will not.
+
+<RichardsonTableau
+  id="rich-tableau"
+  target="sin"
+  h0={0.4}
+  rows={4}
+  prompt="Click two filled cells in the same column, then combine. Adjacent rows cancel the leading error; a skipped row does not."
+/>
+
+<RankOrder
+  id="rich-rank-errors"
+  prompt="Rank these four estimates of sin′(1) from largest error to smallest. The numbers are in the tableau."
+  lowLabel="largest |error|"
+  highLabel="smallest |error|"
+  items={[
+    { key: 'h', label: 'central at h = 0.4', why: 'Coarsest. Error ~ C h².' },
+    { key: 'h2', label: 'central at h = 0.2', why: 'Halved step, error ~ C h²/4 — four times better, still second order.' },
+    { key: 'h4', label: 'central at h = 0.1', why: 'Another factor of four. Still O(h²).' },
+    { key: 'ex', label: '(4 D(0.2) − D(0.4))/3', why: 'The h² term is gone. This pair, using only the two coarsest samples, beats a central difference four times finer.' },
+  ]}
+  correct={['h', 'h2', 'h4', 'ex']}
+  explanation="Buying an order is worth more than shrinking h. The extrapolated pair beats D(h/4) and even D(h/8), and it is the five-point stencil in disguise: the same four samples, the same weights."
+/>
+
+<Classify
+  id="rich-what-cancels"
+  prompt="Each combination either cancels a known power of h, or it does not. Sort them."
+  buckets={[
+    { key: 'h2', label: 'cancels h²', accent: 'cyan' },
+    { key: 'h4', label: 'cancels h⁴', accent: 'iris' },
+    { key: 'none', label: 'cancels nothing', accent: 'magenta' },
+  ]}
+  items={[
+    { key: 'adj', label: '(4 D(h/2) − D(h))/3 on two centrals', bucket: 'h2', why: 'The 4:−1 weights match a halved even-powered step, so c₂ vanishes.' },
+    { key: 'col2', label: '(16 A − B)/15 on two already-extrapolated cells', bucket: 'h4', why: 'Column 1 is O(h⁴). The same idea with 16:−1 kills that leftover.' },
+    { key: 'avg', label: 'average of D(h) and D(h/2)', bucket: 'none', why: 'Equal weights do not match a 4:1 error ratio. Both biases survive.' },
+    { key: 'skip', label: '(4 D(h/4) − D(h))/3, skipping the middle row', bucket: 'none', why: 'h and h/4 differ by a factor of 4, so the h² terms are in the ratio 16:1. The 4:−1 weights miss.' },
+    { key: 'fwd', label: '(2 D(h/2) − D(h)) on two centrals', bucket: 'none', why: 'Those are first-order weights on an even expansion. They do not hit c₂, and they can make the error worse.' },
+  ]}
+  explanation="The weights have to match both the order you are cancelling and the ratio of the two steps. Guessing 4:−1 on the wrong pair is how a tableau quietly fills with garbage."
+/>
+
+<Recall id="rich-one-line" concept="richardson-extrapolation">
+  <div slot="front">What combination of <code>D(h)</code> and <code>D(h/2)</code> kills the leading <code>h²</code> term of a central difference, and what order is left?</div>
+
+$(4 D(h/2) - D(h))/3$. The two $h^2$ errors are in the ratio $4:1$, so that linear combination cancels them exactly and leaves $O(h^4)$. Iterating the same step on the new column cancels $h^4$, then $h^6$, and so on — that triangle of numbers is a Richardson tableau.
+
+</Recall>
+
+## The subtraction was the whole problem
+
+Richardson still subtracts. The combination of two centrals *is* the five-point stencil, so the roundoff branch of the U-curve is still there — you just get a steeper truncation slope before you hit it.
+
+If you never form a difference of nearby values, that branch has nothing to stand on.
+
+If $f$ is analytic, Taylor works off the real axis:
+
+$$
+f(x + ih) = f(x) + ih\, f'(x) - \tfrac{h^2}{2} f''(x) - i\tfrac{h^3}{6} f'''(x) + \cdots
+$$
+
+Take the imaginary part and divide by $h$:
+
+$$
+\frac{\mathrm{Im}\, f(x+ih)}{h} = f'(x) - \tfrac{h^2}{6} f'''(x) + \cdots
+$$
+
+Second-order — and **there is no subtraction anywhere**. Squire and Trapp (1998) noticed you can then take $h$ down to $10^{-200}$ and still get full machine precision. Martins, Sturdza and Alonso later showed the imaginary part is a cheap cousin of a forward-mode AD seed, which is why aero codes used it to check Jacobians.
+
+Sketch what the error does when the roundoff branch is gone. Coarse $h$ is on the right; shrinking $h$ moves left.
+
+<SketchCurve
+  id="cstep-sketch"
+  scenario="cstep-no-u"
+  prompt="Sketch log |error| against log h for the complex-step derivative of sin x. It starts at the marked coarse-h point. What happens as h shrinks?"
+  hint="Truncation still falls as h². Then ask: is there a subtraction left that roundoff can ride?"
+  explanation="The curve falls as h², then sits on the floor around 10⁻¹⁶. It never turns up. The U-curve was a picture of cancellation, not a law of derivatives."
+/>
+
+Watch the same computation, now against the finite-difference U.
+
+<DerivativeLab
+  target="sin"
+  schemes={['central', 'richardson']}
+  complexStepCurve={true}
+  caption="Central still makes a U. Richardson — the same four samples as five-point — makes a deeper U. Complex-step (dashed) falls, then sits on the floor down to h = 10⁻²⁰. Buying an order is not the same as removing the subtraction."
+/>
+
+<Classify
+  id="cstep-vs-rich"
+  prompt="Which of these still has a roundoff branch, and which does not?"
+  buckets={[
+    { key: 'u', label: 'still has a U', accent: 'magenta' },
+    { key: 'flat', label: 'no roundoff branch', accent: 'ok' },
+  ]}
+  items={[
+    { key: 'fwd', label: 'forward difference', bucket: 'u', why: 'The numerator is f(x+h) − f(x). That subtraction is the whole roundoff branch.' },
+    { key: 'cen', label: 'central difference', bucket: 'u', why: 'Still a difference of two nearby values, just a symmetric one.' },
+    { key: 'rich', label: 'Richardson of two centrals', bucket: 'u', why: 'It is the five-point stencil. Four nearby samples, still subtracted. Truncation is better; roundoff remains.' },
+    { key: 'five', label: 'five-point stencil', bucket: 'u', why: 'Same formula as one Richardson step. Same U, deeper valley.' },
+    { key: 'cstep', label: 'complex-step', bucket: 'flat', why: 'One evaluation at x+ih. No nearby values, no difference, no cancellation.' },
+  ]}
+  explanation="Buying an order and removing the subtraction are different moves. Richardson does the first. Complex-step does the second."
+/>
+
+<Recall id="cstep-no-subtract" concept="complex-step-differentiation">
+  <div slot="front">Why can the complex-step step size be <code>10⁻²⁰</code> without the error blowing up?</div>
+
+Because the formula $\mathrm{Im}\, f(x+ih)/h$ never subtracts two nearby values of $f$. The U-curve's rising arm is cancellation, amplified by $1/h$. With nothing to cancel, shrinking $h$ only kills the $O(h^2)$ truncation term, and the estimate sits at machine precision.
+
+The cost is real: $f$ must be analytic, and the implementation must actually accept a complex argument.
+
+</Recall>
+
+<Tier level="frontier" title="when the trick breaks, and what replaced it">
+
+$f$ has to be analytic in a neighbourhood of $x$, and the code has to *see* the perturbation. `abs`, `min`, and `if (x > 0)` on a real-only path all break it — a branch cut sits on the real axis, or the imaginary part never enters. Martins, Sturdza and Alonso spent a paper on rewriting those operations so the method survives in a large CFD residual.
+
+When you can instrument the source, reverse-mode automatic differentiation is the thing that replaced this: one reverse sweep for a whole gradient, exact to machine precision. Complex-step remains the check you run against an AD Jacobian, because it is independent.
+
+</Tier>
+
+## What to carry forward
+
+- Two wrong answers with a known error expansion can cancel the leading term. That is Richardson. Iterating it is a tableau.
+- Buying an order is not the same as removing roundoff. Richardson still subtracts, so the U remains.
+- Complex-step never subtracts. The roundoff branch refuses to appear. The cost is analyticity.

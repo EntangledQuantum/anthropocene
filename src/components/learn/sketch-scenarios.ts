@@ -2,7 +2,7 @@ import { endpointError, stepSweep } from '../../lib/numerics/convergence.ts';
 import { forwardEuler, rk4, integrate, velocityVerlet } from '../../lib/numerics/ode.ts';
 import { invariantDrift } from '../../lib/numerics/convergence.ts';
 import { decay, oscillator } from '../../lib/numerics/problems.ts';
-import { SCHEMES, TARGETS, diffSweep, hSweep } from '../../lib/numerics/diff.ts';
+import { SCHEMES, TARGETS, complexStep, diffSweep, hSweep } from '../../lib/numerics/diff.ts';
 
 /**
  * Named targets for `<SketchCurve>`.
@@ -121,10 +121,39 @@ const eulerUnstable: SketchScenario = {
   },
 };
 
+/* Complex-step error against h, log-log: truncation falls as h², then the
+   curve sits on the roundoff floor and never turns up. Sketching this is how
+   you tell "I removed the subtraction" from "I bought an order". */
+const cstepAnchor = (() => {
+  const t = TARGETS.sin;
+  const h = 1e-1;
+  const est = complexStep(t.fComplex!, t.x0, h);
+  return { x: Math.log10(h), y: Math.log10(Math.max(Math.abs(est - t.df(t.x0)), 1e-18)), label: 'coarse h' };
+})();
+
+const cstepNoU: SketchScenario = {
+  xLabel: 'log₁₀ h',
+  yLabel: 'log₁₀ |error|',
+  xRange: [-20, -1],
+  yRange: [-18, 0],
+  tolerance: 2.4,
+  anchors: [cstepAnchor],
+  truth: () => {
+    const t = TARGETS.sin;
+    return hSweep(1e-1, 1e-20, 4)
+      .map((h) => {
+        const est = complexStep(t.fComplex!, t.x0, h);
+        return { x: Math.log10(h), y: Math.log10(Math.max(Math.abs(est - t.df(t.x0)), 1e-18)) };
+      })
+      .sort((a, b) => a.x - b.x);
+  },
+};
+
 export const SKETCH_SCENARIOS: Record<string, SketchScenario> = {
   'fd-u-curve': fdUCurve,
   'euler-convergence': eulerConvergence,
   'rk4-energy-drift': rk4EnergyDrift,
   'verlet-energy-bounded': verletEnergyBounded,
   'euler-unstable': eulerUnstable,
+  'cstep-no-u': cstepNoU,
 };

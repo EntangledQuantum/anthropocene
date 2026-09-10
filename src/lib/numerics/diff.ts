@@ -26,6 +26,53 @@ export function complexStep(fComplex: (re: number, im: number) => [number, numbe
   return fComplex(x, h)[1] / h;
 }
 
+/**
+ * One Richardson step: combine estimates at h (coarse) and h/r (fine) so
+ * the leading h^p error term cancels.
+ *
+ *   (r^p · D_fine − D_coarse) / (r^p − 1)
+ *
+ * For central differences p = 2 and r = 2 this is (4 D(h/2) − D(h)) / 3,
+ * and the leftover is O(h^4).
+ */
+export function richardson(coarse: number, fine: number, order: number, ratio = 2): number {
+  const s = ratio ** order;
+  return (s * fine - coarse) / (s - 1);
+}
+
+/** Order of tableau column `k` (0-based) when column 0 has order `baseOrder`. */
+export function richardsonColumnOrder(k: number, baseOrder = 2, evenPowers = true): number {
+  return evenPowers ? baseOrder * (k + 1) : baseOrder + k;
+}
+
+/**
+ * Richardson / Romberg tableau from a column of estimates at h, h/2, h/4, …
+ *
+ * T[i][0] is the input. T[i][k] combines T[i][k-1] with T[i-1][k-1] so the
+ * leading term of column k−1 cancels. For even-powered error (central
+ * differences, trapezoid) column k is O(h^{base·(k+1)}).
+ */
+export function richardsonTableau(
+  column0: number[],
+  baseOrder = 2,
+  evenPowers = true,
+): number[][] {
+  const n = column0.length;
+  const T: number[][] = Array.from({ length: n }, () => [] as number[]);
+  for (let i = 0; i < n; i++) T[i][0] = column0[i];
+  for (let k = 1; k < n; k++) {
+    const p = evenPowers ? baseOrder * k : baseOrder + k - 1;
+    for (let i = k; i < n; i++) {
+      T[i][k] = richardson(T[i - 1][k - 1], T[i][k - 1], p, 2);
+    }
+  }
+  return T;
+}
+
+/** One Richardson step on two central differences — itself a 4th-order stencil. */
+export const richardsonCentral = (f: Fn, x: number, h: number) =>
+  richardson(centralDifference(f, x, 2 * h), centralDifference(f, x, h), 2);
+
 export interface DiffScheme {
   key: string;
   label: string;
@@ -39,6 +86,7 @@ export const SCHEMES: DiffScheme[] = [
   { key: 'forward', label: 'Forward', order: 1, cost: 2, apply: forwardDifference },
   { key: 'central', label: 'Central', order: 2, cost: 2, apply: centralDifference },
   { key: 'five-point', label: 'Five-point', order: 4, cost: 4, apply: fivePoint },
+  { key: 'richardson', label: 'Richardson', order: 4, cost: 4, apply: richardsonCentral },
 ];
 
 /** A test function with an exact derivative, for measuring true error. */

@@ -79,7 +79,7 @@ interface Lesson {
 }
 
 const FRONTMATTER = /^---\r?\n([\s\S]*?)\r?\n---/;
-const GRADED = ['Predict', 'Tune', 'SketchCurve', 'RankOrder', 'Classify', 'Estimate'];
+const GRADED = ['Predict', 'Tune', 'SketchCurve', 'RankOrder', 'Classify', 'Estimate', 'RichardsonTableau'];
 
 const lessons: Lesson[] = [];
 const referencedMisconceptions: { id: string; lesson: string }[] = [];
@@ -193,7 +193,7 @@ for (const l of lessons) {
   }
 
   if (l.status === 'live') {
-    if (l.widgets.length === 0) warn(`lesson "${l.id}" is live but has no graded interaction`, 'learn-by-doing means at least one graded interaction: <Predict>, <Tune>, <SketchCurve>, <RankOrder>, <Classify> or <Estimate>');
+    if (l.widgets.length === 0) warn(`lesson "${l.id}" is live but has no graded interaction`, 'learn-by-doing means at least one graded interaction: <Predict>, <Tune>, <SketchCurve>, <RankOrder>, <Classify>, <Estimate> or <RichardsonTableau>');
     if (l.cards.length === 0) warn(`lesson "${l.id}" is live but has no <Recall> card`, 'nothing from this lesson will ever come back for review');
     if (l.teaches.length === 0) warn(`lesson "${l.id}" is live but owns no concept`, 'nothing can link to it');
   }

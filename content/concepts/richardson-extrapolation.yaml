@@ -1,4 +1,21 @@
 title: 'Richardson extrapolation'
 blurb: 'Combine two step sizes so the leading error term cancels algebraically, buying an order for free.'
+notation: '\frac{4 D(h/2) - D(h)}{3}'
 tags:
   - ch2
+misconceptions:
+  - id: averaging-cancels-error
+    name: 'Averaging two estimates cancels their errors.'
+    signal: 'Takes (D(h) + D(h/2))/2 and expects the bias to drop out.'
+    correction: 'The two errors point the same way — both are too high by a multiple of c₂ h². Averaging two overestimates is still an overestimate. Cancellation needs weights that match the ratio of the leading terms, which for a halved step of even order is 4:−1, not 1:1.'
+  - id: throw-away-coarse
+    name: 'Once you have the finer estimate, the coarser one is wasted.'
+    signal: 'Keeps only D(h/2) and discards D(h) as strictly worse.'
+    correction: 'The coarser answer is worse as an answer, but it is information. How much the estimate moved when you halved h tells you the size of the leading error term, which you can then subtract off. That is the whole method.'
+  - id: richardson-kills-roundoff
+    name: 'Richardson also kills roundoff, so you can take h as small as you like.'
+    signal: 'Treats an extrapolated stencil as immune to the U-curve.'
+    correction: 'Richardson still subtracts nearby values of f — the combination of two centrals is the five-point stencil. Truncation improves by two orders; the roundoff branch is still there, just reached later.'
+references:
+  - label: 'Richardson 1911, deferred approach to the limit'
+    url: 'https://doi.org/10.1098/rsta.1911.0009'

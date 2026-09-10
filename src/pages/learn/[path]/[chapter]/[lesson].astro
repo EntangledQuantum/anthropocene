@@ -17,13 +17,14 @@ import ConvergenceLab from '../../../../components/widgets/ConvergenceLab.astro'
 import DerivativeLab from '../../../../components/widgets/DerivativeLab.astro';
 import FloatLab from '../../../../components/widgets/FloatLab.astro';
 import CancellationLab from '../../../../components/widgets/CancellationLab.astro';
+import RichardsonTableau from '../../../../components/widgets/RichardsonTableau.astro';
 
 /** The authoring vocabulary: every lesson may use these with no import.
  *  Adding a widget here is what makes it available to authors — see AGENTS.md. */
 const lessonComponents = {
   Predict, Tune, SketchCurve, RankOrder, Classify, Estimate, Recall, Tier,
   Plot, SolverLab, ConvergenceLab, DerivativeLab, FloatLab, CancellationLab,
-  StabilityExplorer, PhaseFlow,
+  StabilityExplorer, PhaseFlow, RichardsonTableau,
 };
 import { buildGraph, prerequisitesOf, unlockedBy } from '../../../../lib/graph/graph.ts';
 

@@ -3,3 +3,21 @@ blurb: 'Step into the imaginary direction to get a derivative with no subtractio
 notation: '\frac{\mathrm{Im}\,f(x+ih)}{h}'
 tags:
   - ch2
+misconceptions:
+  - id: cstep-is-a-subtraction
+    name: 'Complex-step is just a central difference along the imaginary axis, so it still cancels.'
+    signal: 'Looks at the O(h²) remainder and concludes the U-curve must still be there.'
+    correction: 'The remainder is O(h²), like a central difference, but the formula never subtracts two nearby values of f. You evaluate once at x+ih and read the imaginary part. No cancellation means no roundoff branch — h can be 10⁻²⁰ and the estimate stays at full precision.'
+  - id: cstep-any-f
+    name: 'Complex-step works for any f you can evaluate.'
+    signal: 'Applies it to abs, min, a lookup table, or a real-only branch.'
+    correction: 'f must be analytic in a neighbourhood of x, and the implementation must actually see the imaginary perturbation. abs, min, and if (x > 0) on a real-only path all break it — the perturbation never enters, or a branch cut is sitting on the real axis.'
+  - id: cstep-has-a-u
+    name: 'You still have to hunt for an optimal h, because every derivative estimate has a U-curve.'
+    signal: 'Tunes h the same way as a forward difference, expecting a valley.'
+    correction: 'The U-curve is a picture of subtraction. Complex-step never subtracts, so the error falls as h² until it hits machine precision and then sits there. There is no valley to find — take h small (10⁻⁸ is already enough) and stop thinking about it.'
+references:
+  - label: 'Squire & Trapp 1998'
+    url: 'https://doi.org/10.1137/S003614459631241X'
+  - label: 'Martins, Sturdza & Alonso 2003'
+    url: 'https://doi.org/10.1145/838250.838251'

@@ -39,7 +39,10 @@ export default function DerivativeLab({
   const available = SCHEMES.filter((s) => schemes.includes(s.key));
   const [selected, setSelected] = useState<string[]>(initial ?? schemes);
 
-  const hs = useMemo(() => hSweep(1e-1, 1e-16, 6), []);
+  const hs = useMemo(
+    () => hSweep(1e-1, complexStepCurve ? 1e-20 : 1e-16, complexStepCurve ? 5 : 6),
+    [complexStepCurve],
+  );
 
   const { series, best } = useMemo(() => {
     const out: Series[] = [];
@@ -61,16 +64,19 @@ export default function DerivativeLab({
       });
 
     if (complexStepCurve && target.fComplex) {
+      const pts = hs.map((h) => {
+        const est = complexStep(target.fComplex!, target.x0, h);
+        return { h, error: Math.max(Math.abs(est - target.df(target.x0)), 1e-18) };
+      });
       out.push({
         key: 'complex-step',
         label: 'Complex step — no cancellation',
         color: 'ok',
         dash: [5, 3],
-        points: hs.map((h) => {
-          const est = complexStep(target.fComplex!, target.x0, h);
-          return [h, Math.max(Math.abs(est - target.df(target.x0)), 1e-18)] as const;
-        }),
+        points: pts.map((p) => [p.h, p.error] as const),
       });
+      const min = pts.reduce((a, b) => (b.error < a.error ? b : a));
+      best.push({ label: 'Complex step', h: min.h, error: min.error, order: 2 });
     }
     return { series: out, best };
   }, [available, selected, target, hs, complexStepCurve]);
