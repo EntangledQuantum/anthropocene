@@ -31,6 +31,12 @@ describe('estimate scenarios agree with the prose that quotes them', () => {
     expect(t).toBeGreaterThan(15);
     expect(t).toBeLessThan(17);
   });
+
+  it('the ill-conditioned 2×2 keeps about 7 digits, not 16', () => {
+    const t = ESTIMATE_SCENARIOS['ill-2x2-digits'].truth();
+    expect(t).toBeGreaterThan(6);
+    expect(t).toBeLessThan(8.5);
+  });
 });
 
 describe('every scenario is answerable on its own slider', () => {

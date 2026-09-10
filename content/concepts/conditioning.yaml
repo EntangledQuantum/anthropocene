@@ -3,3 +3,15 @@ blurb: 'A property of the PROBLEM: how much the answer moves when the input is p
 notation: '\kappa'
 tags:
   - ch1
+misconceptions:
+  - id: 'more-digits-more-truth'
+    name: 'More working precision will fix a sensitive problem.'
+    signal: 'Asks for quad precision or a better library when every solver shows the same jump.'
+    correction: 'κ is a property of the question, not the arithmetic. Extra digits buy more of the budget κ·ε, but they do not shrink κ. If the data is already uncertain at the level of 1/κ, extra digits print noise more prettily.'
+  - id: 'residual-measures-error'
+    name: 'A small residual means a small error in x.'
+    signal: 'Trusts x because Ax − b is tiny, even on a nearly singular matrix.'
+    correction: 'The residual is the backward error — how far the algorithm drifted from the question you asked. Forward error ≤ κ × backward error. A backward-stable algorithm can return a tiny residual and an x that has lost every digit κ stole.'
+references:
+  - label: 'Trefethen & Bau, Lectures 12–15'
+    url: 'https://doi.org/10.1137/1.9780898719574.ch3'

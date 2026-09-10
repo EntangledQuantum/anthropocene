@@ -1,6 +1,7 @@
 import { endpointError } from '../../lib/numerics/convergence.ts';
 import { forwardEuler, rk4 } from '../../lib/numerics/ode.ts';
 import { decay } from '../../lib/numerics/problems.ts';
+import { condInf, ill2x2, remainingDigits } from '../../lib/numerics/conditioning.ts';
 
 /**
  * Named quantities for `<Estimate>`.
@@ -83,8 +84,24 @@ const doubleDigits: EstimateScenario = {
   truth: () => -Math.log10(Number.EPSILON),
 };
 
+/* Rule of thumb from Trefethen Thm 15.1: a backward-stable algorithm keeps
+   −log₁₀(κ ε) digits. For the lesson 2×2 that is about seven, not sixteen. */
+const ill2x2Digits: EstimateScenario = {
+  quantity: 'correct decimal digits a backward-stable float64 solve can promise for the 2×2 with ε = 10⁻⁸',
+  logRange: [0, 2],
+  logStart: 1.2,
+  withinFactor: 1.5,
+  landmarks: [
+    { value: 1, label: 'one' },
+    { value: 8, label: 'half' },
+    { value: 16, label: 'all 16' },
+  ],
+  truth: () => remainingDigits(condInf(ill2x2().A)),
+};
+
 export const ESTIMATE_SCENARIOS: Record<string, EstimateScenario> = {
   'euler-work-1e6': eulerWorkFor1e6,
   'rk4-work-1e6': rk4WorkFor1e6,
   'double-digits': doubleDigits,
+  'ill-2x2-digits': ill2x2Digits,
 };

@@ -1,4 +1,21 @@
 title: 'Numerical stability'
-blurb: 'A property of the ALGORITHM: whether it amplifies the errors it makes along the way.'
+blurb: 'A property of the ALGORITHM: whether it returns the exact answer to a nearby problem.'
+notation: 'backward-stable'
 tags:
   - ch1
+misconceptions:
+  - id: 'bad-answer-means-bad-algorithm'
+    name: 'If the computed answer is garbage, the algorithm is at fault.'
+    signal: 'Switches libraries when every stable solver shows the same jump.'
+    correction: 'A stable algorithm returns the exact answer to a nearby problem. If that nearby problem has a very different answer, the question was sensitive — conditioning, not stability. Switching libraries does not un-stretch the input disk.'
+  - id: 'algebra-is-the-algorithm'
+    name: 'Algebraically equivalent formulas are numerically equivalent.'
+    signal: 'Uses the textbook quadratic formula for a tiny root, or √(x+1)−√x for large x.'
+    correction: 'Equivalence is a statement about the reals. On a machine the order of operations is the algorithm. Rearranging to avoid a cancellation is a different algorithm, and it can be stable when the original is not.'
+  - id: 'wrong-x-means-ill-conditioned'
+    name: 'If x comes out wrong, the problem must have been sensitive.'
+    signal: 'Blames the quadratic equation rather than the textbook formula.'
+    correction: 'Simple roots of x² + 10⁸ x + 1 are well-conditioned. The textbook formula is an unstable algorithm for the small one. Rearranging gives both roots to machine precision.'
+references:
+  - label: 'Higham, Accuracy and Stability of Numerical Algorithms'
+    url: 'https://doi.org/10.1137/1.9780898718027'

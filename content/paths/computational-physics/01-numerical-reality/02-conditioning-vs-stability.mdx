@@ -3,32 +3,190 @@ title: 'Conditioning versus stability'
 blurb: 'Two different questions that get confused constantly: is the problem sensitive, or is my algorithm sloppy? One you can fix, the other you cannot.'
 order: 2
 tier: 'core'
-minutes: 20
+minutes: 15
 teaches:
   - 'conditioning'
   - 'numerical-stability'
 requires:
   - 'floating-point'
   - 'catastrophic-cancellation'
-status: 'draft'
+status: 'live'
+updated: 2026-09-10
 ---
 
-:::note
-This lesson is **outlined but not yet written**. The concept graph already knows what it
-will own, so lessons downstream of it link here rather than re-teaching the material.
-Everything below is the plan.
-:::
+Same matrix, two right-hand sides. The solver does not change.
 
-## Planned outline
+$$
+\begin{bmatrix} 1 & 1 \\ 1 & 1+10^{-8} \end{bmatrix}
+\begin{bmatrix} x_1 \\ x_2 \end{bmatrix}
+=
+\begin{bmatrix} 2 \\ 2 \end{bmatrix}
+\qquad \Rightarrow \qquad x = (2,\,0)
+$$
 
-1. The condition number of a problem, and why it is a property of the question rather than the method.
-2. Backward stability: a stable algorithm gives the exact answer to a nearby question.
-3. Worked case: solving a nearly singular 2x2 system, where no algorithm can rescue you.
-4. Worked case: the quadratic formula, where the naive root is unstable and the rearranged one is not.
-5. Rule of thumb: relative error ≤ condition number x machine epsilon, for a backward-stable algorithm.
+$$
+\begin{bmatrix} 1 & 1 \\ 1 & 1+10^{-8} \end{bmatrix}
+\begin{bmatrix} x_1 \\ x_2 \end{bmatrix}
+=
+\begin{bmatrix} 2 \\ 2+10^{-8} \end{bmatrix}
+\qquad \Rightarrow \qquad x = (1,\,1)
+$$
 
-## Interactives planned
+The input moved by five parts in a billion. The answer jumped by order one. You switch libraries. Same jump.
 
-Each numbered point above gets at least one thing you can manipulate, not a figure. See
-`AGENTS.md` for the widget vocabulary and the rule that every lesson ships at least one
-graded interaction and one recall card.
+<Predict
+  id="cond-who-fault"
+  question="Who is at fault?"
+  options={[
+    { key: 'a', misconception: 'bad-answer-means-bad-algorithm', label: 'The solvers — both libraries are amplifying roundoff', why: 'The tempting move: garbage output, blame the algorithm. But every backward-stable solver does this. They are answering the question you asked, and that question is a stretch.' },
+    { key: 'b', label: 'The problem — a tiny wiggle in b is a huge wiggle in x, for any algorithm', why: 'Correct. The map b ↦ A⁻¹b stretches a disk of inputs into a long ellipse of outputs. No solver un-stretches it.' },
+    { key: 'c', misconception: 'more-digits-more-truth', label: 'The arithmetic — more digits would pin x back down', why: 'Extra digits buy more of the budget κ·ε. They do not shrink κ. If b is already uncertain at 10⁻⁸, extra digits print the same jump with more trailing zeros.' },
+    { key: 'd', misconception: 'residual-measures-error', label: 'You will catch it: Ax − b will be large, so you will know not to trust x', why: 'The residual stays tiny. A backward-stable algorithm returns the exact x of a nearby b, so Ax − b is O(ε) even when x has lost eight digits. Residual is not forward error.' },
+  ]}
+  correct="b"
+>
+
+The LU solver is not a variable. Drag the perturbation of $b_2$ until $x_2$ reaches 1 — the same swing as above.
+
+<Tune
+  id="cond-kappa-tune"
+  scenario="ill-2x2-perturb"
+  prompt="Find the δ that swings x₂ from 0 to 1. The matrix and the solver stay fixed."
+  hint="x₂ = δ / 10⁻⁸. You want x₂ = 1."
+  explanation="δ = 10⁻⁸, the same size as the off-diagonal gap. A relative change of ~10⁻⁸ in b produced an O(1) change in x. That ratio is the condition number: κ_∞ ≈ 4×10⁸. The algorithm did not change. No algorithm can."
+/>
+
+</Predict>
+
+That stretch has a name. For $Ax=b$,
+
+$$
+\kappa_\infty(A) = \|A\|_\infty\,\|A^{-1}\|_\infty
+$$
+
+which for this matrix is $(2+\varepsilon)^2/\varepsilon \approx 4\times 10^8$. A backward-stable algorithm — LU with partial pivoting is one — returns the **exact** answer to a **nearby** question. The nearby question is $O(\varepsilon)$ away. Stretch that by $\kappa$ and you have the error you actually see:
+
+$$
+\frac{\|\hat x - x\|}{\|x\|} = O(\kappa\,\varepsilon).
+$$
+
+<Estimate
+  id="cond-digits-left"
+  scenario="ill-2x2-digits"
+  prompt="Float64 carries sixteen digits. This 2×2 stretches by four hundred million. How many of those digits can a backward-stable solve promise?"
+  explanation="About seven. −log₁₀(κ ε) ≈ 7. The other nine are the stretch acting on the last bit of b. A tiny residual does not get them back: residual is the backward error, and the bound already assumes that is O(ε)."
+/>
+
+The useful diagnostic is not "is x wrong" — you often cannot know. It is **which column the symptom lives in.**
+
+<Classify
+  id="cond-classify-symptoms"
+  prompt="Each of these is either a sensitive QUESTION or a sloppy PROCEDURE. Sorting them is most of what it means to debug a number."
+  buckets={[
+    { key: 'problem', label: 'bad problem (conditioning)', accent: 'warn' },
+    { key: 'algorithm', label: 'bad algorithm (stability)', accent: 'cyan' },
+  ]}
+  items={[
+    { key: 'jump', label: 'Every library you try, the same 10⁻⁸ wiggle in b sends x flying', bucket: 'problem', why: 'The stretch is A⁻¹. Changing the solver does not change A.' },
+    { key: 'quad', label: 'Two algebraically identical quadratic formulas; one root is garbage', bucket: 'algorithm', why: 'Same well-conditioned roots, two evaluation orders. One cancels, one does not.' },
+    { key: 'resid', label: 'Ax − b is at machine epsilon, yet eight digits of x are noise', bucket: 'problem', why: 'Tiny residual means the algorithm hit a nearby problem. The nearby problem has a very different x because κ is large.' },
+    { key: 'bigresid', label: 'The residual is huge on a perfectly ordinary matrix', bucket: 'algorithm', why: 'A stable method would have landed nearby. A large residual on a well-conditioned A is the algorithm, or a bug wearing its clothes.' },
+    { key: 'inverse', label: 'Refining the mesh does not move a recovered initial temperature', bucket: 'problem', why: 'Looks like truncation error that has already converged. It is an inverse problem whose answer is hypersensitive to the data. Finer meshes print the same noise more expensively.' },
+    { key: 'cancel', label: '√(x+1) − √x is junk for large x; the rationalized form is not', bucket: 'algorithm', why: 'The quantity is well-conditioned. Subtracting two close square roots is an unstable way to evaluate it — the previous lesson, in this lesson\'s language.' },
+  ]}
+  explanation="A wrong x with a tiny residual: change the question, or accept that the data does not determine the answer. A large residual on a tame problem: change the arithmetic. The two fixes are not interchangeable."
+/>
+
+<Recall id="cond-kappa-stretch" concept="conditioning">
+  <div slot="front">What is κ, geometrically, and whose property is it?</div>
+
+κ is the **stretch** of a small disk of inputs into the corresponding set of outputs. For $Ax=b$ it is $\|A\|\,\|A^{-1}\|$. It belongs to the *problem*, not the method: every algorithm that answers this question inherits the same stretch.
+
+</Recall>
+
+## Same roots, two algorithms
+
+The 2×2 was a bad question. Here is a good question asked badly.
+
+$$
+x^2 + 10^8 x + 1 = 0
+$$
+
+has roots near $-10^8$ and $-10^{-8}$, both simple. Simple roots are well-conditioned: nudge the coefficients a little and the roots move a little.
+
+$$
+x = \frac{-b \pm \sqrt{b^2 - 4ac}}{2a}
+$$
+
+<Predict
+  id="cond-quad-naive"
+  question="The textbook formula returns −7.45×10⁻⁹ for a root that is actually −10⁻⁸. First digit already wrong, on a well-conditioned problem. What failed?"
+  options={[
+    { key: 'a', misconception: 'wrong-x-means-ill-conditioned', label: 'The tiny root is ill-conditioned, so any algorithm will lose it', why: 'The dual of the 2×2 mistake. These roots are simple and far apart; the question is tame. The textbook evaluation of one of them is not.' },
+    { key: 'b', misconception: 'algebra-is-the-algorithm', label: 'Nothing — the two formulas are algebraically the same, so they must agree', why: 'They agree on the reals. On a machine the order of operations is the algorithm. Cancellation is not in the algebra; it is in this particular evaluation.' },
+    { key: 'c', label: 'The subtraction −b + √(b²−4ac) cancelled the tiny root. Rearrange.', why: 'Correct. Compute the non-cancelling root first, recover the other from x₁ x₂ = c/a. Same question, stable algorithm.' },
+    { key: 'd', misconception: 'more-digits-more-truth', label: 'The formula is fine; you just need more digits of working precision', why: 'More digits delay the cancellation. They do not remove it. The rearranged algorithm is accurate in float64; the textbook one is not.' },
+  ]}
+  correct="c"
+>
+
+Slide to $|b| = 10^8$ — the polynomial above. Magenta is the textbook formula; cyan is the same roots, rearranged.
+
+<Tune
+  id="cond-quad-tune"
+  scenario="quad-naive-cliff"
+  prompt="Move |b| to 10⁸, the example in the question. The rearranged error should still sit on machine epsilon."
+  hint="The slider is logarithmic. 10⁸ is most of the way to the right, not in the middle."
+  explanation="At |b| = 10⁸ the textbook small root is −7.45×10⁻⁹ against the truth −10⁻⁸ — relative error 0.25. The rearranged form — non-cancelling root first, then Vieta — stays at machine epsilon. Same problem, two algorithms. Drag further right: the textbook root eventually prints 0."
+/>
+
+</Predict>
+
+The stable evaluation is one extra line:
+
+```ts
+const q = -0.5 * (b + Math.sign(b) * Math.sqrt(b * b - 4 * a * c));
+const far  = q / a;       // no cancellation
+const near = c / q;       // Vieta: x1 x2 = c/a
+```
+
+<Recall id="cond-backward-slogan" concept="numerical-stability">
+  <div slot="front">A backward-stable algorithm gives what kind of answer to what kind of question?</div>
+
+**Exactly** the right answer to **nearly** the right question.
+
+The output $\hat x$ is the exact solution of a problem whose input sits $O(\varepsilon)$ from the one you typed. Whether that is good enough is then entirely a question about $\kappa$ — about how much that nearby problem can differ in its answer.
+
+</Recall>
+
+<Tier level="advanced" title="forward error, backward error, and the one bound">
+
+Three distances, not one.
+
+- **Forward error** $\|\hat x - x\|/\|x\|$ — how wrong is the answer. What you wanted to know, and usually cannot measure.
+- **Backward error** — the smallest $\delta A, \delta b$ such that $(A+\delta A)\hat x = b+\delta b$. For LU with partial pivoting this is $O(\varepsilon)$. You *can* measure it: it is the residual, up to a factor of $\|A\|$.
+- **Conditioning** $\kappa$ — how the problem stretches backward error into forward error.
+
+Trefethen's theorem 15.1 is the whole subject in one line: a backward-stable algorithm on a problem with condition number $\kappa$ satisfies
+
+$$
+\frac{\|\tilde f(x) - f(x)\|}{\|f(x)\|} = O\bigl(\kappa(x)\,\varepsilon\bigr).
+$$
+
+Wilkinson's polynomial $(x-1)(x-2)\cdots(x-20)$ is the 2×2 in a different costume. Perturbing a coefficient by $2^{-23}$ throws roots off the real axis. `np.roots` is stable. The *question* (recover those roots from monic coefficients) is not.
+
+</Tier>
+
+<Tier level="frontier" title="what 'nearby' is allowed to mean">
+
+Normwise backward stability is the coarse picture. Higham's finer one asks for a *componentwise* nearby problem: each entry of $A$ and $b$ perturbed relatively, not just the norms. Mixed forward-backward stability allows a little of both. Most of the algorithms you actually run (Householder QR, LU with partial pivoting, the rearranged quadratic) are backward stable in the normwise sense and often stronger.
+
+The slogan does not change. An unstable algorithm is one whose output is not the answer to any problem you would still recognise as yours.
+
+</Tier>
+
+## What to carry forward
+
+κ is a stretch of the input disk. It belongs to the question. A stable algorithm lands inside a nearby disk; an unstable one does not.
+
+Forward error ≲ κ × backward error. Extra digits buy more of that budget. They do not shrink κ, and they do not rescue a cancellation you can algebraically remove.
