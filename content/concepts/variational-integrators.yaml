@@ -1,4 +1,23 @@
 title: 'Variational integrators'
 blurb: 'Discretise the ACTION rather than the equations of motion, and conservation laws follow automatically.'
+notation: 'D_2 L_d(q_{k-1}, q_k) + D_1 L_d(q_k, q_{k+1}) = 0'
 tags:
-  - ch5
+  - ch4
+misconceptions:
+  - id: 'discretise-then-constrain'
+    name: 'Discretise Newton, then impose conservation as an extra constraint.'
+    signal: 'Treats structure as something you add after choosing an ODE method, or expects a projection step to restore energy and momentum.'
+    correction: 'If you discretise the action, the update is whatever makes the discrete action stationary. Symplecticity and discrete Noether momenta then come for free. Adding conservation afterwards is fighting a method that was never asked to know about it.'
+  - id: 'every-invariant-survives'
+    name: 'A variational method conserves every continuous invariant exactly.'
+    signal: 'Picks energy as exact alongside angular momentum, or claims the discrete theory inherits every Noether quantity of the smooth one.'
+    correction: 'Only symmetries that the discrete Lagrangian still has give exact momenta. Spatial symmetries (translation, rotation) typically survive. Time-translation does not: a fixed step h breaks it, so energy is bounded by a shadow Hamiltonian, not conserved to machine precision.'
+  - id: 'verlet-is-a-hack'
+    name: 'Velocity Verlet is a lucky reordering of Euler, not a derived method.'
+    signal: 'Treats the symplectic update as a trick you memorise, rather than as stationarity of a discrete action.'
+    correction: 'The symmetric discrete Lagrangian — midpoint velocity, potential averaged at the endpoints — has discrete Euler-Lagrange equation equal to velocity Verlet. The reordering is what the variational principle produces.'
+references:
+  - label: 'Marsden & West, Discrete mechanics and variational integrators (2001)'
+    url: 'https://doi.org/10.1017/S096249290100006X'
+  - label: 'Hairer, Lubich, Wanner, Geometric Numerical Integration'
+    url: 'https://doi.org/10.1007/3-540-30666-8'

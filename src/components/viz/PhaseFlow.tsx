@@ -127,6 +127,23 @@ export interface PhaseFlowProps {
   radius?: number;
   height?: number;
   caption?: string;
+  /** Phase-space centre of the blob. Overrides `placement` and the system default. */
+  blob?: [number, number];
+  /** Named starting region. `separatrix` drops the pendulum blob on H = 2. */
+  placement?: 'default' | 'separatrix';
+}
+
+/** Pendulum separatrix: H = p²/2 + (1 − cos q) = 2. Upper branch at q = 0. */
+const PENDULUM_SEPARATRIX: [number, number] = [0, 2];
+
+function startingBlob(
+  system: SystemSpec,
+  blob?: [number, number],
+  placement?: PhaseFlowProps['placement'],
+): [number, number] {
+  if (blob && blob.length >= 2) return [blob[0], blob[1]];
+  if (placement === 'separatrix' && system.key === 'pendulum') return PENDULUM_SEPARATRIX;
+  return system.blob;
 }
 
 export default function PhaseFlow({
@@ -137,9 +154,12 @@ export default function PhaseFlow({
   radius = 0.42,
   height = 460,
   caption,
+  blob,
+  placement,
 }: PhaseFlowProps) {
   const system = SYSTEMS[systemKey] ?? SYSTEMS.oscillator;
   const available = INTEGRATORS.filter((m) => methods.includes(m.key));
+  const origin = startingBlob(system, blob, placement);
 
   const [methodKey, setMethodKey] = useState(initial ?? 'velocity-verlet');
   const method = available.find((m) => m.key === methodKey) ?? available[0];
@@ -151,7 +171,7 @@ export default function PhaseFlow({
   );
   const [step, setStep] = useState(h);
   const [running, setRunning] = useState(false);
-  const [center, setCenter] = useState<[number, number]>(system.blob);
+  const [center, setCenter] = useState<[number, number]>(origin);
   const [supported, setSupported] = useState(true);
   const [stats, setStats] = useState({ area: 1, area0: 1, steps: 0 });
 
@@ -434,7 +454,9 @@ export default function PhaseFlow({
         </ReadoutRow>
 
         <p style={{ margin: '14px 0 0', fontSize: '0.98rem', lineHeight: 1.6, color: 'var(--color-ink-soft)' }}>
-          {system.note}
+          {placement === 'separatrix' && system.key === 'pendulum'
+            ? 'The blob sits on the amber separatrix (H = 2). Neighbouring initial conditions diverge — some loop, some spin — and the area still must not change.'
+            : system.note}
         </p>
       </Panel>
 

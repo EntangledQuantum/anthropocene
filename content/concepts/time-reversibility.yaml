@@ -1,4 +1,14 @@
 title: 'Time reversibility'
 blurb: 'Running the integrator backwards returns you exactly to where you started.'
+notation: '\Phi_h^{-1} = \Phi_{-h}'
 tags:
   - ch4
+misconceptions:
+  - id: 'reversible-means-accurate'
+    name: 'Landing back at the start means the trajectory was accurate.'
+    signal: 'Treats a reversible map as a certificate that each point was close to the true flow.'
+    correction: 'Reversibility is a property of the discrete map, not of its error. Verlet walks a nearby shadow orbit exactly, then walks it back. You return to the start even when every intermediate point is in the wrong place on the orbit.'
+  - id: 'reversible-means-energy'
+    name: 'Time-reversibility implies exact energy conservation.'
+    signal: 'Argues that a movie you can play backwards cannot gain or lose energy, so energy must be exact.'
+    correction: 'Reversibility forbids monotone drift — a dissipative map is not equal to its own reverse — but it still allows energy to oscillate inside a band. Exact energy would require the discrete action to be invariant under continuous time shifts, which a fixed step size is not.'

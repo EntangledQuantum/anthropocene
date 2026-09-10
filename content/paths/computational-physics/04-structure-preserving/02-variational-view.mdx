@@ -1,9 +1,9 @@
 ---
 title: 'Discretising the action instead of the equations'
-blurb: 'Variational integrators derive the update from a discrete least-action principle. Symplecticity and conserved momenta then follow automatically rather than being imposed.'
+blurb: 'Look at a conserved quantity and say whether a discrete action keeps it exactly, keeps it bounded, or loses it.'
 order: 2
 tier: 'frontier'
-minutes: 30
+minutes: 16
 teaches:
   - 'variational-integrators'
   - 'time-reversibility'
@@ -11,25 +11,196 @@ requires:
   - 'velocity-verlet'
   - 'hamiltonian-systems'
   - 'shadow-hamiltonian'
-status: 'draft'
+status: 'live'
+updated: 2026-09-10
 ---
 
-:::note
-This lesson is **outlined but not yet written**. The concept graph already knows what it
-will own, so lessons downstream of it link here rather than re-teaching the material.
-Everything below is the plan.
-:::
+The last lesson treated velocity Verlet as a reordering of Euler, then explained its bounded energy with a [shadow Hamiltonian](../verlet-vs-rk4/). That is one origin. Here is another, and it is the cleaner one.
 
-## Planned outline
+You do not discretise Newton's equation. You discretise the **action**. Stationarity of that discrete action *is* the update — and it is Verlet. Conservation laws then fall out of symmetries, the same way they do in the continuous theory. One of them does not survive.
 
-1. The continuous action, and least action as the source of the equations of motion.
-2. A discrete Lagrangian, and the discrete Euler-Lagrange equations.
-3. Recovering velocity Verlet from a midpoint discrete Lagrangian - it was variational all along.
-4. The discrete Noether theorem: conserved momenta to machine precision, not to O(h^p).
-5. Where this beats symplectic-by-construction: constraints, contact, non-smooth mechanics.
+The amber curve below is the pendulum separatrix. The blob sits on it: neighbouring initial conditions diverge, some looping, some spinning. Press play on Verlet, then switch to RK4.
 
-## Interactives planned
+<PhaseFlow
+  system="pendulum"
+  placement="separatrix"
+  initial="velocity-verlet"
+  methods={['forward-euler', 'rk4', 'velocity-verlet']}
+  h={0.12}
+  radius={0.35}
+  caption="A region of initial conditions on the pendulum separatrix. Hamiltonian flow preserves its area exactly. Verlet shears the blob into a filament and holds the area; RK4 slowly loses it; forward Euler inflates it. Click to move the blob off the amber curve and the shearing calms down — the area verdict does not."
+/>
 
-Each numbered point above gets at least one thing you can manipulate, not a figure. See
-`AGENTS.md` for the widget vocabulary and the rule that every lesson ships at least one
-graded interaction and one recall card.
+<Predict
+  id="var-separatrix-area"
+  question="After a few hundred Verlet steps the blob is an unrecognisable filament along the separatrix. What is still true?"
+  options={[
+    { key: 'a', misconception: 'every-invariant-survives', label: 'Each particle’s energy is exact, and so is the blob’s area', why: 'Area is exact — that is Liouville, inherited by any variational map. Energy of each particle is only bounded, sitting on a nearby shadow Hamiltonian, not conserved to machine precision.' },
+    { key: 'b', label: 'The blob’s area is unchanged; each particle’s energy is only bounded, not exact', why: 'Correct. Area is a symplectic invariant of the discrete map, so it holds while the shape is torn apart. Energy is not a discrete Noether quantity, so it oscillates inside a band rather than sitting at zero.' },
+    { key: 'c', misconception: 'discretise-then-constrain', label: 'Nothing structural survives — chaos on the separatrix overwhelms the integrator', why: 'The trajectories are as chaotic as the true flow on the separatrix. The structure that the discrete action knows about — area — does not care. That is the point of discretising the principle rather than the orbit.' },
+    { key: 'd', label: 'Energy of each particle is exact; the area shears away with the shape', why: 'Backwards. Shape is free to shear. Area is the invariant. Energy is the one that is only approximately conserved.' },
+  ]}
+  correct="b"
+/>
+
+Area holding is not a lucky property of this vector field. Verlet was never asked to preserve area. It is what you get when a discrete action is stationary.
+
+## A broken path still has an action
+
+The continuous story: a path $q(t)$ between two times has action $S = \int L(q, \dot q)\,dt$, and the true motion is a stationary point of $S$. For $L = \tfrac12 |\dot q|^2 - V(q)$ that stationarity is Newton.
+
+Now replace the smooth path by a **broken** one — positions $q_0, q_1, \ldots, q_N$ at a fixed step $h$, straight segments in between. The action becomes a sum of discrete Lagrangians. The natural midpoint discretisation uses the velocity at the centre of each interval and averages the potential at the two endpoints:
+
+$$
+L_d(q_k, q_{k+1}) = h\left[\frac12\left\|\frac{q_{k+1}-q_k}{h}\right\|^2 - \frac{V(q_k)+V(q_{k+1})}{2}\right]
+$$
+
+That is the action of one segment. The discrete action is $S_d = \sum_k L_d(q_k, q_{k+1})$. Vary the interior points and demand $\delta S_d = 0$. What remains is the discrete Euler–Lagrange equation
+
+$$
+D_2 L_d(q_{k-1}, q_k) + D_1 L_d(q_k, q_{k+1}) = 0.
+$$
+
+For this $L_d$ it expands to one line:
+
+$$
+\frac{q_{k+1} - 2q_k + q_{k-1}}{h^2} = -\nabla V(q_k).
+$$
+
+That is position Verlet. The discrete Legendre transform $p_k = -D_1 L_d(q_k, q_{k+1})$ turns it into the velocity form you already ran:
+
+```ts
+const a  = accel(q);
+const qNext = q + h * v + 0.5 * h * h * a;     // from p = −D1 Ld
+const aNext = accel(qNext);
+const vNext = v + 0.5 * h * (a + aNext);       // from p₊ = D2 Ld
+```
+
+Same code as `velocityVerlet` in `src/lib/numerics/ode.ts`. The library does not grow a second stepper. The discrete action *is* that stepper.
+
+<Predict
+  id="var-recovers-verlet"
+  question="You write down that midpoint-velocity discrete Lagrangian and demand that the discrete action be stationary. Which update do you get?"
+  options={[
+    { key: 'a', misconception: 'verlet-is-a-hack', label: 'Something new — Verlet was a reordering trick, not a variational method', why: 'The reordering is what stationarity produces. Wendlandt & Marsden (1997) and Marsden & West (2001, §2.6.2) recover Verlet from this L_d; the “trick” was the discrete least-action principle all along.' },
+    { key: 'b', label: 'Velocity Verlet — the same map as the last lesson', why: 'Correct. The discrete Euler–Lagrange equation of this L_d is position Verlet; the discrete Legendre transform is velocity Verlet. One map, two writings.' },
+    { key: 'c', label: 'Implicit midpoint — you evaluated things at the centre of the interval', why: 'The true midpoint quadrature of L, with V at (q_k + q_{k+1})/2, does give implicit midpoint. Averaging V at the endpoints instead is the trapezoidal rule, and that one is Verlet. The velocity (q_{k+1} − q_k)/h is the midpoint in both.' },
+    { key: 'd', label: 'Forward Euler — a broken path is a first-order picture', why: 'A piecewise-linear path is a first-order interpolation of q(t), but the variational condition on that path is a second-order symplectic map. The order lives in the stationarity condition, not in the kink.' },
+  ]}
+  correct="b"
+/>
+
+<Recall id="var-discrete-el" concept="variational-integrators">
+  <div slot="front">What equation does a variational integrator actually solve, and why is it Verlet?</div>
+
+The discrete Euler–Lagrange equation $D_2 L_d(q_{k-1}, q_k) + D_1 L_d(q_k, q_{k+1}) = 0$: stationarity of the discrete action $S_d = \sum L_d(q_k, q_{k+1})$.
+
+For the symmetric $L_d$ that uses midpoint velocity and averaged potential, that equation is position Verlet. The discrete Legendre transform $p = -D_1 L_d$ rewrites it as velocity Verlet — the same map the last lesson used, now derived rather than imposed.
+
+</Recall>
+
+## Which symmetries survive the break
+
+Noether's theorem does not care that the path is broken. If a one-parameter family of transformations leaves $L_d$ invariant, the corresponding discrete momentum map is **constant along the discrete trajectory** — to machine precision, not to $\Order(h^p)$.
+
+That is the discrete Noether theorem (Marsden & West, theorem 1.3.3). It is stricter than "the method is accurate, so conserved quantities are approximately conserved."
+
+The catch is which symmetries $L_d$ still has.
+
+- **Rotation.** $V$ depends only on $|q|$ (Kepler, any central force). Rotating $q_k$ and $q_{k+1}$ together leaves $L_d$ unchanged, so angular momentum $q \times p$ is exact.
+- **Translation.** $V$ depends only on differences $q_a - q_b$ (an isolated $N$-body). Shifting every particle together leaves $L_d$ unchanged, so total linear momentum is exact.
+- **Time translation.** The continuous Lagrangian does not depend on $t$, so energy is conserved. The discrete Lagrangian lives on pairs $(q_k, q_{k+1})$ at a **fixed** $h$. There is no continuous time left to shift. Energy is not a discrete Noether quantity. It stays within $\Order(h^2)$ of a nearby [shadow Hamiltonian](../verlet-vs-rk4/) forever — bounded, not exact.
+
+<Predict
+  id="var-which-conserved"
+  question="A Kepler orbit, integrated with the discrete-Lagrangian map (velocity Verlet). Which conserved quantity of the continuous system survives discretisation exactly, and which does not?"
+  options={[
+    { key: 'a', misconception: 'every-invariant-survives', label: 'Both energy and angular momentum are exact — the method is variational', why: 'Angular momentum is exact: rotational symmetry of V = −1/r is still a symmetry of L_d. Energy is not: a fixed step broke time-translation. Variational does not mean “every continuous invariant survives.”' },
+    { key: 'b', label: 'Angular momentum is exact; energy is only bounded', why: 'Correct. Discrete Noether gives q × p to roundoff. Energy oscillates inside an O(h²) band because the discrete action is not invariant under shifting time. Same method, two different mechanisms.' },
+    { key: 'c', label: 'Energy is exact; angular momentum drifts at the order of the method', why: 'Reversed. Spatial symmetries of L_d survive. Time-translation is the one the grid killed. Energy boundedness is the shadow-Hamiltonian story, not a Noether story.' },
+    { key: 'd', misconception: 'discretise-then-constrain', label: 'Neither is exact — discretisation always destroys conservation; Verlet just slows the damage', why: 'That is the RK4 picture. A variational map conserves the momenta of whatever symmetries L_d still has, exactly, for every step size. The damage is selective, not uniform.' },
+  ]}
+  correct="b"
+/>
+
+<Classify
+  id="var-noether-sort"
+  prompt="Each quantity below is either exact along the discrete trajectory, bounded but not exact, or lost. The distinction is which symmetry — if any — the discrete Lagrangian kept."
+  buckets={[
+    { key: 'exact', label: 'exact (discrete Noether or symplectic form)', accent: 'ok' },
+    { key: 'bounded', label: 'bounded, not exact', accent: 'cyan' },
+    { key: 'lost', label: 'lost / secular', accent: 'magenta' },
+  ]}
+  items={[
+    { key: 'ang', label: 'Kepler angular momentum', bucket: 'exact', why: 'V depends only on |q|, so L_d is rotationally invariant. Discrete Noether: q × p is constant to roundoff.' },
+    { key: 'lin', label: 'Total linear momentum of an isolated pair', bucket: 'exact', why: 'A pairwise potential is translation invariant. Shifting both particles leaves L_d unchanged, so p₁ + p₂ is exact.' },
+    { key: 'area', label: 'Phase-space area of a blob of initial conditions', bucket: 'exact', why: 'Any discrete Lagrangian map is symplectic: it preserves the discrete two-form. Area is not a Noether momentum; it is the variational structure itself.' },
+    { key: 'energy', label: 'Energy', bucket: 'bounded', why: 'Time-translation did not survive a fixed h. A shadow Hamiltonian is conserved instead, so true energy stays in an O(h^p) band and never walks off.' },
+    { key: 'phase', label: 'Phase along the true orbit', bucket: 'lost', why: 'Trajectory accuracy is still only second order. Verlet precesses. Knowing the orbit is still an orbit is not the same as knowing where on the orbit you are.' },
+  ]}
+  explanation="Exact means an algebraic identity of L_d, not a small residual. Bounded means a nearby conserved quantity pins the error. Lost means nothing in the discrete principle knows about it — and then the error accumulates."
+/>
+
+<Recall id="var-noether-card" concept="variational-integrators">
+  <div slot="front">Which continuous conserved quantities become exact after you discretise the action, and which become merely bounded?</div>
+
+Spatial symmetries that $L_d$ still has — translation, rotation — give discrete Noether momenta, exact to roundoff.
+
+Time-translation does not survive a fixed step $h$, so energy is not exact. It is pinned to a nearby shadow Hamiltonian and stays inside a band of width $\Order(h^p)$.
+
+If a symmetry died in the discretisation, the corresponding quantity is not a conservation law of the map. Accuracy will not smuggle it back in.
+
+</Recall>
+
+## The movie plays backwards
+
+The same $L_d$ is unchanged if you swap the two arguments: $L_d(q_0, q_1) = L_d(q_1, q_0)$. The action of a broken path equals the action of its reverse. Stationary paths therefore run equally well backwards, which is the statement
+
+$$
+\Phi_h^{-1} = \Phi_{-h}.
+$$
+
+Equivalently: reverse all velocities, step, reverse again, and you are back where you started — to machine precision, for any $h$ the map is defined.
+
+That is time-reversibility. It is not a certificate of accuracy. It is a symmetry of the discrete action. A method that dissipates energy cannot equal its own reverse, which is why reversible maps cannot show the monotone drift RK4 does.
+
+<Predict
+  id="var-reversible-map"
+  question="Start at (q, v). Take 200 velocity-Verlet steps. Flip every velocity. Take 200 more steps. Flip velocities again. Where are you?"
+  options={[
+    { key: 'a', misconception: 'reversible-means-accurate', label: 'Near the start, closer if h is small — truncation error has to unwind', why: 'The return is an identity of the map, not a cancellation of truncation error. You land on the start even when every intermediate point was on the wrong orbit. Small h is irrelevant.' },
+    { key: 'b', label: 'Exactly at the start, to machine precision, for any stable h', why: 'Correct. R ∘ Φ_h ∘ R ∘ Φ_h = id is an algebraic fact about this L_d. The movie plays backwards because the discrete action of a path equals the action of its reverse.' },
+    { key: 'c', misconception: 'reversible-means-energy', label: 'On the same energy surface, but not at the same point — reversibility conserves energy, not position', why: 'Reversibility is stronger than “stay on an energy surface.” It returns the whole state. Energy is not even exact; it oscillates. The thing that comes back exactly is (q, v).' },
+    { key: 'd', label: 'Somewhere else on the orbit — phase error is second order and 200 steps of it do not undo', why: 'Phase error is real on a forward run. The reverse run is not “another 200 steps of the same error.” It is the inverse map. The phase error itself is walked back.' },
+  ]}
+  correct="b"
+/>
+
+<Recall id="var-reverse-card" concept="time-reversibility">
+  <div slot="front">What does time-reversibility of the map say, and why does a discrete action give it for free?</div>
+
+Stepping forward by $h$ and then backward by $h$ is the identity: the discrete map is its own reverse.
+
+$L_d(q_0, q_1) = L_d(q_1, q_0)$ — the action of a segment equals the action of the reversed segment — so a stationary broken path remains stationary when you run it backwards. Verlet inherits this; classical RK4 does not (its Butcher tableau is not palindromic), and neither does forward Euler.
+
+Reversibility forbids monotone energy drift. It does not make energy exact, and it does not make the trajectory accurate.
+
+</Recall>
+
+<Tier level="frontier" title="where variational goes further than symplectic-by-construction">
+
+Imposing $\det \Phi' = 1$ by hand works for separable Hamiltonians on $\mathbb{R}^{2n}$. The discrete action still makes sense when that picture breaks.
+
+- **Constraints.** SHAKE and RATTLE are variational integrators on $g(q) = 0$: you restrict the discrete path, not the vector field. Lagrange multipliers fall out of the same stationarity condition.
+- **Collisions and contact.** A non-smooth trajectory still has an action. Variational collision integrators conserve discrete momentum through impacts because the discrete Noether argument never needed $\ddot q$ to exist.
+- **Lie groups.** A rotation should stay a rotation. Discretise the action on $SO(3)$ and the update lands on the group rather than drifting off it and needing a projection.
+
+The through-line is the same: write the principle on the space the physics actually lives on, then let stationarity produce the map.
+
+</Tier>
+
+## What to carry forward
+
+- Discretise the variational principle, not the ODE. The integrator is whatever makes the discrete action stationary — and for the midpoint-velocity $L_d$, that integrator is velocity Verlet.
+- Spatial symmetries of $L_d$ give momenta to machine precision (discrete Noether). Time-translation dies with the choice of $h$, so energy is bounded by a shadow Hamiltonian, not exact.
+- Time-reversibility is the same discrete action read backwards: $\Phi_h^{-1} = \Phi_{-h}$. A dissipative map cannot be its own reverse.
