@@ -1,0 +1,8 @@
+title: 'Operators, not tables'
+question: 'What is a matrix, once it comes from a stencil?'
+blurb: >-
+  A matrix that came from a stencil has a shape: sparse, maybe SPD, maybe
+  singular until a boundary is imposed. Seeing that shape is the whole
+  of computational linear algebra.
+order: 1
+status: 'draft'

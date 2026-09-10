@@ -1,0 +1,8 @@
+title: 'Linear Algebra, Computationally'
+subtitle: 'conditioning, operators, and the solvers they deserve'
+blurb: >-
+  Every method in this studio eventually becomes Au = b. Seeing A as a stencil, not a table of numbers, is the whole of computational linear algebra.
+accent: 'cyan'
+status: 'draft'
+chapters:
+  - '01-operators'
