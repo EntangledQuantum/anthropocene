@@ -112,6 +112,16 @@ for (const file of walk(PATHS).filter((f) => f.endsWith('.mdx'))) {
     referencedMisconceptions.push({ id: m[1], lesson: id });
   }
 
+  // MDX parses JSX props as JS. A contraction inside a single-quoted string
+  // (`why: 'the paper's algorithm'`) terminates the string and the next `<`
+  // is reported as "unexpected character after <" at the opening tag.
+  // `\'` is already escaped and is fine; we only flag letter-quote-letter.
+  for (const m of body.matchAll(/\b(why|label|prompt|hint|explanation|question):\s*'[^']*[a-zA-Z]'[a-zA-Z]/g)) {
+    if (/\\'/.test(m[0])) continue;
+    err(`lesson "${id}" has an unescaped apostrophe in a single-quoted JSX prop`,
+        `${m[0].slice(0, 80)} — use double quotes or \\'`);
+  }
+
   lessons.push({
     id, file,
     title: String(data.title ?? ''),

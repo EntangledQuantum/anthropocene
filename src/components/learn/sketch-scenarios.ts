@@ -244,6 +244,7 @@ export const SKETCH_SCENARIOS: Record<string, SketchScenario> = {
   'trapezoid-ring': trapezoidRing,
   'spec-smooth-cliff': specSmoothCliff,
   'spec-jump-slope': specJumpSlope,
+  'spec-jump-rate': specJumpSlope,
   'mc-error-vs-n': mcErrorVsN,
   'ad-decay-loss-bowl': decayLossBowl,
 };

@@ -46,7 +46,7 @@ The solver is a function $\theta \mapsto y(t;\theta)$. Distance to the target is
 scalar
 
 $$
-L(\theta) = \frac{1}{2N}\sum_n \bigl(y_n(\theta) - y_n^\star\bigr)^2
+L(\theta) = \tfrac{1}{2} N^{-1}\sum_n \bigl(y_n(\theta) - y_n^\star\bigr)^2
 $$
 
 and $\nabla L$ is a direction. You just watched gradient descent follow it.
@@ -98,7 +98,7 @@ small constant times one evaluation, however many parameters you have.
 
 ## The reverse sweep is the stepper, backwards
 
-For $y' = -\lambda y$ under forward Euler, $y_{n+1} = (1 - h\lambda)\, y_n$.
+For $y' = -\lambda y$ under forward Euler, $y_{\{n+1\}} = (1 - h\lambda)\, y_n$.
 The reverse sweep is those two multiplies, read right to left:
 
 ```ts
@@ -143,7 +143,7 @@ reconstruct it by integrating $f$ backward from $y(T)$.
   id="ad-neural-ode-memory"
   question="The Neural ODE adjoint claims O(1) memory in the number of steps, by reconstructing y(t) backward. What is the catch?"
   options={[
-    { key: 'a', misconception: 'ad-must-unroll', label: 'No catch — that is why everyone uses it', why: 'The paper's algorithm is real. The reconstruction is not free, and for a general nonlinear f it is not stable. Treating the slogan as a guarantee is the trap.' },
+    { key: 'a', misconception: 'ad-must-unroll', label: 'No catch — that is why everyone uses it', why: "The paper's algorithm is real. The reconstruction is not free, and for a general nonlinear f it is not stable. Treating the slogan as a guarantee is the trap." },
     { key: 'b', label: 'Reverse-time reconstruction of a general nonlinear ODE is unstable; checkpointing is the honest version', why: 'Correct. Gholami, Keutzer and Biros (ANODE) documented the instability. You save y at a few checkpoints and restart forward from those, which is discrete reverse-mode with a memory/compute trade. O(1) memory was the aspiration, not the method you ship.' },
     { key: 'c', label: 'It only works for linear ODEs, so Neural ODEs are a special case of RK4', why: 'The adjoint ODE is well-defined for nonlinear f. The reconstruction, not the adjoint itself, is what breaks.' },
     { key: 'd', label: 'You still store every RK stage, so memory is O(steps) anyway', why: 'Vanilla backpropagation-through-the-solver does store stages. The adjoint method is specifically the attempt not to. The catch is numerical, not bookkeeping.' },
@@ -177,7 +177,7 @@ you drop it, you have interpolation, and interpolation is not a solution.
     { key: 'a', misconception: 'pinn-fit-solves-pde', label: 'The residual is also about 10^{-4} — it fitted the solution', why: 'Fitting values does not constrain derivatives. A polynomial through three points of e^{−t} looks like a decay and has an O(10^{-1}) residual of y′ + y.' },
     { key: 'b', label: 'The residual can still be O(1) between the samples', why: 'Correct. Interpolation hits the nodes and says nothing about ŷ′ + ŷ in between. That is why a PINN plots the residual, and why a surrogate that does not is theatre.' },
     { key: 'c', label: 'The residual is identically zero — an interpolant of a solution is a solution', why: 'Only the exact function satisfies the ODE everywhere. A polynomial through samples of a solution is a different function.' },
-    { key: 'd', label: 'You cannot define a residual without a mesh, so the question does not apply', why: 'A collocation residual is pointwise: evaluate ŷ′ + ŷ at any t you like. No mesh required, which is the PINN's one real advantage, and not a reason to skip the check.' },
+    { key: 'd', label: 'You cannot define a residual without a mesh, so the question does not apply', why: "A collocation residual is pointwise: evaluate ŷ′ + ŷ at any t you like. No mesh required, which is the PINN's one real advantage, and not a reason to skip the check." },
   ]}
   correct="b"
 >
