@@ -26,6 +26,7 @@ import { DEMO_RESTART, DEMO_WIND, GMRES_N, convectionProblem, gmres } from '../.
 import { measuredPlasmaPeriod } from '../../lib/numerics/pic.ts';
 import { CS, demoPoiseuille } from '../../lib/numerics/lbm.ts';
 import { mmsErrorDrop } from '../../lib/numerics/vv.ts';
+import { SURFACE_RHO_RATIO } from '../../lib/numerics/sph.ts';
 
 /**
  * Named quantities for `<Estimate>`.
@@ -462,6 +463,21 @@ const vvMmsDrop: EstimateScenario = {
   truth: () => mmsErrorDrop(32),
 };
 
+/* 1D free-surface particle, cubic spline, h = Δx. Self (2/3) plus one
+   neighbour at q = 1 (1/6) is 5/6. Half the kernel is empty, not half the mass. */
+const sphSurfaceRho: EstimateScenario = {
+  quantity: 'kernel density at a 1D free-surface particle, as a fraction of ρ₀, when h = Δx',
+  logRange: [-0.55, 0.15],
+  logStart: 0,
+  withinFactor: 1.15,
+  landmarks: [
+    { value: 0.5, label: '½ empty' },
+    { value: 2 / 3, label: 'self' },
+    { value: 1, label: 'ρ₀' },
+  ],
+  truth: () => SURFACE_RHO_RATIO,
+};
+
 export const ESTIMATE_SCENARIOS: Record<string, EstimateScenario> = {
   'euler-work-1e6': eulerWorkFor1e6,
   'rk4-work-1e6': rk4WorkFor1e6,
@@ -490,4 +506,5 @@ export const ESTIMATE_SCENARIOS: Record<string, EstimateScenario> = {
   'pic-plasma-period': picPlasmaPeriod,
   'lbm-umax': lbmUmax,
   'vv-mms-drop': vvMmsDrop,
+  'sph-surface-rho': sphSurfaceRho,
 };

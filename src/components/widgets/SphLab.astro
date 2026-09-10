@@ -1,0 +1,5 @@
+---
+import Island, { type SphLabProps } from '../viz/SphLab.tsx';
+const props = Astro.props as SphLabProps;
+---
+<Island client:visible {...props} />

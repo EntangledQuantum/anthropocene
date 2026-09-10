@@ -24,6 +24,7 @@ import { DEMO_WIND, GMRES_N, convectionProblem, gmresHistory } from '../../lib/n
 import { riemannState } from '../../lib/numerics/riemann.ts';
 import { poiseuilleSketchProfile } from '../../lib/numerics/lbm.ts';
 import { residualSweep } from '../../lib/numerics/vv.ts';
+import { cubicShape } from '../../lib/numerics/sph.ts';
 
 /**
  * Named targets for `<SketchCurve>`.
@@ -502,6 +503,16 @@ const vvMmsResidual: SketchScenario = {
       .sort((a, b) => a.x - b.x),
 };
 
+const sphCubicW: SketchScenario = {
+  xLabel: 'q = r / h',
+  yLabel: 'w(q)',
+  xRange: [0, 2.5],
+  yRange: [-0.08, 0.82],
+  tolerance: 0.11,
+  anchors: [{ x: 0, y: 2 / 3, label: '2/3' }],
+  truth: () => sample(90, 0, 2.5, cubicShape),
+};
+
 export const SKETCH_SCENARIOS: Record<string, SketchScenario> = {
   'fd-u-curve': fdUCurve,
   'euler-convergence': eulerConvergence,
@@ -532,4 +543,5 @@ export const SKETCH_SCENARIOS: Record<string, SketchScenario> = {
   'rie-rarefaction-fan': rieRarefactionFan,
   'lbm-poiseuille-parabola': lbmPoiseuilleParabola,
   'vv-mms-residual': vvMmsResidual,
+  'sph-cubic-w': sphCubicW,
 };

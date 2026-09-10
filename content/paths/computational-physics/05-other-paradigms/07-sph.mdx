@@ -1,7 +1,7 @@
 ---
 title: 'A kernel instead of a mesh'
 blurb: 'SPH estimates density by dropping a kernel on every neighbour. There is no grid to tangle. The tensile instability is the price.'
-order: 1
+order: 7
 tier: 'advanced'
 minutes: 16
 teaches:
@@ -10,44 +10,146 @@ requires:
   - 'molecular-dynamics'
   - 'pde'
 runtime: 'none'
-status: 'draft'
+status: 'live'
+updated: 2026-09-11
 ---
 
-Open with the tension, not the definition. What does the reader currently believe that
-this lesson is going to complicate?
-
-## The idea
-
-Build it up. Use `$inline$` and `$$display$$` for math.
+A cup of water sloshes. A Lagrangian mesh that follows it tangles. An Eulerian mesh that stays put needs a free-surface tracker. You already know how [molecular dynamics](../molecular-dynamics/) treats a pair potential, and what a [PDE](../../fields-and-continua/from-particles-to-fields/) stores on a grid. Throw the grid away. The particles *are* the water. How do you even know the density?
 
 <Predict
-  id="07-sph-first-prediction"
-  question="Ask something the reader can be productively wrong about."
+  id="sph-how-density"
+  question="A particle of mass m sits among neighbours. There is no cell. How is its density computed?"
   options={[
-    { key: 'a', label: 'The intuitive answer', why: 'Why it is tempting, and exactly where it breaks.' },
-    { key: 'b', label: 'The correct answer', why: 'Why it is right, in one or two sentences.' },
+    { key: 'a', misconception: 'sph-needs-mesh', label: 'Deposit mass onto a background grid, like PIC. Density lives on the mesh.', why: "That is PIC. SPH has no mesh to deposit onto. If you needed Poisson or a constitutive solve on nodes, you would have kept the grid." },
+    { key: 'b', misconception: 'sph-count-neighbours', label: 'Count neighbours inside a ball of radius h and divide mass by the volume of that ball.', why: "A top-hat is a kernel, and a bad one: discontinuous, gradient zero almost everywhere, so you cannot take a derivative of it. Distance has to weight the sum." },
+    { key: 'c', label: 'Sum m_j W(|x_i − x_j|, h) over neighbours, including itself. The kernel is the cell.', why: "Correct. Density is a kernel estimate, not a bin count and not a grid field. Self sits at W(0). Completeness of W is what makes a constant recoverable." },
+    { key: 'd', misconception: 'sph-is-md', label: 'Read it off a pair potential V(r), the way MD reads a force.', why: "MD’s force comes from a stored V(r). SPH’s force comes from an equation of state on a continuum field you just estimated. The particles are interpolation points, not molecules." },
   ]}
-  correct="b"
+  correct="c"
 >
 
-The payoff, revealed only after they commit. Usually a simulation.
+Drag $h/\Delta x$. The cyan curve is $W$ on the tracked particle. The lower panel is the same sum, evaluated everywhere. One state, two pictures.
+
+<SphLab
+  mode="kernel"
+  caption="Top: particles, and W of the tracked one. Bottom: ρ(x) = Σ m W, dots at the particles. Completeness is whether that curve sits on ρ₀."
+/>
 
 </Predict>
 
-<Recall id="07-sph-card" concept="sph">
-  <div slot="front">The question to answer from memory in three months.</div>
+$$
+\rho_i = \sum_j m_j\, W\bigl(|x_i - x_j|,\, h\bigr)
+$$
 
-The answer, written so it teaches rather than merely confirms.
+including $j = i$. The smoothing length $h$ is the resolution. There is no connectivity to invert.
+
+On a 1D lattice the cubic spline recovers a constant *exactly* when the nearest neighbours sit at $q = r/h = 1$.
+
+<Tune
+  id="sph-complete-h"
+  scenario="sph-complete-h"
+  prompt="A 1D lattice, geometric density 1. Drag h/Δx until the kernel sum recovers the rest density exactly."
+  hint="The cubic spline’s first knot is q = 1. Put the neighbours there."
+  explanation="h = Δx. Self contributes 2/3; each neighbour at q = 1 contributes 1/6; 2/3 + 1/6 + 1/6 = 1. Narrower than Δx/2, the neighbours leave the support and you are left with the self term (2/3)/(h/Δx), which is not ρ₀."
+/>
+
+A free surface truncates the same kernel. Mass did not leave. Neighbours on the empty side did.
+
+<Estimate
+  id="sph-surface-rho"
+  scenario="sph-surface-rho"
+  prompt="1D free-surface particle, cubic spline, h = Δx. What fraction of ρ₀ does the kernel sum return?"
+  explanation="5/6. Self is 2/3, one remaining neighbour at q = 1 is 1/6. Half the kernel hangs in empty space, but self is not empty space, so the answer is not 1/2. The mass is unchanged — completeness failed, not conservation."
+/>
+
+The force is the gradient of that same $W$. Pairwise, so Newton's third law is an identity, not a hope.
+
+$$
+\frac{\mathrm{d}v_i}{\mathrm{d}t}
+= -\sum_j m_j\Bigl(\frac{P_i}{\rho_i^2} + \frac{P_j}{\rho_j^2}\Bigr)\nabla_i W_{ij}
++ g
+$$
+
+Weakly compressible: $P = c_0^2(\rho - \rho_0)$. Negative density error, negative pressure.
+
+<RankOrder
+  id="sph-step-order"
+  prompt="One SPH step. Put the four beats in the order they actually run."
+  lowLabel="first"
+  highLabel="last"
+  items={[
+    { key: 'density', label: 'density — ρᵢ = Σ mⱼ W(|xᵢ − xⱼ|, h)', why: 'The field you do not store. Everything downstream is a function of this sum.' },
+    { key: 'pressure', label: 'pressure — Pᵢ = c₀² (ρᵢ − ρ₀)', why: 'Equation of state. Not a pair potential. P can go negative, and that is the tensile door.' },
+    { key: 'force', label: 'force — pairwise from (Pᵢ/ρᵢ² + Pⱼ/ρⱼ²) ∇W', why: 'Equal and opposite by construction. Linear momentum is conserved whether or not the kernel is complete.' },
+    { key: 'push', label: 'push — Verlet on x, v', why: 'Last. Same family as MD. The force just came from a continuum estimate, not from V(r).' },
+  ]}
+  correct={['density', 'pressure', 'force', 'push']}
+  explanation="Density from the kernel, pressure from the EOS, pairwise force from ∇W, then the kick. There is no Poisson solve and no mesh to reset. A grid that followed this splash would invert."
+/>
+
+A block of fluid, empty tank, gravity. No mesh to tangle.
+
+<SphLab
+  mode="dambreak"
+  lockMode={true}
+  caption="Dummy wall particles in iris complete the kernel at the walls. The right face is a free surface. Colour is ρ/ρ₀. Play — the splash has nothing to invert."
+/>
+
+The cubic spline is not a Gaussian and not a box. Compact support $2h$, $C^2$, peak $2/3$ in 1D units of $1/h$.
+
+<SketchCurve
+  id="sph-cubic-w"
+  scenario="sph-cubic-w"
+  prompt="Sketch the cubic-spline shape w(q). It starts at 2/3. Support is 2h, so it must be zero for q ≥ 2."
+  hint="A knot at q = 1: w(1) = 1/6. A Gaussian still has tails past 2. A tent is linear. A box is flat."
+  explanation="w(0) = 2/3, w(1) = 1/6, w(q) = 0 for q ≥ 2. The second derivative changes sign at q = 2/3 — that inflection is the tensile instability, not a footnote."
+/>
+
+<Predict
+  id="sph-tensile"
+  question="You put the same cubic-spline fluid in tension (P < 0) and turn viscosity off. What happens?"
+  options={[
+    { key: 'a', label: 'Particles spread uniformly. Tension should pull them apart.', why: "Uniform expansion is what a well-posed continuum would do. The discrete kernel does not give you that modulus." },
+    { key: 'b', misconception: 'sph-tension-is-stable', label: 'Nothing special. The kernel that was stable in compression is stable in tension.', why: "Stability is not a property of W alone. Swegle’s product of stress and W″ flips sign under tension for this spline. Compression on a lattice is fine; tension pairs." },
+    { key: 'c', label: 'They clump. The kernel’s second derivative makes tension a negative modulus.', why: "Correct. Particles pair, densities spike, voids open. Unchecked — no artificial stress, no pressure floor. That is the failure mode you pay for having no mesh." },
+    { key: 'd', label: 'The density goes negative and the run dies.', why: "W is non-negative, masses are positive, so ρᵢ cannot go negative. The instability is geometric — pairing — not a sign error in ρ." },
+  ]}
+  correct="c"
+>
+
+Toggle **tensile**. Min spacing is the readout. Compression (the other seed) does not pair.
+
+<SphLab
+  mode="tensile"
+  lockMode={true}
+  caption="Periodic lattice, P < 0, a pairing-mode seed, no artificial viscosity. Colour goes magenta where density spikes. The kernel that estimated ρ is the kernel that clumps."
+/>
+
+</Predict>
+
+<Recall id="sph-one-line" concept="sph">
+  <div slot="front">How does SPH estimate density, and what is the price of having no mesh?</div>
+
+$\rho_i = \sum_j m_j W(|x_i-x_j|, h)$. The kernel *is* the cell — no connectivity, so a splash cannot tangle. Completeness fails at a free surface (missing neighbours, not missing mass). The same $W$ whose gradient gives the pairwise force has $W''$ that makes tension a negative modulus: particles clump. That is the tensile instability.
 
 </Recall>
 
-<Tier level="advanced">
+<Tier level="advanced" title="Wendland, artificial stress, and when to keep the grid">
 
-The treatment for someone who already has the working version. Derivations, edge cases,
-the reason the standard explanation is a simplification.
+Swegle, Hicks, Attaway (1995): von Neumann analysis of 1D SPH. Unstable when $\sigma W'' > 0$ (their sign convention). For the cubic B-spline, $W''$ is negative near the origin and positive past the inflection, so a tensile stress is an imaginary sound speed. Artificial viscosity does not remove it — it is not a time-integration artefact.
+
+Monaghan’s tensile correction (2000) adds a short-range repulsive stress when $P < 0$. Wendland kernels (Dehnen & Aly 2012) have no pairing instability at large neighbour count because their Fourier transform stays non-negative; they are what you switch to when you wanted more neighbours for convergence and the cubic spline started clumping.
+
+Incompressible SPH replaces the EOS with a pressure Poisson solve — now you *do* have an elliptic problem, and you are halfway back to a grid method. Weakly compressible SPH (this lesson) keeps $P = c_0^2(\rho-\rho_0)$ and pays with a sound-speed CFL.
+
+Boundaries: dummy particles (this lab), ghost particles, or a repulsive wall force. All of them exist because a truncated kernel is a zeroth-order error. Shepard filtering and RKPM restore completeness; they are cousins, not SPH.
+
+When the grid is simpler: confined flow with a stable free-surface tracker, or any elliptic constraint you were going to solve anyway. When SPH is simpler: astrophysical gas, violent free surfaces, fragmentation. MPM keeps a *disposable* grid so it can take derivatives without $\nabla W$; SPH never borrows one.
 
 </Tier>
 
 ## What to carry forward
 
-Two or three lines connecting to what comes next.
+Density is $\sum m W$. No mesh, so nothing to tangle — and nothing to guarantee completeness at a free surface.
+
+The kernel that estimates $\rho$ is the kernel that clumps in tension. That is the deal.

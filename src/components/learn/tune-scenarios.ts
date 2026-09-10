@@ -58,6 +58,7 @@ import {
 } from '../../lib/numerics/reconstruction.ts';
 import { nodeCharge, xWhereLeftFraction } from '../../lib/numerics/pic.ts';
 import { channelUmaxAtTau, poiseuilleUmaxSweep } from '../../lib/numerics/lbm.ts';
+import { latticeDensityRatio } from '../../lib/numerics/sph.ts';
 
 /**
  * Named scenarios for `<Tune>`.
@@ -1116,6 +1117,42 @@ const vvLaplacianCoeff: TuneScenario = {
   },
 };
 
+/* 1D cubic spline on a lattice. At h = Δx the two neighbours sit at q = 1
+   and the kernel sum recovers ρ₀ exactly. Narrower than Δx/2 is only self. */
+const sphEtaCurve: [number, number][] = Array.from({ length: 55 }, (_, i) => {
+  const eta = 0.45 + (1.8 - 0.45) * (i / 54);
+  return [eta, latticeDensityRatio(eta)];
+});
+const sphCompleteH: TuneScenario = {
+  param: {
+    key: 'eta', label: 'smoothing length / spacing', symbol: 'h/Δx',
+    min: 0.45, max: 1.8, step: 0.01, value: 0.55,
+    hint: 'h = Δx puts the nearest neighbours at q = 1, where the cubic spline recovers ρ₀ exactly.',
+  },
+  target: 1,
+  tolerance: 0.08,
+  x: { label: 'h / Δx', domain: [0.45, 1.8] },
+  y: { label: 'ρ / ρ₀', domain: [0.85, 1.65] },
+  rules: [
+    { y: 1, label: 'ρ₀', color: 'iris' },
+    { x: 1, label: 'h = Δx', color: 'magenta' },
+  ],
+  compute: (eta) => {
+    const t = Math.max(0.45, Math.min(1.8, eta));
+    const r = latticeDensityRatio(t);
+    return {
+      series: [
+        { key: 'curve', label: 'ρ / ρ₀', color: 'cyan', points: sphEtaCurve },
+        { key: 'you', label: 'your h', color: 'magenta', style: 'dots', width: 7, points: [[t, r]] },
+      ],
+      readouts: [
+        { label: 'h / Δx', value: t.toFixed(2) },
+        { label: 'ρ / ρ₀', value: r.toFixed(3) },
+      ],
+    };
+  },
+};
+
 export const TUNE_SCENARIOS: Record<string, TuneScenario> = {
   'fd-optimum': fdOptimum,
   'euler-stability': eulerStability,
@@ -1142,4 +1179,5 @@ export const TUNE_SCENARIOS: Record<string, TuneScenario> = {
   'pic-deposit-split': picDepositSplit,
   'lbm-tau-umax': lbmTauUmax,
   'vv-laplacian-coeff': vvLaplacianCoeff,
+  'sph-complete-h': sphCompleteH,
 };

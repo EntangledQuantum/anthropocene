@@ -145,6 +145,11 @@ describe('estimate scenarios agree with the prose that quotes them', () => {
     expect(t).toBeGreaterThan(3.2);
     expect(t).toBeLessThan(5.2);
   });
+
+  it('1D SPH free-surface density at h = Δx is 5/6, not 1 and not 1/2', () => {
+    const t = ESTIMATE_SCENARIOS['sph-surface-rho'].truth();
+    expect(t).toBeCloseTo(5 / 6, 12);
+  });
 });
 
 describe('every scenario is answerable on its own slider', () => {
