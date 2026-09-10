@@ -1,0 +1,9 @@
+title: 'Fields and Continua'
+question: 'What is stored, once space itself is discrete?'
+blurb: >-
+  ODEs stored a state. PDEs store a field. The same questions — consistency,
+  stability, conservation — now have a spatial stencil, a CFL number, and a
+  domain of dependence. Heat, waves, and Poisson are three personalities of
+  one discrete idea.
+order: 6
+status: 'draft'
