@@ -107,7 +107,7 @@ npm run content:gaps          # what is structurally missing right now
 - ✅ Particles that borrow a grid — MPM P2G/G2P, the mesh is thrown away
 
 ### To write
-- [ ] **What is conserved, cell by cell** *(stub `07-finite-volume`)* — flux in = flux out.
+- ✅ What is conserved, cell by cell — telescoping fluxes, Rankine–Hugoniot
 - [ ] **Fluids beyond projection** — advection schemes, MAC details as gym variants.
 
 ---
@@ -117,7 +117,8 @@ npm run content:gaps          # what is structurally missing right now
 Paths worth creating once the first one is complete. Each becomes a directory under
 `content/paths/` the moment its first lesson is scaffolded.
 
-- [ ] **Linear Algebra, Computationally** — path stubbed (`linear-algebra/01-operators/01-matrix-as-operator`). First live lesson is Wave 4. Then QR/SVD, Krylov.
+- ✅ **Linear Algebra, Computationally** — first lesson live: a matrix is a discrete operator.
+- [ ] Jacobi smoothing and Krylov/CG (Wave 5). Then QR/SVD, preconditioners.
 - [ ] **Probability and Inference** — from sampling to Bayesian computation.
 - [ ] **Optimisation** — convexity, gradient methods, second-order methods, constraints.
 - [ ] **Signals and Transforms** — Fourier, wavelets, sampling, aliasing.

@@ -1,0 +1,6 @@
+title: 'Walking downhill on Au = b'
+question: 'Why does iterating the residual get you the smooth error for free, and then stop?'
+blurb: >-
+  Why this chapter comes here, and what changes once you have it.
+order: 2
+status: 'draft'
