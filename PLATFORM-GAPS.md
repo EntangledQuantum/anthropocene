@@ -93,8 +93,9 @@ the weights for the learner.
 - [ ] **"What should I do in the next eight minutes?"** §4 Layer E. The home page markets
   the product to a stranger; it should orient a returning learner.
 - [ ] **Placement.** A short interactive diagnostic, not a 80-question exam.
-- [ ] **Ask in your own words → route to a lesson.** §7. Note the constraint: route them
-  *into* the lesson, do not answer in a chat box and send them away.
+- [ ] **Ask in your own words → route to a lesson.** §7. The palette handles "jump to a
+  thing I can name"; this is the harder version — a natural-language question routed into
+  the right lesson rather than answered in a chat box.
 
 ### Layer E — the habit
 
@@ -169,6 +170,16 @@ Delete from the lists above and record here only if it is worth remembering.
 
 - ✅ **"You are here"** (§4 Layer D) — the path is a journey with a lit thread and one
   ringed next stop.
+
+- ✅ **Search from anywhere** (§7) — ⌘K / Ctrl-K or `/` opens a palette over every page,
+  fuzzy-matching lessons, concepts, chapters and paths. Concepts resolve to the lesson
+  that owns them, so jumping to an idea lands where it is taught. The index is fetched on
+  first open, so nobody pays for a feature they did not use.
+
+- ✅ **The graph is a graph** (§6.1) — the page was a sorted list of cards that called
+  itself a graph, which is exactly the illustration-versus-model failure the thesis names.
+  Now force-directed, self-indexing from `/index.json`, with hover isolating a concept's
+  neighbourhood and click opening its lesson.
 
 - ✅ **Estimation as a first-class move** (§5.5, §6.8, §8) — `<Estimate>` commits the
   learner to an order of magnitude before the reveal, graded on a multiplicative factor.

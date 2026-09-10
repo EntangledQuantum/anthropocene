@@ -2,6 +2,7 @@
 import '../styles/global.css';
 import XpRail from '../components/chrome/XpRail.tsx';
 import XpToasts from '../components/chrome/XpToasts.tsx';
+import CommandPalette from '../components/chrome/CommandPalette.tsx';
 
 interface Props {
   title: string;
@@ -18,7 +19,6 @@ const nav = [
   { href: `${base}/learn/`, label: 'paths' },
   { href: `${base}/review/`, label: 'review' },
   { href: `${base}/graph/`, label: 'graph' },
-  { href: `${base}/search/`, label: 'search' },
 ];
 const here = Astro.url.pathname.replace(/\/$/, '');
 ---
@@ -60,6 +60,17 @@ const here = Astro.url.pathname.replace(/\/$/, '');
             })}
           </nav>
 
+          <button
+            type="button"
+            id="palette-trigger"
+            class="hud-label anth-btn"
+            style="display:flex;align-items:center;gap:9px;flex-shrink:0;--btn-accent:var(--color-orchid)"
+            aria-label="Search everything"
+          >
+            <span>⌕ search</span>
+            <span style="color:var(--color-ink-ghost)">⌘K</span>
+          </button>
+
           <div style="flex-shrink:0">
             <!-- client:only — this reads OPFS, which has no server equivalent. -->
             <XpRail client:only="react" />
@@ -80,6 +91,15 @@ const here = Astro.url.pathname.replace(/\/$/, '');
       </main>
 
       <XpToasts client:only="react" />
+      <CommandPalette client:only="react" />
+
+      <script is:inline>
+        // The palette is a React island; the trigger lives in static markup,
+        // so they meet on a custom event rather than through props.
+        document.getElementById('palette-trigger')?.addEventListener('click', () => {
+          window.dispatchEvent(new CustomEvent('anthropocene:palette'));
+        });
+      </script>
 
       <footer style="border-top:1px solid var(--color-rule);margin-top:80px">
         <div style="max-width:1180px;margin:0 auto;padding:20px 24px;display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap">

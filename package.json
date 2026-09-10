@@ -37,6 +37,7 @@
     "@types/react-dom": "^19.2.7",
     "astro": "^7.3.2",
     "d3-array": "^3.2.4",
+    "d3-force": "^3.0.0",
     "d3-path": "^3.1.0",
     "d3-scale": "^4.0.2",
     "d3-shape": "^3.2.0",
@@ -56,6 +57,7 @@
   "devDependencies": {
     "@astrojs/check": "^0.9.10",
     "@types/d3-array": "^3.2.2",
+    "@types/d3-force": "^3.0.10",
     "@types/d3-scale": "^4.0.9",
     "@types/d3-shape": "^3.2.0",
     "@types/katex": "^0.16.8",

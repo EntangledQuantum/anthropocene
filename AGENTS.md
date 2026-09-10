@@ -315,6 +315,14 @@ history and resets the card.** Globally unique; `content:check` enforces it.
    in `scripts/check-content.ts`.
 5. Document it in §6 and add it to the design rules in §2 if it teaches something new.
 
+### The content index
+
+`/index.json` is emitted at build time from the concept graph and holds every path,
+chapter, lesson and concept plus the prerequisite edges. The command palette and the
+concept graph both read it, so **adding a lesson re-indexes search and redraws the map
+with no extra step**. If you build something that needs to know what content exists, read
+that endpoint rather than adding a second source of truth.
+
 ### Library freedom
 
 Each widget is its own island, so a one-off lesson can import anything without every other

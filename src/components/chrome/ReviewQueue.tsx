@@ -42,12 +42,26 @@ export default function ReviewQueue({ meta }: { meta: Record<string, CardMeta> }
   }
 
   if (!db.available) {
+    // Distinguish the causes: the single-tab lock is recoverable in one click,
+    // whereas "unavailable" reads as permanent and sends people away.
+    const locked = db.status === 'locked';
     return (
       <Panel title="review">
-        <p style={{ margin: 0, color: 'var(--sig-warn)' }}>
-          Local storage is unavailable here, so there is no review schedule to show.
-          {' '}Lessons still work in full — only progress tracking needs the database.
+        <p style={{ margin: '0 0 8px', color: 'var(--sig-warn)', fontSize: '1.02rem', lineHeight: 1.6 }}>
+          {locked
+            ? 'Your progress database is open in another tab.'
+            : 'This browser context cannot store progress.'}
         </p>
+        <p style={{ margin: 0, color: 'var(--color-ink-soft)', fontSize: '0.98rem', lineHeight: 1.6 }}>
+          {locked
+            ? 'Only one tab can hold it at a time. Close the other tab and reload this one.'
+            : 'Private windows and blocked site data both do this. Lessons still work in full — only progress tracking needs the database.'}
+        </p>
+        {locked && (
+          <div style={{ marginTop: 14 }}>
+            <Button accent="magenta" onClick={() => location.reload()}>reload</Button>
+          </div>
+        )}
       </Panel>
     );
   }
