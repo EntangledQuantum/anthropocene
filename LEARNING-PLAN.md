@@ -76,12 +76,10 @@ npm run content:gaps          # what is structurally missing right now
 ### Written
 - ✅ Why a worse method gives a better orbit — symplecticity, shadow Hamiltonian
 - ✅ Discretising the action instead of the equations — discrete EL, Noether, Verlet recovered
+- ✅ Staying on the manifold — SHAKE/RATTLE, SO(3), the constraint is the map
 
 ### To write
-- [ ] **Constrained and rigid-body motion**
-  RATTLE/SHAKE, quaternion integration, staying on the manifold.
-  **Interactive:** a rotating body integrated with and without renormalisation, showing the
-  rotation matrix drift off SO(3).
+*(none — chapter 4 first pass is live. Contacts / non-smooth mechanics wait.)*
 
 ---
 
@@ -98,14 +96,13 @@ npm run content:gaps          # what is structurally missing right now
 
 ---
 
-## Chapter 6 — Fields and Continua *(chapter does not exist yet)*
+## Chapter 6 — Fields and Continua
 
-The path currently stops at ODEs and paradigms. PDEs are the obvious next continent.
+### Written
+- ✅ From particles to fields — continuum limit; elliptic / parabolic / hyperbolic
+- ✅ When the grid explodes — CFL triangle, FTCS, upwind smear, heat r = 1/2
 
-- [ ] **From particles to fields** — the continuum limit, and what a PDE is.
-- [ ] **Heat, waves, and the CFL condition** — explicit vs implicit in space and time.
-  **Interactive:** a 1D wave/heat solver where the learner drags the CFL number across the
-  stability threshold and watches the grid explode.
+### To write
 - [ ] **Finite differences on grids** — stencils, boundary conditions, ghost cells.
 - [ ] **Finite elements, briefly** — weak forms, basis functions, why irregular geometry
   changes everything.
