@@ -9,6 +9,7 @@ import { decayForward, decayLoss } from '../../lib/numerics/adjoint.ts';
 import { runPendulum } from '../../lib/numerics/constraints.ts';
 import { dependenceWidth } from '../../lib/numerics/pde-types.ts';
 import { errorSweep } from '../../lib/numerics/stencil-bc.ts';
+import { HAT_SKETCH_INDEX, HAT_SKETCH_NODES, hat } from '../../lib/numerics/fem1d.ts';
 
 /**
  * Named targets for `<SketchCurve>`.
@@ -285,6 +286,16 @@ const ghostNaiveErrorSlope: SketchScenario = {
   truth: () => naiveNeumannSweep.map((p) => ({ x: Math.log10(p.h), y: Math.log10(p.error) })),
 };
 
+const femHat: SketchScenario = {
+  xLabel: 'x',
+  yLabel: 'φ₂',
+  xRange: [0, 1],
+  yRange: [0, 1.2],
+  tolerance: 0.08,
+  anchors: [{ x: 0.5, y: 1, label: 'φ = 1' }],
+  truth: () => sample(80, 0, 1, (x) => hat(HAT_SKETCH_NODES, HAT_SKETCH_INDEX, x)),
+};
+
 export const SKETCH_SCENARIOS: Record<string, SketchScenario> = {
   'fd-u-curve': fdUCurve,
   'euler-convergence': eulerConvergence,
@@ -301,4 +312,5 @@ export const SKETCH_SCENARIOS: Record<string, SketchScenario> = {
   'cons-manifold-drift': consManifoldDrift,
   'pde-wave-width': waveDodWidth,
   'ghost-naive-slope': ghostNaiveErrorSlope,
+  'fem-hat': femHat,
 };

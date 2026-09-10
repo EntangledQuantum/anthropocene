@@ -1,7 +1,7 @@
 ---
 title: 'Your first finite element'
 blurb: 'Ask the PDE to be small in a chosen inner product, not at every point. Piecewise-linear hats assemble a sparse matrix you can see.'
-order: 1
+order: 4
 tier: 'core'
 minutes: 16
 teaches:
@@ -11,44 +11,193 @@ requires:
   - 'pde'
   - 'central-difference'
 runtime: 'none'
-status: 'draft'
+status: 'live'
+updated: 2026-09-10
 ---
 
-Open with the tension, not the definition. What does the reader currently believe that
-this lesson is going to complicate?
+Five equal nodes on $[0,1]$. You already have a stencil for $-u'' = f$:
 
-## The idea
+$$
+\frac{-u_{i-1} + 2u_i - u_{i+1}}{h^2} = f_i
+$$
 
-Build it up. Use `$inline$` and `$$display$$` for math.
+Someone else builds a matrix by putting a little tent on each node — value $1$ there, $0$ at every other node, straight lines in between — and asking the residual of $-u''-f$ to be orthogonal to each tent.
 
 <Predict
-  id="04-hat-functions-first-prediction"
-  question="Ask something the reader can be productively wrong about."
+  id="fem-uniform-same"
+  question="Equal spacing. The tent matrix versus the central-difference matrix. What do you get?"
   options={[
-    { key: 'a', label: 'The intuitive answer', why: 'Why it is tempting, and exactly where it breaks.' },
-    { key: 'b', label: 'The correct answer', why: 'Why it is right, in one or two sentences.' },
+    { key: 'a', misconception: 'fem-is-fancy-fd', label: 'Different entries. Finite elements are a different method, so the numbers cannot match.', why: 'The methods start from different sentences. On this mesh they produce the same tridiagonal. The (−1, 2, −1) stencil is what equal hats assemble, not a second theory.' },
+    { key: 'b', label: 'The same tridiagonal, up to a factor of h', why: 'Correct. Each hat has slopes ±1/h, the inner product ∫ φᵢ′ φⱼ′ is (1/h)(−1, 2, −1), and multiplying the FD equation by h gives exactly that row.' },
+    { key: 'c', label: 'A dense matrix. Every tent overlaps every tent.', why: 'A hat is zero beyond its two neighbours. Only adjacent tents share an element, so K is tridiagonal — the same sparsity you already knew from the stencil.' },
+    { key: 'd', label: 'A diagonal. Each tent only sees itself.', why: 'Neighbouring hats overlap on one element. That overlap is the off-diagonal −1/h. Without it the pieces would not talk, and Poisson would not couple the nodes.' },
   ]}
   correct="b"
 >
 
-The payoff, revealed only after they commit. Usually a simulation.
+The two drawings below are one state: the hats, and the matrix those hats assemble. On a uniform mesh the highlighted row *is* the central stencil.
+
+<FemLab
+  mesh="uniform"
+  elements={5}
+  lockMesh={true}
+  load="const"
+  caption="Equal hats. Click φ₂, φ₃. The highlighted row of K is (1/h)(−1, 2, −1) — central differences, after multiplying by h."
+/>
 
 </Predict>
 
-<Recall id="04-hat-functions-card" concept="weak-form">
-  <div slot="front">The question to answer from memory in three months.</div>
+That match is a coincidence of equal spacing, not a reason to stop.
 
-The answer, written so it teaches rather than merely confirms.
+## Move a neighbour
+
+Cluster the nodes toward both walls. The FD habit is to keep writing $(-1, 2, -1)$ and skip the fact that the neighbours moved. Each tent still has a left slope and a right slope. They are no longer equal.
+
+<Predict
+  id="fem-stretch-skip"
+  question="Same Poisson problem, nodes packed at both ends. FEM with those lopsided hats versus the uniform three-point stencil on the same nodes. What happens to u?"
+  options={[
+    { key: 'a', misconception: 'fem-is-fancy-fd', label: 'Both still match. A stencil is a stencil; skipping a neighbour is how you handle a messy grid.', why: 'That is the reflex, and it is what the magenta curve does. The uniform (−1, 2, −1) pattern assumed h_L = h_R. Once the neighbours move, that pattern is no longer ∫ φ′ ψ′.' },
+    { key: 'b', label: 'FEM sits on the true nodes; skip-neighbour FD leaves them', why: 'Correct. The hats still define an inner product on whatever nodes you drew. The skip-neighbour stencil does not. For this 1D Poisson problem the FEM nodes are exact; the magenta curve is a different (wrong) function.' },
+    { key: 'c', misconception: 'hats-are-isosceles', label: 'FEM falls apart. Hats have to be equal width, so a clustered mesh is not a finite-element mesh.', why: 'A hat is 1 at its node and 0 at the others, linear in between. Nothing in that sentence requires h_L = h_R. The lopsided tent is the legitimate basis function on that mesh.' },
+    { key: 'd', label: 'Both miss, equally. Irregular grids are just under-resolved.', why: 'Resolution is not the issue. FEM on this mesh is nodally exact for −u″ = 2. The FD curve misses because it asked the wrong question, not because the nodes were too few.' },
+  ]}
+  correct="b"
+>
+
+Cyan dots on the dashed parabola; magenta off it. Drag the cluster slider. The tents still make a matrix.
+
+<FemLab
+  mesh="stretched"
+  elements={5}
+  lockMesh={false}
+  load="const"
+  caption="Cluster toward the walls, or drag an interior node. The highlighted K row is (−1/h_L, 1/h_L + 1/h_R, −1/h_R). That is two overlapping 2×2s, not a skipped neighbour."
+/>
+
+</Predict>
+
+## The question you actually asked
+
+The strong form wants $-u'' = f$ at every $x$. A piecewise-linear $u_h$ has $u_h'' = 0$ inside each element, so that sentence is nonsense for the object you can store.
+
+Do not require the residual to vanish at a point. Require it to be orthogonal to a space of test functions $v$:
+
+$$
+\int_0^1 u'\, v' \,\mathrm{d}x = \int_0^1 f\, v \,\mathrm{d}x
+$$
+
+for every $v$ that vanishes at the ends. Integration by parts moved a derivative onto $v$ and ate the second derivative of $u$. That is the **weak form**. It is equivalent to the strong form for a smooth $u$; it is the form that still makes sense for a tent.
+
+**Galerkin:** use the same hats as both the trial functions (what $u_h$ is made of) and the test functions (what the residual has to be orthogonal to).
+
+$$
+u_h = \sum_j u_j\,\varphi_j, \qquad
+K_{ij} = \int \varphi_i'\,\varphi_j'\,\mathrm{d}x, \qquad
+K\mathbf{u} = \mathbf{F}
+$$
+
+The method *is* the inner product you declared small.
+
+<SketchCurve
+  id="fem-hat-shape"
+  scenario="fem-hat"
+  prompt="Mesh 0 — 0.2 — 0.5 — 0.9 — 1. Sketch the hat that is 1 at x = 0.5. It is zero at every other node, and linear in between."
+  hint="The neighbouring zeros are at 0.2 and 0.9, not symmetric about 0.5. Left slope 1/0.3, right slope −1/0.4."
+  explanation="A lopsided tent. Support is only (0.2, 0.9). The two slopes are the two element lengths, and those two numbers are exactly what the assembled matrix row will record. A symmetric tent from 0 to 1 is a different function, and it is not φ₂ on this mesh."
+/>
+
+## Two 2×2s, overlapping
+
+On one element of length $h$ the two local hats have slopes $\pm 1/h$, so the element matrix is
+
+$$
+\frac{1}{h}\begin{pmatrix}1&-1\\-1&1\end{pmatrix}
+$$
+
+**Assembly** is: walk the elements, and add each 2×2 into the global slots of the two nodes that element owns. A node that belongs to two elements receives both diagonal contributions.
+
+<Predict
+  id="fem-assembly-diag"
+  question="Two elements on [0, 1], midpoint at 1/2. Each local diagonal is 1/h = 2. After the 2×2s overlap at the middle node, what is the assembled K₁₁?"
+  options={[
+    { key: 'a', misconception: 'assembly-copy', label: '2 — copy the local stencil into the global row', why: 'Copying would drop the neighbouring element on the floor. Both elements own the middle node. Both contribute 2. Assembly is addition, not a copy.' },
+    { key: 'b', label: '4 — the two contributions add', why: 'Correct. 1/h_L + 1/h_R = 2 + 2 = 4. For −u″ = 2 the load is ∫ 2 φ₁ = 1, so u(1/2) = 1/4, which is exact.' },
+    { key: 'c', label: '1 — that is the length of the interval', why: 'The interval length is the load, accidentally, for this f: ∫ 2 φ₁ = 1. The matrix entry is the energy ∫ (φ₁′)² = 4.' },
+    { key: 'd', label: '8 — you counted 2/h twice', why: '1/h is already 2. Adding the two element contributions gives 4, not another factor of 2.' },
+  ]}
+  correct="b"
+>
+
+One unknown, three numbers, the whole method. The picture to keep: two overlapping 2×2s, not a stencil you copied from a uniform grid.
+
+</Predict>
+
+<Classify
+  id="fem-which-small"
+  prompt="Each method declares a residual small in some sense. Sort them by whether that sense is an inner product, or a pointwise stencil."
+  buckets={[
+    { key: 'inner', label: 'an inner product', accent: 'cyan' },
+    { key: 'point', label: 'a pointwise stencil', accent: 'magenta' },
+  ]}
+  items={[
+    { key: 'galerkin', label: 'Galerkin with hats', bucket: 'inner', why: 'Residual orthogonal to the trial space. That inner product is K.' },
+    { key: 'collocation', label: 'Collocation at the nodes', bucket: 'point', why: 'Residual = 0 at chosen points. No integral, no test function.' },
+    { key: 'lsq', label: 'Least squares of the residual', bucket: 'inner', why: 'Minimize ∫ r², or equivalently residual ⊥ range of the operator. A different inner product from Galerkin, still an inner product.' },
+    { key: 'subdomain', label: 'Integral of the residual on each element is zero', bucket: 'inner', why: 'Piecewise-constant test functions. One of the classical weighted-residual methods, alongside Galerkin.' },
+    { key: 'cfd', label: 'Central differences on a uniform mesh', bucket: 'point', why: 'The PDE at each node, via neighbours. On this mesh it happens to equal Galerkin; the question it asked was still pointwise.' },
+    { key: 'skip', label: 'Uniform (−1, 2, −1) on irregular nodes', bucket: 'point', why: 'The skip-neighbour reflex. Pointwise, and the wrong points: it assumed h_L = h_R after the neighbours moved.' },
+  ]}
+  explanation="The question behind every weighted-residual method is which inner product you are declaring small. Galerkin picks the trial space. Collocation and skip-neighbour FD pick points. On a uniform mesh those two questions accidentally share an answer. On an irregular mesh they do not."
+/>
+
+<Estimate
+  id="fem-fd-ratio"
+  scenario="fem-fd-l2-ratio"
+  prompt="Eight Chebyshev-mapped elements, −u″ = 2. How many times larger is the L² error of skip-neighbour FD than of P1 FEM?"
+  explanation="About 30. FEM on this mesh is the interpolant of the true parabola — nodally exact — so its L² error is only the faceting between nodes. Skip-neighbour FD is a different polyline, with the nodes themselves wrong, and that nodal miss dominates. The factor is not a little dissipation. It is a different function."
+/>
+
+<Recall id="fem-weak-card" concept="weak-form">
+  <div slot="front">What does Galerkin actually require of the residual, and why can a piecewise-linear $u_h$ not satisfy $-u''=f$ pointwise?</div>
+
+Galerkin requires the residual to be **orthogonal to each test function** — here, each hat — not zero at a point.
+
+A piecewise-linear $u_h$ has $u_h'' = 0$ inside every element, so $-u_h'' = f$ is nonsense unless $f$ happens to vanish. The weak form moves a derivative onto the test function,
+
+$$
+\int u' v' \,\mathrm{d}x = \int f v \,\mathrm{d}x,
+$$
+
+and that sentence still makes sense for a tent. The inner product you pick *is* the method.
 
 </Recall>
 
-<Tier level="advanced">
+<Recall id="fem-hat-card" concept="finite-elements">
+  <div slot="front">On a uniform mesh the assembled P1 stiffness is the central-difference stencil. What changes when a neighbour moves, and what does assembly add at the diagonal?</div>
 
-The treatment for someone who already has the working version. Derivations, edge cases,
-the reason the standard explanation is a simplification.
+The hat becomes lopsided: slopes $1/h_L$ and $-1/h_R$. The assembled row is
+
+$$
+\bigl(-1/h_L,\; 1/h_L + 1/h_R,\; -1/h_R\bigr),
+$$
+
+which is $\int \varphi_i'\varphi_j'$, not a skipped neighbour.
+
+Assembly adds overlapping local 2×2s. The diagonal at an interior node is $1/h_L + 1/h_R$ because **two** elements own that node, and both contribute.
+
+</Recall>
+
+<Tier level="advanced" title="why the nodes are exact in 1D, and where the boundary term went">
+
+For $-u''=f$ on an interval, the Green's function $G(\cdot, x_i)$ is itself piecewise linear, with a kink only at $x_i$. If $x_i$ is a mesh node, $G(\cdot, x_i)$ lives in the P1 space. Galerkin orthogonality then forces $u_h(x_i) = u(x_i)$ whenever the load $\int f\,\varphi_i$ is integrated exactly. That is a 1D gift. It does not survive a 2D triangle, and it is not why the method is correct — the method is correct because it asked a well-posed inner-product question. Nodal exactness is a bonus the Green's function paid you.
+
+The boundary term from integration by parts is $[u' v]_0^1$. Test functions vanish at Dirichlet ends, so that term is zero there — those are **essential** conditions, built into the space. A Neumann condition $u'(1) = g$ would have survived as a surface load $g\,v(1)$, imposed weakly, for free, by not constraining $v(1)$. Those are **natural** conditions. The weak form sorts the boundary data: what you put in the space, and what you put on the right-hand side.
 
 </Tier>
 
 ## What to carry forward
 
-Two or three lines connecting to what comes next.
+A hat: 1 at its node, 0 at the others, linear in between. Galerkin: the residual is orthogonal to those hats, not zero at a point. Assembly: overlapping local 2×2s, and the diagonal is a sum.
+
+On a uniform mesh that machinery reproduces the stencil you already had. On an irregular mesh it is the reason you still have a matrix, and "skip a neighbour" does not.

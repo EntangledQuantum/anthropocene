@@ -1,0 +1,10 @@
+---
+// Wrapper so lessons can write <FemLab /> with no import and no client
+// directive: MDX components supplied through the `components` prop cannot
+// carry client:* directives themselves, so the directive lives here.
+import Island, { type FemLabProps } from '../viz/FemLab.tsx';
+
+type Props = Omit<FemLabProps, 'children'>;
+const props = Astro.props as Props;
+---
+<Island client:visible {...props} />

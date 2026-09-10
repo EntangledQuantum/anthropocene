@@ -1,3 +1,19 @@
-title: 'weak form'
-blurb: 'TODO: one sentence, plain language.'
-tags: []
+title: 'Weak form'
+blurb: 'Ask the residual to be orthogonal to a chosen test space, not zero at every point. The inner product you pick is the method.'
+notation: '\int u^\prime v^\prime \,\mathrm{d}x = \int f v \,\mathrm{d}x'
+tags:
+  - ch6
+misconceptions:
+  - id: 'residual-zero-everywhere'
+    name: 'Galerkin makes the PDE hold at every point of each element.'
+    signal: 'Treats the weak form as a pointwise statement, and expects the residual to vanish identically inside an element.'
+    correction: 'Galerkin never asks −u″ = f at a point. It asks that the residual be orthogonal to each test function. Inside an element the residual of a piecewise-linear field is typically not zero — a linear u has u″ = 0, so −u″ − f = −f unless f happens to vanish.'
+  - id: 'weak-form-is-approximate'
+    name: 'The weak form is a less accurate version of the PDE.'
+    signal: 'Treats integration by parts as a concession, and expects a weaker equation to give a weaker answer.'
+    correction: 'For a smooth solution the weak form and the strong form are equivalent. The weak form is how you make the question well-posed for functions that are only piecewise linear, which do not have a classical second derivative. You did not lower the standard; you changed the inner product in which the residual has to be small.'
+references:
+  - label: 'Brenner & Scott, The Mathematical Theory of Finite Element Methods (Springer)'
+    url: 'https://doi.org/10.1007/978-1-4757-3658-8'
+  - label: 'Strang & Fix, An Analysis of the Finite Element Method'
+    url: 'https://bookstore.siam.org/wc08'

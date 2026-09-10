@@ -63,6 +63,12 @@ describe('estimate scenarios agree with the prose that quotes them', () => {
     expect(t).toBeGreaterThan(40);
     expect(t).toBeLessThan(120);
   });
+
+  it('skip-neighbour FD is ~30× worse than FEM in L² on 8 Chebyshev elements', () => {
+    const t = ESTIMATE_SCENARIOS['fem-fd-l2-ratio'].truth();
+    expect(t).toBeGreaterThan(15);
+    expect(t).toBeLessThan(50);
+  });
 });
 
 describe('every scenario is answerable on its own slider', () => {

@@ -9,6 +9,7 @@ import { rk4OrthoResidualAt } from '../../lib/numerics/constraints.ts';
 import { heatKernelRatio } from '../../lib/numerics/pde-types.ts';
 import { maxStableHeatDt } from '../../lib/numerics/pde1d.ts';
 import { solveError } from '../../lib/numerics/stencil-bc.ts';
+import { naiveFdToFemL2Ratio } from '../../lib/numerics/fem1d.ts';
 
 /**
  * Named quantities for `<Estimate>`.
@@ -213,6 +214,23 @@ const ghostNaiveRatioN32: EstimateScenario = {
   truth: () => solveError(32, 'neumann', 'naive') / solveError(32, 'neumann', 'ghost'),
 };
 
+/* Skip-a-neighbour FD versus P1 Galerkin, same 8 Chebyshev-mapped nodes,
+   −u″ = 2. FEM is the interpolant (nodally exact); the uniform stencil is
+   not. The ratio is computed from fem1d, not typed. */
+const femFdL2Ratio: EstimateScenario = {
+  quantity: 'L² error of skip-neighbour FD, divided by L² error of P1 FEM, on 8 Chebyshev-mapped elements for −u″ = 2',
+  logRange: [0, 3],
+  logStart: 0.5,
+  withinFactor: 3,
+  landmarks: [
+    { value: 3, label: 'three' },
+    { value: 10, label: 'ten' },
+    { value: 30, label: 'thirty' },
+    { value: 100, label: 'a hundred' },
+  ],
+  truth: () => naiveFdToFemL2Ratio(),
+};
+
 export const ESTIMATE_SCENARIOS: Record<string, EstimateScenario> = {
   'euler-work-1e6': eulerWorkFor1e6,
   'rk4-work-1e6': rk4WorkFor1e6,
@@ -225,4 +243,5 @@ export const ESTIMATE_SCENARIOS: Record<string, EstimateScenario> = {
   'pde-heat-tail': heatTailRatio,
   'cfl-heat-dt-n200': heatFtcsDtN200,
   'ghost-naive-ratio-n32': ghostNaiveRatioN32,
+  'fem-fd-l2-ratio': femFdL2Ratio,
 };

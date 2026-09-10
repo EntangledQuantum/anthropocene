@@ -28,6 +28,7 @@ import ContinuumLab from '../../../../components/widgets/ContinuumLab.astro';
 import DependenceLab from '../../../../components/widgets/DependenceLab.astro';
 import CflLab from '../../../../components/widgets/CflLab.astro';
 import GhostLab from '../../../../components/widgets/GhostLab.astro';
+import FemLab from '../../../../components/widgets/FemLab.astro';
 
 /** The authoring vocabulary: every lesson may use these with no import.
  *  Adding a widget here is what makes it available to authors — see AGENTS.md. */
@@ -36,7 +37,7 @@ const lessonComponents = {
   Plot, SolverLab, ConvergenceLab, DerivativeLab, FloatLab, CancellationLab,
   StabilityExplorer, PhaseFlow, RichardsonTableau, AdaptiveLab, SpectralLab, LJGas,
   InverseLab, PinnLab, ManifoldLab, ContinuumLab, DependenceLab, CflLab,
-  GhostLab,
+  GhostLab, FemLab,
 };
 import { buildGraph, prerequisitesOf, unlockedBy } from '../../../../lib/graph/graph.ts';
 

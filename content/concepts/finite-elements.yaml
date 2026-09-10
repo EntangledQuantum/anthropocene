@@ -1,3 +1,23 @@
-title: 'finite elements'
-blurb: 'TODO: one sentence, plain language.'
-tags: []
+title: 'Finite elements'
+blurb: 'Piecewise-polynomial hats with compact support. Overlapping local 2×2s assemble a sparse global matrix; on a uniform mesh that matrix is the central-difference stencil.'
+notation: 'u_h = \sum_j u_j \varphi_j'
+tags:
+  - ch6
+misconceptions:
+  - id: 'fem-is-fancy-fd'
+    name: 'FEM is finite differences with extra words. On any grid you keep writing (−1, 2, −1) and skip a neighbour that is not where you expected.'
+    signal: 'Reuses the uniform three-point stencil on irregular nodes, or skips a close neighbour to keep equal spacing.'
+    correction: 'The (−1, 2, −1)/h stencil is what equal element lengths produce, not the method. Unequal hats have unequal slopes. The assembled row is (−1/h_L, 1/h_L + 1/h_R, −1/h_R), which is ∫ φᵢ′ φⱼ′, not a skipped neighbour.'
+  - id: 'hats-are-isosceles'
+    name: 'A hat function is always a symmetric tent.'
+    signal: 'Draws φᵢ with equal slopes on both sides even when the neighbouring nodes have moved.'
+    correction: 'A hat is 1 at its node, 0 at every other node, and linear in between. If the neighbours are at different distances the two slopes are 1/h_L and −1/h_R, and the tent is lopsided. That lopsidedness is exactly what the assembled matrix records.'
+  - id: 'assembly-copy'
+    name: 'The global matrix is the local stencil copied into each row, not summed at overlaps.'
+    signal: 'Puts a single element contribution 1/h on the diagonal and forgets the neighbouring element also contributes 1/h.'
+    correction: 'Each element drops a 2×2 onto the two nodes it owns. A node that belongs to two elements receives both diagonal contributions: 1/h_L + 1/h_R. Assembly is addition of overlapping local matrices, not a copy.'
+references:
+  - label: 'Hughes, The Finite Element Method (Dover)'
+    url: 'https://store.doverpublications.com/products/9780486411811'
+  - label: 'Langtangen & Logg, Solving PDEs in Python — the FEniCS tutorial, ch. 5 (1D FEM)'
+    url: 'https://doi.org/10.1007/978-3-319-52462-7'
