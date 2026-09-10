@@ -19,7 +19,8 @@
     "new:chapter": "NEW_KIND=chapter tsx scripts/new.ts",
     "new:lesson": "NEW_KIND=lesson tsx scripts/new.ts",
     "new:concept": "NEW_KIND=concept tsx scripts/new.ts",
-    "check": "astro check"
+    "check": "astro check",
+    "screenshot": "tsx scripts/screenshot.ts"
   },
   "dependencies": {
     "@astrojs/markdown-satteri": "^0.4.1",
@@ -62,6 +63,7 @@
     "@types/three": "^0.185.4",
     "astro-pagefind": "^2.0.1",
     "pagefind": "^1.5.2",
+    "playwright": "^1.63.0",
     "tsx": "^4.23.13",
     "typescript": "^6.0.3",
     "vitest": "^5.0.0"

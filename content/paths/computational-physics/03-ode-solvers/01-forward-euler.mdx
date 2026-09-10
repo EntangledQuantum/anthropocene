@@ -157,25 +157,24 @@ and is the entire motivation for implicit methods.
 
 </Recall>
 
-## Build it yourself
+## Commit to the shape
 
-Now write the step function. It is graded by **measuring the order of accuracy your
-implementation actually achieves** — so any correct formulation passes, and a plausible
-one that is secretly wrong does not.
+You now know the threshold. Before reading on, draw what actually happens when you cross it.
 
-<CodeChallenge
-  id="euler-implement"
-  prompt="Implement one forward Euler step. You are given f(t, y) → State, the current time t, the current state y (an array), and the step size h. Return the new state."
-  starter={`// y_{n+1} = y_n + h * f(t_n, y_n)
-// f(t, y) returns an array the same length as y.
+This is $y' = -50y$, whose true solution has effectively vanished by $t = 0.2$, integrated
+with forward Euler at $h = 0.05$ — just past the limit. Sketch the numerical solution.
 
-const slope = f(t, y);
-return y.map((yi, i) => yi + h * 0);   // ← fix this`}
-  expectedOrder={1}
-  hint="You already have the slope. Each component of the new state is the old component plus h times the matching slope component."
-  solution={`const slope = f(t, y);
-return y.map((yi, i) => yi + h * slope[i]);`}
+<SketchCurve
+  id="euler-unstable-sketch"
+  scenario="euler-unstable"
+  prompt="Draw what forward Euler produces here. The exact solution decays to zero almost immediately; this run does not. What shape does the failure take?"
+  hint="The amplification factor is 1 − hλ = 1 − 2.5 = −1.5. Multiplying by a NEGATIVE number each step does something to the sign, not just the magnitude."
+  explanation="It alternates in sign while growing: each step multiplies by −1.5, so the solution flips either side of zero and gets larger every time. That is the signature of an explicit method past its stability limit, and it is worth being able to recognise on sight — a smooth runaway usually means a modelling error, whereas this sawtooth means the step size is too large for the method."
 />
+
+Drawing that is the test, not writing the loop. The update rule is one line and any
+tool will produce it; knowing that instability shows up as a sign-alternating blow-up,
+and being able to tell it apart from a smooth divergence, is the thing that transfers.
 
 <Tier level="advanced" title="the stability region, and why it is a picture in the complex plane">
 
@@ -203,6 +202,19 @@ a disc of radius 1 centred at $-1$. Two consequences fall straight out:
 This is why "which method" is often decided by *where your eigenvalues are*, not by the
 order of accuracy. A method whose stability region contains the whole left half-plane is
 called **A-stable**, and no explicit method is.
+
+<StabilityExplorer
+  methods={['forward-euler', 'rk2', 'rk4', 'backward-euler', 'trapezoid']}
+  initial="forward-euler"
+  z={[-0.8, 1.4]}
+  caption="Drag anywhere in the plane to set z = hλ. The bright region is where the method is stable; the panel on the right shows what that choice does to the solution. Switch to backward Euler and watch the region swallow the entire left half-plane."
+/>
+
+Drag the marker onto the imaginary axis with forward Euler selected. There is no step
+size that helps — the region touches that axis only at the origin, which is the precise
+statement of "forward Euler cannot integrate an oscillator". Then switch to RK4 and
+notice its region *does* cover a stretch of the imaginary axis, up to about $2.83i$.
+That single fact is why RK4 can handle vibration problems and Euler cannot.
 
 </Tier>
 

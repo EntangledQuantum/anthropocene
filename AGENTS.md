@@ -1,8 +1,11 @@
-# AGENTS.md — how to add things to anthropocene
+# AGENTS.md — the formula for adding content
 
-This file is the contract for anyone (human or agent) adding content. Read it before
-writing a lesson. The rules here are not style preferences — most of them are enforced by
-`npm run content:check`, which the build runs first and which fails on violation.
+This is the contract. Everyone adding a lesson follows it, human or agent. Most of it is
+enforced by `npm run content:check`, which the build runs first and which fails the build
+on violation.
+
+Read §1 and §2 before writing anything. They are the two rules that earlier lessons got
+wrong and that are expensive to fix afterwards.
 
 ---
 
@@ -14,6 +17,7 @@ npm run new:lesson -- --path computational-physics --chapter 03-ode-solvers \
   --teaches embedded-pairs --requires rk4,butcher-tableau --minutes 25
 
 npm run content:check     # graph rules, gaps, per-lesson requirements
+npm test                  # the numerics claims
 npm run dev               # http://localhost:4321/anthropocene
 ```
 
@@ -21,32 +25,96 @@ If the path or chapter does not exist, the scaffolder creates it. If a concept n
 `--teaches` or `--requires` has no file, it creates a stub. That is the whole
 "give it a category and it makes a learning path" flow.
 
----
-
-## 1. What this platform is trying to be
-
-A free alternative to Brilliant that does not stop where Brilliant stops.
-
-Brilliant's model is right: a lesson is a sequence of small interactions that build on
-each other, and you learn by manipulating the thing rather than reading about it. Its
-ceiling is the problem — it is built for a general audience, so it never gets to the
-material an actual practitioner needs.
-
-So the standard here is: **keep the interaction model, remove the ceiling.**
-
-Three consequences that should shape everything you write:
-
-1. **The visualization is the explanation.** If a paragraph and a figure say the same
-   thing, cut the paragraph. If a figure is decorative, cut the figure.
-2. **Being wrong is the mechanism.** A reader who predicts "RK4 conserves energy better"
-   and watches it not happen has learned something a paragraph cannot deliver. Design for
-   the productive wrong answer.
-3. **Depth is opt-in, not absent.** Every lesson runs foundation → frontier on one page.
-   The reader chooses how deep to go. Never write down to them.
+**Pick what to write from [`LEARNING-PLAN.md`](LEARNING-PLAN.md), and delete the entry
+from that file in the same commit that ships the lesson.**
 
 ---
 
-## 2. Content lives in `content/`, separate from the app
+## 1. Never test code-writing
+
+**No lesson may ask the learner to write code.** There is no `<CodeChallenge>` widget and
+there will not be one.
+
+Nobody hand-writes an RK4 step in 2026. Asking them to is testing the one part of the
+skill that is now free, and it is testing it badly — a learner who cannot type the
+formula from memory may understand it perfectly, and one who can type it may understand
+nothing.
+
+What is genuinely scarce is the judgement a model will not exercise for you:
+
+- Knowing **which** method the problem calls for, and why.
+- Predicting how a system will **behave** before running it.
+- Reading a wrong output and naming **which** assumption broke.
+- Knowing what a method **cannot** do, and recognising the failure on sight.
+
+So test that. Concretely, instead of *"implement forward Euler"*:
+
+| Instead of | Ask |
+|---|---|
+| Implement the step function | **Sketch** the solution when the step size crosses the stability limit |
+| Write RK4 | **Rank** these methods by accuracy at equal cost |
+| Code the energy calculation | **Predict** whether energy drifts or oscillates, then watch |
+| Fix this buggy solver | **Classify** each symptom as a property of the problem or of the method |
+| Implement Richardson | Choose **which two rows** to combine, and say what cancels |
+
+Showing code is fine and often essential — the lesson displays the solver it is
+discussing, and that code comes from `src/lib/numerics/` (see §7). Displaying is not
+testing. The rule is only about what the learner is *graded on*.
+
+---
+
+## 2. The visualization is the lesson
+
+The bar is: **an interactive that could not be replaced by a paragraph and a static
+figure.** If a picture would say the same thing, ship the picture and cut the widget.
+
+Two worked examples to measure against. Read their source before building anything new.
+
+### `<StabilityExplorer>` — `src/components/viz/StabilityExplorer.tsx`
+
+Stability regions in the complex plane, evaluated **per pixel on the GPU**. Drag `z = hλ`
+anywhere and the trajectory panel responds live.
+
+Why it clears the bar:
+- It shows a **shape**, not an inequality. "No explicit method is A-stable" becomes a
+  thing you see by switching methods and watching the region fail to reach the axis.
+- The per-pixel evaluation matters: the structure that teaches (how the boundary pinches
+  toward the imaginary axis) lives at a resolution a coarse CPU grid would erase.
+- It is **coupled** — the plane and the solution plot are two views of one state, so
+  moving the marker explains itself.
+
+### `<PhaseFlow>` — `src/components/viz/PhaseFlow.tsx`
+
+Transports a whole **region** of initial conditions and measures its area with a shoelace
+integral over a tracked boundary ring.
+
+Why it clears the bar:
+- It makes Liouville's theorem **visible**. Symplecticity stops being a definition.
+- The measurement is honest — a real polygon area over real tracked particles, not a
+  Gaussian fit or a hand-tuned constant.
+- It invites a falsifiable experiment: change `h`, watch accuracy degrade and area
+  preservation not.
+
+### The rules that came out of building those
+
+1. **Couple your views.** One state, several representations, updating together.
+2. **Show the failure mode**, not just the success. Excluded points stay on the chart,
+   dimmed — the pre-asymptotic bend and the roundoff floor are the most instructive parts
+   of a convergence plot.
+3. **Measure honestly.** Every number a widget prints must come from a real computation
+   over `src/lib/numerics`. Never hardcode a curve to make a point.
+4. **GPU when the resolution is the point.** WebGL2 is assumed; this is not built for
+   phones. `src/components/viz/gl/webgl.ts` has the fragment-shader helper. Do not pull in
+   three.js for something a shader does.
+5. **Never animate through React state.** Drive the loop from refs and throttle readouts
+   to ~8 Hz. Calling `setState` per frame re-runs the effect, resets the accumulator and
+   silently drops the simulation to a few steps per second.
+6. **Legibility beats atmosphere, always.** Every axis gets a scale. If a background makes
+   text harder to read, the background is wrong.
+
+---
+
+## 3. Content lives in `content/`, separate from the app
 
 ```
 content/
@@ -56,32 +124,27 @@ content/
   paths/<path-id>/<NN-chapter>/<NN-lesson>.mdx
 ```
 
-Nothing in `content/` imports app code, and nothing in `src/` hardcodes a lesson. You can
-grep it, move it, or hand it to another renderer.
-
-Numeric prefixes (`03-ode-solvers`) set ordering and are stripped from URLs.
+Nothing in `content/` imports app code, and nothing in `src/` hardcodes a lesson.
+Numeric prefixes set ordering and are stripped from URLs.
 
 ---
 
-## 3. The concept graph — the rule that matters most
+## 4. The concept graph — one owner per concept
 
-**A concept is taught by exactly one lesson.** This is enforced at build time.
+**A concept is taught by exactly one lesson.** Enforced at build time.
 
 ```yaml
 teaches:  ['rk4', 'butcher-tableau']         # concepts this lesson OWNS
 requires: ['forward-euler', 'global-error']  # concepts it assumes
 ```
 
-- `teaches` a concept another lesson already teaches → **build error**. Link instead.
-- `requires` something nothing teaches → reported as a **gap** (visible on `/graph`).
-  Gaps are fine. They are the to-write queue, generated rather than maintained by hand.
-- Cycles in the resulting prerequisite DAG → **build error**.
+- `teaches` something another lesson teaches → **build error**. Link instead.
+- `requires` something nothing teaches → a **gap**, listed on `/graph`. Gaps are fine;
+  they are the generated to-write queue.
+- Cycles → **build error**.
 
-This is what stops the platform turning into a pile of overlapping blog posts. When you
-need an idea, you link to its owner; you do not re-explain it. If the existing
-explanation is inadequate, **improve that lesson** rather than writing a second one.
-
-A concept file is small on purpose:
+When you need an idea, link to its owner. If that lesson explains it badly, **improve
+that lesson** rather than writing a second one.
 
 ```yaml
 title: 'Classical RK4'
@@ -90,208 +153,207 @@ notation: 'y_{n+1} = y_n + \tfrac{h}{6}(k_1 + 2k_2 + 2k_3 + k_4)'
 tags: ['ch3']
 ```
 
-> **YAML gotcha, and it will bite you:** always write `notation` (and any LaTeX) in
-> **single quotes**. YAML double-quoted scalars process escapes, so `"\tfrac"` silently
-> becomes a TAB followed by `frac`. `content:check` catches this, but write it right the
-> first time.
+> **YAML gotcha:** write `notation` and all LaTeX in **single quotes**. Double-quoted YAML
+> processes escapes, so `"\tfrac"` silently becomes TAB + `frac`. `content:check` catches
+> it, but write it right the first time.
 
 ---
 
-## 4. Lesson frontmatter
+## 5. Lesson frontmatter
 
 ```yaml
 ---
 title: 'Why a worse method gives a better orbit'
-blurb: 'One line. What the reader will be able to do — not what the lesson covers.'
+blurb: 'One line. What the reader can do afterwards — not what the lesson covers.'
 order: 1                    # within the chapter
 tier: 'advanced'            # foundation | core | advanced | frontier
-minutes: 30                 # honest estimate of focused work; drives the daily goal
+minutes: 30                 # honest estimate of focused work
 teaches: ['velocity-verlet']
 requires: ['rk4']
-runtime: 'none'             # 'python' opts into the lazily-loaded Pyodide runtime
-status: 'live'              # 'draft' hides nothing but marks it visibly
-updated: 2026-09-08
+runtime: 'none'             # 'python' opts into lazily-loaded Pyodide
+status: 'live'              # 'draft' marks it visibly, hides nothing
+updated: 2026-09-10
 ---
 ```
 
-`status: 'live'` triggers stricter checks: a live lesson must own at least one concept,
-ship at least one graded interaction, and ship at least one `<Recall>` card.
+`status: 'live'` triggers stricter checks: the lesson must own ≥1 concept, ship ≥1 graded
+interaction, and ship ≥1 `<Recall>` card.
 
 ---
 
-## 5. The widget vocabulary
+## 6. The widget vocabulary
 
-Every widget below is available in any lesson **with no import and no client
-directive**. They are wired up in `src/pages/learn/[path]/[chapter]/[lesson].astro`.
+Available in any lesson with **no import and no client directive**. Wired up in
+`src/pages/learn/[path]/[chapter]/[lesson].astro`.
 
-### Graded — these count toward completion and award XP
+### Graded — count toward completion, award XP
 
-| Widget | Use it for |
+| Widget | Tests |
 |---|---|
-| `<Predict>` | Commit to an answer, then see the simulation. **The highest-value widget — reach for it first.** |
-| `<Tune>` | Hunt for a threshold by moving a parameter until the system does the thing. |
-| `<CodeChallenge>` | Implement the algorithm; graded by measuring the convergence order it actually achieves. |
+| `<Predict>` | Commit to an outcome, then watch it. **Reach for this first.** |
+| `<SketchCurve>` | Draw the shape you expect. The strongest test we have — you cannot bluff a curve. |
+| `<RankOrder>` | Relational judgement: which is bigger, faster, cheaper. |
+| `<Classify>` | Distinctions that blur — problem vs method, stable vs unstable. |
+| `<Tune>` | Hunt a threshold by moving a parameter until the system does the thing. |
 
 ### Ungraded
 
-| Widget | Use it for |
+| Widget | Use for |
 |---|---|
 | `<Recall>` | A spaced-repetition card, authored where the idea appears. |
 | `<Tier>` | Depth-gated section: `foundation` / `core` / `advanced` / `frontier`. |
 
 ### Visualization
 
-| Widget | Use it for |
+| Widget | Shows |
 |---|---|
-| `<SolverLab>` | Compare integrators on a problem — trajectory, error, energy, phase views. |
-| `<ConvergenceLab>` | Log-log error vs step size, with the order fitted and reported. |
+| `<StabilityExplorer>` | Stability regions in the complex plane, GPU, draggable. |
+| `<PhaseFlow>` | Phase-space area transport. Liouville made visible. |
+| `<SolverLab>` | Integrators compared — trajectory, error, energy, phase. |
+| `<ConvergenceLab>` | Log-log error vs step size, order fitted and reported. |
 | `<DerivativeLab>` | The finite-difference U-curve. |
 | `<FloatLab>` | Bit-level anatomy of a float64. |
-| `<CancellationLab>` | Two algebraically identical formulas, one of which survives. |
-| `<Plot>` | The general 2D primitive, if nothing above fits. |
+| `<CancellationLab>` | Two identical formulas, one of which survives. |
+| `<Plot>` | The general 2D primitive when nothing above fits. |
 
 ### Examples
 
 ```mdx
 <Predict
-  id="verlet-energy-predict"                     {/* globally unique, stable forever */}
+  id="verlet-energy-predict"                    {/* globally unique, stable forever */}
   question="What happens to the energy under RK4 versus velocity Verlet?"
   options={[
-    { key: 'a', label: 'RK4 holds it better', why: 'Tempting, and right about the short run — but...' },
+    { key: 'a', label: 'RK4 holds it better', why: 'Tempting, and right about the short run — but…' },
     { key: 'c', label: 'RK4 drifts; Verlet stays bounded', why: 'Correct, and here is the mechanism.' },
   ]}
   correct="c"
 >
-  {/* revealed only after the reader commits — this is the payoff */}
-  <SolverLab problem="oscillator" methods={['rk4','velocity-verlet']} view="energy" />
+  {/* revealed only after committing — this is the payoff */}
+  <PhaseFlow system="oscillator" initial="velocity-verlet" />
 </Predict>
+
+<SketchCurve
+  id="rk4-drift-sketch"
+  scenario="rk4-energy-drift"           {/* registered in learn/sketch-scenarios.ts */}
+  prompt="Sketch ΔE/E₀ over 2000 time units. It starts at exactly zero."
+  hint="Nothing in RK4 constrains which direction its per-step error points."
+  explanation="A steady slide downward…"
+/>
 
 <Recall id="symplectic-one-line" concept="symplectic-euler">
   <div slot="front">What is the only difference between forward and symplectic Euler?</div>
 
   The answer, written to teach rather than merely confirm.
 </Recall>
-
-<Tier level="advanced">
-  The treatment for someone who already has the working version.
-</Tier>
 ```
 
-**Every `why` must be written**, including for wrong options. A wrong answer the reader
-cannot understand is a wasted interaction.
+**Every `why` must be written**, including for wrong options — especially the tempting
+ones. A wrong answer the learner cannot understand is a wasted interaction.
 
 ---
 
-## 6. Hard constraints you will hit
+## 7. Hard constraints
 
-These come from the architecture, not from taste. Knowing them up front saves an hour.
+Architectural, not stylistic. Each of these has cost someone an hour.
 
-### Widget props are JSON — you cannot pass a function
+### Widget props are JSON — no functions, no JSX
 
-Widgets are Astro islands, and island props are serialized. So:
+Widgets are Astro islands and props are serialised.
 
-- ❌ `<Tune compute={(v) => ...} />`
-- ✅ `<Tune scenario="euler-stability" />`, with the computation registered in
-  `src/components/learn/tune-scenarios.ts`.
-
-Adding a `<Tune>` interaction means adding a scenario to that registry.
-
-### You cannot pass JSX as a prop either
-
-- ❌ `<Recall front={<>Why does <code>x</code>…</>}>`
-- ✅ `<Recall><div slot="front">Why does <code>x</code>…</div>…</Recall>`
+- ❌ `<Tune compute={(v) => …} />` → ✅ `<Tune scenario="euler-stability" />`, registered in
+  `src/components/learn/tune-scenarios.ts`
+- ❌ `<SketchCurve truth={[…]} />` → ✅ `scenario="…"`, registered in `sketch-scenarios.ts`
+- ❌ `<Recall front={<>…</>}>` → ✅ `<Recall><div slot="front">…</div>…</Recall>`
 
 ### MDX treats `<` as a tag
 
-Write `≤` and `≥` rather than `<=` and `>=` in prose. Inside `$…$` math it is fine.
+Write `≤` and `≥` in prose, not `<=` / `>=`. Inside `$…$` math it is fine.
 
 ### Widget ids are database keys
 
-`id` on a `<Predict>`/`<Tune>`/`<CodeChallenge>`, and on a `<Recall>`, keys stored
-progress and FSRS schedules. **Changing an id orphans the reader's history and resets the
-card's schedule.** Ids must be globally unique; `content:check` enforces it.
+`id` keys stored progress and FSRS schedules. **Changing an id orphans the learner's
+history and resets the card.** Globally unique; `content:check` enforces it.
 
 ---
 
-## 7. Adding a new widget
+## 8. Adding a new widget
 
-1. Write the React component in `src/components/viz/` or `src/components/learn/`.
-2. Add an `.astro` wrapper in `src/components/widgets/` carrying `client:visible`
-   (MDX-provided components cannot carry client directives themselves).
-3. Register it in the `lessonComponents` map in
-   `src/pages/learn/[path]/[chapter]/[lesson].astro`.
-4. If it is graded, add its name to `GRADED_WIDGETS` in `src/lib/graph/graph.ts` **and**
-   to `GRADED` in `scripts/check-content.ts`, so it counts toward completion.
-5. Document it in the table above.
+1. React component in `src/components/viz/` or `src/components/learn/`.
+2. `.astro` wrapper in `src/components/widgets/` carrying `client:visible` — MDX-provided
+   components cannot carry client directives themselves.
+3. Register it in `lessonComponents` in `src/pages/learn/[path]/[chapter]/[lesson].astro`.
+4. If graded, add its name to `GRADED_WIDGETS` in `src/lib/graph/graph.ts` **and** `GRADED`
+   in `scripts/check-content.ts`.
+5. Document it in §6 and add it to the design rules in §2 if it teaches something new.
 
 ### Library freedom
 
-Each widget is its own island, so a one-off lesson can import p5.js, MathBox, JSXGraph or
-anything else **without any other lesson paying for it in bundle size**. The defaults
-below are recommendations, not restrictions.
+Each widget is its own island, so a one-off lesson can import anything without every other
+lesson paying for it in bundle size.
 
 | Need | Use |
 |---|---|
-| 2D plots, axes | `<Plot>` (canvas data + SVG axes, `d3-scale`/`d3-shape`) |
-| 3D / fields / N-body | `three.js` + `@react-three/fiber`; WebGPU compute past ~10k particles |
+| Per-pixel fields, regions, basins | WebGL2 via `viz/gl/webgl.ts` |
+| 2D plots, axes | `<Plot>` (canvas data + SVG axes, `d3-scale`) |
+| Particle systems | Typed arrays + canvas 2D; GPU past ~50k |
 | UI motion | `motion` (`motion/react`) |
-| Timeline-driven explainers | `gsap` |
-| Math typesetting | KaTeX, build-time, via `$…$` — **never ship a math renderer to the client** |
+| Math typesetting | KaTeX at build time via `$…$` — never ship a math renderer |
 | Real numpy/scipy | Pyodide, behind `runtime: 'python'`, lazily loaded |
 
 ---
 
-## 8. The numerics rule
+## 9. The numerics rule
 
 `src/lib/numerics/` is the **single source of truth**. The code a lesson displays, the
-code that draws its curves, and the reference a `<CodeChallenge>` is graded against are
-all the same code. Never reimplement a solver inside a lesson or a widget.
+code that draws its curves, and the code a widget measures are the same code. Never
+reimplement a solver inside a lesson or a widget.
 
-Consequently that code is written to be *read*: plain arrays, no clever optimisation, the
-math visible in the shape of the expression.
+That code is written to be *read*: plain arrays, no clever optimisation, the math visible
+in the shape of the expression.
 
-**Every pedagogical claim gets a test.** If a lesson says RK4 is fourth order, there is a
-test asserting the measured order is 4. If it says Verlet's energy error stays bounded
-while RK4's does not, there is a test asserting exactly that. See
-`src/lib/numerics/__tests__/`. A wrong simulation is a wrong lesson, which is worse than
-no lesson.
+**Every pedagogical claim gets a test.** If a lesson says RK4 is fourth order, a test
+asserts the measured order is 4. If it says Verlet preserves phase-space area, a test
+transports a ring of particles and measures it. See `src/lib/numerics/__tests__/`.
 
-```bash
-npm test
-```
+A wrong simulation is a wrong lesson, which is worse than no lesson.
 
 ---
 
-## 9. Writing style
+## 10. Writing style
 
 - **Open with tension, not a definition.** What does the reader currently believe that
   this lesson complicates?
 - **Second person, present tense.** Direct.
 - **No filler.** Cut "it is important to note", "as we will see", "in this lesson we will".
-- **Name the payoff early.** The reader should know within two paragraphs why they care.
-- **Wrong answers deserve real explanations.** Especially the tempting ones.
-- **End with "What to carry forward"** — two or three lines connecting to what is next.
+- **Name the payoff early** — within two paragraphs.
+- **Wrong answers deserve real explanations.**
+- **End with "What to carry forward"** — two or three lines pointing at what is next.
 - **Do not hedge about difficulty.** No "don't worry if this seems hard". Just explain it.
 
 ---
 
-## 10. Progress, XP, and storage
+## 11. Design
 
-Progress lives in SQLite in the browser (OPFS, `opfs-sahpool` VFS — chosen because it
-needs no COOP/COEP headers and therefore works on GitHub Pages). No server, no account.
+Dark only. No light theme, no toggle.
 
-- `xp_events` is **append-only**. Streaks, levels and daily totals are derived from it, so
-  no aggregate can disagree with its own history.
-- XP: 12 for a first-try solve, 6 after a retry, 30 for a lesson, 8 per review card.
-- Reviews use FSRS-6 via `ts-fsrs`.
-- **One tab at a time** — the SAH pool VFS allows a single holder. This is detected and
-  shown in the header rather than crashed on.
-- Every storage call degrades to a no-op if the database is unavailable. **Lessons must
-  work in full without it.** Progress is a feature, never a precondition for reading.
+The reference is Claire Boucher's visual language: iridescent chrome, bloom, soft
+gradients bleeding into black, with sharp manga-clean edges cutting through. Ethereal and
+lush, then a hard line.
+
+What that is **not**: dense 10px uppercase mono in every corner, scanlines over body text,
+hairlines everywhere. That reads as a military dashboard and it fights the reading. An
+earlier pass made exactly this mistake.
+
+**The rule: atmosphere lives in the background and the chrome. The reading column and
+every number, axis and label stays large, calm and high contrast.** Legibility wins every
+conflict.
+
+Tokens are in `src/styles/global.css`. Use them; do not hardcode hex in a component
+except inside shader source, where CSS variables cannot reach.
 
 ---
 
-## 11. Before you commit
+## 12. Before you commit
 
 ```bash
 npm run content:check    # graph rules, gaps, per-lesson requirements
@@ -299,5 +361,11 @@ npm test                 # the numerics claims
 npm run build            # runs content:check first
 ```
 
-Then read your lesson in the browser and actually do the interactions. If you were not
+Then read the lesson in a browser and actually do the interactions. If you were not
 tempted by a wrong answer anywhere, the predictions are too easy.
+
+If you changed the landing page or the design system, **regenerate the screenshot**:
+
+```bash
+npm run screenshot       # writes docs/landing.png, which README embeds
+```

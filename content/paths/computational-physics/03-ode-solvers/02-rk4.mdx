@@ -128,26 +128,41 @@ which is a large part of why RK4 became *the* default.
 
 </Recall>
 
-## Build it
+## Does the ordering actually make sense to you
 
-<CodeChallenge
-  id="rk4-implement"
-  prompt="Implement one RK4 step. You have f(t, y) → array, t, y (array) and h. Compute the four stages and return the weighted combination."
-  starter={`const k1 = f(t, y);
-const k2 = f(t + h / 2, y.map((yi, i) => yi + (h / 2) * k1[i]));
-// k3 uses the midpoint again, but with k2's slope
-// k4 uses the full step, with k3's slope
+The formula is one line of arithmetic and you will never type it again. What matters is
+whether you can predict how these methods rank once cost is held equal.
 
-// combine: y + (h/6)(k1 + 2*k2 + 2*k3 + k4)
-return y.map((yi, i) => yi + h * k1[i]);   // ← this is just Euler; fix it`}
-  expectedOrder={4}
-  hint="k3 mirrors k2 but steps with k2 instead of k1. k4 steps a full h using k3. Then weight them 1, 2, 2, 1 and divide by 6."
-  solution={`const k1 = f(t, y);
-const k2 = f(t + h / 2, y.map((yi, i) => yi + (h / 2) * k1[i]));
-const k3 = f(t + h / 2, y.map((yi, i) => yi + (h / 2) * k2[i]));
-const k4 = f(t + h,     y.map((yi, i) => yi + h * k3[i]));
+<RankOrder
+  id="rk-order-by-work"
+  prompt="Fix a total budget of f-evaluations — say 10,000 — and integrate a smooth, non-stiff problem to t = 5. Rank these by how accurate the answer is, least accurate first."
+  lowLabel="least accurate at equal cost"
+  highLabel="most accurate at equal cost"
+  items={[
+    { key: 'euler', label: 'Forward Euler — 1 eval/step, order 1', why: 'Cheapest per step and by far the worst: 10,000 evaluations buys 10,000 steps, and error falls only as h.' },
+    { key: 'heun', label: 'Heun — 2 evals/step, order 2', why: 'Half as many steps as Euler, but error falls as h², which wins overwhelmingly at this budget.' },
+    { key: 'rk4', label: 'RK4 — 4 evals/step, order 4', why: 'A quarter of Euler\u2019s steps, and error falling as h⁴. Higher order dominates the per-step cost on smooth problems.' },
+  ]}
+  correct={['euler', 'heun', 'rk4']}
+  explanation="With N evaluations the errors scale as 1/N, 1/N² and 1/N⁴. The per-step expense is a constant factor; the order is an exponent, and an exponent beats a constant as soon as the tolerance is at all tight. This is why RK4 became the default and why hand-rolled Euler loops are almost always a mistake."
+/>
 
-return y.map((yi, i) => yi + (h / 6) * (k1[i] + 2 * k2[i] + 2 * k3[i] + k4[i]));`}
+<Classify
+  id="rk-property-sort"
+  prompt="Each statement below is either a property of the PROBLEM you were handed, or a property of the METHOD you chose. Sorting these apart is most of what it means to debug a solver."
+  buckets={[
+    { key: 'problem', label: 'property of the problem', accent: 'amber' },
+    { key: 'method', label: 'property of the method', accent: 'cyan' },
+  ]}
+  items={[
+    { key: 'stiff', label: 'Stiffness', bucket: 'problem', why: 'Stiffness is a separation of timescales in the system itself. Changing method changes how you cope with it, not whether it is there.' },
+    { key: 'order', label: 'Order of accuracy', bucket: 'method', why: 'A problem has no order. The method\u2019s coefficients determine which Taylor terms cancel.' },
+    { key: 'cond', label: 'Conditioning', bucket: 'problem', why: 'How much the answer moves when the input is perturbed. No algorithm can improve it.' },
+    { key: 'stabregion', label: 'The stability region', bucket: 'method', why: 'A shape in the complex plane fixed entirely by the method\u2019s amplification factor R(z).' },
+    { key: 'eig', label: 'Where the eigenvalues sit', bucket: 'problem', why: 'The Jacobian belongs to the system. The method only decides whether it can cope with them.' },
+    { key: 'symp', label: 'Being symplectic', bucket: 'method', why: 'Whether the update map preserves phase-space area. A property of the discretisation.' },
+  ]}
+  explanation="Solver failures come from a mismatch between the two columns: eigenvalues that sit outside the stability region, or a conserved quantity the method knows nothing about. Naming which side a symptom lives on tells you whether to change your method or rescale your problem."
 />
 
 <Tier level="advanced" title="Butcher tableaux, and reading a method off a table">

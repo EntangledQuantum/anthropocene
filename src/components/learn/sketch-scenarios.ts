@@ -1,0 +1,130 @@
+import { endpointError, stepSweep } from '../../lib/numerics/convergence.ts';
+import { forwardEuler, rk4, integrate, velocityVerlet } from '../../lib/numerics/ode.ts';
+import { invariantDrift } from '../../lib/numerics/convergence.ts';
+import { decay, oscillator } from '../../lib/numerics/problems.ts';
+import { SCHEMES, TARGETS, diffSweep, hSweep } from '../../lib/numerics/diff.ts';
+
+/**
+ * Named targets for `<SketchCurve>`.
+ *
+ * Island props are JSON, so a lesson names a scenario and the truth curve is
+ * computed here. Every curve comes from `src/lib/numerics`, never from a
+ * hand-typed array — the thing the learner is graded against is the same code
+ * the rest of the platform runs.
+ */
+
+export interface SketchScenario {
+  xLabel: string;
+  yLabel: string;
+  /** Domain the learner draws over. */
+  xRange: [number, number];
+  yRange: [number, number];
+  /** Log-scaled axes change what the learner is reasoning about. */
+  xLog?: boolean;
+  yLog?: boolean;
+  /** The truth, sampled across xRange. */
+  truth: () => { x: number; y: number }[];
+  /** Mean absolute deviation (in y-axis units) allowed before it counts wrong. */
+  tolerance: number;
+  /** Anchors drawn from the start, so the learner has a foothold. */
+  anchors?: { x: number; y: number; label: string }[];
+}
+
+const sample = (n: number, a: number, b: number, f: (x: number) => number) =>
+  Array.from({ length: n }, (_, i) => {
+    const x = a + ((b - a) * i) / (n - 1);
+    return { x, y: f(x) };
+  });
+
+/* The finite-difference U-curve, drawn in log-log space. Getting this right
+   means understanding that the error has TWO sources pulling opposite ways —
+   which is exactly the thing a paragraph fails to convey. */
+const fdUCurve: SketchScenario = {
+  xLabel: 'log₁₀ h',
+  yLabel: 'log₁₀ |error|',
+  xRange: [-16, -1],
+  yRange: [-12, 2],
+  tolerance: 1.7,
+  anchors: [{ x: -1, y: -1.2, label: 'coarse h' }],
+  truth: () => {
+    const scheme = SCHEMES.find((s) => s.key === 'forward')!;
+    return diffSweep(scheme, TARGETS.sin, hSweep(1e-1, 1e-16, 5))
+      .map((p) => ({ x: Math.log10(p.h), y: Math.log10(p.error) }))
+      .sort((a, b) => a.x - b.x);
+  },
+};
+
+/* Global error against step size for a first-order method, log-log: a
+   straight line of slope 1. Simple, and it checks whether "first order" has
+   actually landed as a geometric fact. */
+const eulerConvergence: SketchScenario = {
+  xLabel: 'log₁₀ h',
+  yLabel: 'log₁₀ |error|',
+  xRange: [-4, -0.4],
+  yRange: [-5, -0.5],
+  tolerance: 0.55,
+  truth: () => {
+    const problem = decay(1);
+    return stepSweep(0.4, 10)
+      .map((h) => ({ x: Math.log10(h), y: Math.log10(endpointError(forwardEuler, problem, h)) }))
+      .filter((p) => Number.isFinite(p.y))
+      .sort((a, b) => a.x - b.x);
+  },
+};
+
+/* Energy under RK4 on a long oscillator run: a steady one-directional slide.
+   Drawing this forces a commitment on the SHAPE of the error — bounded
+   oscillation versus secular drift — which is the whole point of the chapter. */
+const rk4EnergyDrift: SketchScenario = {
+  xLabel: 't',
+  yLabel: 'ΔE / E₀',
+  xRange: [0, 2000],
+  yRange: [-0.0006, 0.0006],
+  tolerance: 0.00022,
+  anchors: [{ x: 0, y: 0, label: 'starts exact' }],
+  truth: () => {
+    const { t, relative } = invariantDrift(rk4, { ...oscillator(1), span: 2000 }, 0.1);
+    const stride = Math.max(1, Math.floor(t.length / 160));
+    return t.filter((_, i) => i % stride === 0).map((tt, i) => ({ x: tt, y: relative[i * stride] }));
+  },
+};
+
+/* The same run under Verlet: a bounded band that never widens. Sketching both
+   in sequence is what makes the contrast stick. */
+const verletEnergyBounded: SketchScenario = {
+  xLabel: 't',
+  yLabel: 'ΔE / E₀',
+  xRange: [0, 2000],
+  yRange: [-0.004, 0.004],
+  tolerance: 0.0014,
+  anchors: [{ x: 0, y: 0, label: 'starts exact' }],
+  truth: () => {
+    const { t, relative } = invariantDrift(velocityVerlet, { ...oscillator(1), span: 2000 }, 0.1);
+    const stride = Math.max(1, Math.floor(t.length / 200));
+    return t.filter((_, i) => i % stride === 0).map((tt, i) => ({ x: tt, y: relative[i * stride] }));
+  },
+};
+
+/* Forward Euler past its stability limit: sign-alternating growth, not a
+   smooth runaway. Sketching this separates "inaccurate" from "unstable". */
+const eulerUnstable: SketchScenario = {
+  xLabel: 't',
+  yLabel: 'y',
+  xRange: [0, 1],
+  yRange: [-6, 6],
+  tolerance: 1.15,
+  anchors: [{ x: 0, y: 1, label: 'y(0) = 1' }],
+  truth: () => {
+    const problem = decay(50);
+    const { t, y } = integrate(forwardEuler, problem.f, problem.y0, 0, 1, 0.05);
+    return t.map((tt, i) => ({ x: tt, y: Math.max(-6, Math.min(6, y[i][0])) }));
+  },
+};
+
+export const SKETCH_SCENARIOS: Record<string, SketchScenario> = {
+  'fd-u-curve': fdUCurve,
+  'euler-convergence': eulerConvergence,
+  'rk4-energy-drift': rk4EnergyDrift,
+  'verlet-energy-bounded': verletEnergyBounded,
+  'euler-unstable': eulerUnstable,
+};

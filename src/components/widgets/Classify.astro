@@ -1,0 +1,5 @@
+---
+import Island, { type ClassifyProps } from '../learn/Classify.tsx';
+const props = Astro.props as ClassifyProps;
+---
+<Island client:visible {...props} />

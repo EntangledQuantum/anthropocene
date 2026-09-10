@@ -5,7 +5,11 @@ import Predict from '../../../../components/widgets/Predict.astro';
 import Tune from '../../../../components/widgets/Tune.astro';
 import Recall from '../../../../components/widgets/Recall.astro';
 import Tier from '../../../../components/widgets/Tier.astro';
-import CodeChallenge from '../../../../components/widgets/CodeChallenge.astro';
+import SketchCurve from '../../../../components/widgets/SketchCurve.astro';
+import RankOrder from '../../../../components/widgets/RankOrder.astro';
+import Classify from '../../../../components/widgets/Classify.astro';
+import StabilityExplorer from '../../../../components/widgets/StabilityExplorer.astro';
+import PhaseFlow from '../../../../components/widgets/PhaseFlow.astro';
 import Plot from '../../../../components/widgets/Plot.astro';
 import SolverLab from '../../../../components/widgets/SolverLab.astro';
 import ConvergenceLab from '../../../../components/widgets/ConvergenceLab.astro';
@@ -16,8 +20,9 @@ import CancellationLab from '../../../../components/widgets/CancellationLab.astr
 /** The authoring vocabulary: every lesson may use these with no import.
  *  Adding a widget here is what makes it available to authors — see AGENTS.md. */
 const lessonComponents = {
-  Predict, Tune, Recall, Tier, CodeChallenge,
+  Predict, Tune, SketchCurve, RankOrder, Classify, Recall, Tier,
   Plot, SolverLab, ConvergenceLab, DerivativeLab, FloatLab, CancellationLab,
+  StabilityExplorer, PhaseFlow,
 };
 import { buildGraph, prerequisitesOf, unlockedBy } from '../../../../lib/graph/graph.ts';
 

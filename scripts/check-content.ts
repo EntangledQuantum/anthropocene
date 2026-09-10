@@ -67,7 +67,7 @@ interface Lesson {
 }
 
 const FRONTMATTER = /^---\r?\n([\s\S]*?)\r?\n---/;
-const GRADED = ['Predict', 'Tune', 'CodeChallenge'];
+const GRADED = ['Predict', 'Tune', 'SketchCurve', 'RankOrder', 'Classify'];
 
 const lessons: Lesson[] = [];
 for (const file of walk(PATHS).filter((f) => f.endsWith('.mdx'))) {
@@ -166,7 +166,7 @@ for (const l of lessons) {
   }
 
   if (l.status === 'live') {
-    if (l.widgets.length === 0) warn(`lesson "${l.id}" is live but has no graded interaction`, 'learn-by-doing means at least one <Predict>, <Tune> or <CodeChallenge>');
+    if (l.widgets.length === 0) warn(`lesson "${l.id}" is live but has no graded interaction`, 'learn-by-doing means at least one <Predict>, <Tune>, <SketchCurve>, <RankOrder> or <Classify>');
     if (l.cards.length === 0) warn(`lesson "${l.id}" is live but has no <Recall> card`, 'nothing from this lesson will ever come back for review');
     if (l.teaches.length === 0) warn(`lesson "${l.id}" is live but owns no concept`, 'nothing can link to it');
   }

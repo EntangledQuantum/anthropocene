@@ -112,6 +112,27 @@ order, so accuracy does not distinguish them at all — the structure does.
 
 </Recall>
 
+## Commit to both shapes
+
+Before the explanation, draw them. Two sketches, same run, same step size — the only
+difference is the integrator.
+
+<SketchCurve
+  id="rk4-drift-sketch"
+  scenario="rk4-energy-drift"
+  prompt="RK4 on the oscillator, h = 0.1, out to t = 2000. Sketch the relative energy error ΔE/E₀ over the whole run. It starts at exactly zero."
+  hint="RK4 makes a very small error each step, and nothing in the method constrains which direction that error points."
+  explanation="A steady slide downward. The per-step error is tiny — around 10⁻⁷ — but it always has the same sign, so 20,000 steps accumulate it into a visible, monotone loss. This is secular drift: the defining behaviour of a method with no conserved quantity holding it in place."
+/>
+
+<SketchCurve
+  id="verlet-bounded-sketch"
+  scenario="verlet-energy-bounded"
+  prompt="Now velocity Verlet, same problem, same h, same duration. Sketch ΔE/E₀ again. Note the vertical scale is about six times larger than the last plot."
+  hint="Verlet is second order, so its per-step error is much LARGER than RK4's. The question is not how big the error is — it is whether it accumulates."
+  explanation="A band that oscillates and never widens. Verlet's error is an order of magnitude bigger than RK4's at any instant, and yet after 20,000 steps it is no worse than after 20. Bounded beats small: for a long integration, an error that cannot grow is worth far more than one that is initially tiny and creeps."
+/>
+
 ## Why bounded, not just small
 
 The explanation is the deepest idea in this path, and it reframes what a numerical
@@ -135,6 +156,27 @@ orbit, but it cannot wander off, because it is pinned to a conserved quantity.
 
 RK4 has no shadow Hamiltonian. It is not a symplectic map, so there is nothing pinning
 its energy, and the per-step error — though far smaller — accumulates in one direction.
+
+Energy is one consequence. The underlying invariant is geometric, and you can watch it
+directly: take a whole *region* of initial conditions and see what the integrator does to
+its area.
+
+<PhaseFlow
+  system="oscillator"
+  initial="velocity-verlet"
+  h={0.16}
+  caption="A blob of initial conditions transported through phase space. Hamiltonian flow preserves its area exactly (Liouville's theorem). Press play, then switch integrators: forward Euler inflates the blob, RK4 slowly deflates it, and the symplectic methods hold the area to a fraction of a percent while distorting the shape freely. Click anywhere to move the blob."
+/>
+
+Run forward Euler for a few hundred steps and watch the area readout climb. That growth
+*is* the energy gain — same failure, seen geometrically. Then switch to Verlet: the blob
+shears and stretches, sometimes unrecognisably, and the area holds. Preserving the
+geometry does not mean the trajectory is accurate; it means the one quantity the physics
+says is invariant stays invariant.
+
+Try the pendulum too, and drop the blob right on the amber separatrix. Neighbouring
+initial conditions there diverge exponentially, so the blob is torn into a filament —
+and its area still must not change.
 
 That is the whole story:
 

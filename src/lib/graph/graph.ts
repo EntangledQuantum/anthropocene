@@ -102,7 +102,7 @@ export const unprefix = (s: string) => s.replace(/^\d+-/, '');
 
 /** Widgets that count toward lesson completion. `<Recall>` is scheduled by
  *  FSRS rather than graded, and `<Explore>` is deliberately ungraded. */
-const GRADED_WIDGETS = ['Predict', 'Tune', 'CodeChallenge'] as const;
+const GRADED_WIDGETS = ['Predict', 'Tune', 'SketchCurve', 'RankOrder', 'Classify'] as const;
 
 /** Scans lesson source for graded widget usages and their `id` props.
  *  Deliberately a scan and not a parse: the id must be a plain string literal

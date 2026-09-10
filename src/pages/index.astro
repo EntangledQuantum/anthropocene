@@ -1,6 +1,7 @@
 ---
 import Base from '../layouts/Base.astro';
 import { buildGraph } from '../lib/graph/graph.ts';
+import AttractorField from '../components/chrome/AttractorField.tsx';
 
 const graph = await buildGraph();
 const live = [...graph.lessons.values()].filter((l) => l.status === 'live');
@@ -8,7 +9,11 @@ const gaps = graph.issues.filter((i) => i.kind === 'gap').length;
 const base = import.meta.env.BASE_URL.replace(/\/$/, '');
 ---
 <Base title="Learn by doing, at depth" description="A free, open-source, interactive learning platform for advanced technical material.">
-  <section style="padding:72px 0 56px;max-width:74ch">
+  <!-- WebGL only, so client:only. Purely decorative and aria-hidden. -->
+  <AttractorField client:only="react" />
+
+  <section style="padding:96px 0 64px;max-width:60ch;position:relative;z-index:1">
+    <div aria-hidden="true" style="position:absolute;inset:-40px -80px -20px -60px;z-index:-1;background:radial-gradient(85% 80% at 18% 45%, color-mix(in oklab, var(--color-void) 93%, transparent) 48%, transparent 88%);pointer-events:none"></div>
     <span class="hud-label" style="color:var(--color-magenta)">◆ free · open source · no account · works offline</span>
     <h1 style="font-size:clamp(2.4rem,6.5vw,4rem);line-height:1.05;margin:16px 0 22px">
       Learn by doing,<br />
@@ -16,8 +21,8 @@ const base = import.meta.env.BASE_URL.replace(/\/$/, '');
     </h1>
     <p style="font-size:1.2rem;line-height:1.65;color:var(--color-ink-soft);margin:0 0 18px">
       Interactive lessons where the visualization <em>is</em> the explanation. Predict what a
-      simulation will do, watch it prove you wrong, then implement the thing yourself and be
-      graded on whether it actually works.
+      simulation will do, sketch the curve you expect, and watch the real one land on top of
+      your guess.
     </p>
     <p style="font-size:1.05rem;line-height:1.65;color:var(--color-ink-faint);margin:0 0 32px">
       Every topic runs from foundation to frontier on one page. Nothing is taught twice —
@@ -53,7 +58,7 @@ const base = import.meta.env.BASE_URL.replace(/\/$/, '');
     <div style="display:grid;gap:16px;grid-template-columns:repeat(auto-fit,minmax(260px,1fr))">
       {[
         { t: 'Predict, then confront', d: 'You commit to an answer before the simulation runs. Being wrong on purpose is the mechanism — reading that RK4 loses energy teaches nothing next to predicting it will not, and watching it.', a: 'magenta' },
-        { t: 'Implement, and be measured', d: 'Code challenges are graded by measuring the convergence order your implementation actually achieves. Any correct method passes; a plausible one that is secretly second-order does not.', a: 'cyan' },
+        { t: 'Draw it, don\'t type it', d: 'Nobody hand-writes a solver in 2026, so nothing here tests that. You sketch the curve you expect, rank methods by cost, sort a symptom into cause — the reasoning a model cannot do for you.', a: 'cyan' },
         { t: 'Foundation to frontier', d: 'One page carries the first-pass explanation and the graduate treatment of the same idea. You choose the depth; the platform does not choose it for you.', a: 'violet' },
         { t: 'Recall, scheduled', d: 'Cards are authored inline where the idea appears and scheduled with FSRS-6. A review item can be an interactive prediction, not just a front and a back.', a: 'acid' },
         { t: 'One concept, one owner', d: 'A concept is taught by exactly one lesson, enforced at build time. Everything else links to it — so the graph stays a graph and the material never repeats itself.', a: 'amber' },
