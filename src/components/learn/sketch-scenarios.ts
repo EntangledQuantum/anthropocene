@@ -21,6 +21,7 @@ import { twoGridHistory } from '../../lib/numerics/multigrid.ts';
 import { SKETCH_X0, atanShift, logResidualHistory } from '../../lib/numerics/newton.ts';
 import { demoPicture, droppedSigma } from '../../lib/numerics/svd.ts';
 import { DEMO_WIND, GMRES_N, convectionProblem, gmresHistory } from '../../lib/numerics/gmres.ts';
+import { riemannState } from '../../lib/numerics/riemann.ts';
 
 /**
  * Named targets for `<SketchCurve>`.
@@ -457,6 +458,19 @@ const recTvUnlimited: SketchScenario = {
   }).history.map((s) => ({ x: s.t, y: s.ratio })),
 };
 
+/* Burgers rarefaction −1|1. Entropy forbids a jump at ξ = 0; û is the ramp
+   u = ξ between the two states. A sketched shock is the entropy-violating
+   stationary jump. */
+const rieRarefactionFan: SketchScenario = {
+  xLabel: 'ξ = x/t',
+  yLabel: 'u',
+  xRange: [-2, 2],
+  yRange: [-1.6, 1.6],
+  tolerance: 0.32,
+  anchors: [{ x: -2, y: -1, label: 'u_L' }],
+  truth: () => sample(81, -2, 2, (xi) => riemannState('burgers', -1, 1, xi)),
+};
+
 export const SKETCH_SCENARIOS: Record<string, SketchScenario> = {
   'fd-u-curve': fdUCurve,
   'euler-convergence': eulerConvergence,
@@ -484,4 +498,5 @@ export const SKETCH_SCENARIOS: Record<string, SketchScenario> = {
   'svd-residual-vs-rank': svdResidualVsRank,
   'gm-residual-nonsym': gmResidualSketch,
   'rec-tv-unlimited': recTvUnlimited,
+  'rie-rarefaction-fan': rieRarefactionFan,
 };

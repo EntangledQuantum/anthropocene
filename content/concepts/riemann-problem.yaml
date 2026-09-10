@@ -1,3 +1,19 @@
-title: 'riemann problem'
-blurb: 'TODO: one sentence, plain language.'
-tags: []
+title: 'Riemann problem'
+blurb: 'Two constant states meeting at a face. The unique entropy solution is a fan of waves; the face sits at x/t = 0 of that fan.'
+notation: 'u(x,0) = u_L\ (x<0),\ u_R\ (x>0)'
+tags:
+  - ch6
+misconceptions:
+  - id: 'average-the-states'
+    name: 'The face should send the flux of the average of the two cell values.'
+    signal: 'Picks f((u_L+u_R)/2) because a centred interpolation feels fair.'
+    correction: 'A jump is not a smooth field you interpolate. The two cells launch a wave, and the face has to sit inside that wave. The value there is û(0), which is one of the two states (or the sonic point), not their average.'
+  - id: 'rarefaction-is-shock'
+    name: 'Any two states can be joined by a shock if Rankine–Hugoniot is satisfied.'
+    signal: 'Connects u_L = −1 to u_R = 1 with a stationary jump and sends flux 1/2.'
+    correction: 'Rankine–Hugoniot is necessary, not sufficient. Characteristics must run into an admissible shock. For Burgers that means u_L > u_R. When u_L < u_R the entropy solution is a rarefaction; a transonic fan has û(0) = 0 and flux 0.'
+references:
+  - label: 'LeVeque, Finite Volume Methods for Hyperbolic Problems (Cambridge, 2002), ch. 12'
+    url: 'https://doi.org/10.1017/CBO9780511791253'
+  - label: 'Lax, Hyperbolic Systems of Conservation Laws (SIAM, 1973)'
+    url: 'https://doi.org/10.1137/1.9781611970562'

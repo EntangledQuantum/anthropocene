@@ -1,3 +1,19 @@
-title: 'godunov'
-blurb: 'TODO: one sentence, plain language.'
-tags: []
+title: 'Godunov flux'
+blurb: 'The numerical flux is the physical flux of the Riemann solution, evaluated at the face.'
+notation: 'F_{i+1/2} = f\bigl(\hat u(0; Q_i, Q_{i+1})\bigr)'
+tags:
+  - ch6
+misconceptions:
+  - id: 'average-the-fluxes'
+    name: 'A consistent flux is the average of the two physical fluxes.'
+    signal: 'Writes F = (f(u_L)+f(u_R))/2 and is surprised when a shock rings or an expansion shock appears.'
+    correction: 'That average is centred. It is consistent, and it is what FTCS uses. It does not ask which way the wave is going. Godunov flux is f of the Riemann state at the face — upwind when the wave leaves to one side, sonic when a rarefaction straddles the face.'
+  - id: 'any-flux-is-fine'
+    name: 'Once the update is conservative, any consistent two-point flux is as good as Godunov.'
+    signal: 'Treats Lax–Wendroff and Godunov as interchangeable because both telescope.'
+    correction: 'Conservation form says the two cells share a number. It does not say which number. A centred second-order flux rings at a jump; Godunov is first-order and monotone. The flux choice is the wave pattern, not an accuracy knob.'
+references:
+  - label: 'Godunov, Mat. Sb. 47 (1959)'
+    url: 'https://www.mathnet.ru/eng/sm4871'
+  - label: 'Toro, Riemann Solvers and Numerical Methods for Fluid Dynamics (Springer, 2009), ch. 6'
+    url: 'https://doi.org/10.1007/b79761'

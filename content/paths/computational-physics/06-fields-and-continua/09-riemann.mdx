@@ -1,7 +1,7 @@
 ---
 title: 'What two cells agree to send'
 blurb: 'A face has a left state and a right state. The Riemann problem is the unique conservative flux those two states imply. Godunov is that sentence.'
-order: 1
+order: 9
 tier: 'advanced'
 minutes: 16
 teaches:
@@ -11,44 +11,174 @@ requires:
   - 'finite-volume'
   - 'conservation-form'
 runtime: 'none'
-status: 'draft'
+status: 'live'
+updated: 2026-09-10
 ---
 
-Open with the tension, not the definition. What does the reader currently believe that
-this lesson is going to complicate?
-
-## The idea
-
-Build it up. Use `$inline$` and `$$display$$` for math.
+Two cells. The left one holds $1$, the right one holds $0$. Inviscid Burgers. [Finite volume](/learn/computational-physics/fields-and-continua/finite-volume/) already made you write **one** number into both updates. It did not say which number.
 
 <Predict
-  id="09-riemann-first-prediction"
-  question="Ask something the reader can be productively wrong about."
+  id="rie-face-flux"
+  question="Burgers, left state 1, right state 0. What flux does the shared face send?"
   options={[
-    { key: 'a', label: 'The intuitive answer', why: 'Why it is tempting, and exactly where it breaks.' },
-    { key: 'b', label: 'The correct answer', why: 'Why it is right, in one or two sentences.' },
+    { key: 'a', misconception: 'average-the-states', label: "f of the average: send 1/8", why: "A centred interpolation of a smooth field. A jump is not a smooth field. The two cells launched a wave, and the face has to sit inside that wave, not halfway between the two values." },
+    { key: 'b', misconception: 'average-the-fluxes', label: "Average the two fluxes: send 1/4", why: "f(1) = 1/2 and f(0) = 0, so the mean is 1/4. That is a centred flux. It is consistent, and it is what a centred stencil uses. It does not ask which way the wave is going." },
+    { key: 'c', label: "The left flux: send 1/2", why: "Correct. Rankine–Hugoniot gives s = 1/2 > 0, so the shock runs to the right and the face stays in the left state. F = f(1) = 1/2." },
+    { key: 'd', label: "The right flux: send 0", why: "That would be right if the shock ran left. It does not: s = (1+0)/2 is positive. The face never sees the right state." },
+  ]}
+  correct="c"
+>
+
+The left panel is $(x,t)$. The heavy ray is the shock. The face is the vertical line $x=0$. It never crosses the shock, so it keeps reading $u_L$.
+
+<RiemannLab
+  view="fan"
+  equation="burgers"
+  uL={1}
+  uR={0}
+  lockEquation={true}
+  caption="Burgers 1|0. Characteristics from the left (speed 1) run into the shock; the right state sits still and the shock runs into it. The face is the t-axis. u* = 1, F = 1/2."
+/>
+
+</Predict>
+
+That local initial-value problem — two constant states meeting at a point — is the **Riemann problem**. Its entropy solution is self-similar: $u(x,t)=\hat u(x/t)$. Godunov’s flux is the physical flux of that solution, evaluated at the face:
+
+$$
+F_{i+1/2} = f\bigl(\hat u(0;\, Q_i, Q_{i+1})\bigr).
+$$
+
+The update is still conservation form. The new sentence is how $F$ is chosen.
+
+<Recall id="rie-card-fan" concept="riemann-problem">
+  <div slot="front">What is a Riemann problem, and where does the face sit in its solution?</div>
+
+Two constant states, $u_L$ on the left and $u_R$ on the right, meeting at a point. The entropy solution is a fan of waves, self-similar in $\xi=x/t$: a shock, a rarefaction, or a contact. The face is the ray $\xi=0$. The state there is unique, so the flux is unique.
+
+</Recall>
+
+## Drag until the shock sits on the face
+
+Shock speed for Burgers is $s=(u_L+u_R)/2$. Fix $u_L=1$. Find the $u_R$ that parks the jump on $\xi=0$.
+
+<Tune
+  id="rie-park-shock"
+  scenario="rie-park-shock"
+  prompt="Burgers, left state 1. Drag the right state until the shock sits on the face."
+  hint="s = (1 + u_R)/2. The face is ξ = 0, so you want s = 0."
+  explanation="u_R = −1. Then s = 0, the jump is stationary, and both sides send the same flux f(1) = f(−1) = 1/2. Characteristics still run into the shock (1 > 0 > −1), so the jump is admissible. Slide u_R above 1 and the wave flips: a rarefaction, not a shock."
+/>
+
+Drag $u_L$ and $u_R$ yourself. The $(x,t)$ fan and the slice $\hat u(\xi)$ are two views of one state. The readout $F=f(u_*)$ is the number both cells will use.
+
+<RiemannLab
+  view="fan"
+  equation="burgers"
+  uL={1}
+  uR={0}
+  caption="Drag either state. Shock when u_L > u_R; rarefaction when u_L < u_R; contact if you switch to advection. The face is always ξ = 0."
+/>
+
+## The other wave is not a jump
+
+$u_L=-1$, $u_R=1$. Rankine–Hugoniot would still give $s=0$. That stationary jump is **illegal**: characteristics run *out* of it. The entropy solution is a rarefaction, $u=\xi$ between the two states.
+
+<SketchCurve
+  id="rie-fan-sketch"
+  scenario="rie-rarefaction-fan"
+  prompt="Burgers, left state −1, right state 1. Sketch û(ξ) from ξ = −2 to 2. It starts at −1."
+  hint="A legal shock needs u_L > u_R. Here the characteristics leave the origin, so the wave is a fan. Inside the fan, u = ξ."
+  explanation="A ramp: −1 until ξ = −1, then u = ξ until ξ = 1, then 1. The tempting jump at ξ = 0 is the entropy-violating stationary shock. The face sits at the sonic point, û(0) = 0."
+/>
+
+<Predict
+  id="rie-sonic-flux"
+  question="Same transonic rarefaction, −1|1. What flux does the face send?"
+  options={[
+    { key: 'a', misconception: 'rarefaction-is-shock', label: "1/2 — the two fluxes agree, so park a shock on the face", why: "f(−1) = f(1) = 1/2, and Rankine–Hugoniot is happy with s = 0. Entropy is not: characteristics would run out of that jump. The entropy solution is a rarefaction that straddles the face." },
+    { key: 'b', misconception: 'average-the-fluxes', label: "1/2 — average the two fluxes, which happen to match", why: "The average of the fluxes is 1/2, and it coincides with the illegal shock. Godunov does not average. It evaluates the entropy solution at ξ = 0." },
+    { key: 'c', label: "0 — the face is sonic, f(0) = 0", why: "Correct. The rarefaction contains the ray ξ = 0, where u = ξ = 0. Godunov flux is f(0) = 0." },
+    { key: 'd', label: "0 — send the left flux, and f(−1) = 0", why: "f(−1) = 1/2, not 0. The left state is not what the face sees; the sonic point is." },
+  ]}
+  correct="c"
+/>
+
+For a convex flux the cases collapse to one line: Godunov flux is the **minimum** of $f$ between $u_L$ and $u_R$ if $u_L\le u_R$, and the **maximum** if $u_L>u_R$. Burgers has its minimum at $0$, which is why a transonic fan sends $0$.
+
+<Recall id="rie-card-godunov" concept="godunov">
+  <div slot="front">What number is the Godunov flux, in one sentence?</div>
+
+The physical flux of the Riemann solution, evaluated at the face: $F_{i+1/2}=f(\hat u(0;Q_i,Q_{i+1}))$. For a shock moving right, that is $f(Q_i)$; for a transonic rarefaction, the sonic value. It is not the average of the two fluxes.
+
+</Recall>
+
+## Drop that number into the update
+
+Same conservation form as before. Same jump. Two choices of $F$: Godunov, and a centred Lax–Wendroff (Richtmyer) flux — the second-order average-plus-correction everyone writes after “just average them.”
+
+<Predict
+  id="rie-rings"
+  question="Burgers jump. Godunov versus a centred Lax–Wendroff flux, same conservation form, same CFL. After the shock has moved a few cells, the centred profile…"
+  options={[
+    { key: 'a', misconception: 'any-flux-is-fine', label: "Matches Godunov. Both telescope, both are consistent, so both capture the shock.", why: "Telescoping is the books. It does not pick the number. Lax–Wendroff is second-order and centred; Godunov is first-order and upwind. At a jump those are different methods, and they look different." },
+    { key: 'b', label: "Rings. Overshoot of tens of percent; total variation grows. Godunov stays monotone.", why: "Correct. Watch the magenta trace. Godunov (cyan) smears a little and never leaves [0, 1]. The centred flux is the Gibbs picture: oscillations behind the jump, TV up." },
+    { key: 'c', label: "Is sharper than Godunov and still monotone, because it is second-order.", why: "Second-order linear schemes cannot be monotone — that is the next lesson's theorem, and you can already see the failure. Sharpness without a limiter is ringing." },
+    { key: 'd', misconception: 'average-the-fluxes', label: "Drifts in mass. Averaging fluxes is not conservative.", why: "Both fluxes are used twice, once plus and once minus. Mass holds either way. The lie is the shape, not the books." },
   ]}
   correct="b"
 >
 
-The payoff, revealed only after they commit. Usually a simulation.
+Cyan is Godunov. Magenta is centred. Same $u_L$, $u_R$, same $\nu=0.4$.
+
+<RiemannLab
+  view="scheme"
+  equation="burgers"
+  uL={1}
+  uR={0}
+  lockEquation={true}
+  caption="Godunov stays inside [0, 1] and the shock walks at s = 1/2. Centred Lax–Wendroff rings at the same jump. Conservation form is not a flux. Drag the states and the wave pattern changes in both pictures at once."
+/>
 
 </Predict>
 
-<Recall id="09-riemann-card" concept="riemann-problem">
-  <div slot="front">The question to answer from memory in three months.</div>
+A slope inside the cell would change the two *states* the face is handed. It would not change the question the face asks. That is a different lesson.
 
-The answer, written so it teaches rather than merely confirms.
+## The same face, three waves
 
-</Recall>
+A diaphragm in a tube. Air at rest on both sides; pressure and density higher on the left. The Riemann problem is now a system, and the fan has three waves: a left-going rarefaction, a contact, a right-going shock. Godunov flux is still $\mathbf{f}(\hat U(0))$. Approximate solvers (Roe, HLL, HLLC) exist because the exact Euler answer is an iteration. They answer the same face question more cheaply. Not this lesson.
 
-<Tier level="advanced">
+<RiemannLab
+  view="sod"
+  caption="Sod's shock tube, exact Euler solution. Density vs x. Three labelled rays leave x = 1/2. Drag t."
+/>
 
-The treatment for someone who already has the working version. Derivations, edge cases,
-the reason the standard explanation is a simplification.
+<Classify
+  id="rie-tube"
+  prompt="A diaphragm ruptures. Three waves leave the face. Which feature belongs to which wave?"
+  buckets={[
+    { key: 'rarefaction', label: 'rarefaction', accent: 'iris' },
+    { key: 'contact', label: 'contact', accent: 'cyan' },
+    { key: 'shock', label: 'shock', accent: 'magenta' },
+  ]}
+  items={[
+    { key: 'fan', label: 'a wedge of characteristics; smooth in between', bucket: 'rarefaction', why: "A rarefaction is a fan. Inside it the solution varies smoothly from one state to the next." },
+    { key: 'into', label: 'characteristics run into it from both sides', bucket: 'shock', why: "That is the entropy condition. A shock is a jump the characteristics collide with." },
+    { key: 'rho-only', label: 'density jumps; pressure and velocity do not', bucket: 'contact', why: "A contact is a slip in entropy / density. p and u are continuous across it, which is why it is the edge of the star region." },
+    { key: 'fastest', label: 'the fastest right-going wave in Sod', bucket: 'shock', why: "The right shock outruns the contact. You can read that off the three labels in the tube." },
+    { key: 'left-going', label: 'the only left-going wave in Sod', bucket: 'rarefaction', why: "Sod's left chamber is overpressured, so the expansion runs left. Head speed u_L − a_L < 0." },
+    { key: 'star-edge', label: 'moves at the star velocity u*', bucket: 'contact', why: "The contact is advected with the fluid. In the star region u is constant, and that constant is the contact speed." },
+  ]}
+  explanation="Scalar Burgers had one wave, shock or rarefaction. Euler has three: two nonlinear waves and a contact. The face still asks the same question — what is û(0) — and Godunov flux is still f of that state."
+/>
+
+<Tier level="advanced" title="entropy fixes, and why HLLC is a later costume">
+
+A Roe linearisation of Burgers replaces the rarefaction $-1|1$ by a stationary shock at $s=0$ and sends flux $1/2$. That is an **expansion shock**. An entropy fix (Harten, 1983) spreads the eigenvalue in a neighbourhood of zero so the sonic rarefaction is not collapsed to a jump. Godunov with the exact entropy solution does not need the fix: $\hat u(0)=0$ already.
+
+HLL and HLLC estimate the outermost wave speeds and (for HLLC) restore the contact. They are cheaper answers to the same face question, built because the exact Euler Riemann solver is a Newton iteration on $p_*$. This lesson stops at the exact scalar solver plus the Sod costume. The telescoping from conservation form does not care which $F$ you picked. The profile does.
 
 </Tier>
 
 ## What to carry forward
 
-Two or three lines connecting to what comes next.
+The Riemann fan. Two cells launch a tiny exact problem; the face sits at $\xi=0$ of that solution; Godunov flux is $f(\hat u(0))$. Conservation form said one number, used twice. This is how you pick the number. A slope inside the cell changes the states, not the question.

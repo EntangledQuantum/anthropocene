@@ -51,6 +51,7 @@ import {
 import {
   DEMO_WIND, GMRES_N, convectionProblem, gmresHistory, restartNeeded,
 } from '../../lib/numerics/gmres.ts';
+import { sampleRiemann, scalarRiemann } from '../../lib/numerics/riemann.ts';
 import {
   TUNE_QC, TUNE_QL, TUNE_QR, faceFromDelta, reconstructionPolyline, tvdDeltaBound,
 } from '../../lib/numerics/reconstruction.ts';
@@ -963,6 +964,39 @@ const recTvdSlope: TuneScenario = {
   },
 };
 
+/* Burgers, u_L = 1. Shock speed s = (1 + u_R)/2 vanishes at u_R = −1, so
+   the jump sits on the face. Drag until the discontinuity is on ξ = 0. */
+const rieParkShock: TuneScenario = {
+  param: { key: 'uR', label: 'right state', symbol: 'u_R', min: -2, max: 1.4, step: 0.02, value: 0.35 },
+  target: -1,
+  tolerance: 0.1,
+  x: { label: 'ξ = x/t', domain: [-2, 2] },
+  y: { label: 'u', domain: [-2.2, 2.2] },
+  rules: [{ x: 0, label: 'face' }],
+  compute: (uR) => {
+    const uL = 1;
+    const pts = sampleRiemann('burgers', uL, uR, -2, 2, 160);
+    const info = scalarRiemann('burgers', uL, uR);
+    return {
+      series: [
+        {
+          key: 'u', label: 'û(ξ)', color: 'cyan',
+          points: pts.map((p) => [p.xi, p.u] as const),
+        },
+        {
+          key: 'star', label: 'u*', color: 'ok', style: 'dots', width: 8,
+          points: [[0, info.star]],
+        },
+      ],
+      readouts: [
+        { label: 'wave', value: info.kind },
+        { label: 's', value: info.speed.toFixed(2) },
+        { label: 'F', value: info.flux.toFixed(3) },
+      ],
+    };
+  },
+};
+
 export const TUNE_SCENARIOS: Record<string, TuneScenario> = {
   'fd-optimum': fdOptimum,
   'euler-stability': eulerStability,
@@ -985,4 +1019,5 @@ export const TUNE_SCENARIOS: Record<string, TuneScenario> = {
   'svd-flatten-kappa': svdFlattenKappa,
   'gm-restart-m': gmRestartM,
   'rec-tvd-slope': recTvdSlope,
+  'rie-park-shock': rieParkShock,
 };

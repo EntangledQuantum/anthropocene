@@ -1,0 +1,5 @@
+---
+import Island, { type RiemannLabProps } from '../viz/RiemannLab.tsx';
+const props = Astro.props as RiemannLabProps;
+---
+<Island client:visible {...props} />
