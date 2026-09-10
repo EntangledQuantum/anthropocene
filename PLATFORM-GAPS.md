@@ -125,7 +125,6 @@ Missing, in rough value order:
 - [ ] **`<PlotPoints>`** — place points to satisfy a constraint.
 - [ ] **`<Assemble>`** — drag ordered pieces/tiles into a structure (an algorithm, a proof,
   a pipeline). Distinct from `<RankOrder>`, which is a linear ranking.
-- [ ] **`<Estimate>`** — commit to an order of magnitude before calculating. §5.5, §6.8.
 - [ ] **`<Expression>`** — enter a symbolic answer.
 - [ ] **Linked representations.** §6.6, "the link *is* the lesson". A wrapper where changing
   one view moves the others: equation ↔ graph, table ↔ plot.
@@ -170,3 +169,8 @@ Delete from the lists above and record here only if it is worth remembering.
 
 - ✅ **"You are here"** (§4 Layer D) — the path is a journey with a lit thread and one
   ringed next stop.
+
+- ✅ **Estimation as a first-class move** (§5.5, §6.8, §8) — `<Estimate>` commits the
+  learner to an order of magnitude before the reveal, graded on a multiplicative factor.
+  Answers are computed from the numerics, and the figures the prose quotes are pinned by
+  tests so they cannot drift.

@@ -1,0 +1,5 @@
+---
+import Island, { type EstimateProps } from '../learn/Estimate.tsx';
+const props = Astro.props as EstimateProps;
+---
+<Island client:visible {...props} />

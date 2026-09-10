@@ -85,6 +85,15 @@ async function main() {
     // Let the attractor integrate, fade in, and settle.
     await wait(5000);
 
+    // Optional third arg: scroll a selector into view before capturing, so a
+    // widget below the fold can be shot without hand-tuning pixel offsets.
+    const selector = process.argv.slice(2).filter((a) => !a.startsWith('-'))[2];
+    if (selector) {
+      const el = page.locator(selector).first();
+      await el.scrollIntoViewIfNeeded();
+      await wait(1800);
+    }
+
     await page.screenshot({ path: join(OUT_DIR, `${name}.png`) });
     console.log(`wrote docs/${name}.png  (${target})`);
 

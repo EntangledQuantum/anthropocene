@@ -128,6 +128,24 @@ which is a large part of why RK4 became *the* default.
 
 </Recall>
 
+## Guess the cost before you look
+
+Order-of-accuracy arguments stay abstract until you put a number on them. Commit to one.
+
+<Estimate
+  id="euler-cost-estimate"
+  scenario="euler-work-1e6"
+  prompt="You want six correct digits from forward Euler. Before computing anything — how much work is that?"
+  explanation="Just under 10⁵ — around 84,000 evaluations. Error falls as h¹, so every extra digit of accuracy costs ten times the work. Six digits is already approaching the point where a first-order method stops being reasonable, and the next three digits would cost a thousand times this."
+/>
+
+<Estimate
+  id="rk4-cost-estimate"
+  scenario="rk4-work-1e6"
+  prompt="Now the same six digits from RK4. Same problem, same target."
+  explanation="Fewer than a hundred — about 83. Error falls as h⁴, so an extra digit costs only about 1.8× the work rather than 10×. Roughly a thousandfold less work than Euler for an identical answer, and that gap widens with every digit you ask for. This is what 'higher order' buys, and why paying four evaluations per step is not a cost worth thinking about."
+/>
+
 ## Does the ordering actually make sense to you
 
 The formula is one line of arithmetic and you will never type it again. What matters is

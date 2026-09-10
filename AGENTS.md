@@ -220,6 +220,7 @@ Available in any lesson with **no import and no client directive**. Wired up in
 | `<RankOrder>` | Relational judgement: which is bigger, faster, cheaper. |
 | `<Classify>` | Distinctions that blur — problem vs method, stable vs unstable. |
 | `<Tune>` | Hunt a threshold by moving a parameter until the system does the thing. |
+| `<Estimate>` | Commit to an order of magnitude before seeing the answer. Graded on a factor, not a percentage. |
 
 ### Ungraded
 
@@ -288,6 +289,9 @@ Widgets are Astro islands and props are serialised.
 - ❌ `<Tune compute={(v) => …} />` → ✅ `<Tune scenario="euler-stability" />`, registered in
   `src/components/learn/tune-scenarios.ts`
 - ❌ `<SketchCurve truth={[…]} />` → ✅ `scenario="…"`, registered in `sketch-scenarios.ts`
+- ❌ `<Estimate answer={84000} />` → ✅ `scenario="…"`, registered in `estimate-scenarios.ts`,
+  where the answer is **computed** from `src/lib/numerics` rather than typed. An estimation
+  question with a hand-entered "true" value is a trivia question wearing a slider.
 - ❌ `<Recall front={<>…</>}>` → ✅ `<Recall><div slot="front">…</div>…</Recall>`
 
 ### MDX treats `<` as a tag
