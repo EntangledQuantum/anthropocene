@@ -127,6 +127,12 @@ describe('estimate scenarios agree with the prose that quotes them', () => {
   it('GMRES(4) still stores 4 vectors after 40 steps, not 40', () => {
     expect(ESTIMATE_SCENARIOS['gm-stored-restart'].truth()).toBe(4);
   });
+
+  it('cold-plasma k=1 period sits near 2π, not 1 and not π', () => {
+    const t = ESTIMATE_SCENARIOS['pic-plasma-period'].truth();
+    expect(t).toBeGreaterThan(0.9 * 2 * Math.PI);
+    expect(t).toBeLessThan(1.1 * 2 * Math.PI);
+  });
 });
 
 describe('every scenario is answerable on its own slider', () => {

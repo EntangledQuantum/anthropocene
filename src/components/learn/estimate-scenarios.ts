@@ -23,6 +23,7 @@ import { QR_EPS, gramCond2Exact } from '../../lib/numerics/qr.ts';
 import { CATCH_X0, atanShift, stepsUntil } from '../../lib/numerics/newton.ts';
 import { pictureResidual2 } from '../../lib/numerics/svd.ts';
 import { DEMO_RESTART, DEMO_WIND, GMRES_N, convectionProblem, gmres } from '../../lib/numerics/gmres.ts';
+import { measuredPlasmaPeriod } from '../../lib/numerics/pic.ts';
 
 /**
  * Named quantities for `<Estimate>`.
@@ -414,6 +415,21 @@ const gmStoredRestart: EstimateScenario = {
   },
 };
 
+/* Cold plasma with ω_p = 1. Period of the k=1 density mode, measured from
+   the PIC run — not typed. Continuum Langmuir is 2π; the grid is close. */
+const picPlasmaPeriod: EstimateScenario = {
+  quantity: 'period of the k = 1 density mode of a cold plasma with ω_p = 1',
+  logRange: [0, 1.5],
+  logStart: 0.35,
+  withinFactor: 1.4,
+  landmarks: [
+    { value: 1, label: '1' },
+    { value: Math.PI, label: 'π' },
+    { value: 2 * Math.PI, label: '2π' },
+  ],
+  truth: () => measuredPlasmaPeriod(),
+};
+
 export const ESTIMATE_SCENARIOS: Record<string, EstimateScenario> = {
   'euler-work-1e6': eulerWorkFor1e6,
   'rk4-work-1e6': rk4WorkFor1e6,
@@ -439,4 +455,5 @@ export const ESTIMATE_SCENARIOS: Record<string, EstimateScenario> = {
   'nt-steps-to-eps': ntStepsToEps,
   'svd-rank2-residual': svdRank2Residual,
   'gm-stored-restart': gmStoredRestart,
+  'pic-plasma-period': picPlasmaPeriod,
 };

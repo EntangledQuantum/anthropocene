@@ -55,6 +55,7 @@ import { sampleRiemann, scalarRiemann } from '../../lib/numerics/riemann.ts';
 import {
   TUNE_QC, TUNE_QL, TUNE_QR, faceFromDelta, reconstructionPolyline, tvdDeltaBound,
 } from '../../lib/numerics/reconstruction.ts';
+import { nodeCharge, xWhereLeftFraction } from '../../lib/numerics/pic.ts';
 
 /**
  * Named scenarios for `<Tune>`.
@@ -997,6 +998,39 @@ const rieParkShock: TuneScenario = {
   },
 };
 
+/* One particle, one cell of width 1, CIC. Left-node charge is 1 − x.
+   Three quarters sits at x = 1/4. */
+const picDepositSplit: TuneScenario = {
+  param: {
+    key: 'x', label: 'particle position in the cell', symbol: 'x', min: 0.02, max: 0.98, step: 0.01, value: 0.72,
+    hint: 'CIC sends 1 − x to the left node and x to the right. Hats sum to 1.',
+  },
+  target: xWhereLeftFraction(0.75),
+  tolerance: 0.16,
+  x: { label: 'x / h', domain: [0, 1] },
+  y: { label: 'charge on left node', domain: [0, 1.08] },
+  rules: [{ y: 0.75, label: '¾' }],
+  compute: (x: number) => {
+    const curve: [number, number][] = [];
+    for (let k = 0; k <= 40; k++) {
+      const xi = k / 40;
+      curve.push([xi, nodeCharge(xi, 0, 4, 4)]);
+    }
+    const left = nodeCharge(x, 0, 4, 4);
+    return {
+      series: [
+        { key: 'w', label: 'left-node charge', color: 'cyan', points: curve },
+        { key: 'you', label: 'this x', color: 'magenta', style: 'dots', width: 6, points: [[x, left]] },
+      ],
+      readouts: [
+        { label: 'x / h', value: x.toFixed(2) },
+        { label: 'left', value: left.toFixed(3) },
+        { label: 'right', value: (1 - left).toFixed(3) },
+      ],
+    };
+  },
+};
+
 export const TUNE_SCENARIOS: Record<string, TuneScenario> = {
   'fd-optimum': fdOptimum,
   'euler-stability': eulerStability,
@@ -1020,4 +1054,5 @@ export const TUNE_SCENARIOS: Record<string, TuneScenario> = {
   'gm-restart-m': gmRestartM,
   'rec-tvd-slope': recTvdSlope,
   'rie-park-shock': rieParkShock,
+  'pic-deposit-split': picDepositSplit,
 };

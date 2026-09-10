@@ -1,3 +1,25 @@
 title: 'particle in cell'
-blurb: 'TODO: one sentence, plain language.'
-tags: []
+blurb: 'Charge lives on particles. The field lives on a mesh. PIC is the transfer both ways, and the grid is why you do not sum N² Coulomb pairs.'
+notation: '\rho = \mathrm{deposit}(q),\quad E = -\nabla\phi,\quad F = q\,\mathrm{gather}(E)'
+tags:
+  - ch5
+misconceptions:
+  - id: 'pic-still-pairs'
+    name: 'PIC still loops over pairs; the grid is just bookkeeping.'
+    signal: 'Treats deposit–Poisson–gather as a faster N-body, or looks for a cutoff like Lennard-Jones.'
+    correction: 'There is no pair loop. Charge is scattered onto a mesh, an elliptic field solve produces E, and E is gathered back. The Poisson solve is the interaction.'
+  - id: 'pic-field-on-particles'
+    name: 'The electric field lives on the particles, like an MD force.'
+    signal: 'Looks for E_p as a stored particle property, or thinks gather copies a private field from neighbours.'
+    correction: 'Particles own q, m, x, v. ρ, φ, and E live on the grid and are rebuilt every step. Gather interpolates the grid field; it does not carry one.'
+  - id: 'pic-particles-refine-grid'
+    name: 'More particles refine the field, the way more cells would.'
+    signal: 'Expects doubling ppc to resolve shorter wavelengths, or treats particle count as the spatial order.'
+    correction: 'Extra particles kill shot noise, like 1/√N. Modes the mesh cannot see — k > π/Δx — stay gone. Refine the grid to refine the field; refine the particles to quiet the density.'
+references:
+  - label: 'Birdsall & Langdon, Plasma Physics via Computer Simulation'
+    url: 'https://doi.org/10.1201/9781315275048'
+  - label: 'Birdsall & Fuss 1969, Clouds-in-cells'
+    url: 'https://doi.org/10.1016/0021-9991(69)90010-8'
+  - label: 'Harlow 1964, The particle-in-cell computing method for fluid dynamics'
+    url: 'https://doi.org/10.1016/B978-0-12-460803-6.50015-3'

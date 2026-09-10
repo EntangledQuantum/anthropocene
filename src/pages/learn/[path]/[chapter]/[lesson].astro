@@ -43,6 +43,7 @@ import QrLab from '../../../../components/widgets/QrLab.astro';
 import NewtonLab from '../../../../components/widgets/NewtonLab.astro';
 import SvdLab from '../../../../components/widgets/SvdLab.astro';
 import GmresLab from '../../../../components/widgets/GmresLab.astro';
+import PicLab from '../../../../components/widgets/PicLab.astro';
 
 /** The authoring vocabulary: every lesson may use these with no import.
  *  Adding a widget here is what makes it available to authors — see AGENTS.md. */
@@ -52,7 +53,7 @@ const lessonComponents = {
   StabilityExplorer, PhaseFlow, RichardsonTableau, AdaptiveLab, SpectralLab, LJGas,
   InverseLab, PinnLab, ManifoldLab, ContinuumLab, DependenceLab, CflLab,
   GhostLab, FemLab, ProjectionLab, MpmLab, FvmLab, RecLab, RiemannLab, OperatorLab, JacobiLab, KrylovLab,
-  PreconditionerLab, TwoGridLab, QrLab, NewtonLab, SvdLab, GmresLab,
+  PreconditionerLab, TwoGridLab, QrLab, NewtonLab, SvdLab, GmresLab, PicLab,
 };
 import { buildGraph, prerequisitesOf, unlockedBy } from '../../../../lib/graph/graph.ts';
 

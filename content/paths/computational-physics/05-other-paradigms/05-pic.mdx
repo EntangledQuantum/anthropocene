@@ -1,7 +1,7 @@
 ---
 title: 'Charge on a grid, motion on particles'
 blurb: 'The field lives on a mesh. The charges live on particles. PIC is the transfer both ways, and the grid is why you do not do N² Coulomb.'
-order: 1
+order: 5
 tier: 'advanced'
 minutes: 16
 teaches:
@@ -10,44 +10,141 @@ requires:
   - 'molecular-dynamics'
   - 'pde'
 runtime: 'none'
-status: 'draft'
+status: 'live'
+updated: 2026-09-10
 ---
 
-Open with the tension, not the definition. What does the reader currently believe that
-this lesson is going to complicate?
-
-## The idea
-
-Build it up. Use `$inline$` and `$$display$$` for math.
+A hundred electrons. You already know how [molecular dynamics](../molecular-dynamics/) treats a pair potential: loop over pairs, Newton's third law, Verlet. Coulomb is a pair potential. So — do you write the $N^2$ loop?
 
 <Predict
-  id="05-pic-first-prediction"
-  question="Ask something the reader can be productively wrong about."
+  id="pic-why-grid"
+  question="You need the electric field on every electron, including the field of all the others. How is that field computed?"
   options={[
-    { key: 'a', label: 'The intuitive answer', why: 'Why it is tempting, and exactly where it breaks.' },
-    { key: 'b', label: 'The correct answer', why: 'Why it is right, in one or two sentences.' },
+    { key: 'a', misconception: 'pic-still-pairs', label: 'Sum q_j / r² over every pair, like Lennard-Jones. Maybe with a cutoff.', why: 'Coulomb has no cutoff. The pair loop is the N² you came here to avoid, and a cutoff throws away the long-range piece that is the whole physics.' },
+    { key: 'b', misconception: 'pic-field-on-particles', label: 'Carry E on each particle, the way MD carries v. Neighbours copy it over.', why: 'v is a particle property because the particle owns it. E is a field. It has a value at every point in the box, including empty ones, and it is the solution of an elliptic equation, not a stored list.' },
+    { key: 'c', label: 'Deposit charge onto a mesh, solve Poisson for E, gather E back, then push. There is no pair loop.', why: 'Correct. Charge lives on particles. The field lives on the grid. PIC is the transfer both ways, and the Poisson solve is the interaction.' },
+    { key: 'd', label: 'Only the nearest few particles matter, so a cell list like MD is enough.', why: 'True for a short-ranged well. Electrostatics is long-ranged: every charge sources E everywhere. The mesh is how you let every charge talk to every other charge without naming the pairs.' },
+  ]}
+  correct="c"
+>
+
+Toggle **plasma**. Particles, ρ, and φ are one state. A small displacement of a cold electron sea against a fixed ion background — the density rings, and the field that rings it came from a Poisson solve, not from a sum over pairs.
+
+<PicLab
+  kind="plasma"
+  caption="Top: particles. The iris spokes are the two CIC hats of the tracked particle. Middle: charge density on the mesh. Bottom: φ (cyan) and E (dashed). Play. Then switch to two-stream — same cycle, bunching instead of ringing."
+/>
+
+</Predict>
+
+The [PDE](../../fields-and-continua/from-particles-to-fields/) that sits on that mesh is Poisson, $\varepsilon_0 = 1$:
+
+$$
+\phi'' = -\rho, \qquad E = -\phi'
+$$
+
+Periodic, so the mean of $\rho$ has to vanish or there is no solution. A uniform ion background cancels the mean electron density. Ions do not move. That is the whole ion model in this lesson.
+
+## Four beats
+
+One step, in this order.
+
+<RankOrder
+  id="pic-cycle-order"
+  prompt="One electrostatic PIC step. Put the four beats in the order they actually run."
+  lowLabel="first"
+  highLabel="last"
+  items={[
+    { key: 'deposit', label: 'deposit — scatter q_p onto the nodes as ρ', why: 'The grid starts empty. Linear hats W_i(x_p) send each charge to the two surrounding nodes. Σ ρ_i h = Σ q_p.' },
+    { key: 'poisson', label: 'Poisson — solve φ′′ = −ρ, then E = −φ′', why: 'The interaction. An elliptic solve on the mesh, not a loop over pairs. Mean ρ was subtracted so the periodic problem is solvable.' },
+    { key: 'gather', label: 'gather — interpolate E back with the same hats', why: 'E_p = Σ_i E_i W_i(x_p). Same W as deposit, so gather is the adjoint of scatter.' },
+    { key: 'push', label: 'push — leapfrog v from qE/m, then x from v', why: 'Last. The particles move in the gathered field. Next step begins with a new deposit from the new x.' },
+  ]}
+  correct={['deposit', 'poisson', 'gather', 'push']}
+  explanation="Deposit builds the density the grid can see. Poisson turns that density into a field. Gather writes the field onto the particles. Push is ordinary leapfrog, the same family Verlet belongs to — the force just did not come from a pair loop."
+/>
+
+The hats are linear, support one cell. Cloud-in-cell, 1969:
+
+$$
+W_i(x) = 1 - \frac{|x - x_i|}{h}
+\quad\text{on a support of }h
+$$
+
+$$
+\rho_i = \frac{1}{h}\sum_p q_p W_i(x_p),
+\qquad
+E_p = \sum_i E_i W_i(x_p)
+$$
+
+One particle, one cell of width 1. Left node gets $1-x$, right node gets $x$.
+
+<Tune
+  id="pic-deposit-split"
+  scenario="pic-deposit-split"
+  prompt="Drag the particle until the left node holds three quarters of its charge."
+  hint="The two hats sum to one. Three quarters on the left means the particle is a quarter of the way toward the right node."
+  explanation="x = 1/4. CIC is a tent: all charge on a node when you sit on it, split linearly in between. The same tent gathers E. That matching is not decoration."
+/>
+
+Matching is why gather is the adjoint of scatter.
+
+$$
+\sum_p q_p\,\phi_p = \sum_i \rho_i\,\phi_i\,h
+$$
+
+A lone particle on a uniform mesh, with a neutralizing background, then feels no self-force: the force identity $\sum q_p E_p = 0$ is a two-entry version of the same dot product. Use different weights to gather than you used to deposit and a particle accelerates in its own cloud.
+
+## A cold sea rings
+
+$N$ electrons, $q_p = -1/N$, $m_p = 1/N$, box of length 1. Then $\omega_p = 1$. Displace them by a small $k=1$ sine and let go.
+
+<Estimate
+  id="pic-plasma-period"
+  scenario="pic-plasma-period"
+  prompt="Cold plasma, ω_p = 1. A small k = 1 displacement, v = 0. What is the period of the k = 1 density mode?"
+  explanation="2π, give or take a few percent from the grid. A cosine starting at rest from a displacement returns in 2π/ω_p. π is the first time the density inverts; 1 is the angular frequency, not the period. The number the slider grades against is measured from the same PIC step the lab is running."
+/>
+
+The lab measures that period from the PIC run. Continuum Langmuir is $2\pi/\omega_p$. The grid is close, because $k\Delta x$ is small. Switch to **two-stream**: two beams, same Poisson, and the field bunches them instead of ringing. Instability is not a different method.
+
+<Predict
+  id="pic-refine-particles"
+  question="You hold the mesh fixed and quadruple the particles per cell. What happens to the field?"
+  options={[
+    { key: 'a', misconception: 'pic-particles-refine-grid', label: 'Shorter wavelengths appear. Particles are the resolution, the way cells are in a PDE.', why: 'Extra particles are extra samples of the same charge density. They do not add grid modes. Anything with k > π/Δx is invisible to Poisson no matter how many clouds you pour in.' },
+    { key: 'b', label: 'Shot noise on ρ falls, like 1/√N. Modes the mesh cannot represent stay gone.', why: 'Correct. The density estimate gets quieter. The field solve still lives on the same n nodes, so the shortest representable wave is still π/Δx. Refine particles to quiet the plasma; refine the grid to refine the field.' },
+    { key: 'c', label: 'Nothing. Only Δx sets the error, so ppc is a free cosmetic.', why: 'Δx sets which k the field can see. ppc sets how noisy the right-hand side is. A noisy ρ aliases onto the modes the grid does have — grid heating — so ppc is not cosmetic.' },
+    { key: 'd', label: 'The field gets worse. More particles mean more self-force.', why: 'Self-force is a property of mismatched deposit/gather, not of N. With matching CIC it is already at roundoff for a single particle. More particles make the density smoother, not more self-interacting.' },
   ]}
   correct="b"
 >
 
-The payoff, revealed only after they commit. Usually a simulation.
+The curriculum question, in one line: **if you refine particles but not the grid, particle noise falls and field resolution stays.**
 
 </Predict>
 
-<Recall id="05-pic-card" concept="particle-in-cell">
-  <div slot="front">The question to answer from memory in three months.</div>
+<Recall id="pic-one-line" concept="particle-in-cell">
+  <div slot="front">Where does charge live, where does the field live, and why is there no N² loop?</div>
 
-The answer, written so it teaches rather than merely confirms.
+Charge lives on **particles**. The field lives on a **mesh**. Deposit scatters $q_p$ onto $\rho_i$ with linear hats, Poisson solves $E$ from $\rho$, gather interpolates $E$ with the same hats, and leapfrog pushes the particles. The Poisson solve *is* the interaction — every charge talks to every other charge through the grid, so you never name the pairs.
 
 </Recall>
 
-<Tier level="advanced">
+<Tier level="advanced" title="self-force, grid heating, and the 1D honesty">
 
-The treatment for someone who already has the working version. Derivations, edge cases,
-the reason the standard explanation is a simplification.
+Matching hats kill self-force on a uniform periodic mesh. Mismatch them — NGP deposit, CIC gather — and a lone particle accelerates in its own cloud. The adjoint identity above is the test: if $\sum q\phi_p$ fails to equal $\sum \rho\phi\,h$, the interpolation is wrong.
+
+**Grid heating.** Particle noise aliases onto grid modes. If $\Delta x$ is coarser than the Debye length, those aliases can be unstable and the plasma heats without a physical collision operator. The finite-grid instability is why PIC papers quote $\Delta x \lesssim \lambda_D$ and a CFL-like $\omega_p\Delta t \lesssim 0.2$. This lesson's Langmuir run sits inside both.
+
+**1D is too nice.** On a line, exact electrostatics is a prefix sum after a sort: $E$ jumps by $q$ at each particle. That is $\Order(N\log N)$, not $\Order(N^2)$, and it is not PIC. PIC is the three-dimensional algorithm, practised in 1D so the field is a picture. In 3D the Poisson solve (FFT, multigrid, or a tree) is why the method exists.
+
+Harlow's 1957/64 PIC scattered mass for fluids. Brackbill's FLIP kept the particle increment so plasmas stopped cooling. Sulsky's MPM puts stress on the particles and throws the grid away every step. Same transfer, different physics.
 
 </Tier>
 
 ## What to carry forward
 
-Two or three lines connecting to what comes next.
+Charge as clouds on a mesh. The field is a Poisson solve, not a sum over pairs.
+
+Deposit and gather use the same hats, or a particle feels itself. Refine particles to kill noise; refine the grid to resolve the field.

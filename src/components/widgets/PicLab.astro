@@ -1,0 +1,5 @@
+---
+import Island, { type PicLabProps } from '../viz/PicLab.tsx';
+const props = Astro.props as PicLabProps;
+---
+<Island client:visible {...props} />
