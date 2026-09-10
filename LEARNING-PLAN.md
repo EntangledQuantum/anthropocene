@@ -40,14 +40,10 @@ npm run content:gaps          # what is structurally missing right now
 
 ### Written
 - ✅ The numbers you do not have — floating point, machine epsilon, cancellation
+- ✅ Conditioning versus stability — κ of the problem vs stability of the algorithm
 
 ### To write
-- [ ] **Conditioning versus stability** *(outlined, `01-numerical-reality/02-...`)*
-  Currently a stub. Needs: the condition number as a property of the question; backward
-  stability; the quadratic formula as the canonical unstable-algorithm example.
-  **Interactive:** a `<Classify>` sorting symptoms into *bad problem* vs *bad algorithm*,
-  and a slider that perturbs the input of a nearly singular system so the learner watches
-  the answer swing while the algorithm stays fixed.
+*(none — chapter 1 is live)*
 
 ---
 
@@ -55,13 +51,10 @@ npm run content:gaps          # what is structurally missing right now
 
 ### Written
 - ✅ Differentiating a function you can only sample — the U-curve
+- ✅ Buying an order for free — Richardson tableau + complex-step (no roundoff branch)
 
 ### To write
-- [ ] **Buying an order for free** *(outlined, `02-derivatives/02-...`)*
-  Richardson extrapolation and complex-step differentiation.
-  **Interactive:** a Richardson tableau the learner fills by choosing which two rows to
-  combine, plus the existing `<DerivativeLab>` with the complex-step curve enabled so the
-  right-hand branch visibly refuses to appear.
+*(none — chapter 2 is live)*
 
 ---
 
@@ -70,18 +63,11 @@ npm run content:gaps          # what is structurally missing right now
 ### Written
 - ✅ Forward Euler, and why it is not enough
 - ✅ RK4, and where the magic numbers come from
+- ✅ Stiffness — backward Euler, A-stability, L-stability, two-rate blow-up
+- ✅ Letting the solver choose the step — embedded pairs, Dormand–Prince, PI control
 
 ### To write
-- [ ] **Stiffness, and evaluating the slope where you are going** *(outlined, `03-...`)*
-  Backward Euler, A-stability, L-stability, why Newton and not fixed-point iteration.
-  **Interactive:** reuse `<StabilityExplorer>` with implicit methods selected — the region
-  swallowing the left half-plane is the whole lesson. Add a two-timescale system where the
-  learner picks a step size and watches explicit methods die.
-- [ ] **Letting the solver choose the step** *(outlined, `03-...`)*
-  Embedded pairs, Dormand–Prince, the PI controller, tolerance semantics.
-  **Interactive:** a step-size trace over a problem with a sharp transient; the learner
-  drags a tolerance and watches step size adapt. `<RankOrder>` on which tolerance settings
-  produce which cost.
+*(none — chapter 3 is live)*
 
 ---
 
@@ -89,12 +75,9 @@ npm run content:gaps          # what is structurally missing right now
 
 ### Written
 - ✅ Why a worse method gives a better orbit — symplecticity, shadow Hamiltonian
+- ✅ Discretising the action instead of the equations — discrete EL, Noether, Verlet recovered
 
 ### To write
-- [ ] **Discretising the action instead of the equations** *(outlined, `04-...`)*
-  Variational integrators, discrete Euler–Lagrange, the discrete Noether theorem.
-  **Interactive:** `<PhaseFlow>` on the pendulum with the blob placed on the separatrix,
-  plus a `<Predict>` on which conserved quantity survives discretisation and which does not.
 - [ ] **Constrained and rigid-body motion**
   RATTLE/SHAKE, quaternion integration, staying on the manifold.
   **Interactive:** a rotating body integrated with and without renormalisation, showing the
@@ -104,19 +87,14 @@ npm run content:gaps          # what is structurally missing right now
 
 ## Chapter 5 — The Other Paradigms
 
-### To write *(all outlined)*
-- [ ] **Solving in frequency space** — spectral methods, Gibbs, Chebyshev.
-  **Interactive:** a function the learner builds from Fourier modes, watching accuracy go
-  exponential — then adding one discontinuity and watching it collapse to first order.
-- [ ] **When randomness beats determinism** — Monte Carlo, MCMC, quasi-MC.
-  **Interactive:** grid quadrature vs Monte Carlo as dimension climbs; the crossover is
-  the lesson. `<SketchCurve>` the O(N^-1/2) error curve before seeing it.
-- [ ] **Thermodynamics from mechanics** — molecular dynamics, thermostats, ergodicity.
-  **Interactive:** a 2D Lennard-Jones gas on the GPU; temperature and pressure emerging
-  from particle motion, with a thermostat toggle that visibly breaks symplecticity.
-- [ ] **Gradients through physics** — autodiff, adjoints, neural ODEs, PINNs.
-  **Interactive:** an inverse problem where the learner drags a target trajectory and
-  watches gradient descent recover the parameters that produce it.
+### Written
+- ✅ Solving in frequency space — spectral accuracy vs Gibbs
+- ✅ When randomness beats determinism — MC vs grid, 1/√N (Metropolis is later)
+- ✅ Thermodynamics from mechanics — 2D LJ gas, thermostat breaks symplecticity
+- ✅ Gradients through physics — adjoint inverse problem; PINN still checks a residual
+
+### To write
+*(none — chapter 5 first pass is live. Metropolis / QMC / neural-ODE depth wait for gym variants.)*
 
 ---
 
@@ -163,8 +141,6 @@ Not lessons, but things the queue depends on.
 - [ ] **A `runtime: 'python'` lesson.** Pyodide is wired but nothing opts in. The
   molecular-dynamics or Monte Carlo lesson is the natural first user — real numpy where
   the learner would genuinely reach for it.
-- [ ] **`<Estimate>` widget** — order-of-magnitude reasoning on a log slider, graded on
-  being within a factor. Fermi estimation is a skill nothing here currently tests.
 - [ ] **`<Derive>` widget** — a derivation where each step is a choice and wrong branches
   render the counterfactual algebra.
 - [ ] **Per-concept mastery on `/graph`** — colour each node by FSRS stability so the
