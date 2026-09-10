@@ -59,6 +59,16 @@ import {
 import { nodeCharge, xWhereLeftFraction } from '../../lib/numerics/pic.ts';
 import { channelUmaxAtTau, poiseuilleUmaxSweep } from '../../lib/numerics/lbm.ts';
 import { latticeDensityRatio } from '../../lib/numerics/sph.ts';
+import {
+  UQ_JENSEN_RATIO,
+  UQ_LAMBDA_MAX,
+  UQ_LAMBDA_MEAN,
+  UQ_LAMBDA_MIN,
+  exactExpMean,
+  exactPointEstimate,
+  jensenRatio,
+  jensenTForRatio,
+} from '../../lib/numerics/uq.ts';
 
 /**
  * Named scenarios for `<Tune>`.
@@ -1153,6 +1163,54 @@ const sphCompleteH: TuneScenario = {
   },
 };
 
+/* Remaining amplitude q = exp(−λ T), λ ~ Uniform[0.5, 1.5]. The two
+   curves are q(μ) and E[q]. They peel apart; hunt T where the ratio is 1.5. */
+const uqPointCurve: [number, number][] = Array.from({ length: 81 }, (_, i) => {
+  const t = (5 * i) / 80;
+  return [t, exactPointEstimate(UQ_LAMBDA_MEAN, t)];
+});
+const uqMeanCurve: [number, number][] = Array.from({ length: 81 }, (_, i) => {
+  const t = (5 * i) / 80;
+  return [t, exactExpMean(UQ_LAMBDA_MIN, UQ_LAMBDA_MAX, t)];
+});
+const uqJensenT: TuneScenario = {
+  param: {
+    key: 'T', label: 'time', symbol: 'T',
+    min: 0.05, max: 5, step: 0.05, value: 0.4,
+    hint: 'At T = 0 everyone is still 1, so the ratio is 1. Slow-decayers take over as T grows.',
+  },
+  target: jensenTForRatio(UQ_JENSEN_RATIO),
+  tolerance: 0.08,
+  x: { label: 'T', domain: [0, 5] },
+  y: { label: 'remaining q', domain: [-0.02, 1.15] },
+  compute: (T) => {
+    const t = Math.max(0.05, Math.min(5, T));
+    const point = exactPointEstimate(UQ_LAMBDA_MEAN, t);
+    const expected = exactExpMean(UQ_LAMBDA_MIN, UQ_LAMBDA_MAX, t);
+    const ratio = jensenRatio(t);
+    return {
+      series: [
+        { key: 'point', label: 'q(μ)', color: 'magenta', width: 2, points: uqPointCurve },
+        { key: 'mean', label: 'E[q]', color: 'cyan', width: 2, points: uqMeanCurve },
+        {
+          key: 'you',
+          label: 'this T',
+          color: 'orchid',
+          style: 'dots',
+          width: 7,
+          points: [[t, point], [t, expected]],
+        },
+      ],
+      readouts: [
+        { label: 'T', value: t.toFixed(2) },
+        { label: 'q(μ)', value: point.toFixed(3) },
+        { label: 'E[q]', value: expected.toFixed(3) },
+        { label: 'E[q] / q(μ)', value: ratio.toFixed(2) },
+      ],
+    };
+  },
+};
+
 export const TUNE_SCENARIOS: Record<string, TuneScenario> = {
   'fd-optimum': fdOptimum,
   'euler-stability': eulerStability,
@@ -1180,4 +1238,5 @@ export const TUNE_SCENARIOS: Record<string, TuneScenario> = {
   'lbm-tau-umax': lbmTauUmax,
   'vv-laplacian-coeff': vvLaplacianCoeff,
   'sph-complete-h': sphCompleteH,
+  'uq-jensen-t': uqJensenT,
 };

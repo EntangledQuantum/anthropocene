@@ -1,0 +1,5 @@
+---
+import Island, { type UqLabProps } from '../viz/UqLab.tsx';
+const props = Astro.props as UqLabProps;
+---
+<Island client:visible {...props} />

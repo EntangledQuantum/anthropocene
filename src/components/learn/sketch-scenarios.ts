@@ -25,6 +25,13 @@ import { riemannState } from '../../lib/numerics/riemann.ts';
 import { poiseuilleSketchProfile } from '../../lib/numerics/lbm.ts';
 import { residualSweep } from '../../lib/numerics/vv.ts';
 import { cubicShape } from '../../lib/numerics/sph.ts';
+import {
+  UQ_LAMBDA_MAX,
+  UQ_LAMBDA_MIN,
+  UQ_SKETCH_T,
+  expPushforwardDensity,
+  pushforwardSupport,
+} from '../../lib/numerics/uq.ts';
 
 /**
  * Named targets for `<SketchCurve>`.
@@ -513,6 +520,25 @@ const sphCubicW: SketchScenario = {
   truth: () => sample(90, 0, 2.5, cubicShape),
 };
 
+/* Uniform λ through q = exp(−λ T). Jacobian  T q  piles mass at small q:
+   the density is 1/q on the image of the interval. A Gaussian or a shifted
+   copy of the input rectangle is the tempting wrong curve. */
+const [uqYmin, uqYmax] = pushforwardSupport(UQ_LAMBDA_MIN, UQ_LAMBDA_MAX, UQ_SKETCH_T);
+const uqPushforwardPdf: SketchScenario = {
+  xLabel: 'q = exp(−λ T)',
+  yLabel: 'density',
+  xRange: [uqYmin, uqYmax],
+  yRange: [0, 5.4],
+  tolerance: 0.85,
+  anchors: [{
+    x: uqYmax,
+    y: expPushforwardDensity(uqYmax, UQ_LAMBDA_MIN, UQ_LAMBDA_MAX, UQ_SKETCH_T),
+    label: 'slowest λ',
+  }],
+  truth: () => sample(80, uqYmin, uqYmax, (y) =>
+    expPushforwardDensity(y, UQ_LAMBDA_MIN, UQ_LAMBDA_MAX, UQ_SKETCH_T)),
+};
+
 export const SKETCH_SCENARIOS: Record<string, SketchScenario> = {
   'fd-u-curve': fdUCurve,
   'euler-convergence': eulerConvergence,
@@ -544,4 +570,5 @@ export const SKETCH_SCENARIOS: Record<string, SketchScenario> = {
   'lbm-poiseuille-parabola': lbmPoiseuilleParabola,
   'vv-mms-residual': vvMmsResidual,
   'sph-cubic-w': sphCubicW,
+  'uq-output-density': uqPushforwardPdf,
 };

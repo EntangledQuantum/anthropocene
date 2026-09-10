@@ -1,7 +1,7 @@
 ---
 title: 'The number came with a cloud'
 blurb: 'A single run is a sample, not a prediction. Push a parameter through the model and watch the output smear. That smear is the answer.'
-order: 1
+order: 2
 tier: 'advanced'
 minutes: 16
 teaches:
@@ -10,44 +10,161 @@ requires:
   - 'verification'
   - 'monte-carlo-integration'
 runtime: 'none'
-status: 'draft'
+status: 'live'
+updated: 2026-09-11
 ---
 
-Open with the tension, not the definition. What does the reader currently believe that
-this lesson is going to complicate?
+You [verified](/anthropocene/learn/computational-physics/trusting-the-run/vv/) the heat solver. The discrete operator is the one you wrote. The lab now quotes the decay rate as $\lambda = 1$. Remaining amplitude of the first mode, at the time the paper wants:
 
-## The idea
+$$
+q(\lambda) = e^{-\lambda T}, \qquad T = 3
+$$
 
-Build it up. Use `$inline$` and `$$display$$` for math.
+<UqLab
+  kind="curve"
+  T={3}
+  lockKind={true}
+  lockT={true}
+  caption="One run, at the quoted mean. The number you would print is 0.050."
+/>
 
 <Predict
-  id="02-uq-first-prediction"
-  question="Ask something the reader can be productively wrong about."
+  id="uq-one-run"
+  question="The paper wants the remaining amplitude at T = 3. You ran once at λ = 1. What did you just compute?"
   options={[
-    { key: 'a', label: 'The intuitive answer', why: 'Why it is tempting, and exactly where it breaks.' },
-    { key: 'b', label: 'The correct answer', why: 'Why it is right, in one or two sentences.' },
+    { key: 'a', misconception: 'point-is-prediction', label: "The prediction. λ is 1, the solver is verified, q is 0.050.", why: "The solver being verified answers a different question — you solved the discrete problem you wrote. λ is a lab number, and the lab number came with a range." },
+    { key: 'b', misconception: 'linear-propagation', label: "The prediction plus a linear bar: λ = 1 ± 0.5 becomes q = 0.050 ± 50%.", why: "A linear map would scale the cloud and leave it symmetric. The exponential is not linear. The bar you just wrote is the wrong shape, attached to the wrong centre." },
+    { key: 'c', label: "One sample. The lab's λ is a cloud; the prediction is whatever that cloud becomes.", why: "Correct. Forward UQ is the pushforward of the input distribution. A single run at the mean is one draw from that smear, and not even the mean of it." },
+    { key: 'd', label: "Nothing until you refine the mesh. Numerical error still owns the number.", why: "Verification already asked the mesh a question it can fail. Residual vs Δx at the design order closed the numerical error. What is open is the parameter." },
+  ]}
+  correct="c"
+>
+
+The lab actually sent $\lambda \sim \mathrm{Uniform}[0.5, 1.5]$. Same cheap model, two thousand draws of $\lambda$. Magenta is $q$ at the mean. Cyan is the mean of $q$.
+
+<UqLab
+  kind="push"
+  T={3}
+  lockKind={true}
+  lockT={true}
+  caption="Symmetric in, piled at small q, and E[q] sits above q(μ). The smear is the prediction."
+/>
+
+</Predict>
+
+That push is [Monte Carlo](/anthropocene/learn/computational-physics/other-paradigms/monte-carlo/) of the *parameter*, not of the PDE. The model is one line, so each dart is free:
+
+```ts
+function push(lambdas, T) {
+  const q = [];
+  for (const lam of lambdas) q.push(Math.exp(-lam * T));
+  return q;
+}
+```
+
+A linear map $q = a\lambda + b$ would scale the cloud by $a$ and leave its shape. Mean and variance go with $a$ and $a^2$. This map is $\exp(-\lambda T)$. Uniform $\lambda$ becomes density $1/q$ on the image of the interval — mass piles where the exponential is flat, at the small-$q$ end.
+
+Draw that density at $T = 1$, before you see it. It starts at the slowest $\lambda$.
+
+<SketchCurve
+  id="uq-output-density"
+  scenario="uq-output-density"
+  prompt="Sketch the density of q = exp(−λ T) at T = 1, for λ uniform on [0.5, 1.5]. It is already plotted at the slowest λ."
+  hint="The map is exponential. Uniform in λ becomes 1/q in q. Mass piles at the small end, where |dq/dλ| is smallest."
+  explanation="Exactly 1/q on [e^{−1.5}, e^{−0.5}]. A Gaussian blob in the middle is the linear-map instinct; a shifted copy of the input rectangle is the same instinct in costume. The Jacobian T q is smaller at small q, so that is where the mass goes."
+/>
+
+And the mean of that smear is not the run at mean $\lambda$. $\lambda \sim \mathrm{Uniform}[\mu - \delta, \mu + \delta]$ gives
+
+$$
+\mathbb{E}[e^{-\lambda T}] = e^{-\mu T}\,\frac{\sinh(\delta T)}{\delta T} \ge e^{-\mu T}
+$$
+
+with equality only at $T = 0$. Slow-decayers contribute exponentially more remaining than fast-decayers subtract. Hunt the time when the mean of the cloud sits 50% above the number you would have printed.
+
+<Tune
+  id="uq-jensen-t"
+  scenario="uq-jensen-t"
+  prompt="Drag T until E[q] is 1.5 times q at the mean λ. Magenta is the point estimate; cyan is the mean of the cloud."
+  hint="At T = 0 everyone is still 1, so the ratio is 1. The curves peel as the slow tail starts to own the mean."
+  explanation="sinh(δ T)/(δ T) = 1.5 at T ≈ 3.24 for δ = 0.5. Past that, the number you would print is not even a good centre for the smear you actually have."
+/>
+
+## A cross, then the square
+
+Amplitude $A_0$ is also a lab number, independent, same uniform $[0.5, 1.5]$. The model is now a product:
+
+$$
+q(A_0, \lambda) = A_0 e^{-\lambda T}
+$$
+
+One-at-a-time: vary $A_0$ at mean $\lambda$, then $\lambda$ at mean $A_0$. That is a plus sign in the $(A_0, \lambda)$ square. The joint sample fills the square. The smallest remaining lives at a corner the cross never visits — smallest $A_0$ and largest $\lambda$, together.
+
+<UqLab
+  kind="oat"
+  T={3}
+  lockKind={true}
+  caption="Magenta is the cross. Cyan is the square. The joint floor is half the OAT floor, because A₀ can be 0.5 at the same time λ is 1.5."
+/>
+
+<Predict
+  id="uq-oat-corner"
+  question="At T = 3, who reports the floor of remaining amplitude?"
+  options={[
+    { key: 'a', misconception: 'oat-is-enough', label: "OAT. Two sweeps, both parameters, the union of the two ranges is the range.", why: "The union of two lines is not the image of a square. OAT's floor is remaining at mean A₀ and max λ. The true floor is remaining at min A₀ and max λ." },
+    { key: 'b', label: "The joint corner. Smallest A₀ and largest λ together sit below either OAT arm.", why: "Correct. For this product the joint floor is half the OAT floor. Saltelli's picture: OAT explores a cross; the extremes live at the corners." },
+    { key: 'c', misconception: 'linear-propagation', label: "They match. Independent factors, so the range is the product of the one-at-a-time ranges.", why: "Independent factors make the *joint* a product. OAT never evaluates that product at a corner — it freezes one factor at its mean." },
+    { key: 'd', label: "Neither. You need a finer mesh before a parameter sweep means anything.", why: "A verified solver is the starting point, not the bar. Pushing a cloud through a verified model is how the bar gets a width." },
   ]}
   correct="b"
 >
 
-The payoff, revealed only after they commit. Usually a simulation.
+Switch the lab to both. The cyan smear leaks past both magenta edges.
 
 </Predict>
 
-<Recall id="02-uq-card" concept="uncertainty-quantification">
-  <div slot="front">The question to answer from memory in three months.</div>
+<Classify
+  id="uq-error-kinds"
+  prompt="Three different reasons a number can be wrong. Sort what each actually is."
+  buckets={[
+    { key: 'numerical', label: 'numerical — V&V already owns this', accent: 'iris' },
+    { key: 'parametric', label: 'parametric — the cloud in this lesson', accent: 'cyan' },
+    { key: 'model-form', label: 'model-form — the equations are the wrong physics', accent: 'warn' },
+  ]}
+  items={[
+    { key: 'coarse', label: 'n = 16 on a verified second-order heat stencil', bucket: 'numerical', why: 'Truncation. Residual vs Δx, already closed by verification. Refining the mesh shrinks this one and leaves the others.' },
+    { key: 'lab-lambda', label: 'λ quoted as Uniform[0.5, 1.5] from the lab', bucket: 'parametric', why: 'The input is a distribution. Push it. That smear is this lesson.' },
+    { key: 'half', label: 'The extra /2 Laplacian from the last lesson. Smooth sine, residual stuck.', bucket: 'model-form', why: 'A consistent discretisation of α = 1/2. The parameter cloud on the wrong operator is a cloud around the wrong physics.' },
+    { key: 'fan', label: 'You ran heat. The chamber has a fan. The field is a travelling bump.', bucket: 'model-form', why: 'Advection wearing heat clothes. Refinement makes a better travelling bump. No amount of λ-sampling turns it into diffusion.' },
+  ]}
+  explanation="Verification closed the solver. Validation asks whether the solver is the physics. Forward UQ asks what a cloud on the inputs becomes, once those two have a meaning."
+/>
 
-The answer, written so it teaches rather than merely confirms.
+<Recall id="uq-cloud-card" concept="uncertainty-quantification">
+  <div slot="front">A model with an uncertain parameter. What is the prediction? How does it sit relative to the run at the mean?</div>
+
+The prediction is the pushforward of the parameter distribution — a histogram, not a number. A run at the mean is one sample of that smear.
+
+If the map bends, the sample is not even the centre: $\mathbb{E}[q(\theta)] \ne q(\mathbb{E}\theta)$. For remaining amplitude with uniform $\lambda$, the gap is $\sinh(\delta T)/(\delta T)$.
 
 </Recall>
 
-<Tier level="advanced">
+<Tier level="advanced" title="which input owns the bar, and what this lesson left out">
 
-The treatment for someone who already has the working version. Derivations, edge cases,
-the reason the standard explanation is a simplification.
+The curriculum question sitting behind the two-parameter square: **which uncertain input actually owns the error bar on the QoI?** Variance-based (Sobol) indices split $\mathrm{Var}(q)$ into main effects and interactions. For $q = A_0 e^{-\lambda T}$ the interaction term is the corner you just watched — it is not small at large $T$. OAT estimates main effects at one point and sets every interaction to zero, which is why Saltelli calls most published sensitivity analyses false.
+
+This lesson was forward UQ by sampling. Left on the table, each a later lesson:
+
+- **Inverse UQ / calibration.** The data are a cloud too. Bayes updates $\theta$, then you push the *posterior*. Different question.
+- **Surrogates.** Polynomial chaos, collocation, a Gaussian process — so the push is cheap when $q$ is a PDE, not a one-liner. The distribution is still the prediction.
+- **Model-form.** A cloud on $\lambda$ inside heat does not capture "it was advection." That one does not average out.
+
+Numerical uncertainty is a residual-vs-$h$ slope. Parametric uncertainty is a histogram. Do not print one as the other.
 
 </Tier>
 
 ## What to carry forward
 
-Two or three lines connecting to what comes next.
+- The number came with a cloud. Push the cloud; the output smear *is* the prediction.
+- Linear maps scale a cloud. Nonlinear maps fatten a tail and move the mean: $\mathbb{E}[q(\theta)] \ne q(\mathbb{E}\theta)$.
+- OAT walks a cross. The extremes live at the corners.

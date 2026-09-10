@@ -1,3 +1,25 @@
 title: 'uncertainty quantification'
-blurb: 'TODO: one sentence, plain language.'
-tags: []
+blurb: 'A parameter is a cloud. Push it through the model; the output smear is the prediction, and it is not the run at the mean.'
+notation: 'q(\mathbb{E}\theta)\ne\mathbb{E}[q(\theta)]'
+tags:
+  - ch7
+misconceptions:
+  - id: 'point-is-prediction'
+    name: 'The run at the mean parameter is the prediction.'
+    signal: 'Prints q at the measured mean λ and ships it as the answer.'
+    correction: 'That run is one sample of the pushforward. The prediction is the output distribution — a histogram, a mean, a quantile — not a single curve.'
+  - id: 'linear-propagation'
+    name: 'A symmetric input cloud stays symmetric, and the output mean is the model at the mean.'
+    signal: 'Adds ± linearly to q, or sketches a shifted copy of the input rectangle.'
+    correction: 'A linear map would do that. The exponential is convex in λ, so E[e^{-λ T}] = e^{-μ T} sinh(δ T)/(δ T) exceeds the point estimate, and the density on q is 1/q — mass piles at the small end.'
+  - id: 'oat-is-enough'
+    name: 'Varying one parameter at a time maps the output range.'
+    signal: 'Reports the union of the two one-dimensional sweeps as the uncertainty on q.'
+    correction: 'OAT walks a cross through the input square. The smallest remaining lives at a corner — smallest A₀ and largest λ together — that the cross never visits.'
+references:
+  - label: 'Smith, Uncertainty Quantification, SIAM (2014)'
+    url: 'https://doi.org/10.1137/1.9781611973228'
+  - label: 'Saltelli and Annoni, How to avoid a perfunctory sensitivity analysis, Environ. Model. Softw. 25 (2010)'
+    url: 'https://doi.org/10.1016/j.envsoft.2010.04.012'
+  - label: 'Oberkampf and Roy, Verification and Validation in Scientific Computing, Cambridge (2010)'
+    url: 'https://doi.org/10.1017/CBO9780511760396'
