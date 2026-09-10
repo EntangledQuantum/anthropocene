@@ -38,7 +38,7 @@ import {
 import { flipWhereKeFraction, opposingKeRemaining } from '../../lib/numerics/mpm.ts';
 import {
   DEMO_N, JACOBI_SMOOTH_OMEGA, jacobiDamping, jacobiSmoothingFactor,
-  cgHistory, dirichletPoisson,
+  cgHistory, dirichletKappa, dirichletPoisson, preconditionedKappa, ssorOmega,
 } from '../../lib/numerics/iterative.ts';
 
 /**
@@ -694,6 +694,42 @@ const cgTerminationCliff: TuneScenario = {
   },
 };
 
+/* Hunt SSOR ω that minimises κ(M⁻¹A) on the n = 16 Dirichlet Laplacian.
+   The 1D-Poisson SOR optimum 2/(1+sin(π/17)) sits in the well. */
+const PC_N = 16;
+const pcSsorWStar = ssorOmega(PC_N);
+const pcSsorKappaA = dirichletKappa(PC_N);
+const pcSsorKappaCurve: [number, number][] = Array.from({ length: 36 }, (_, i) => {
+  const w = 0.2 + i * 0.05;
+  return [w, preconditionedKappa(PC_N, 'ssor', w)];
+});
+const pcSsorOmega: TuneScenario = {
+  param: {
+    key: 'omega', label: 'SSOR weight', symbol: 'ω', min: 0.2, max: 1.95, step: 0.05, value: 1,
+    hint: 'ω = 1 is symmetric Gauss–Seidel. Too close to 0 or 2 and M stops looking like A.',
+  },
+  target: pcSsorWStar,
+  tolerance: 0.14,
+  x: { label: 'ω', domain: [0.2, 1.95] },
+  y: { label: 'κ(M⁻¹A)', domain: [0, 100] },
+  rules: [{ x: pcSsorWStar, label: 'ω*', color: 'magenta' }],
+  compute: (omega: number) => {
+    const w = Math.max(0.2, Math.min(1.95, omega));
+    const k = preconditionedKappa(PC_N, 'ssor', w);
+    return {
+      series: [
+        { key: 'curve', label: 'κ(M⁻¹A)', color: 'cyan', points: pcSsorKappaCurve },
+        { key: 'you', label: 'your ω', color: 'magenta', style: 'dots', width: 6, points: [[w, k]] },
+      ],
+      readouts: [
+        { label: 'ω', value: w.toFixed(2) },
+        { label: 'κ(M⁻¹A)', value: k.toFixed(2) },
+        { label: 'κ(A)', value: pcSsorKappaA.toFixed(0) },
+      ],
+    };
+  },
+};
+
 export const TUNE_SCENARIOS: Record<string, TuneScenario> = {
   'fd-optimum': fdOptimum,
   'euler-stability': eulerStability,
@@ -710,4 +746,5 @@ export const TUNE_SCENARIOS: Record<string, TuneScenario> = {
   'mpm-flip-half': mpmFlipHalfKe,
   'jac-omega-smooth': jacOmegaSmooth,
   'cg-termination-cliff': cgTerminationCliff,
+  'pc-ssor-omega': pcSsorOmega,
 };

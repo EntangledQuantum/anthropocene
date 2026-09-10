@@ -14,7 +14,7 @@ import { runBlob } from '../../lib/numerics/projection.ts';
 import { runFvm } from '../../lib/numerics/fvm1d.ts';
 import {
   DEMO_N, JACOBI_SMOOTH_OMEGA, demoMixed, sweepHistory, zeros,
-  cgHistory, dirichletPoisson,
+  cgHistory, dirichletPoisson, pcgHistory,
 } from '../../lib/numerics/iterative.ts';
 
 /**
@@ -360,6 +360,19 @@ const cgResidualCliff: SketchScenario = {
   truth: () => cgN8.map((s) => ({ x: s.k, y: Math.log10(Math.max(s.residualNorm, 1e-18)) })),
 };
 
+/* SSOR-PCG on n = 16. Residual wobbles at k = 1 then crashes; the floor
+   is by k = 8, not CG's cliff at k = n. */
+const pcN16 = pcgHistory(dirichletPoisson(16, 'mixed').b, 16, 'ssor');
+const pcSsorResidual: SketchScenario = {
+  xLabel: 'k',
+  yLabel: 'log₁₀ ‖r‖₂',
+  xRange: [0, 16],
+  yRange: [-16.5, 1],
+  tolerance: 1.8,
+  anchors: [{ x: 0, y: Math.log10(Math.max(pcN16[0]!.residualNorm, 1e-18)), label: '‖r₀‖' }],
+  truth: () => pcN16.map((s) => ({ x: s.k, y: Math.log10(Math.max(s.residualNorm, 1e-18)) })),
+};
+
 export const SKETCH_SCENARIOS: Record<string, SketchScenario> = {
   'fd-u-curve': fdUCurve,
   'euler-convergence': eulerConvergence,
@@ -381,4 +394,5 @@ export const SKETCH_SCENARIOS: Record<string, SketchScenario> = {
   'fvm-mass-flat': fvmMassFlat,
   'jac-residual-stall': jacResidualStall,
   'cg-residual-cliff': cgResidualCliff,
+  'pc-ssor-residual': pcSsorResidual,
 };

@@ -16,7 +16,7 @@
    residual() and the same A.
    ───────────────────────────────────────────────────────────────────────── */
 
-import { applyLaplacian, cholesky, denseLaplacian, dot, laplacian1d, laplacianGrid, sampleField } from './operator.ts';
+import { applyLaplacian, cholesky, denseLaplacian, dirichletEigenvalues, dot, laplacian1d, laplacianGrid, sampleField } from './operator.ts';
 import { axpy, norm2, sub } from './types.ts';
 import { solveDense } from './linalg.ts';
 
@@ -493,3 +493,328 @@ export function spdEllipse(
   }
   return pts;
 }
+
+/* ── Preconditioners (Wave 6). Jacobi / SSOR as operators, not recipes.
+   Appended onto the same Dirichlet Laplacian. Do not rewrite Jacobi/CG. ── */
+
+export type PreconditionerKind = 'jacobi' | 'ssor';
+
+/** SSOR ω that matches the 1D-Poisson SOR optimum. 0 < ω < 2. */
+export function ssorOmega(n: number): number {
+  return 2 / (1 + Math.sin(Math.PI / (n + 1)));
+}
+
+export function laplacianDiag(n: number): number {
+  const { h } = laplacianGrid(n, 'dirichlet');
+  return 2 / (h * h);
+}
+
+export function laplacianOff(n: number): number {
+  const { h } = laplacianGrid(n, 'dirichlet');
+  return -1 / (h * h);
+}
+
+/** z = D⁻¹ r. On this A, D = (2/h²) I, so this is a scale. */
+export function applyJacobiMinv(r: number[]): number[] {
+  const d = laplacianDiag(r.length);
+  return r.map((ri) => ri / d);
+}
+
+/** M = D, so Mv = (2/h²) v. */
+export function applyJacobiM(v: number[]): number[] {
+  const d = laplacianDiag(v.length);
+  return v.map((vi) => d * vi);
+}
+
+/**
+ * SSOR: M = 1/(ω(2−ω)) (D+ωL) D⁻¹ (D+ωU).
+ * Apply M⁻¹ by one forward bidiagonal solve, a diagonal scale, one backward.
+ */
+export function applySsorMinv(r: number[], omega = 1): number[] {
+  const n = r.length;
+  const d = laplacianDiag(n);
+  const off = laplacianOff(n);
+  const y = new Array<number>(n);
+  y[0] = r[0]! / d;
+  for (let i = 1; i < n; i++) y[i] = (r[i]! - omega * off * y[i - 1]!) / d;
+  const z = y.map((yi) => d * yi);
+  const w = new Array<number>(n);
+  w[n - 1] = z[n - 1]! / d;
+  for (let i = n - 2; i >= 0; i--) w[i] = (z[i]! - omega * off * w[i + 1]!) / d;
+  const scale = omega * (2 - omega);
+  return w.map((wi) => scale * wi);
+}
+
+export function applySsorM(v: number[], omega = 1): number[] {
+  const n = v.length;
+  const d = laplacianDiag(n);
+  const off = laplacianOff(n);
+  const t = new Array<number>(n);
+  for (let i = 0; i < n; i++) {
+    const right = i === n - 1 ? 0 : v[i + 1]!;
+    t[i] = d * v[i]! + omega * off * right;
+  }
+  const s = t.map((ti) => ti / d);
+  const u = new Array<number>(n);
+  for (let i = 0; i < n; i++) {
+    const left = i === 0 ? 0 : s[i - 1]!;
+    u[i] = d * s[i]! + omega * off * left;
+  }
+  const scale = omega * (2 - omega);
+  return u.map((ui) => ui / scale);
+}
+
+export function applyMinv(
+  kind: PreconditionerKind,
+  r: number[],
+  omega = 1,
+): number[] {
+  return kind === 'ssor' ? applySsorMinv(r, omega) : applyJacobiMinv(r);
+}
+
+export function applyM(
+  kind: PreconditionerKind,
+  v: number[],
+  omega = 1,
+): number[] {
+  return kind === 'ssor' ? applySsorM(v, omega) : applyJacobiM(v);
+}
+
+/**
+ * Hestenes–Stiefel PCG. Same short recurrence as CG, one extra apply of M⁻¹
+ * per step. Never forms M⁻¹A. Search is A-orthogonal in x-space; residuals
+ * are M⁻¹-orthogonal.
+ *
+ *   z = M⁻¹ r
+ *   α = (r·z) / (pᵀAp)
+ *   x ← x + α p
+ *   r ← r − α Ap
+ *   β = (r₊·z₊) / (r·z)
+ *   p ← z₊ + β p
+ */
+export function preconditionedCg(
+  applyA: Matvec,
+  applyMinvFn: Matvec,
+  b: number[],
+  { x0, maxIter, tol = 0 }: { x0?: number[]; maxIter?: number; tol?: number } = {},
+): CgStep[] {
+  const n = b.length;
+  const steps = maxIter ?? n;
+  let x = x0 ? x0.slice() : new Array(n).fill(0);
+  let r = residualOf(applyA, x, b);
+  let z = applyMinvFn(r);
+  let p = z.slice();
+  let rz = dot(r, z);
+  const out: CgStep[] = [{ k: 0, x: x.slice(), r: r.slice(), p: p.slice(), residualNorm: norm2(r) }];
+
+  for (let k = 1; k <= steps; k++) {
+    const rn = norm2(r);
+    if (rn === 0 || (tol > 0 && rn <= tol)) {
+      out.push({ k, x: x.slice(), r: r.slice(), p: p.slice(), residualNorm: rn });
+      continue;
+    }
+    const Ap = applyA(p);
+    const pAp = dot(p, Ap);
+    if (pAp <= 0) break;
+    const alpha = rz / pAp;
+    x = axpy(alpha, p, x);
+    r = axpy(-alpha, Ap, r);
+    z = applyMinvFn(r);
+    const rzNew = dot(r, z);
+    const beta = rz === 0 ? 0 : rzNew / rz;
+    p = axpy(beta, p, z);
+    rz = rzNew;
+    out.push({ k, x: x.slice(), r: r.slice(), p: p.slice(), residualNorm: norm2(r) });
+  }
+  return out;
+}
+
+export function pcgHistory(
+  b: number[],
+  steps: number,
+  kind: PreconditionerKind = 'ssor',
+  omega?: number,
+  x0?: number[],
+): CgStep[] {
+  const w = omega ?? (kind === 'ssor' ? ssorOmega(b.length) : 1);
+  return preconditionedCg(
+    (u) => applyLaplacian(u, 'dirichlet'),
+    (r) => applyMinv(kind, r, w),
+    b,
+    { x0, maxIter: steps },
+  );
+}
+
+/** First k with residual ≤ target. Returns maxSteps+1 if it never gets there. */
+export function pcgStepsUntil(
+  b: number[],
+  target: number,
+  maxSteps: number,
+  kind: PreconditionerKind = 'ssor',
+  omega?: number,
+  x0?: number[],
+): number {
+  const hist = pcgHistory(b, maxSteps, kind, omega, x0);
+  for (const s of hist) if (s.residualNorm <= target) return s.k;
+  return maxSteps + 1;
+}
+
+export function cgStepsUntil(
+  b: number[],
+  target: number,
+  maxSteps: number,
+  x0?: number[],
+): number {
+  const hist = cgHistory(b, maxSteps, x0);
+  for (const s of hist) if (s.residualNorm <= target) return s.k;
+  return maxSteps + 1;
+}
+
+/* ── spectrum of A vs M⁻¹A ─────────────────────────────────────────────── */
+
+function denseFromApply(n: number, apply: Matvec): number[][] {
+  const M = Array.from({ length: n }, () => new Array<number>(n).fill(0));
+  for (let j = 0; j < n; j++) {
+    const e = zeros(n);
+    e[j] = 1;
+    const col = apply(e);
+    for (let i = 0; i < n; i++) M[i]![j] = col[i]!;
+  }
+  return M;
+}
+
+function cholForward(L: number[][], b: number[]): number[] {
+  const n = b.length;
+  const y = new Array<number>(n);
+  for (let i = 0; i < n; i++) {
+    let s = b[i]!;
+    for (let j = 0; j < i; j++) s -= L[i]![j]! * y[j]!;
+    y[i] = s / L[i]![i]!;
+  }
+  return y;
+}
+
+function cholBack(L: number[][], b: number[]): number[] {
+  const n = b.length;
+  const x = new Array<number>(n);
+  for (let i = n - 1; i >= 0; i--) {
+    let s = b[i]!;
+    for (let j = i + 1; j < n; j++) s -= L[j]![i]! * x[j]!;
+    x[i] = s / L[i]![i]!;
+  }
+  return x;
+}
+
+/** C = L⁻¹ A L^{-T} with M = LLᵀ. Eigenvalues of C are those of M⁻¹A. */
+export function splitSimilar(A: number[][], M: number[][]): number[][] {
+  const L = cholesky(M);
+  if (!L) throw new Error('preconditioner M must be SPD');
+  const n = A.length;
+  const C = Array.from({ length: n }, () => new Array<number>(n).fill(0));
+  for (let j = 0; j < n; j++) {
+    const e = zeros(n);
+    e[j] = 1;
+    const x = cholBack(L, e);
+    const Ax = new Array<number>(n).fill(0);
+    for (let i = 0; i < n; i++) {
+      let s = 0;
+      for (let k = 0; k < n; k++) s += A[i]![k]! * x[k]!;
+      Ax[i] = s;
+    }
+    const c = cholForward(L, Ax);
+    for (let i = 0; i < n; i++) C[i]![j] = c[i]!;
+  }
+  return C;
+}
+
+/**
+ * Cyclic Jacobi eigensolver for a tiny SPD (or symmetric) dense matrix.
+ * n ≤ 32 in the labs. Returns sorted eigenvalues.
+ */
+export function symmetricEigenvalues(A0: number[][], sweeps = 48): number[] {
+  const n = A0.length;
+  const A = A0.map((row) => row.slice());
+  for (let sweep = 0; sweep < sweeps; sweep++) {
+    let off = 0;
+    for (let i = 0; i < n; i++) {
+      for (let j = i + 1; j < n; j++) {
+        const aij = A[i]![j]!;
+        off += aij * aij;
+        if (Math.abs(aij) < 1e-18) continue;
+        const aii = A[i]![i]!;
+        const ajj = A[j]![j]!;
+        const tau = (ajj - aii) / (2 * aij);
+        const t = (tau >= 0 ? 1 : -1) / (Math.abs(tau) + Math.hypot(1, tau));
+        const c = 1 / Math.hypot(1, t);
+        const s = c * t;
+        for (let k = 0; k < n; k++) {
+          if (k === i || k === j) continue;
+          const aik = A[i]![k]!;
+          const ajk = A[j]![k]!;
+          const nik = c * aik - s * ajk;
+          const njk = s * aik + c * ajk;
+          A[i]![k] = nik;
+          A[k]![i] = nik;
+          A[j]![k] = njk;
+          A[k]![j] = njk;
+        }
+        const nii = c * c * aii - 2 * s * c * aij + s * s * ajj;
+        const njj = s * s * aii + 2 * s * c * aij + c * c * ajj;
+        A[i]![i] = nii;
+        A[j]![j] = njj;
+        A[i]![j] = 0;
+        A[j]![i] = 0;
+      }
+    }
+    const diag = A.reduce((s, row, i) => s + Math.abs(row[i]!), 0);
+    if (Math.sqrt(2 * off) <= 1e-14 * Math.max(1, diag)) break;
+  }
+  return A.map((row, i) => row[i]!).sort((a, b) => a - b);
+}
+
+export function kappaFromEvals(evals: number[]): number {
+  const pos = evals.filter((l) => l > 1e-18);
+  if (pos.length === 0) return Number.POSITIVE_INFINITY;
+  return Math.max(...pos) / Math.min(...pos);
+}
+
+export function dirichletKappa(n: number): number {
+  const ev = dirichletEigenvalues(n);
+  return kappaFromEvals(ev);
+}
+
+export function preconditionedEigenvalues(
+  n: number,
+  kind: PreconditionerKind,
+  omega?: number,
+): number[] {
+  const A = denseLaplacian(n, 'dirichlet');
+  const w = omega ?? (kind === 'ssor' ? ssorOmega(n) : 1);
+  const M = denseFromApply(n, (v) => applyM(kind, v, w));
+  return symmetricEigenvalues(splitSimilar(A, M));
+}
+
+export function preconditionedKappa(
+  n: number,
+  kind: PreconditionerKind,
+  omega?: number,
+): number {
+  return kappaFromEvals(preconditionedEigenvalues(n, kind, omega));
+}
+
+/** ω in (0, 2) that minimises κ(M_SSOR⁻¹ A) on this n, by a coarse scan. */
+export function ssorOmegaMinKappa(n: number, samples = 40): number {
+  let bestW = 1;
+  let bestK = Infinity;
+  for (let i = 1; i < samples; i++) {
+    const w = (2 * i) / samples;
+    if (w <= 0.05 || w >= 1.95) continue;
+    const k = preconditionedKappa(n, 'ssor', w);
+    if (k < bestK) {
+      bestK = k;
+      bestW = w;
+    }
+  }
+  return bestW;
+}
+

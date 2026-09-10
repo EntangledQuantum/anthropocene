@@ -99,6 +99,10 @@ describe('estimate scenarios agree with the prose that quotes them', () => {
     expect(t).toBeGreaterThan(150);
     expect(t).toBeLessThan(300);
   });
+
+  it('SSOR-PCG hits 10⁻⁸ in 7 steps on n = 16; CG waits until step 16', () => {
+    expect(ESTIMATE_SCENARIOS['pc-ssor-steps-1e-8'].truth()).toBe(7);
+  });
 });
 
 describe('every scenario is answerable on its own slider', () => {

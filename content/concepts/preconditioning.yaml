@@ -1,3 +1,29 @@
 title: 'preconditioning'
-blurb: 'TODO: one sentence, plain language.'
-tags: []
+blurb: 'A cheap fake inverse M that bunches the eigenvalues of M inverse A. Krylov is then the accelerator; the algorithm is the operator you feed it.'
+notation: 'M^{-1}A'
+tags:
+  - linalg
+misconceptions:
+  - id: 'jacobi-always-preconditions'
+    name: 'The diagonal of A is already a good fake inverse; any M helps.'
+    signal: 'Expects Jacobi-PCG to beat CG on the constant-coefficient Laplacian, or treats D as a genuine approximation of A.'
+    correction: 'On this A the diagonal is a constant, so D⁻¹A is a scale of A. κ does not move. The spectrum does not bunch. Jacobi-PCG is CG. A fake inverse has to know something A is not already telling you with a number.'
+  - id: 'smoother-is-preconditioner'
+    name: 'A smoother is a preconditioner: Jacobi already kills the stiff modes, so it should invert A.'
+    signal: 'Picks high-k damping as the job of M, or treats the Jacobi sweep from the last lesson as M⁻¹.'
+    correction: 'A smoother kills high-k and leaves the long wave. A⁻¹ is large on the long wave. Those are opposite jobs. SSOR looks like A⁻¹ because the triangular solves see more than one neighbour.'
+  - id: 'krylov-is-the-algorithm'
+    name: 'CG is the solver; the preconditioner is an optional speedup on top.'
+    signal: 'Talks as if you pick CG or SSOR, or treats M as a better Krylov method.'
+    correction: 'Krylov is an accelerator for whatever operator you feed it. Feed it A and you wait on κ(A). Feed it a bunched M⁻¹A and the same recurrence finishes. The algorithm is M⁻¹A.'
+  - id: 'need-exact-M'
+    name: 'M has to be A inverse or it does not help.'
+    signal: 'Rejects SSOR because it is not a factorization of A, or expects ILU to be exact before it is worth applying.'
+    correction: 'You want the spectrum of M⁻¹A bunched, not M = A. Fifteen eigenvalues of SSOR⁻¹A sit in a cluster near 0.3; that is enough. Exact M is a direct solve, and on this tridiagonal A, ILU(0) happens to be that — a costume this 1D problem is too kind to give you.'
+references:
+  - label: 'Trefethen & Bau, Numerical Linear Algebra, Lecture 40'
+    url: 'https://doi.org/10.1137/1.9781611977165'
+  - label: 'Saad, Iterative Methods for Sparse Linear Systems, ch. 10'
+    url: 'https://doi.org/10.1137/1.9780898718003'
+  - label: 'Barrett et al., Templates for the Solution of Linear Systems, §3'
+    url: 'https://netlib.org/templates/templates.pdf'

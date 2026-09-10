@@ -1,7 +1,7 @@
 ---
 title: 'A fake inverse that clusters the spectrum'
 blurb: 'Krylov is an accelerator. The algorithm is the operator you feed it. A cheap fake inverse that bunches the eigenvalues is why CG suddenly finishes.'
-order: 1
+order: 3
 tier: 'advanced'
 minutes: 16
 teaches:
@@ -10,44 +10,186 @@ requires:
   - 'conjugate-gradient'
   - 'krylov'
 runtime: 'none'
-status: 'draft'
+status: 'live'
+updated: 2026-09-10
 ---
 
-Open with the tension, not the definition. What does the reader currently believe that
-this lesson is going to complicate?
-
-## The idea
-
-Build it up. Use `$inline$` and `$$display$$` for math.
+Same $n = 16$ Dirichlet Poisson.
+[CG finished at $k = 16$](/anthropocene/learn/linear-algebra/iterative/krylov/)
+because $K_n = \mathbb{R}^n$. The cheap next move is to left-multiply by $D^{-1}$ —
+the diagonal of $A$, Jacobi, one division per unknown — and run CG on $D^{-1}A$.
 
 <Predict
-  id="03-preconditioners-first-prediction"
-  question="Ask something the reader can be productively wrong about."
+  id="pc-jacobi-overlay"
+  question="After 8 steps of Jacobi-preconditioned CG on this 16-unknown Poisson, the residual is…"
   options={[
-    { key: 'a', label: 'The intuitive answer', why: 'Why it is tempting, and exactly where it breaks.' },
-    { key: 'b', label: 'The correct answer', why: 'Why it is right, in one or two sentences.' },
+    { key: 'a', misconception: 'jacobi-always-preconditions', label: 'far below plain CG. You inverted the stiffest part of A.', why: "Tempting, and true of a diagonal that actually varies. On this A every diagonal entry is 2/h², so D⁻¹A is a scale of A. Scaling does not change κ, does not bunch eigenvalues, and does not change CG." },
+    { key: 'b', label: 'identical to plain CG. The magenta and cyan curves sit on top of each other.', why: 'Correct. D is a constant. Jacobi-PCG is CG wearing a scale. Watch the spectra: same shape, same floor 1/κ.' },
+    { key: 'c', misconception: 'need-exact-M', label: 'worse. You destroyed SPD, so the short recurrence breaks.', why: 'D is SPD (it is a positive scale of I). The recurrence is fine. It is just the same recurrence.' },
+    { key: 'd', misconception: 'smoother-is-preconditioner', label: 'at roundoff. Jacobi already killed the stiff modes, so eight steps finish.', why: 'That is Jacobi the smoother, from the last-but-one lesson: high-k dies, the long wave lives. A⁻¹ is large on the long wave. Those are opposite jobs. Eight Jacobi-PCG steps have not inverted anything.' },
   ]}
   correct="b"
 >
 
-The payoff, revealed only after they commit. Usually a simulation.
+Toggle **Jacobi D**. The spectra overlay. The residuals overlay. κ(A) = κ(D⁻¹A) ≈ 116. A fake inverse has to know something the diagonal of this $A$ is not telling you.
+
+<PreconditionerLab
+  n={16}
+  preconditioner="jacobi"
+  k0={8}
+  caption="n = 16 Dirichlet Poisson. Cyan is A and CG. Magenta is M⁻¹A and PCG. On Jacobi, they are the same curve. Switch to SSOR."
+/>
 
 </Predict>
 
-<Recall id="03-preconditioners-card" concept="preconditioning">
-  <div slot="front">The question to answer from memory in three months.</div>
+## $M$ is a cheap fake inverse
 
-The answer, written so it teaches rather than merely confirms.
+You never form $A^{-1}$. You also do not have to feed Krylov $A$. You feed it
+$M^{-1}A$, where $M$ is SPD, cheap to apply, and *close to $A$ as an operator* —
+close enough that the eigenvalues of $M^{-1}A$ sit in a clump instead of
+spreading from $\lambda_{\min}$ to $\lambda_{\max}$.
+
+$$
+\kappa(M^{-1}A) = \frac{\lambda_{\max}(M^{-1}A)}{\lambda_{\min}(M^{-1}A)} \ll \kappa(A)
+$$
+
+is the hope. Clustering is the mechanism: a matrix with $m$ tight clumps is
+a polynomial of degree $m$ away from done, even if $n$ is large.
+
+<Predict
+  id="pc-what-m-wants"
+  question="What do you actually want from M on this SPD Poisson?"
+  options={[
+    { key: 'a', misconception: 'need-exact-M', label: 'M = A⁻¹. Anything else is a truncated direct solve.', why: 'Exact M is a direct solve. You would not be iterating. You want M⁻¹A bunched, which a crude M can already do.' },
+    { key: 'b', misconception: 'smoother-is-preconditioner', label: 'M that kills high-k, like the Jacobi smoother. Stiff modes are the problem.', why: 'A smoother leaves the long wave. That leftover is the small-eigenvalue end of A, which is exactly what makes κ large. Damping high-k does not invert low-k.' },
+    { key: 'c', label: 'M cheap to apply, with the spectrum of M⁻¹A bunched — not M close entrywise, not M exact.', why: 'Correct. The Krylov polynomial sees eigenvalues, not entries. SSOR is two bidiagonal solves. It is a terrible approximation of A entrywise and a good fake inverse.' },
+    { key: 'd', misconception: 'krylov-is-the-algorithm', label: 'Nothing. CG already picks the A-best residual; M is a different solver you would swap in.', why: 'You do not swap. You feed CG a better operator. Same recurrence, extra apply of M⁻¹ per step, along z = M⁻¹r instead of r.' },
+  ]}
+  correct="c"
+>
+
+The extra line in the recurrence is one apply of $M^{-1}$:
+
+```ts
+const Ap = applyA(p);                    // the only matvec
+const z = applyMinv(r);                  // the cheap fake inverse
+const alpha = dot(r, z) / dot(p, Ap);
+x = axpy(alpha, p, x);
+r = axpy(-alpha, Ap, r);
+p = axpy(dot(r, z) / rzOld, p, z);      // search along z, not r
+```
+
+Same short recurrence. Residuals are now $M^{-1}$-orthogonal. Search
+directions stay $A$-orthogonal. Krylov did not change. The operator did.
+
+</Predict>
+
+## SSOR is two sweeps you already know
+
+Symmetric Gauss–Seidel, over-relaxed. One forward bidiagonal solve, a
+diagonal scale, one backward. On this $A$,
+
+$$
+M = \frac{1}{\omega(2-\omega)}\,(D+\omega L)\,D^{-1}\,(D+\omega U).
+$$
+
+Switch the lab to **SSOR**. The magenta eigenvalues pile up. κ drops from
+116 to about 6. The residual is not waiting for $k = n$.
+
+<SketchCurve
+  id="pc-pcg-sketch"
+  scenario="pc-ssor-residual"
+  prompt="n = 16, SSOR-PCG. Sketch log₁₀ ‖r‖₂ against iteration k. It starts at log₁₀ ‖r₀‖. Draw through k = 16."
+  hint="The Euclidean residual may rise at k = 1. The floor is not at k = n."
+  explanation="A bump, then a slide onto the roundoff floor by k = 8. CG on this vertical scale is a line at the top until k = 16. Sketching that cliff here is last lesson's picture; the earlier floor is the bunched spectrum."
+/>
+
+<RankOrder
+  id="pc-rank-eight"
+  prompt="n = 16, after 8 steps. Rank these by leftover residual — least remaining first."
+  lowLabel="least remains (done)"
+  highLabel="most remains (walking)"
+  items={[
+    { key: 'ssor', label: 'SSOR-PCG', why: '‖r‖ ≈ 2×10⁻¹¹. Fifteen eigenvalues of M⁻¹A sit in a cluster, so the polynomial is done early.' },
+    { key: 'cg', label: 'CG (and Jacobi-PCG — they are the same curve)', why: '‖r‖ ≈ 0.4. K₈ is only half the space. κ(A) ≈ 116 has not moved.' },
+    { key: 'jac', label: 'Jacobi sweeps, no Krylov', why: 'A fixed polynomial with rate cos(π/17) ≈ 0.98. Eight averages of neighbours. The long wave is still there.' },
+  ]}
+  correct={['ssor', 'cg', 'jac']}
+  explanation="Same eight applications of A. What changed is the operator Krylov was accelerating. Jacobi the smoother is not in this race."
+/>
+
+<Estimate
+  id="pc-steps-1e8"
+  scenario="pc-ssor-steps-1e-8"
+  prompt="n = 16. CG first drops below 10⁻⁸ at step 16. How many SSOR-PCG steps to the same residual?"
+  explanation="7. The slider starts near sixteen because that is finite termination, and it is the wrong picture once the spectrum is a cluster. κ went from 116 to 6; the bound 2((√κ−1)/(√κ+1))^k is no longer waiting on n."
+/>
+
+<Tune
+  id="pc-omega-kappa"
+  scenario="pc-ssor-omega"
+  prompt="Drag ω until κ(M⁻¹A) sits in the well. You are hunting the fake inverse, not the smoother."
+  hint="ω = 1 is symmetric Gauss–Seidel and already helps. The 1D-Poisson optimum is a bit above that."
+  explanation="ω* = 2/(1+sin(π/17)) ≈ 1.69, the SOR optimum on this A. κ drops to about 6. ω → 0 or 2 and M stops looking like A, so κ climbs back toward 116. Weighting here is not the Jacobi smoother's 2/3 — different job, different well."
+/>
+
+<Classify
+  id="pc-classify-roles"
+  prompt="Each statement is a property of one object on this SPD Poisson. Sort them."
+  buckets={[
+    { key: 'jacobi', label: 'Jacobi M = D', accent: 'cyan' },
+    { key: 'ssor', label: 'SSOR M', accent: 'magenta' },
+    { key: 'krylov', label: 'Krylov / CG', accent: 'iris' },
+  ]}
+  items={[
+    { key: 'scale', label: 'a constant scale on this A, so κ does not move', bucket: 'jacobi', why: 'D = (2/h²) I. D⁻¹A is A with a different unit.' },
+    { key: 'fwd', label: 'one forward bidiagonal solve and one backward', bucket: 'ssor', why: 'Apply M⁻¹: (D+ωL) then D then (D+ωU), times ω(2−ω). Two sweeps you already know, used as an operator.' },
+    { key: 'bunch', label: 'bunches fifteen eigenvalues of M⁻¹A near 0.3', bucket: 'ssor', why: 'That cluster is the cheaper Krylov dimension. κ ≈ 6 instead of 116.' },
+    { key: 'best', label: 'picks the A-best residual in a growing plane', bucket: 'krylov', why: 'Unchanged. CG does this to whatever operator you feed it.' },
+    { key: 'accel', label: 'the accelerator, not the algorithm', bucket: 'krylov', why: 'The algorithm is M⁻¹A. Without a bunched operator, CG waits on κ(A) or on n.' },
+    { key: 'div', label: 'one division per unknown', bucket: 'jacobi', why: 'zᵢ = rᵢ / Aᵢᵢ. Cheap, and on this A, nothing.' },
+  ]}
+  explanation="Jacobi M is a scale here. SSOR is the fake inverse that bunches. Krylov is what you run on top. The algorithm is the operator."
+/>
+
+<Recall id="pc-recall-precond" concept="preconditioning">
+  <div slot="front">What is a preconditioner, and why is Krylov not the algorithm?</div>
+
+A preconditioner is a cheap fake inverse $M \approx A$. You iterate on $M^{-1}A$
+so the eigenvalues bunch and $\kappa$ drops. CG is the same short recurrence
+it always was — the accelerator. On this Laplacian, Jacobi $M = D$ is a scale
+and does nothing; SSOR is two bidiagonal solves and $\kappa$ falls from 116 to 6.
 
 </Recall>
 
-<Tier level="advanced">
+<Tier level="advanced" title="left / right / split, ILU on a tridiagonal, and when Jacobi wakes up">
 
-The treatment for someone who already has the working version. Derivations, edge cases,
-the reason the standard explanation is a simplification.
+Left-preconditioning writes $M^{-1}Ax = M^{-1}b$. Right writes $AM^{-1}y = b$,
+$x = M^{-1}y$. Split writes $L^{-1} A L^{-T}$ when $M = LL^{T}$. For CG the
+PCG recurrence above *is* the split form: it keeps the $A$-inner product and
+never forms $M^{-1}A$. On a nonsymmetric $A$ the three choices stop being
+equivalent, and that is GMRES's problem, later.
+
+ILU(0) on this tridiagonal $A$ is exact LU. $M = A$, every eigenvalue of
+$M^{-1}A$ is 1, and you have a direct solve wearing a preconditioner badge.
+The 1D costume is too kind. In 2D the fill is the point, and ILU is
+approximate on purpose.
+
+Jacobi starts helping the moment $D$ is not a scale — a rod with two
+conductivities, a stretched mesh, anything whose diagonal actually varies.
+Then $D^{-1}A$ really is a different operator. This constant-coefficient
+Poisson is the case that hides it, which is why it is the right first
+picture: the cheapest $M$ can be a no-op, and you have to look at the
+spectrum to know.
+
+Multigrid as $M$ is the next cheap fake inverse, and it is also a solver.
+That is the following lesson.
 
 </Tier>
 
 ## What to carry forward
 
-Two or three lines connecting to what comes next.
+Krylov is an accelerator. The algorithm is $M^{-1}A$. On this Poisson the
+diagonal is a scale and does nothing; SSOR bunches the eigenvalues and
+CG finishes in half the steps. Next, the leftover long wave on a coarser
+grid — a fake inverse built from two meshes.
