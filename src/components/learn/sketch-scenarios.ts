@@ -14,8 +14,9 @@ import { runBlob } from '../../lib/numerics/projection.ts';
 import { runFvm } from '../../lib/numerics/fvm1d.ts';
 import {
   DEMO_N, JACOBI_SMOOTH_OMEGA, demoMixed, sweepHistory, zeros,
-  cgHistory, dirichletPoisson, pcgHistory,
+  cgHistory, dirichletPoisson, pcgHistory, hashedField,
 } from '../../lib/numerics/iterative.ts';
+import { twoGridHistory } from '../../lib/numerics/multigrid.ts';
 
 /**
  * Named targets for `<SketchCurve>`.
@@ -373,6 +374,22 @@ const pcSsorResidual: SketchScenario = {
   truth: () => pcN16.map((s) => ({ x: s.k, y: Math.log10(Math.max(s.residualNorm, 1e-18)) })),
 };
 
+const mgHashed = hashedField(DEMO_N, 3);
+/* Two-grid residual keeps falling. The Jacobi sketch in this chapter
+   floors; this one does not. Slope is the n-independent factor. */
+const mgResidualCycles: SketchScenario = {
+  xLabel: 'V-cycles',
+  yLabel: 'log₁₀ ‖r‖ / ‖r₀‖',
+  xRange: [0, 6],
+  yRange: [-8, 0.3],
+  tolerance: 0.9,
+  anchors: [{ x: 0, y: 0, label: 'start' }],
+  truth: () => twoGridHistory(mgHashed, zeros(DEMO_N), 6).map((h) => ({
+    x: h.cycle,
+    y: Math.log10(Math.max(h.res, 1e-16)),
+  })),
+};
+
 export const SKETCH_SCENARIOS: Record<string, SketchScenario> = {
   'fd-u-curve': fdUCurve,
   'euler-convergence': eulerConvergence,
@@ -395,4 +412,5 @@ export const SKETCH_SCENARIOS: Record<string, SketchScenario> = {
   'jac-residual-stall': jacResidualStall,
   'cg-residual-cliff': cgResidualCliff,
   'pc-ssor-residual': pcSsorResidual,
+  'mg-residual-cycles': mgResidualCycles,
 };

@@ -1,7 +1,7 @@
 ---
 title: 'The leftover wave lives on a coarser grid'
 blurb: 'Jacobi left a smooth error. Restrict it, solve cheap, prolong it back. Two grids is the whole of multigrid, once.'
-order: 1
+order: 4
 tier: 'advanced'
 minutes: 16
 teaches:
@@ -11,44 +11,172 @@ requires:
   - 'smoothing'
   - 'discrete-operator'
 runtime: 'none'
-status: 'draft'
+status: 'live'
+updated: 2026-09-10
 ---
 
-Open with the tension, not the definition. What does the reader currently believe that
-this lesson is going to complicate?
-
-## The idea
-
-Build it up. Use `$inline$` and `$$display$$` for math.
+Same $n = 31$ Dirichlet Poisson. Five weighted Jacobi sweeps have already
+happened — [the ripple is dead, the long wave is the field](/anthropocene/learn/linear-algebra/iterative/jacobi-smoothing/).
+The residual is a small sine. You are not done.
 
 <Predict
-  id="04-two-grid-first-prediction"
-  question="Ask something the reader can be productively wrong about."
+  id="mg-leftover-after-cycle"
+  question="Restrict that leftover residual onto 15 points, solve exactly, prolong, add. What happens to the long wave?"
   options={[
-    { key: 'a', label: 'The intuitive answer', why: 'Why it is tempting, and exactly where it breaks.' },
-    { key: 'b', label: 'The correct answer', why: 'Why it is right, in one or two sentences.' },
+    { key: 'a', misconception: 'coarse-too-crude', label: 'Barely moves. Fifteen points cannot resolve a 31-point sine.', why: 'The leftover is one hump. Sampling every other node of a k = 1 sine is a k = 1 sine — well resolved, cheap. Coarse is not crude for this wave. It is what the wave was waiting for.' },
+    { key: 'b', label: 'It is gone. The leftover is a cheap Poisson problem on the coarse grid.', why: 'Correct. After smoothing, the error lives in the coarse space. Restrict, solve, prolong, add: the long wave drops by more than 10×. Five more Jacobi sweeps of the leftover would have left it at 97%.' },
+    { key: 'c', label: 'It doubles. Linear interpolation overshoots a sine.', why: 'Interpolation of a well-resolved sine is a slightly fatter sine, not an overshoot. The correction matches the leftover and subtracts it.' },
+    { key: 'd', misconception: 'smooth-means-solved', label: 'Nothing you needed to do. A smooth residual means you are done.', why: 'Smooth is the shape of the leftover, not the size of the error. After five sweeps ||e|| is still 0.90 of the start. A quiet residual of a long wave is A doing its job.' },
   ]}
   correct="b"
 >
 
-The payoff, revealed only after they commit. Usually a simulation.
+The lab is sitting on that leftover sine. Restrict. Solve. The dashed magenta overlay is the correction about to land — it *is* the wave. Prolong + correct. Watch the cyan k = 1 bar collapse.
+
+<TwoGridLab
+  n={31}
+  pre={0}
+  post={1}
+  initial="mixed"
+  preloadSweeps={5}
+  lockInitial={true}
+  lockPre={true}
+  caption="Five Jacobi sweeps already applied. Fine error e(x) and the restricted residual R r, one state. Restrict → solve → the overlay is the leftover. Correct, and it is gone."
+/>
 
 </Predict>
 
-<Recall id="04-two-grid-card" concept="multigrid">
-  <div slot="front">The question to answer from memory in three months.</div>
+## Two jobs, two grids
 
-The answer, written so it teaches rather than merely confirms.
+A local average cannot grab a wave that looks constant on three points. A grid twice as coarse sees that wave as a well-resolved sine. Complementary jobs:
+
+1. Smooth on the fine grid — kill high-k.
+2. Restrict the residual $r = f - Au$.
+3. Solve $A_c e_c = r_c$ exactly on the coarse grid.
+4. Prolong $e_c$ and correct $u \leftarrow u + P e_c$.
+5. A post-smooth, because interpolation is not exact on what is left.
+
+That is one two-grid V-cycle.
+
+Prolongation $P$ is linear interpolation. Restriction $R$ is full weighting, the adjoint:
+
+$$
+(P e)_{2I+1} = e_I, \qquad (P e)_{2I} = \tfrac12(e_{I-1} + e_I),
+$$
+
+$$
+(R r)_I = \tfrac14 r_{2I} + \tfrac12 r_{2I+1} + \tfrac14 r_{2I+2}, \qquad R = \tfrac12 P^{\mathrm{T}}.
+$$
+
+Walls contribute 0. On this Laplacian, Galerkin $R A^h P$ *is* the coarse stencil $A^{2h}$. The transfers are not a second discretisation.
+
+<RankOrder
+  id="mg-who-kills-what"
+  prompt="The leftover sine, already five-smoothed. Rank these by how much of the k = 1 error they remove."
+  lowLabel="least removed"
+  highLabel="most removed"
+  items={[
+    { key: 'one', label: 'one more weighted Jacobi sweep', why: 'μ₁ ≈ 0.997. One sweep leaves the wave at 99.7%.' },
+    { key: 'five', label: 'five more weighted Jacobi sweeps', why: 'Five more still leave 98%. That is the stall you already sketched.' },
+    { key: 'cgc', label: 'one coarse-grid correction (restrict, solve, prolong)', why: '|c₁| drops more than 10×. The leftover was a 15-unknown Poisson problem, solved exactly.' },
+  ]}
+  correct={['one', 'five', 'cgc']}
+  explanation="Smoothing and coarse-grid correction are complementary. Jacobi will not finish the long wave at this n. CGC will, in one shot, because that wave is what the coarse grid is for."
+/>
+
+<SketchCurve
+  id="mg-residual-cycles"
+  scenario="mg-residual-cycles"
+  prompt="Sketch log₁₀ of the residual ratio over 6 two-grid V-cycles, hashed start. It starts at 0."
+  hint="Each cycle multiplies by a factor that does not care how far you have come. There is no stall."
+  explanation="Jacobi crashed then sat on a floor. This keeps falling, about a decade and a bit per cycle. The slope is the two-grid factor — and it does not know n."
+/>
+
+## Smooth first, or the coarse grid never sees the ripple
+
+The mixed start is a long wave plus a 4-point ripple. Full weighting of that ripple is zero: $k = 16$ sits in $\ker(R)$. Skip the smoother and the coarse solve is computing a correction for a residual it cannot see.
+
+<Predict
+  id="mg-skip-smooth"
+  question="Skip the five sweeps. Restrict-solve-prolong the mixed field immediately. The ripple…"
+  options={[
+    { key: 'a', misconception: 'skip-smooth-ok', label: 'is gone too. Restriction averages it away, so CGC is the whole method.', why: 'Averaging it away means the coarse grid receives a zero for that mode. A zero residual is not a solved ripple. CGC is a no-op on ker(R). The ripple stays at full size.' },
+    { key: 'b', label: 'remains. Full weighting of that 4-point wave is zero, so the coarse solve never saw it.', why: 'Correct. |c₁₆| stays at 0.45. |c₁| dies anyway — the long wave is in the coarse space. Complementary jobs: the smoother kills what R cannot see.' },
+    { key: 'c', label: 'aliases into a fake long wave and ruins the k = 1 correction.', why: 'True of nearby high modes (k = 24 is amplified by CGC). This particular ripple is in ker(R), so it does not pollute — it is simply ignored. Switch the lab to k = 16 and restrict: the coarse residual is flat.' },
+    { key: 'd', label: 'grows, because interpolation is an unstable upsample.', why: 'P is a hat average, contractive on highs, faithful on lows. Instability is not the failure mode. Invisibility is.' },
+  ]}
+  correct="b"
+>
+
+Restrict on the mixed field. The coarse residual is already a sine — the ripple averaged to nothing. Correct: cyan bar dies, magenta bar stays.
+
+<TwoGridLab
+  n={31}
+  pre={0}
+  post={0}
+  initial="mixed"
+  preloadSweeps={0}
+  lockPre={true}
+  caption="No pre-smooth. Restrict the mixed residual: R r is the long wave, the ripple is gone from the coarse picture and still sitting in e(x). Correct. Then switch to k = 16 and restrict again — the coarse residual is a flat line."
+/>
+
+</Predict>
+
+<Classify
+  id="mg-fine-vs-coarse"
+  prompt="Each of these is a fine-grid job or a coarse-grid job. The split is the method."
+  buckets={[
+    { key: 'fine', label: 'fine-grid smoother', accent: 'cyan' },
+    { key: 'coarse', label: 'coarse-grid correction', accent: 'magenta' },
+  ]}
+  items={[
+    { key: 'ripple', label: 'Kill the 4-point ripple in a few sweeps', bucket: 'fine', why: 'High-k is what a local average can see. Weighted Jacobi, ω = 2/3, contracts it by 3× per sweep.' },
+    { key: 'sine', label: 'See the leftover sine as a well-resolved mode', bucket: 'coarse', why: 'On n_c = 15 that wave is the first coarse sine, cheap to solve exactly.' },
+    { key: 'avg', label: 'Replace each unknown by a neighbour average', bucket: 'fine', why: 'That is the Jacobi sweep. It is a low-pass filter, not a solver.' },
+    { key: 'exact', label: 'Solve a 15-unknown Poisson problem exactly', bucket: 'coarse', why: 'A_c e_c = r_c. On this operator A_c is the same stencil at spacing 2h.' },
+    { key: 'blind', label: 'Cannot grab a wave that looks constant on three points', bucket: 'fine', why: 'The three-point stencil sees a long wave as nearly harmonic, so μ₁ sits at 1 − O(h²).' },
+    { key: 'transfer', label: 'Full-weight the residual, interpolate the correction', bucket: 'coarse', why: 'R and P are the transfers. R = (1/2) Pᵀ, and Galerkin R A P is the coarse A.' },
+  ]}
+  explanation="High-k dies on the fine grid. Low-k is a cheap coarse solve. Everything in a V-cycle is one of those two sentences."
+/>
+
+<Estimate
+  id="mg-ratio-vs-n"
+  scenario="mg-ratio-vs-n"
+  prompt="One two-grid cycle, hashed start. Residual remaining at n = 63, divided by residual remaining at n = 15. Jacobi as a solver gets worse like n². What does this ratio do?"
+  explanation="The measured ratio is about 0.8 — refine, same factor. Jacobi on the leftover sine goes the other way: three weighted sweeps leave 0.96 at n = 15 and 0.998 at n = 63. The two-grid factor is a property of the complementary split, not of h. Undamped Jacobi still needs ~477 sweeps to cut k = 1 by 10× on n = 31; two-grid does it in a cycle."
+/>
+
+<Recall id="mg-vcycle-card" concept="multigrid">
+  <div slot="front">After a few smoothing sweeps, what is the leftover error, and what do you do with it?</div>
+
+A long wave the stencil cannot see. Restrict the residual onto a coarser grid, solve there, prolong the correction, add. High-k dies on the fine grid; low-k is a cheap coarse solve. That pair is one two-grid V-cycle.
 
 </Recall>
 
-<Tier level="advanced">
+<Recall id="mg-transfers-card" concept="restriction-prolongation">
+  <div slot="front">What is the relationship between full weighting R and linear interpolation P?</div>
 
-The treatment for someone who already has the working version. Derivations, edge cases,
-the reason the standard explanation is a simplification.
+$R = \tfrac12 P^{\mathrm{T}}$. They are adjoints. On this 1D Poisson, Galerkin $R A^h P$ equals the coarse Laplacian — the transfers are not a second discretisation, they *are* the coarse $A$.
+
+</Recall>
+
+## Nested two-grid is the V-cycle
+
+The coarse problem is $A_c e_c = r_c$, the same leftover-wave Poisson. Smooth it, restrict to seven points, solve, prolong. Then again, down to one unknown. Recursion, not a new method.
+
+<Tier level="advanced" title="n = 3, Helmholtz, and why AMG exists">
+
+On $n = 3$, $P$ maps a scalar $c$ to $(c/2,\, c,\, c/2)$ and $R A P = 8$, the 1×1 coarse stencil $2/H^2$. Four numbers. The whole lesson.
+
+A V-cycle is two-grid at every level, starting from $0$ on each residual. Work is $O(n)$ because the grids shrink geometrically; the contraction factor is the two-grid factor, independent of $h$.
+
+Helmholtz is the costume that breaks. The operator is indefinite, so a local average is not a low-pass filter on the error, and the coarse problem is not easier. That is a later fight.
+
+Algebraic multigrid keeps the two-grid idea when you have no mesh: the coarse “grid” is a subset of unknowns the matrix itself names. Same complementary split, no geometry.
 
 </Tier>
 
 ## What to carry forward
 
-Two or three lines connecting to what comes next.
+High-k dies on the fine grid; low-k is a cheap coarse solve. Nested, that pair is the V-cycle. The two-grid cycle is already a cheap fake inverse of $A$ — the picture this chapter has been walking toward.

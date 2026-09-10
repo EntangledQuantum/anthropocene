@@ -103,6 +103,12 @@ describe('estimate scenarios agree with the prose that quotes them', () => {
   it('SSOR-PCG hits 10⁻⁸ in 7 steps on n = 16; CG waits until step 16', () => {
     expect(ESTIMATE_SCENARIOS['pc-ssor-steps-1e-8'].truth()).toBe(7);
   });
+
+  it('two-grid residual ratio n = 63 vs n = 15 is O(1), not n²', () => {
+    const t = ESTIMATE_SCENARIOS['mg-ratio-vs-n'].truth();
+    expect(t).toBeGreaterThan(0.3);
+    expect(t).toBeLessThan(3);
+  });
 });
 
 describe('every scenario is answerable on its own slider', () => {

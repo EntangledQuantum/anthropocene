@@ -18,6 +18,7 @@ import {
   DEMO_N, itersToReduce, jacobiSpectralRadius,
   dirichletPoisson, jacobiStepsUntil, pcgStepsUntil,
 } from '../../lib/numerics/iterative.ts';
+import { twoGridReduction } from '../../lib/numerics/multigrid.ts';
 
 /**
  * Named quantities for `<Estimate>`.
@@ -335,6 +336,18 @@ const pcSsorSteps1e8: EstimateScenario = {
   truth: () => pcgStepsUntil(dirichletPoisson(16, 'mixed').b, 1e-8, 16, 'ssor'),
 };
 
+const mgRatioVsN: EstimateScenario = {
+  quantity: 'two-grid residual remaining after one cycle at n = 63, divided by the same ratio at n = 15 (hashed start)',
+  logRange: [-1, 2.5],
+  logStart: 1.2,
+  withinFactor: 3,
+  landmarks: [
+    { value: 1, label: 'same factor' },
+    { value: 16, label: 'n² like Jacobi' },
+  ],
+  truth: () => twoGridReduction(63).res / twoGridReduction(15).res,
+};
+
 export const ESTIMATE_SCENARIOS: Record<string, EstimateScenario> = {
   'euler-work-1e6': eulerWorkFor1e6,
   'rk4-work-1e6': rk4WorkFor1e6,
@@ -355,4 +368,5 @@ export const ESTIMATE_SCENARIOS: Record<string, EstimateScenario> = {
   'jac-iters-tenth': jacItersTenth,
   'cg-jacobi-to-1e-6': cgJacobiTo1e6,
   'pc-ssor-steps-1e-8': pcSsorSteps1e8,
+  'mg-ratio-vs-n': mgRatioVsN,
 };

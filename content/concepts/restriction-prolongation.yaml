@@ -1,3 +1,15 @@
-title: 'restriction prolongation'
-blurb: 'TODO: one sentence, plain language.'
-tags: []
+title: 'Restriction and prolongation'
+blurb: 'Full weighting copies a residual onto every other node; linear interpolation writes a coarse correction back. They are adjoints.'
+notation: 'R = \tfrac{1}{2}P^{\mathrm{T}}'
+tags:
+  - linalg
+misconceptions:
+  - id: 'skip-smooth-ok'
+    name: 'Restriction is itself a low-pass, so you can skip smoothing and just coarsen.'
+    signal: 'Restricts a mixed residual immediately, or treats CGC as the whole method and the smoother as optional warmup.'
+    correction: 'The mixed ripple (k = 16 on n = 31) is in the kernel of full weighting — its residual averages to zero — so the coarse solve never sees it. Nearby high modes alias and CGC amplifies them. Smoothing is the complementary job: kill what the coarse grid cannot, or must not, see.'
+references:
+  - label: 'Briggs, Henson & McCormick, A Multigrid Tutorial, ch. 3'
+    url: 'https://doi.org/10.1137/1.9780898719505'
+  - label: 'Trottenberg, Oosterlee & Schüller, Multigrid, §2.3'
+    url: 'https://doi.org/10.1016/B978-0-12-701070-0.X5000-3'

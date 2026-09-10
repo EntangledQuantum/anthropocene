@@ -1,3 +1,19 @@
-title: 'multigrid'
-blurb: 'TODO: one sentence, plain language.'
-tags: []
+title: 'Two-grid correction'
+blurb: 'Smooth the ripple on the fine grid, solve the leftover wave on a coarser one, prolong the correction back.'
+notation: 'u \leftarrow u + P A_c^{-1} R(f - Au)'
+tags:
+  - linalg
+misconceptions:
+  - id: 'coarse-too-crude'
+    name: 'A coarser grid is a worse copy of the same problem, so it cannot see the leftover sine.'
+    signal: 'Refuses to restrict because 15 points look too crude for a 31-point wave, or treats coarsening as throwing information away.'
+    correction: 'The leftover after smoothing is a long wave. Sampling every other node of a k = 1 sine is a k = 1 sine — well resolved, cheap to solve exactly. The coarse grid is what that wave was waiting for.'
+  - id: 'vcycle-is-new'
+    name: 'A V-cycle is a different method from two-grid, with its own theory.'
+    signal: 'Treats nested grids as a new algorithm to learn, or looks for a three-grid formula instead of recursing.'
+    correction: 'The coarse Poisson is the same leftover-wave problem. Two-grid it. Recursion until one unknown is the V-cycle. Not a second idea.'
+references:
+  - label: 'Briggs, Henson & McCormick, A Multigrid Tutorial, ch. 3–5'
+    url: 'https://doi.org/10.1137/1.9780898719505'
+  - label: 'Trottenberg, Oosterlee & Schüller, Multigrid, §2.3–2.4'
+    url: 'https://doi.org/10.1016/B978-0-12-701070-0.X5000-3'
