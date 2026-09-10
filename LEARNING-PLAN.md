@@ -101,18 +101,14 @@ npm run content:gaps          # what is structurally missing right now
 ### Written
 - ✅ From particles to fields — continuum limit; elliptic / parabolic / hyperbolic
 - ✅ When the grid explodes — CFL triangle, FTCS, upwind smear, heat r = 1/2
+- ✅ Boundaries are different animals — ghost points encode the BC
+- ✅ Your first finite element — 1D hats, assembly, irregular vs skip-neighbour
+- ✅ Making a velocity field incompressible — Helmholtz / pressure Poisson
+- ✅ Particles that borrow a grid — MPM P2G/G2P, the mesh is thrown away
 
 ### To write
-- [ ] **Finite differences on grids** — stencils, boundary conditions, ghost cells.
-- [ ] **Finite elements, briefly** — weak forms, basis functions, why irregular geometry
-  changes everything.
-- [ ] **Fluids** — advection, incompressibility, the pressure projection.
-  **Interactive:** GPU stable-fluids the learner can stir.
-- [ ] **The Material Point Method (MPM)** — hybrid particle/grid transfer, why it handles
-  large deformation, snow and sand and elastoplasticity. This is where "particles" and
-  "fields" stop being separate chapters.
-  **Interactive:** a GPU MPM sandbox — drop deformable blocks, change the constitutive
-  model, watch the particle-to-grid transfer.
+- [ ] **What is conserved, cell by cell** *(stub `07-finite-volume`)* — flux in = flux out.
+- [ ] **Fluids beyond projection** — advection schemes, MAC details as gym variants.
 
 ---
 
@@ -121,8 +117,7 @@ npm run content:gaps          # what is structurally missing right now
 Paths worth creating once the first one is complete. Each becomes a directory under
 `content/paths/` the moment its first lesson is scaffolded.
 
-- [ ] **Linear Algebra, Computationally** — conditioning, QR/SVD, iterative solvers,
-  Krylov methods. The natural prerequisite path for almost everything above.
+- [ ] **Linear Algebra, Computationally** — path stubbed (`linear-algebra/01-operators/01-matrix-as-operator`). First live lesson is Wave 4. Then QR/SVD, Krylov.
 - [ ] **Probability and Inference** — from sampling to Bayesian computation.
 - [ ] **Optimisation** — convexity, gradient methods, second-order methods, constraints.
 - [ ] **Signals and Transforms** — Fourier, wavelets, sampling, aliasing.
