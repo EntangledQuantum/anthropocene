@@ -19,6 +19,7 @@ import {
   dirichletPoisson, jacobiStepsUntil, pcgStepsUntil,
 } from '../../lib/numerics/iterative.ts';
 import { twoGridReduction } from '../../lib/numerics/multigrid.ts';
+import { QR_EPS, gramCond2Exact } from '../../lib/numerics/qr.ts';
 
 /**
  * Named quantities for `<Estimate>`.
@@ -348,6 +349,21 @@ const mgRatioVsN: EstimateScenario = {
   truth: () => twoGridReduction(63).res / twoGridReduction(15).res,
 };
 
+/* The lesson pair at ε = 10⁻⁸ has κ(A) ≈ 1.4×10⁸. Forming AᵀA squares it.
+   The tempting guess is "about the same" or "maybe double". */
+const qrKappaAtA: EstimateScenario = {
+  quantity: 'κ₂ of AᵀA for the 3×2 pair with ε = 10⁻⁸ (κ₂(A) ≈ 1.4×10⁸)',
+  logRange: [6, 20],
+  logStart: 8.15,
+  withinFactor: 20,
+  landmarks: [
+    { value: 1e8, label: 'κ(A)' },
+    { value: 2e8, label: '2κ' },
+    { value: 1e16, label: 'κ²' },
+  ],
+  truth: () => gramCond2Exact(QR_EPS),
+};
+
 export const ESTIMATE_SCENARIOS: Record<string, EstimateScenario> = {
   'euler-work-1e6': eulerWorkFor1e6,
   'rk4-work-1e6': rk4WorkFor1e6,
@@ -369,4 +385,5 @@ export const ESTIMATE_SCENARIOS: Record<string, EstimateScenario> = {
   'cg-jacobi-to-1e-6': cgJacobiTo1e6,
   'pc-ssor-steps-1e-8': pcSsorSteps1e8,
   'mg-ratio-vs-n': mgRatioVsN,
+  'qr-kappa-ata': qrKappaAtA,
 };

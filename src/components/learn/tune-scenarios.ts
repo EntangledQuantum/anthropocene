@@ -40,6 +40,10 @@ import {
   DEMO_N, JACOBI_SMOOTH_OMEGA, jacobiDamping, jacobiSmoothingFactor,
   cgHistory, dirichletKappa, dirichletPoisson, preconditionedKappa, ssorOmega,
 } from '../../lib/numerics/iterative.ts';
+import {
+  cond2Gram, gram, gramExcess, householderQR, lostColumnEps,
+  nearParallelPair, r22Abs,
+} from '../../lib/numerics/qr.ts';
 
 /**
  * Named scenarios for `<Tune>`.
@@ -730,6 +734,47 @@ const pcSsorOmega: TuneScenario = {
   },
 };
 
+/* ── Householder R₂₂ survives; the Gram excess ε² dies at √(ε_mach/2) ── */
+
+const qrEpsGrid = Array.from({ length: 48 }, (_, i) => 0.2 * Math.pow(1e-10 / 0.2, i / 47));
+const qrExcessCurve: [number, number][] = qrEpsGrid.map((e) => [e, Math.max(gramExcess(e), 1e-18)]);
+const qrR22Curve: [number, number][] = qrEpsGrid.map((e) => [e, Math.max(r22Abs(e), 1e-18)]);
+const qrLostAt = lostColumnEps();
+
+const qrLostColumn: TuneScenario = {
+  param: {
+    key: 'eps', label: 'column gap', symbol: 'ε', min: 1e-10, max: 0.2, step: 1e-12, value: 0.05, log: true,
+    hint: '1 + x equals 1 in float64 when x < ε_mach / 2. You want ε² just below that.',
+  },
+  target: qrLostAt,
+  tolerance: 0.55,
+  x: { label: 'ε', scale: 'log', domain: [1e-10, 0.2] },
+  y: { label: '|entry|', scale: 'log', domain: [1e-18, 1] },
+  compute: (eps: number) => {
+    const e = Math.max(1e-10, Math.min(0.2, eps));
+    const A = nearParallelPair(e);
+    const G = gram(A);
+    const { R } = householderQR(A);
+    const excess = Math.max(Math.abs(G[0]![0]! - 1), 1e-18);
+    const r22 = Math.max(Math.abs(R[1]![1]!), 1e-18);
+    const kG = cond2Gram(G);
+    return {
+      series: [
+        { key: 'excess', label: '|(AᵀA)₁₁ − 1|', color: 'magenta', points: qrExcessCurve },
+        { key: 'r22', label: '|R₂₂|', color: 'cyan', points: qrR22Curve },
+        { key: 'you-e', label: 'your Gram excess', color: 'magenta', style: 'dots', width: 6, points: [[e, excess]] },
+        { key: 'you-r', label: 'your |R₂₂|', color: 'cyan', style: 'dots', width: 6, points: [[e, r22]] },
+      ],
+      readouts: [
+        { label: 'ε', value: e.toExponential(2) },
+        { label: '(AᵀA)₁₁', value: G[0]![0] === 1 ? '1' : G[0]![0]!.toPrecision(6) },
+        { label: '|R₂₂|', value: r22.toExponential(2) },
+        { label: 'κ(AᵀA)', value: Number.isFinite(kG) ? kG.toExponential(2) : '∞' },
+      ],
+    };
+  },
+};
+
 export const TUNE_SCENARIOS: Record<string, TuneScenario> = {
   'fd-optimum': fdOptimum,
   'euler-stability': eulerStability,
@@ -747,4 +792,5 @@ export const TUNE_SCENARIOS: Record<string, TuneScenario> = {
   'jac-omega-smooth': jacOmegaSmooth,
   'cg-termination-cliff': cgTerminationCliff,
   'pc-ssor-omega': pcSsorOmega,
+  'qr-lost-column': qrLostColumn,
 };

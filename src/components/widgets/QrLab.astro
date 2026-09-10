@@ -1,0 +1,10 @@
+---
+// Wrapper so lessons can write <QrLab /> with no import and no client
+// directive: MDX components supplied through the `components` prop cannot
+// carry client:* directives themselves, so the directive lives here.
+import Island, { type QrLabProps } from '../viz/QrLab.tsx';
+
+type Props = Omit<QrLabProps, 'children'>;
+const props = Astro.props as Props;
+---
+<Island client:visible {...props} />

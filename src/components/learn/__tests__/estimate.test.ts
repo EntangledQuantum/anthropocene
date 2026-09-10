@@ -109,6 +109,12 @@ describe('estimate scenarios agree with the prose that quotes them', () => {
     expect(t).toBeGreaterThan(0.3);
     expect(t).toBeLessThan(3);
   });
+
+  it('κ₂(AᵀA) for the ε = 10⁻⁸ pair is ~2×10¹⁶, not κ(A)', () => {
+    const t = ESTIMATE_SCENARIOS['qr-kappa-ata'].truth();
+    expect(t).toBeGreaterThan(1e16);
+    expect(t).toBeLessThan(3e16);
+  });
 });
 
 describe('every scenario is answerable on its own slider', () => {

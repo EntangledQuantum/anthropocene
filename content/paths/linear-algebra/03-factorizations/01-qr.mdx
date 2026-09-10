@@ -11,44 +11,153 @@ requires:
   - 'discrete-operator'
   - 'conditioning'
 runtime: 'none'
-status: 'draft'
+status: 'live'
+updated: 2026-09-10
 ---
 
-Open with the tension, not the definition. What does the reader currently believe that
-this lesson is going to complicate?
+Two columns, almost the same arrow.
 
-## The idea
+$$
+A = \begin{bmatrix}
+1 & 1 \\
+\varepsilon & 0 \\
+0 & \varepsilon
+\end{bmatrix}
+$$
 
-Build it up. Use `$inline$` and `$$display$$` for math.
+Independent for any $\varepsilon \ne 0$. The inner products collapse them to a 2×2:
+
+$$
+A^{\mathsf T}A = \begin{bmatrix}
+1+\varepsilon^2 & 1 \\
+1 & 1+\varepsilon^2
+\end{bmatrix}.
+$$
 
 <Predict
-  id="01-qr-first-prediction"
-  question="Ask something the reader can be productively wrong about."
+  id="qr-ata-at-eps"
+  question="ε = 10⁻⁸, float64. What is the computed AᵀA?"
   options={[
-    { key: 'a', label: 'The intuitive answer', why: 'Why it is tempting, and exactly where it breaks.' },
-    { key: 'b', label: 'The correct answer', why: 'Why it is right, in one or two sentences.' },
+    { key: 'a', misconception: 'inner-products-are-exact', label: '[[1 + 10⁻¹⁶, 1], [1, 1 + 10⁻¹⁶]] — the inner products come back as written', why: "1+ε² is the exact (1,1) entry. Against 1, ε² = 10⁻¹⁶ sits below half a unit in the last place, so the addition rounds to 1. The inner product is the operation that loses the column, not a readout of A." },
+    { key: 'b', label: '[[1, 1], [1, 1]] — singular. A still has two columns; AᵀA does not.', why: "Correct. 1 + 10⁻¹⁶ equals 1 in float64. The computed Gram is rank-1. The two columns of A are still independent; you lost one by forming inner products." },
+    { key: 'c', misconception: 'small-entries-round-first', label: 'The ε rows of A round to zero first, so A itself is already rank-1', why: "ε = 10⁻⁸ is a perfectly ordinary double. Nothing in A has rounded. The rounding is 1 + ε², which you never form until you take inner products." },
+    { key: 'd', misconception: 'kappa-adds-not-squares', label: 'A slightly noisier 2×2. κ gets a bit worse; the matrix is still fine', why: "The computed 2×2 is not noisy. It is exactly [[1,1],[1,1]]. κ did not get a bit worse — the Gram lost a column, and κ₂(AᵀA) = κ₂(A)² is the entire float64 budget." },
   ]}
   correct="b"
 >
 
-The payoff, revealed only after they commit. Usually a simulation.
+Drag ε down. The arrows close. AᵀA becomes [[1, 1], [1, 1]] while R₂₂ stays order ε.
+
+<QrLab
+  eps={0.12}
+  view="columns"
+  caption="Two columns in their span, and the 2×2 each algorithm actually computes. One ε. Magenta AᵀA dies; cyan R does not."
+/>
 
 </Predict>
 
-<Recall id="01-qr-card" concept="qr-factorization">
-  <div slot="front">The question to answer from memory in three months.</div>
+The stretch of $A$ is $\kappa_2(A) \approx \sqrt{2}/\varepsilon \approx 1.4\times 10^8$ — a property of the pair, already named in [Conditioning versus stability](/anthropocene/learn/computational-physics/numerical-reality/conditioning-vs-stability/). Forming $A^{\mathsf T}A$ *squares* it. That extra stretch is the algorithm, not the question.
 
-The answer, written so it teaches rather than merely confirms.
+<Tune
+  id="qr-lost-column"
+  scenario="qr-lost-column"
+  prompt="Find the ε where 1+ε² rounds to 1 — the Gram loses a column. |R₂₂| should still be alive."
+  hint="1 + x equals 1 in float64 when x < ε_mach / 2. You want ε² just below that."
+  explanation="ε = √(ε_mach / 2) ≈ 1.05×10⁻⁸. Below that, AᵀA is exactly [[1, 1], [1, 1]]. Householder still writes |R₂₂| ≈ ε√2, which float64 can hold. The magenta curve is ε² against 1. The cyan curve is the leftover orthogonal piece, order ε."
+/>
+
+## A mirror, not an inner product
+
+To triangularise $A$ you have to *lose a column* — zero everything below the diagonal in column 1, then in column 2. The stable way is a reflection, not a Gram matrix.
+
+A Householder reflector is the mirror through the hyperplane orthogonal to $v$:
+
+$$
+F = I - \frac{2vv^{\mathsf T}}{v^{\mathsf T}v}.
+$$
+
+Choose $v = x + \mathrm{sign}(x_1)\|x\| e_1$ and $F$ sends $x$ onto the axis. The sign *enlarges* $x_1$ instead of cancelling it.
+
+```ts
+function house(x) {
+  const v = x.slice();
+  v[0] += (Math.sign(v[0]) || 1) * Math.hypot(...x);
+  return v;
+}
+```
+
+One $F$ per column. The product of the $F$'s is $Q^{\mathsf T}$. What remains is $R$. $A = QR$, $Q$ orthogonal, $R$ upper triangular. Orthogonal $Q$ does not stretch, so $\kappa(R) = \kappa(A)$.
+
+<QrLab
+  eps={0.25}
+  view="reflector"
+  caption="Plane of e₁ and a₁. The iris line is the mirror. F sends a₁ onto the axis; the same F is applied to a₂. That is one column of QR."
+/>
+
+<Predict
+  id="qr-r22-survives"
+  question="Same pair, ε = 10⁻⁸. Householder subtracts 2v (vᵀx) / vᵀv. What happens to R₂₂?"
+  options={[
+    { key: 'a', misconception: 'reflector-cancels-like-gram', label: 'It rounds to 0. A subtraction is a subtraction; R₂₂ is the same ε² that 1 swallowed', why: "R₂₂ is not ε². It is the component of a₂ orthogonal to a₁, length ε√2. The sign in v enlarges the first entry, so the reflector is not the Gram cancellation wearing a new letter." },
+    { key: 'b', label: 'It stays order ε — about 1.4×10⁻⁸, which float64 holds', why: "Correct. The parallelogram spanned by the two columns has area ε√(2+ε²). Divide by ‖a₁‖ and you have |R₂₂|. Order ε, not ε². That is the angle AᵀA lost." },
+    { key: 'c', label: 'R₂₂ becomes 1. Householder maps both columns onto e₁', why: "The first reflector maps a₁ onto the axis and tilts a₂ with it. The leftover of a₂, in the last two rows, is what the second reflector triangularises. If both landed on e₁, R would be rank-1, and you would have lost the column too." },
+    { key: 'd', misconception: 'inner-products-are-exact', label: 'R is exact because Q is orthogonal, so every entry of R is a correctly rounded inner product', why: "Q orthogonal means κ(R) = κ(A), not that every inner product is exact. The point is which inner products you form: Householder never adds ε² to 1." },
+  ]}
+  correct="b"
+/>
+
+<Estimate
+  id="qr-kappa-ata"
+  scenario="qr-kappa-ata"
+  prompt="A has κ₂ ≈ 1.4×10⁸. You form AᵀA. What is κ₂ of that 2×2?"
+  explanation="κ₂(AᵀA) = κ₂(A)² ≈ 2×10¹⁶. Not 1.4×10⁸ (same stretch) and not 3×10⁸ (a bit worse). Squaring spends the entire float64 budget: −log₁₀(κ² ε_mach) ≈ 0 digits. QR inherits κ, not κ², and still has about seven."
+/>
+
+## The same least-squares problem, two algorithms
+
+$b = A\begin{bmatrix}1\\1\end{bmatrix} = (2,\,\varepsilon,\,\varepsilon)$. Exact $x = (1,1)$. Two ways to ask for it:
+
+- Normal equations: solve $A^{\mathsf T}A\, x = A^{\mathsf T}b$.
+- QR: solve $Rx = Q^{\mathsf T}b$.
+
+<Predict
+  id="qr-ls-method"
+  question="ε = 10⁻⁸, float64. Who returns x ≈ (1, 1)?"
+  options={[
+    { key: 'a', misconception: 'normal-eq-same-as-qr', label: 'Both. Same least-squares problem, same x', why: "Same problem in exact arithmetic. In float64 the normal equations invert the computed Gram, which is [[1,1],[1,1]] — singular. QR never forms it." },
+    { key: 'b', label: 'QR. The normal equations have already lost a column', why: "Correct. Householder triangularises A; R x = Qᵀ b is a 2×2 with |R₂₂| ~ ε. The normal equations try to factor a rank-1 Gram." },
+    { key: 'c', misconception: 'kappa-adds-not-squares', label: 'Neither. κ(A) ≈ 10⁸ already spends eight digits, so both x are noise', why: "κ(A) ε_mach ≈ 10⁻⁸ leaves about seven digits, and QR spends that budget. The normal equations spend κ² ε_mach ≈ 1 and have nothing left. The extra square is the algorithm." },
+    { key: 'd', label: 'The normal equations, because AᵀA is SPD and Cholesky is the SPD solver', why: "AᵀA is SPD in exact arithmetic. The computed Gram is singular, so there is nothing for Cholesky to factor. SPD is a property of the exact matrix, not a licence to form it." },
+  ]}
+  correct="b"
+/>
+
+<Recall id="qr-kappa-squares" concept="qr-factorization">
+  <div slot="front">What does forming AᵀA do to κ, and what does Householder QR do instead?</div>
+
+$\kappa_2(A^{\mathsf T}A) = \kappa_2(A)^2$. Householder QR writes $A = QR$ with $Q$ orthogonal, so $\kappa(R) = \kappa(A)$. It triangularises without squaring the stretch.
 
 </Recall>
 
-<Tier level="advanced">
+<Recall id="qr-householder-mirror" concept="householder">
+  <div slot="front">What does one Householder reflector do to a column, and why is the sign in v the whole trick?</div>
 
-The treatment for someone who already has the working version. Derivations, edge cases,
-the reason the standard explanation is a simplification.
+$F = I - 2vv^{\mathsf T}/v^{\mathsf T}v$ is a mirror. $v = x + \mathrm{sign}(x_1)\|x\| e_1$ enlarges $x_1$, so $F$ sends $x$ onto the axis without cancelling the leading entry. One reflection zeros a column below the diagonal. $R_{22}$ is the leftover orthogonal piece — order ε, not ε².
+
+</Recall>
+
+<Tier level="advanced" title="the sign, and the QR you should not run">
+
+If you chose the other sign, $v_1 = x_1 - \mathrm{sign}(x_1)\|x\|$ would subtract two close numbers whenever $x$ is already near the axis — the lesson pair, in the construction of $v$ itself. Trefethen Algorithm 10.1 is the sign that makes $|v_1|$ large.
+
+Classical Gram–Schmidt produces a $Q$ whose columns lose orthogonality once $\kappa$ is large; modified GS is better and still not backward stable for $R$. Householder (Lecture 16) *is*. This lesson owns the reflector, not Gram–Schmidt.
+
+Column pivoting — swap in the remaining column of largest norm before each reflection — is how you *reveal* a rank that is actually gone. That is a different question: here the rank was never gone until you formed $A^{\mathsf T}A$.
 
 </Tier>
 
 ## What to carry forward
 
-Two or three lines connecting to what comes next.
+Two arrows. Forming $A^{\mathsf T}A$ writes $\varepsilon^2$ against 1 and loses a column. A Householder reflector writes $R_{22} \sim \varepsilon$ and keeps it.
+
+$\kappa(A^{\mathsf T}A) = \kappa(A)^2$. QR does not square it.

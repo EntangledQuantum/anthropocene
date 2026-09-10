@@ -1,3 +1,27 @@
-title: 'qr factorization'
-blurb: 'TODO: one sentence, plain language.'
-tags: []
+title: 'QR factorisation'
+blurb: 'A = QR with Q orthogonal and R upper triangular. Orthogonal Q does not stretch, so κ(R) = κ(A). Forming AᵀA squares it.'
+notation: 'A = QR'
+tags:
+  - linalg
+misconceptions:
+  - id: 'inner-products-are-exact'
+    name: 'Inner products of well-scaled columns come back exact, so AᵀA cannot lose rank that A still has.'
+    signal: 'Expects the computed Gram to keep 1+ε², or treats forming AᵀA as a harmless reduction to a smaller well-posed 2×2.'
+    correction: 'The inner product a₁ᵀa₁ is 1+ε². Against 1, ε² is a rounding error once ε² < ε_mach/2. The columns of A are still independent; the columns of the computed Gram are not. You lost a column by forming the inner products.'
+  - id: 'normal-eq-same-as-qr'
+    name: 'Normal equations and QR solve the same least-squares problem to the same accuracy.'
+    signal: 'Picks AᵀA x = Aᵀb because it is the textbook identity, or expects both methods to return the same x in float64.'
+    correction: 'They are the same problem in exact arithmetic. In float64 the normal equations square the condition number. Householder QR triangularises A without forming AᵀA, so it inherits κ(A), not κ(A)².'
+  - id: 'kappa-adds-not-squares'
+    name: 'Forming AᵀA makes the condition number a bit worse — maybe double, not square.'
+    signal: 'Guesses κ(AᵀA) ≈ 2κ(A), or estimates remaining digits as if the extra stretch were a constant factor.'
+    correction: 'κ₂(AᵀA) = κ₂(A)². A pair with κ ≈ 10⁸ becomes a 2×2 with κ ≈ 10¹⁶, which is the entire float64 budget. Squaring is not a little worse.'
+  - id: 'small-entries-round-first'
+    name: 'The tiny ε entries of A are what round to zero, so A itself has already lost a column.'
+    signal: 'Blames the 10⁻⁸ entries of A, or expects the matrix to become rank-1 before any inner product is formed.'
+    correction: 'ε = 10⁻⁸ is a perfectly ordinary float64. The rounding happens when you add ε² to 1. A still has two independent columns; the Gram does not.'
+references:
+  - label: 'Trefethen & Bau, Lectures 7, 11, 19'
+    url: 'https://doi.org/10.1137/1.9780898719574'
+  - label: 'Higham, Accuracy and Stability of Numerical Algorithms, ch. 20'
+    url: 'https://doi.org/10.1137/1.9780898718027.ch20'

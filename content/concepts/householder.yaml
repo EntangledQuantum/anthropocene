@@ -1,3 +1,13 @@
-title: 'householder'
-blurb: 'TODO: one sentence, plain language.'
-tags: []
+title: 'Householder reflector'
+blurb: 'A rank-1 orthogonal reflection that sends a vector onto an axis. One reflection zeros a column below the diagonal without forming AᵀA.'
+notation: 'F = I - 2vv^{T}/(v^{T}v)'
+tags:
+  - linalg
+misconceptions:
+  - id: 'reflector-cancels-like-gram'
+    name: 'A Householder step subtracts a projection, so it loses the same digits as forming AᵀA.'
+    signal: 'Treats F = I − 2vvᵀ/vᵀv as another inner-product cancellation, or expects R₂₂ to round to zero when 1+ε² does.'
+    correction: 'The sign in v = x + sign(x₁)‖x‖ e₁ enlarges the first entry instead of cancelling it. The reflector is orthogonal, so it does not stretch. What it writes into R₂₂ is the leftover orthogonal piece — order ε, not ε² — which float64 can hold.'
+references:
+  - label: 'Trefethen & Bau, Lectures 10 and 16'
+    url: 'https://doi.org/10.1137/1.9780898719574'
