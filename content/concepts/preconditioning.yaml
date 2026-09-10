@@ -16,7 +16,7 @@ misconceptions:
     name: 'CG is the solver; the preconditioner is an optional speedup on top.'
     signal: 'Talks as if you pick CG or SSOR, or treats M as a better Krylov method.'
     correction: 'Krylov is an accelerator for whatever operator you feed it. Feed it A and you wait on κ(A). Feed it a bunched M⁻¹A and the same recurrence finishes. The algorithm is M⁻¹A.'
-  - id: 'need-exact-M'
+  - id: 'need-exact-m'
     name: 'M has to be A inverse or it does not help.'
     signal: 'Rejects SSOR because it is not a factorization of A, or expects ILU to be exact before it is worth applying.'
     correction: 'You want the spectrum of M⁻¹A bunched, not M = A. Fifteen eigenvalues of SSOR⁻¹A sit in a cluster near 0.3; that is enough. Exact M is a direct solve, and on this tridiagonal A, ILU(0) happens to be that — a costume this 1D problem is too kind to give you.'

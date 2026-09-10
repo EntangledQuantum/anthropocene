@@ -64,7 +64,7 @@ not exactness. ILU(0) happens to be exact on this 1D tridiagonal — a
 costume the problem is too kind to give you.
 
 Misconceptions: `jacobi-always-preconditions`, `smoother-is-preconditioner`,
-`krylov-is-the-algorithm`, `need-exact-M`.
+`krylov-is-the-algorithm`, `need-exact-m`.
 
 ## Simplest useful case
 

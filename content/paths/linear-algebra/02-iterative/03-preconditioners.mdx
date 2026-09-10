@@ -25,7 +25,7 @@ the diagonal of $A$, Jacobi, one division per unknown — and run CG on $D^{-1}A
   options={[
     { key: 'a', misconception: 'jacobi-always-preconditions', label: 'far below plain CG. You inverted the stiffest part of A.', why: "Tempting, and true of a diagonal that actually varies. On this A every diagonal entry is 2/h², so D⁻¹A is a scale of A. Scaling does not change κ, does not bunch eigenvalues, and does not change CG." },
     { key: 'b', label: 'identical to plain CG. The magenta and cyan curves sit on top of each other.', why: 'Correct. D is a constant. Jacobi-PCG is CG wearing a scale. Watch the spectra: same shape, same floor 1/κ.' },
-    { key: 'c', misconception: 'need-exact-M', label: 'worse. You destroyed SPD, so the short recurrence breaks.', why: 'D is SPD (it is a positive scale of I). The recurrence is fine. It is just the same recurrence.' },
+    { key: 'c', misconception: 'need-exact-m', label: 'worse. You destroyed SPD, so the short recurrence breaks.', why: 'D is SPD (it is a positive scale of I). The recurrence is fine. It is just the same recurrence.' },
     { key: 'd', misconception: 'smoother-is-preconditioner', label: 'at roundoff. Jacobi already killed the stiff modes, so eight steps finish.', why: 'That is Jacobi the smoother, from the last-but-one lesson: high-k dies, the long wave lives. A⁻¹ is large on the long wave. Those are opposite jobs. Eight Jacobi-PCG steps have not inverted anything.' },
   ]}
   correct="b"
@@ -60,7 +60,7 @@ a polynomial of degree $m$ away from done, even if $n$ is large.
   id="pc-what-m-wants"
   question="What do you actually want from M on this SPD Poisson?"
   options={[
-    { key: 'a', misconception: 'need-exact-M', label: 'M = A⁻¹. Anything else is a truncated direct solve.', why: 'Exact M is a direct solve. You would not be iterating. You want M⁻¹A bunched, which a crude M can already do.' },
+    { key: 'a', misconception: 'need-exact-m', label: 'M = A⁻¹. Anything else is a truncated direct solve.', why: 'Exact M is a direct solve. You would not be iterating. You want M⁻¹A bunched, which a crude M can already do.' },
     { key: 'b', misconception: 'smoother-is-preconditioner', label: 'M that kills high-k, like the Jacobi smoother. Stiff modes are the problem.', why: 'A smoother leaves the long wave. That leftover is the small-eigenvalue end of A, which is exactly what makes κ large. Damping high-k does not invert low-k.' },
     { key: 'c', label: 'M cheap to apply, with the spectrum of M⁻¹A bunched — not M close entrywise, not M exact.', why: 'Correct. The Krylov polynomial sees eigenvalues, not entries. SSOR is two bidiagonal solves. It is a terrible approximation of A entrywise and a good fake inverse.' },
     { key: 'd', misconception: 'krylov-is-the-algorithm', label: 'Nothing. CG already picks the A-best residual; M is a different solver you would swap in.', why: 'You do not swap. You feed CG a better operator. Same recurrence, extra apply of M⁻¹ per step, along z = M⁻¹r instead of r.' },
