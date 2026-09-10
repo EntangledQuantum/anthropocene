@@ -22,6 +22,7 @@ import {
   gridSweep,
   mcRelativeRmse,
 } from '../../lib/numerics/monte-carlo.ts';
+import { densityAtVanishingPressure, latticePressure } from '../../lib/numerics/md.ts';
 
 /**
  * Named scenarios for `<Tune>`.
@@ -320,6 +321,50 @@ const mcCrossover: TuneScenario = {
   },
 };
 
+/* ── LJ lattice: hunt the density where attractions cancel kinetic pressure ─ */
+
+const LJ_TUNE_T = 0.5;
+const ljZeroPressureRho = densityAtVanishingPressure(LJ_TUNE_T);
+
+const mdVanishingPressure: TuneScenario = {
+  param: { key: 'rho', label: 'density', symbol: 'ρ', min: 0.18, max: 0.55, step: 0.01, value: 0.20,
+           hint: 'Number density of a square lattice. Compress until the virial cancels ρT.' },
+  target: ljZeroPressureRho,
+  tolerance: 0.1,
+  x: { label: 'ρ', domain: [0.18, 0.9] },
+  y: { label: 'P' },
+  rules: [{ y: 0, color: 'rgba(242,238,247,0.35)', label: 'P = 0' }],
+  compute: (rho: number) => {
+    const rhos: number[] = [];
+    for (let r = 0.18; r <= 0.9 + 1e-12; r += 0.02) rhos.push(Number(r.toFixed(2)));
+    const Pof = (r: number) => latticePressure(r, LJ_TUNE_T);
+    const P = Pof(rho);
+    const ideal = rho * LJ_TUNE_T;
+    return {
+      series: [
+        {
+          key: 'lj', label: 'LJ lattice P', color: 'cyan',
+          points: rhos.map((r) => [r, Pof(r)] as const),
+        },
+        {
+          key: 'ideal', label: 'ideal gas ρT', color: 'ink', dash: [3, 3], width: 1,
+          points: rhos.map((r) => [r, r * LJ_TUNE_T] as const),
+        },
+        {
+          key: 'you', label: 'your ρ', color: 'magenta', style: 'dots', width: 6,
+          points: [[rho, P]],
+        },
+      ],
+      readouts: [
+        { label: 'ρ', value: rho.toFixed(2) },
+        { label: 'P', value: P.toFixed(3) },
+        { label: 'ρT', value: ideal.toFixed(3) },
+        { label: 'P − ρT', value: (P - ideal).toFixed(3) },
+      ],
+    };
+  },
+};
+
 export const TUNE_SCENARIOS: Record<string, TuneScenario> = {
   'fd-optimum': fdOptimum,
   'euler-stability': eulerStability,
@@ -327,4 +372,5 @@ export const TUNE_SCENARIOS: Record<string, TuneScenario> = {
   'quad-naive-cliff': quadNaiveCliff,
   'two-rate-cliff': twoRateCliff,
   'mc-crossover': mcCrossover,
+  'md-vanishing-pressure': mdVanishingPressure,
 };

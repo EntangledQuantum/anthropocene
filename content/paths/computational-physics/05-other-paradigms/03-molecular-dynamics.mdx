@@ -1,33 +1,149 @@
 ---
 title: 'Thermodynamics from mechanics'
-blurb: 'Integrate enough particles for long enough and macroscopic quantities emerge from the trajectory. This is where symplectic integration stops being elegant and becomes mandatory.'
+blurb: 'Read temperature and pressure off a symplectic trajectory, then watch a thermostat spend the conservation you just earned.'
 order: 3
 tier: 'frontier'
-minutes: 30
+minutes: 15
 teaches:
   - 'molecular-dynamics'
 requires:
   - 'velocity-verlet'
   - 'energy-drift'
-status: 'draft'
+runtime: 'none'
+status: 'live'
+updated: 2026-09-10
 ---
 
-:::note
-This lesson is **outlined but not yet written**. The concept graph already knows what it
-will own, so lessons downstream of it link here rather than re-teaching the material.
-Everything below is the plan.
-:::
+Thirty-six particles, a pair potential, tens of thousands of steps. RK4 is fourth order. Velocity Verlet is second. You already know which one holds energy on an oscillator. Does that still pick the method when the "orbit" is a gas?
 
-## Planned outline
+<Predict
+  id="md-why-verlet"
+  question="You will integrate a 2D Lennard-Jones gas for a long time. The force evaluation is essentially the whole cost. Which method, and why?"
+  options={[
+    { key: 'a', misconception: 'md-order-beats-structure', label: 'RK4 — it is two orders more accurate, and a gas has no delicate orbit to protect', why: 'The local error is smaller, and for a short run that wins. MD is not a short run. RK4’s error has a preferred direction, so energy drifts without bound, and you pay four force evaluations per step to do it.' },
+    { key: 'b', misconception: 'md-gas-has-no-orbit', label: 'Either is fine. A gas is chaotic; trajectories diverge anyway, so conservation is cosmetic', why: 'Lyapunov instability says nearby trajectories separate. It does not say the energy of each trajectory may wander. The thermodynamics you measure is a time average of that energy. A drifting map samples a different physics.' },
+    { key: 'c', label: 'Verlet — the run is long and the force is −∇V, so you want the symplectic map, at one force evaluation per step', why: 'Correct. Same reason as the oscillator, now with a thousand degrees of freedom: bounded energy, one f-eval, a map whose conserved quantity is the thing you are about to call temperature and pressure.' },
+    { key: 'd', label: 'RK4 with a tiny step. Structure is optional if the local error is smaller than the fluctuation', why: 'The secular drift is linear in the number of steps. Making h smaller delays the disaster and multiplies the already-fourfold cost. The fluctuation is the signal; a drift underneath it is a biased thermometer.' },
+  ]}
+  correct="c"
+>
 
-1. Pair potentials, cutoffs, neighbour lists, and periodic boundary conditions.
-2. Why velocity Verlet is the universal choice here and RK4 is essentially never used.
-3. Thermostats and barostats, and how they deliberately break symplecticity.
-4. Ergodicity, time averages versus ensemble averages.
-5. Scaling to GPUs, and where the compute actually goes.
+The symplectic argument is owned by the velocity-Verlet lesson. This one spends it. The force is a gradient of a pair potential, the Hamiltonian is separable, and you are about to ask the trajectory for thermodynamic numbers. Use the map that has a shadow Hamiltonian.
 
-## Interactives planned
+```ts
+const a  = accel(q);
+const qNext = q + h * v + 0.5 * h * h * a;
+const aNext = accel(qNext);
+const vNext = v + 0.5 * h * (a + aNext);
+```
 
-Each numbered point above gets at least one thing you can manipulate, not a figure. See
-`AGENTS.md` for the widget vocabulary and the rule that every lesson ships at least one
-graded interaction and one recall card.
+One force evaluation if you carry `a` forward. That is why MD packages speak Verlet and almost never RK4.
+
+</Predict>
+
+The potential is Lennard-Jones, in reduced units $\varepsilon = \sigma = 1$:
+
+$$
+V(r) = 4\left[\left(\tfrac{1}{r}\right)^{12} - \left(\tfrac{1}{r}\right)^{6}\right]
+$$
+
+Hard core, attractive well at $r = 2^{1/6}$, nothing at long range. The box is periodic: each pair interacts through the **minimum-image** vector, the shortest displacement on the torus, not the one you see drawn in the square.
+
+<LJGas
+  n={36}
+  density={0.42}
+  temperature={0.8}
+  caption="Play. Colour is speed. The traces on the right are the same state as the particles: relative energy, and the instantaneous temperature. Leave the thermostat off for now."
+/>
+
+There is no temperature knob on Newton's laws. After enough steps, the kinetic energy fluctuates around a number. In 2D, with $k_B = 1$,
+
+$$
+T = \frac{K}{N}, \qquad K = \tfrac12\sum_i |v_i|^2
+$$
+
+That number *is* the temperature. Pressure is the same idea with forces in it: kinetic plus virial,
+
+$$
+P = \rho T + \frac{1}{2A}\sum_{i<j} \mathbf{r}_{ij}\cdot\mathbf{F}_{ij}
+$$
+
+The first term is the ideal gas. The second is the interactions — positive when cores push, negative when the well pulls. Thermodynamics is the time average of these traces, not any one frame.
+
+<Tune
+  id="md-density-pressure"
+  scenario="md-vanishing-pressure"
+  prompt="A square lattice of LJ particles at T = 0.5. The dashed line is the ideal-gas law P = ρT. Drag density until the actual pressure crosses zero."
+  hint="You are looking for the first crossing, on the way up from a dilute lattice. Attractions have just cancelled the kinetic pressure."
+  explanation="At low density the virial is a small correction and P tracks ρT. Compress, and neighbours sit on the attractive tail: the virial goes negative and can cancel the kinetic piece entirely. (Compress further and the r⁻¹² cores win — P shoots up through zero again. That second crossing is a different story.)"
+/>
+
+The gas above is NVE: number, volume, energy. Verlet's shadow Hamiltonian pins E, so T and P fluctuate around whatever that energy implies. You do not choose T. You choose the initial condition and you wait.
+
+Most of the time that is not what you wanted. You wanted T = 0.8, not "whatever this trajectory is at." So you change the equations.
+
+<Predict
+  id="md-thermostat-energy"
+  question="Turn the thermostat on. Velocities are rescaled each step toward a T you chose. Verlet is still the stepper. What happens to the energy band?"
+  options={[
+    { key: 'a', misconception: 'md-thermostat-conserves-energy', label: 'The band stays. Verlet is symplectic; rescaling is just a change of units on v', why: 'Rescaling v is not a canonical transformation of the step. It injects or removes kinetic energy on purpose. The map is no longer the NVE Verlet map, so the shadow Hamiltonian of that map is gone.' },
+    { key: 'b', misconception: 'md-thermostat-conserves-energy', label: 'The band widens but stays bounded — the thermostat adds a term to the shadow Hamiltonian', why: 'That is roughly the Nosé–Hoover story, and it is not this thermostat. Velocity rescaling (Berendsen) conserves neither the original H nor an extended one. The band is allowed to walk, and it will.' },
+    { key: 'c', label: 'The band walks. T is now the constraint; mechanical energy is not', why: 'Correct. You modified the dynamics so that energy can flow into or out of a bath. The conserved quantity of the discrete map — if any — is no longer K+V. Watch the traces: T pins, ΔE/E₀ leaves the band.' },
+    { key: 'd', misconception: 'md-temperature-is-an-input', label: 'Energy becomes exactly NT, flat, because T is now an input of the integrator', why: 'T is still a kinetic average, and the potential is still there. Even a perfect thermostat leaves E fluctuating — that fluctuation is the canonical ensemble. Verlet has no T input; the bath does.' },
+  ]}
+  correct="c"
+>
+
+Toggle **thermostat on** in the gas. Drag T. The magenta trace follows the target; the cyan energy trace leaves the band it held under NVE. Same stepper, different map.
+
+</Predict>
+
+A thermostat is not a better integrator. It is a different physical system: the particles, plus a coupling to a bath. Verlet still advances $q$ and $v$. The coupling is extra.
+
+<Classify
+  id="md-thermostat-vs-integrator"
+  prompt="Each of these is either a property of the integrator, a property of the thermostat, or a property of the potential you chose. The whole lesson is the distinction."
+  buckets={[
+    { key: 'integrator', label: 'integrator', accent: 'cyan' },
+    { key: 'thermostat', label: 'thermostat', accent: 'magenta' },
+    { key: 'potential', label: 'potential / geometry', accent: 'iris' },
+  ]}
+  items={[
+    { key: 'verlet', label: 'Velocity Verlet step', bucket: 'integrator', why: 'The NVE map. Symplectic for separable H = T(p)+V(q).' },
+    { key: 'band', label: 'Bounded mechanical energy on NVE', bucket: 'integrator', why: 'A consequence of the symplectic map, not of the pair potential.' },
+    { key: 'rescale', label: 'Velocity rescaling toward T₀', bucket: 'thermostat', why: 'A modification of v after the step. Not symplectic, not a property of Verlet.' },
+    { key: 'xi', label: 'Nosé–Hoover friction ξ', bucket: 'thermostat', why: 'An extra dynamical variable for the bath. The original H is not what it conserves.' },
+    { key: 't0', label: 'Target temperature T₀', bucket: 'thermostat', why: 'An input of the bath, not of Verlet. NVE has no such knob.' },
+    { key: 'lj', label: 'Lennard-Jones 12-6 pair', bucket: 'potential', why: 'The physics. Same potential under NVE or NVT; the map is what changed.' },
+    { key: 'pbc', label: 'Minimum-image wrap', bucket: 'potential', why: 'Geometry of the torus. Independent of stepper and bath.' },
+  ]}
+  explanation="Verlet answers “how do I step a separable Hamiltonian.” The thermostat answers “which ensemble am I sampling.” Mixing them up is how a run that looks like it holds T quietly samples the wrong physics."
+/>
+
+<Recall id="md-thermostat-modifies-dynamics" concept="molecular-dynamics">
+  <div slot="front">What does a thermostat change — the integrator, or the equations of motion — and what happens to the energy Verlet was conserving?</div>
+
+A thermostat changes the **equations**. Verlet is still the stepper. You have coupled the particles to a bath, so the discrete map is no longer the symplectic NVE map, and the mechanical energy $K+V$ is no longer the conserved quantity of that map.
+
+Velocity rescaling has no replacement conserved quantity. Nosé–Hoover does: an extended Hamiltonian $H + \tfrac12 Q\xi^2 + g T_0 \ln s$, which is a different object from $H$. In either case, thermodynamics from mechanics now means a time average of a *modified* dynamics.
+
+</Recall>
+
+<Tier level="frontier" title="Nosé–Hoover, cutoffs, and what MD actually spends">
+
+The thermostat in the widget is Berendsen rescaling — the honest teaching thermostat, because you can see the map break. Production NVT uses **Nosé–Hoover** (or a chain, or stochastic Langevin). Nosé–Hoover extends the phase space with a friction $\xi$ whose equation of motion is $\dot\xi = (2K - g T_0)/Q$. The original energy fluctuates, as a canonical ensemble must. The extended energy is the conserved object, provided you integrate the extended system with a method that knows about it. A naive "Verlet plus a $\xi$ kick" is first-order in the bath; geometric NH integrators exist and are what the packages run.
+
+The other costs, once the integrator is not the question:
+
+- **Neighbours.** The pair loop is $\Order(N^2)$. Cell lists and Verlet neighbour lists bring it to $\Order(N)$ past a cutoff (usually $2.5\sigma$). The cutoff is a discontinuity; a shifted potential at least makes $V(r_c)=0$.
+- **Minimum-image** is unique only for $r_c \le L/2$. Larger boxes, or Ewald / PPPM / FMM, once the potential is long-ranged (charges, gravity).
+- **Constraints** (bonds, SHAKE/RATTLE) because the stiffest modes set $h$, and MD is stiff in spirit: the $r^{-13}$ core dwarfs everything else.
+- **The question to keep asking:** what is the conserved energy of the *discrete map*, not of nature? NVE Verlet: a shadow Hamiltonian near $H$. Thermostatted MD: either nothing (rescaling) or an extended $H$ (Nosé–Hoover). Measuring $T$ from a map that is silently bleeding $H$ is how you publish a wrong melting point.
+
+</Tier>
+
+## What to carry forward
+
+- Temperature and pressure are time averages of a trajectory. In NVE that trajectory is a symplectic map; the averages are thermodynamics of the energy you started with.
+- A thermostat is a modification of the dynamics. It buys you a chosen $T$ by giving up the original conserved energy.
+- The next time a solver offers "NVE" and "NVT" as dropdowns, read them as two different equations of motion, not two post-processors of the same run.
