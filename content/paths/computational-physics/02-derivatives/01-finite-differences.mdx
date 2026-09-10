@@ -68,7 +68,7 @@ more accurate, at identical cost.
     { key: 'a', label: 'Forward falls 10×, central falls 10×', why: 'This would be true if both were first order. The symmetry of the central difference kills the leading term, so it does better than that.' },
     { key: 'b', label: 'Forward falls 10×, central falls 100×', why: 'Correct. Error ~ h¹ against error ~ h², so a factor of 10 in h gives 10 and 100 respectively. On log-log axes these are straight lines of slope 1 and 2.' },
     { key: 'c', label: 'Forward falls 100×, central falls 10×', why: 'Backwards — the central difference is the more accurate of the two.' },
-    { key: 'd', label: 'Both keep falling forever as h → 0', why: 'This is the intuition almost everyone brings, and it is the one this lesson is about to break.' },
+    { key: 'd', misconception: 'smaller-h-always-better', label: 'Both keep falling forever as h → 0', why: 'This is the intuition almost everyone brings, and it is the one this lesson is about to break.' },
   ]}
   correct="b"
 >

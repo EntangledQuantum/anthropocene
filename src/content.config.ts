@@ -31,6 +31,29 @@ const concepts = defineCollection({
     /** Formal notation associated with the concept, e.g. "\\Order(h^4)". */
     notation: z.string().optional(),
     tags: z.array(z.string()).default([]),
+    /** The ways this idea usually breaks.
+     *
+     *  First-class data, not prose buried in a lesson. Thesis §12 names a
+     *  public misconception library as an advantage an open product has over
+     *  a closed craft shop: feedback, review scheduling and any future coach
+     *  all consume the same list.
+     *
+     *  Write the ones you have actually seen, not every logical error. */
+    misconceptions: z
+      .array(
+        z.object({
+          /** Stable slug, referenced from a lesson's wrong answers. */
+          id: slug,
+          /** Names the belief, in the learner's voice. */
+          name: z.string(),
+          /** What the learner does or says when they hold it. */
+          signal: z.string(),
+          /** The correction — why the belief is tempting and where it breaks. */
+          correction: z.string(),
+        }),
+      )
+      .default([]),
+
     /** Optional external reading. Not a substitute for a lesson. */
     references: z
       .array(z.object({ label: z.string(), url: z.string().url() }))

@@ -67,7 +67,7 @@ export default function RankOrder({
   const check = () => {
     setChecked(true);
     setAttempts((n) => n + 1);
-    void solve(isRight, attempts === 0, { order }, 14);
+    void solve(isRight, attempts + 1, { order }, 14);
   };
 
   return (

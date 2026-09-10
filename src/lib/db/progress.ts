@@ -25,12 +25,27 @@ export function notifyProgressChange(): void {
    ──────────────────────────────────────────────────────────────────────── */
 export const XP = {
   widgetFirstTry: 12,
-  widgetAfterRetry: 6,
+  widgetSecondTry: 6,
+  /** Third attempt onward earns nothing.
+   *
+   *  Thesis §10 rule 1 and principle 12: if XP can be farmed by guessing
+   *  fast, the economy is wrong. A four-option <Predict> was previously worth
+   *  6 XP to anyone willing to click every option, which rewarded exactly the
+   *  behaviour the widget exists to prevent. Working it out is still worth
+   *  full marks; exhausting the options is worth zero. */
+  widgetExhausted: 0,
   widgetExplore: 4,
   lessonComplete: 30,
   reviewCard: 8,
   reviewCardLapse: 3,
 } as const;
+
+/** XP for solving a widget on the given 1-based attempt. */
+export function xpForAttempt(attempt: number): number {
+  if (attempt <= 1) return XP.widgetFirstTry;
+  if (attempt === 2) return XP.widgetSecondTry;
+  return XP.widgetExhausted;
+}
 
 export const DEFAULT_DAILY_GOAL = 60;
 
@@ -85,14 +100,18 @@ export async function recordAttempt(opts: {
   widgetId: string;
   widgetKind: string;
   correct: boolean;
-  firstTry: boolean;
+  /** 1-based attempt number. Drives the XP taper. */
+  attempt: number;
   detail?: unknown;
+  /** Full-marks value for this widget, if it differs from the default. */
   xp?: number;
 }): Promise<void> {
   const ts = Date.now();
-  const amount = opts.correct
-    ? opts.xp ?? (opts.firstTry ? XP.widgetFirstTry : XP.widgetAfterRetry)
-    : 0;
+  const base = opts.xp ?? XP.widgetFirstTry;
+  // Taper the widget's own value rather than the default, so a widget worth
+  // more still loses the same proportion for guessing.
+  const scale = xpForAttempt(opts.attempt) / XP.widgetFirstTry;
+  const amount = opts.correct ? Math.round(base * scale) : 0;
 
   const batch: { sql: string; params?: unknown[] }[] = [
     {

@@ -2,3 +2,8 @@ title: 'Stiffness'
 blurb: 'When a system''s fastest mode forces a far smaller step than accuracy alone would need.'
 tags:
   - ch3
+misconceptions:
+  - id: 'stiff-means-hard'
+    name: 'Stiff means the problem is hard or badly posed.'
+    signal: 'Treats stiffness as something to fix in the model rather than in the solver.'
+    correction: 'Stiffness is a separation of timescales, and the fast mode is usually the physically boring one that has already decayed. The problem is fine; an explicit method is simply the wrong tool for it.'

@@ -16,9 +16,11 @@ export function useWidget(id: string, kind: string, optional = false) {
   useLessonStore();
 
   const solved = lesson.isSolved(id);
+  /** `attempt` is 1-based; XP tapers to zero by the third try so a widget
+   *  cannot be farmed by exhausting its options. */
   const solve = useCallback(
-    (correct: boolean, firstTry: boolean, detail?: unknown, xp?: number) =>
-      lesson.solve({ id, kind, correct, firstTry, detail, xp }),
+    (correct: boolean, attempt: number, detail?: unknown, xp?: number) =>
+      lesson.solve({ id, kind, correct, attempt, detail, xp }),
     [id, kind],
   );
   return { solved, solve };

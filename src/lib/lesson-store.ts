@@ -1,7 +1,7 @@
 import { db } from './db/client.ts';
 import {
   completeLesson, recordAttempt, solvedWidgets, summary, touchLesson,
-  type ProgressSummary,
+  xpForAttempt, XP, type ProgressSummary,
 } from './db/progress.ts';
 
 /**
@@ -111,7 +111,8 @@ class LessonStore {
     id: string;
     kind: string;
     correct: boolean;
-    firstTry: boolean;
+    /** 1-based attempt number. */
+    attempt: number;
     detail?: unknown;
     xp?: number;
   }): Promise<void> {
@@ -128,11 +129,17 @@ class LessonStore {
         widgetId: opts.id,
         widgetKind: opts.kind,
         correct: opts.correct,
-        firstTry: opts.firstTry,
+        attempt: opts.attempt,
         detail: opts.detail,
         xp: opts.xp,
       });
-      if (opts.correct) this.toast(opts.xp ?? (opts.firstTry ? 12 : 6), opts.firstTry ? 'first try' : 'solved');
+      if (opts.correct) {
+        const earned = Math.round((opts.xp ?? XP.widgetFirstTry) * (xpForAttempt(opts.attempt) / XP.widgetFirstTry));
+        this.toast(
+          earned,
+          opts.attempt <= 1 ? 'first try' : earned > 0 ? 'solved' : 'solved — no xp, too many tries',
+        );
+      }
     }
 
     const { done, total } = this.counts;

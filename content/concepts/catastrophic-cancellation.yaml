@@ -2,3 +2,8 @@ title: 'Catastrophic cancellation'
 blurb: 'Subtracting two nearly equal numbers annihilates the leading digits and promotes rounding noise into the answer.'
 tags:
   - ch1
+misconceptions:
+  - id: 'float-error-is-random'
+    name: 'Floating-point error is small random noise sprinkled over the answer.'
+    signal: 'Assumes errors will average out over many operations.'
+    correction: 'Each operation is correctly rounded and therefore deterministic. Cancellation is not noise: subtracting two nearly equal numbers destroys the leading digits and promotes whatever was underneath to the front of the answer.'

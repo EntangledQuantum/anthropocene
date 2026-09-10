@@ -3,3 +3,12 @@ blurb: 'The exponent p in error = O(h^p): how fast the error falls when you refi
 notation: '\Order(h^p)'
 tags:
   - ch2
+misconceptions:
+  - id: 'order-means-better'
+    name: 'A higher-order method is always the better choice.'
+    signal: 'Reaches for RK4 on a stiff or Hamiltonian problem because 4 > 2.'
+    correction: 'Order describes short-term error on smooth problems and says nothing about stability or conservation. RK4 is fourth order and still loses energy on a long orbit, where second-order Verlet does not.'
+  - id: 'measured-order-is-theory'
+    name: 'The measured slope on a convergence plot should match the theory across the whole sweep.'
+    signal: 'Fits a line through every point and concludes the method is broken when the slope comes out wrong.'
+    correction: 'The order only shows in the asymptotic window. Coarse steps are pre-asymptotic and fine ones sit on the roundoff floor; fitting through either drags the slope away from the truth.'

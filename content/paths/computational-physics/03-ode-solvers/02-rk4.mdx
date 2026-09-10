@@ -48,7 +48,7 @@ one-sided estimate leaves behind.
   id="rk-cost-vs-order"
   question="Heun costs two f-evaluations per step; forward Euler costs one. At the same total number of f-evaluations, which is more accurate on a smooth problem?"
   options={[
-    { key: 'a', label: 'Euler — it takes twice as many steps for the same budget', why: 'It does take twice as many steps, but its error falls only as h¹. Halving h halves the error, while the order-2 method gains a factor of 4 from the same halving.' },
+    { key: 'a', misconception: 'order-means-better', label: 'Euler — it takes twice as many steps for the same budget', why: 'It does take twice as many steps, but its error falls only as h¹. Halving h halves the error, while the order-2 method gains a factor of 4 from the same halving.' },
     { key: 'b', label: 'Heun, by a wide margin at small tolerances', why: 'Correct. With N evaluations, Euler achieves error ~ 1/N and Heun ~ 1/N². The gap widens without limit as the tolerance tightens — which is why higher order is almost always worth the per-step cost.' },
     { key: 'c', label: 'They are equivalent — order and cost cancel exactly', why: 'This would need the error to scale the same way in both, which it does not: one is h¹ and the other h².' },
     { key: 'd', label: 'Depends entirely on the problem', why: 'The problem matters for stiffness and smoothness, but for a smooth non-stiff problem the asymptotic comparison is decisive.' },

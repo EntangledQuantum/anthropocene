@@ -2,3 +2,8 @@ title: 'Energy drift'
 blurb: 'Secular, one-directional loss or gain of a conserved quantity over a long integration.'
 tags:
   - ch4
+misconceptions:
+  - id: 'small-error-means-no-drift'
+    name: 'The method with the smaller error will hold energy better over a long run.'
+    signal: 'Picks RK4 for an orbit integration because its per-step error is tiny.'
+    correction: 'Size and direction are different questions. RK4 makes a small error that always points the same way, so it accumulates. Verlet makes a larger error that is bounded by a conserved quantity, so it never grows.'

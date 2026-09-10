@@ -68,12 +68,6 @@ These are bugs against §6, not enhancements.
 The thesis is emphatic (§2.7) that this is about a *principle*, not a chatbot: do not lift
 the weights for the learner.
 
-- [ ] **Misconception library per concept.** §7, "do better" §12.
-  A `misconceptions:` block per concept: the five ways people usually get this wrong, each
-  with the signal that reveals it. First-class data, authored alongside the concept, so
-  feedback and any future coach consume it.
-- [ ] **Misconception-aware feedback.** When a learner picks a specific wrong option, name
-  the misconception rather than only explaining the right answer.
 - [ ] **A coach that points rather than tells.** Guiding questions, highlighted regions on
   the current figure, a spawned smaller interactive. Must refuse the final answer until the
   learner has worked. Fades with competence.
@@ -92,6 +86,8 @@ the weights for the learner.
 ### Layer D — the map
 
 - [x] Paths and chapters exist
+- [x] **"You are here" on a path** — the path page is a route with a lit thread, chapter
+  markers and a single ringed next stop, rather than a list of identical rows.
 - [ ] **Mastery versus completion.** §4 Layer D, §7. We track *completed*. We need
   *understood* and *needs review* as distinct states, driven by FSRS stability per concept.
 - [ ] **"What should I do in the next eight minutes?"** §4 Layer E. The home page markets
@@ -107,9 +103,7 @@ the weights for the learner.
   guilt software.
 - [ ] **An honest daily minimum.** "3 solvables or 1 lesson", stated on the home page.
 - [ ] **Daily puzzle** as a cultural object.
-- [ ] **Audit XP for farmability.** §10 rule 1, principle 12. Right now XP is awarded per
-  widget solved, and a `<Predict>` can be brute-forced by trying options. Either gate the
-  award on a first-attempt-aware rule or make retries worth zero.
+- [ ] **Streak charges need to be spendable**, not just counted — see the safety valve above.
 
 ### Layer F — culture
 
@@ -160,5 +154,19 @@ Delete from the lists above and record here only if it is worth remembering.
 - ✅ **Prediction as a first-class move** (§5.6) — `<Predict>` gates the reveal on committing.
 - ✅ **Parameters beat single cases** (§6.5) — `<SolverLab>`, `<PhaseFlow>`,
   `<StabilityExplorer>` all expose the knob rather than a screenshot.
-- ✅ **One visual language** (§6.7) — a single semantic colour system, defined in
-  `src/styles/global.css` and documented in AGENTS.md §11.
+- ✅ **One visual language** (§6.7) — a single analogous ramp for every data series, plus
+  two state colours deliberately outside it. Roles are addressed by meaning
+  (`--sig-you`, `--sig-truth`, `--sig-mute`), and the type system stops a state colour
+  being used as a series.
+
+- ✅ **Misconceptions as first-class data** (§7, §12) — `misconceptions:` on a concept,
+  referenced by id from a wrong `<Predict>` option, resolved at build time and rendered as
+  "the belief underneath". A mistyped id fails the build rather than silently dropping the
+  most useful feedback a wrong answer can give. 8 authored so far.
+
+- ✅ **XP cannot be farmed** (§10 rule 1, principle 12) — the award tapers 12 → 6 → 0, so
+  exhausting a four-option question earns nothing while a corrected mistake still pays.
+  Locked down by tests, because this is exactly the kind of rule a later tweak reverts.
+
+- ✅ **"You are here"** (§4 Layer D) — the path is a journey with a lit thread and one
+  ringed next stop.

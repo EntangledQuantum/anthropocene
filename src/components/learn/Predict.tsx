@@ -9,6 +9,12 @@ export interface PredictOption {
    *  should have one: a wrong answer the learner cannot understand is a
    *  wasted interaction. */
   why: string;
+  /** Id of a misconception from a concept file. When a learner picks this
+   *  option, the belief gets NAMED rather than only corrected — knowing which
+   *  wrong model you were running is most of the repair. */
+  misconception?: string;
+  /** Filled in at build time by widgets/Predict.astro. Do not author this. */
+  resolved?: { name: string; correction: string; concept: string };
 }
 
 export interface PredictProps {
@@ -60,7 +66,7 @@ export default function Predict({
   const commit = () => {
     setCommitted(true);
     setAttempts((n) => n + 1);
-    void solve(matchesAnswer, attempts === 0, { picked }, xp);
+    void solve(matchesAnswer, attempts + 1, { picked }, xp);
   };
 
   return (
@@ -110,12 +116,34 @@ export default function Predict({
                 </button>
 
                 {revealed && (chosen || right) && (
-                  <p style={{
-                    margin: '5px 0 0 36px', fontSize: '0.86rem', lineHeight: 1.6,
-                    color: right ? 'var(--color-ink-soft)' : 'var(--color-ink-faint)',
-                  }}>
-                    {o.why}
-                  </p>
+                  <>
+                    <p style={{
+                      margin: '6px 0 0 38px', fontSize: '0.96rem', lineHeight: 1.6,
+                      color: right ? 'var(--color-ink-soft)' : 'var(--color-ink-faint)',
+                    }}>
+                      {o.why}
+                    </p>
+
+                    {/* Naming the belief the learner was running, when they
+                        actually ran it — not on options they did not pick. */}
+                    {chosen && !right && o.resolved && (
+                      <div style={{
+                        margin: '9px 0 0 38px', padding: '10px 13px',
+                        borderLeft: '2px solid var(--sig-warn)',
+                        background: 'color-mix(in oklab, var(--sig-warn) 6%, transparent)',
+                      }}>
+                        <span className="hud-label" style={{ color: 'var(--sig-warn)' }}>
+                          the belief underneath
+                        </span>
+                        <p style={{ margin: '6px 0 0', fontSize: '0.96rem', lineHeight: 1.6, color: 'var(--color-ink)' }}>
+                          “{o.resolved.name}”
+                        </p>
+                        <p style={{ margin: '6px 0 0', fontSize: '0.94rem', lineHeight: 1.62, color: 'var(--color-ink-soft)' }}>
+                          {o.resolved.correction}
+                        </p>
+                      </div>
+                    )}
+                  </>
                 )}
               </div>
             );

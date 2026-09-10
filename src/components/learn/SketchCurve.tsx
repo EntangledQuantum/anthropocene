@@ -241,7 +241,7 @@ export default function SketchCurve({
     setDeviation(dev);
     setSubmitted(true);
     setAttempts((n) => n + 1);
-    void solve(dev <= spec.tolerance, attempts === 0, { deviation: dev }, 16);
+    void solve(dev <= spec.tolerance, attempts + 1, { deviation: dev }, 16);
   };
 
   const reset = () => {

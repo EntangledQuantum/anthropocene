@@ -30,8 +30,8 @@ not at the trajectory but at the **energy**, which the true dynamics conserves e
   id="verlet-energy-predict"
   question="Integrating a harmonic oscillator for 4000 time units at h = 0.1. What happens to the energy under RK4 (order 4) versus velocity Verlet (order 2)?"
   options={[
-    { key: 'a', label: 'RK4 holds energy better — it is two orders more accurate', why: 'The natural prediction, and it is right about the SHORT run: RK4 tracks the trajectory far more accurately for the first few periods. Over thousands of periods it is wrong, and the reason is structural rather than about accuracy.' },
-    { key: 'b', label: 'Both drift, but RK4 drifts more slowly', why: 'Half right. RK4 does drift slowly. But Verlet does not drift at all — its energy error is bounded forever, which is a different kind of behaviour, not just a smaller number.' },
+    { key: 'a', misconception: 'small-error-means-no-drift', label: 'RK4 holds energy better — it is two orders more accurate', why: 'The natural prediction, and it is right about the SHORT run: RK4 tracks the trajectory far more accurately for the first few periods. Over thousands of periods it is wrong, and the reason is structural rather than about accuracy.' },
+    { key: 'b', misconception: 'symplectic-means-accurate', label: 'Both drift, but RK4 drifts more slowly', why: 'Half right. RK4 does drift slowly. But Verlet does not drift at all — its energy error is bounded forever, which is a different kind of behaviour, not just a smaller number.' },
     { key: 'c', label: 'RK4 loses energy steadily; Verlet oscillates within a fixed band forever', why: 'Correct. RK4 has a small error per step that always points the same way, so it accumulates without bound — secular drift. Verlet’s energy error oscillates within an envelope that never grows, no matter how long you run.' },
     { key: 'd', label: 'Both conserve energy exactly — it is a linear problem', why: 'Linearity does not help. A general-purpose integrator has no knowledge of the conserved quantity and no reason to respect it.' },
   ]}

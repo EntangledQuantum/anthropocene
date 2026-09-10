@@ -59,12 +59,20 @@ export interface PathNode {
   minutes: number;
 }
 
+export interface Misconception {
+  id: string;
+  name: string;
+  signal: string;
+  correction: string;
+}
+
 export interface ConceptNode {
   id: string;
   title: string;
   blurb: string;
   notation?: string;
   tags: string[];
+  misconceptions: Misconception[];
   references: { label: string; url: string }[];
   /** The single lesson that owns this concept, if one has been written. */
   ownerId?: string;

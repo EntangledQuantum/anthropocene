@@ -2,3 +2,8 @@ title: 'Velocity Verlet'
 blurb: 'Second-order, symplectic, time-reversible. The standard integrator for molecular dynamics and N-body.'
 tags:
   - ch4
+misconceptions:
+  - id: 'symplectic-means-accurate'
+    name: 'Symplectic methods are accurate methods.'
+    signal: 'Expects Verlet to track the true trajectory better than RK4, not just conserve better.'
+    correction: 'A symplectic method preserves phase-space area, not position. Verlet’s trajectory drifts in PHASE at second order and will be in the wrong place on the orbit long before its energy misbehaves.'

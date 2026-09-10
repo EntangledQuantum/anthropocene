@@ -48,7 +48,7 @@ export default function Tune({
   const check = () => {
     setChecks((n) => n + 1);
     setVerdict(close ? 'hit' : 'miss');
-    if (close) void solve(true, checks === 0, { value, target });
+    if (close) void solve(true, checks + 1, { value, target });
   };
 
   const done = solved || verdict === 'hit';

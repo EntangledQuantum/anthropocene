@@ -2,11 +2,39 @@
 // Wrapper so lessons can write <Predict /> with no import and no client
 // directive: MDX components supplied through the `components` prop cannot
 // carry client:* directives themselves, so the directive lives here.
+//
+// It also resolves misconception ids into real data at BUILD time. An option
+// says `misconception: 'smaller-h-always-better'` and the correction text
+// comes from the concept file, so the library stays first-class data rather
+// than prose copy-pasted into each lesson. Thesis §12.
 import Island, { type PredictProps } from '../learn/Predict.tsx';
+import { buildGraph } from '../../lib/graph/graph.ts';
 
 type Props = Omit<PredictProps, 'children'>;
 const props = Astro.props as Props;
+
+const graph = await buildGraph();
+
+const library = new Map<string, { name: string; correction: string; concept: string }>();
+for (const concept of graph.concepts.values()) {
+  for (const m of concept.misconceptions) {
+    library.set(m.id, { name: m.name, correction: m.correction, concept: concept.title });
+  }
+}
+
+const options = props.options.map((o) => {
+  if (!o.misconception) return o;
+  const found = library.get(o.misconception);
+  if (!found) {
+    // Fail loudly at build rather than silently dropping the feedback.
+    throw new Error(
+      `<Predict id="${props.id}"> references unknown misconception "${o.misconception}". ` +
+        `Add it to a concept file under content/concepts/.`,
+    );
+  }
+  return { ...o, resolved: found };
+});
 ---
-<Island client:visible {...props}>
+<Island client:visible {...props} options={options}>
   <slot />
 </Island>

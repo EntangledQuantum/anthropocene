@@ -2,3 +2,8 @@ title: 'A-stability'
 blurb: 'A method is A-stable when it stays bounded on decaying problems for ANY step size.'
 tags:
   - ch3
+misconceptions:
+  - id: 'stability-is-accuracy'
+    name: 'An unstable run is just an inaccurate one — tighten the tolerance and it will settle.'
+    signal: 'Responds to a blow-up by reducing the error tolerance rather than changing method or step.'
+    correction: 'Accuracy degrades smoothly; stability fails at a cliff. Past h = 2/lambda forward Euler does not give a worse answer, it gives an unbounded one, and no tolerance setting reaches back across that threshold.'

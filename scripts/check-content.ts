@@ -40,11 +40,23 @@ function walk(dir: string, out: string[] = []): string[] {
 
 /* ── load concepts ─────────────────────────────────────────────────────── */
 const concepts = new Map<string, { title: string; blurb: string }>();
+/** misconception id → the concept that owns it */
+const misconceptions = new Map<string, string>();
 for (const file of walk(CONCEPTS).filter((f) => f.endsWith('.yaml'))) {
   const id = relative(CONCEPTS, file).replace(/\.yaml$/, '').split(sep).join('/');
   try {
     const data = parseYaml(readFileSync(file, 'utf8'));
     if (!data?.title || !data?.blurb) err(`concept "${id}" is missing title or blurb`);
+
+    for (const m of (data?.misconceptions ?? []) as Record<string, string>[]) {
+      if (!m.id || !m.name || !m.signal || !m.correction) {
+        err(`concept "${id}" has a misconception missing id, name, signal or correction`);
+        continue;
+      }
+      const prev = misconceptions.get(m.id);
+      if (prev) err(`duplicate misconception id "${m.id}"`, `in ${prev} and ${id} — ids are referenced from lessons and must be unique`);
+      else misconceptions.set(m.id, id);
+    }
     // A tab or newline here means a LaTeX macro was written in a
     // double-quoted YAML scalar, where \t and \n are escape sequences.
     for (const [k, v] of Object.entries(data ?? {})) {
@@ -70,6 +82,7 @@ const FRONTMATTER = /^---\r?\n([\s\S]*?)\r?\n---/;
 const GRADED = ['Predict', 'Tune', 'SketchCurve', 'RankOrder', 'Classify'];
 
 const lessons: Lesson[] = [];
+const referencedMisconceptions: { id: string; lesson: string }[] = [];
 for (const file of walk(PATHS).filter((f) => f.endsWith('.mdx'))) {
   const id = relative(PATHS, file).replace(/\.mdx$/, '').split(sep).join('/');
   const raw = readFileSync(file, 'utf8');
@@ -93,6 +106,12 @@ for (const file of walk(PATHS).filter((f) => f.endsWith('.mdx'))) {
   }
   const cards = [...body.matchAll(/<Recall\b[^>]*?\bid=["']([^"']+)["']/g)].map((m) => m[1]);
 
+  // A mistyped misconception id would silently drop the most useful feedback
+  // a wrong answer can give, so it fails the build rather than degrading.
+  for (const m of body.matchAll(/misconception:\s*['"]([^'"]+)['"]/g)) {
+    referencedMisconceptions.push({ id: m[1], lesson: id });
+  }
+
   lessons.push({
     id, file,
     title: String(data.title ?? ''),
@@ -102,6 +121,14 @@ for (const file of walk(PATHS).filter((f) => f.endsWith('.mdx'))) {
     requires: (data.requires as string[]) ?? [],
     widgets, cards,
   });
+}
+
+/* ── misconception references resolve ──────────────────────────────────── */
+for (const ref of referencedMisconceptions) {
+  if (!misconceptions.has(ref.id)) {
+    err(`lesson "${ref.lesson}" references unknown misconception "${ref.id}"`,
+        `add it under \`misconceptions:\` in a concept file, or fix the spelling`);
+  }
 }
 
 /* ── the single-owner rule ─────────────────────────────────────────────── */
@@ -176,7 +203,10 @@ for (const l of lessons) {
 const errors = problems.filter((p) => p.level === 'error');
 const warns = problems.filter((p) => p.level === 'warn');
 
-console.log(`\n${BOLD}content check${OFF}  ${DIM}${lessons.length} lessons · ${concepts.size} concepts · ${owners.size} taught${OFF}\n`);
+console.log(
+  `\n${BOLD}content check${OFF}  ${DIM}${lessons.length} lessons · ${concepts.size} concepts · ` +
+  `${owners.size} taught · ${misconceptions.size} misconceptions${OFF}\n`,
+);
 
 for (const p of errors) {
   console.log(`${RED}✗${OFF} ${p.msg}`);

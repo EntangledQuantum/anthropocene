@@ -37,7 +37,7 @@ export default function Classify({ id, prompt, buckets, items, explanation }: Cl
   const check = () => {
     setChecked(true);
     setAttempts((n) => n + 1);
-    void solve(isRight, attempts === 0, { placed }, 14);
+    void solve(isRight, attempts + 1, { placed }, 14);
   };
 
   return (

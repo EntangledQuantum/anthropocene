@@ -49,7 +49,7 @@ nowhere to go.
   question="You add 1.0 to a double, one billion times in a loop, starting from 2^53. What do you end up with?"
   options={[
     { key: 'a', label: 'Exactly 2^53 + 10^9', why: 'This is what exact arithmetic gives, and what almost everyone predicts.' },
-    { key: 'b', label: 'Roughly 2^53 + 10^9, with a small accumulated error', why: 'A reasonable guess, but it assumes each addition does SOMETHING. Above 2^53 many of them do not.' },
+    { key: 'b', misconception: 'float-error-is-random', label: 'Roughly 2^53 + 10^9, with a small accumulated error', why: 'A reasonable guess, but it assumes each addition does SOMETHING. Above 2^53 many of them do not.' },
     { key: 'c', label: 'Exactly 2^53 — the loop has no effect at all', why: 'Correct. At 2^53 the gap between doubles is exactly 2, so adding 1 rounds to nearest-even and lands back where it started. Every single iteration is a no-op.' },
     { key: 'd', label: 'Infinity, from accumulated overflow', why: 'Overflow needs about 2^1024. We are nowhere near it.' },
   ]}

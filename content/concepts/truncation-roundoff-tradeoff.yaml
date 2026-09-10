@@ -2,3 +2,8 @@ title: 'The truncation/roundoff tradeoff'
 blurb: 'Shrinking h cuts truncation error but amplifies roundoff, so accuracy bottoms out at a finite optimal step.'
 tags:
   - ch2
+misconceptions:
+  - id: 'smaller-h-always-better'
+    name: 'A smaller step size always gives a more accurate answer.'
+    signal: 'Keeps shrinking h past 1e-8 and is surprised the error grows.'
+    correction: 'True for truncation error alone, which is the only term the Taylor series shows you. Roundoff runs the other way: the numerator is a difference of nearly equal numbers, and dividing by a tiny h amplifies what is left. The sum has a minimum at a finite h.'
