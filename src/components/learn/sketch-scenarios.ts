@@ -22,6 +22,7 @@ import { SKETCH_X0, atanShift, logResidualHistory } from '../../lib/numerics/new
 import { demoPicture, droppedSigma } from '../../lib/numerics/svd.ts';
 import { DEMO_WIND, GMRES_N, convectionProblem, gmresHistory } from '../../lib/numerics/gmres.ts';
 import { riemannState } from '../../lib/numerics/riemann.ts';
+import { poiseuilleSketchProfile } from '../../lib/numerics/lbm.ts';
 
 /**
  * Named targets for `<SketchCurve>`.
@@ -471,6 +472,18 @@ const rieRarefactionFan: SketchScenario = {
   truth: () => sample(81, -2, 2, (xi) => riemannState('burgers', -1, 1, xi)),
 };
 
+/* Force-driven D2Q9 channel, walls at y/H = 0 and 1. The truth is the
+   measured profile, not a typed parabola — bounce-back lives on the links. */
+const lbmPoiseuilleParabola: SketchScenario = {
+  xLabel: 'y / H',
+  yLabel: 'u / u_max',
+  xRange: [0, 1],
+  yRange: [-0.08, 1.18],
+  tolerance: 0.16,
+  anchors: [{ x: 0, y: 0, label: 'wall' }],
+  truth: () => poiseuilleSketchProfile(),
+};
+
 export const SKETCH_SCENARIOS: Record<string, SketchScenario> = {
   'fd-u-curve': fdUCurve,
   'euler-convergence': eulerConvergence,
@@ -499,4 +512,5 @@ export const SKETCH_SCENARIOS: Record<string, SketchScenario> = {
   'gm-residual-nonsym': gmResidualSketch,
   'rec-tv-unlimited': recTvUnlimited,
   'rie-rarefaction-fan': rieRarefactionFan,
+  'lbm-poiseuille-parabola': lbmPoiseuilleParabola,
 };

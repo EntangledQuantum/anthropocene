@@ -56,6 +56,7 @@ import {
   TUNE_QC, TUNE_QL, TUNE_QR, faceFromDelta, reconstructionPolyline, tvdDeltaBound,
 } from '../../lib/numerics/reconstruction.ts';
 import { nodeCharge, xWhereLeftFraction } from '../../lib/numerics/pic.ts';
+import { channelUmaxAtTau, poiseuilleUmaxSweep } from '../../lib/numerics/lbm.ts';
 
 /**
  * Named scenarios for `<Tune>`.
@@ -1031,6 +1032,38 @@ const picDepositSplit: TuneScenario = {
   },
 };
 
+/* Force-driven D2Q9 channel. ν = c_s²(τ − 1/2), so doubling (τ − 1/2)
+   halves u_max. The curve is measured from the same BGK engine the lab runs. */
+const lbmUmaxCurve: [number, number][] = poiseuilleUmaxSweep(0.6, 2.2, 13).map((p) => [p.tau, p.umax]);
+const lbmTauUmax: TuneScenario = {
+  param: {
+    key: 'tau', label: 'relaxation time', symbol: 'τ', min: 0.6, max: 2.2, step: 0.02, value: 1,
+    hint: 'τ = 1 is ν = 1/6. Larger τ is more viscous; the parabola flattens.',
+  },
+  target: 1.5,
+  tolerance: 0.1,
+  x: { label: 'τ', domain: [0.6, 2.2] },
+  y: { label: 'u_max', domain: [0, 0.08] },
+  rules: [{ x: 1.5, label: '2ν', color: 'magenta' }],
+  compute: (tau) => {
+    const t = Math.max(0.6, Math.min(2.2, tau));
+    const u = channelUmaxAtTau(t);
+    const u1 = channelUmaxAtTau(1);
+    return {
+      series: [
+        { key: 'curve', label: 'u_max(τ)', color: 'cyan', points: lbmUmaxCurve },
+        { key: 'you', label: 'your τ', color: 'magenta', style: 'dots', width: 7, points: [[t, u]] },
+        { key: 'half', label: '½ u(τ=1)', color: 'iris', style: 'dots', width: 6, points: [[1.5, 0.5 * u1]] },
+      ],
+      readouts: [
+        { label: 'τ', value: t.toFixed(2) },
+        { label: 'u_max', value: u.toExponential(2) },
+        { label: 'u / u₁', value: (u / Math.max(u1, 1e-18)).toFixed(2) },
+      ],
+    };
+  },
+};
+
 export const TUNE_SCENARIOS: Record<string, TuneScenario> = {
   'fd-optimum': fdOptimum,
   'euler-stability': eulerStability,
@@ -1055,4 +1088,5 @@ export const TUNE_SCENARIOS: Record<string, TuneScenario> = {
   'rec-tvd-slope': recTvdSlope,
   'rie-park-shock': rieParkShock,
   'pic-deposit-split': picDepositSplit,
+  'lbm-tau-umax': lbmTauUmax,
 };

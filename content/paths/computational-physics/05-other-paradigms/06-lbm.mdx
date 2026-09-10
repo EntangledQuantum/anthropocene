@@ -1,7 +1,7 @@
 ---
 title: 'A gas that forgot it was particles'
-blurb: 'Lattice Boltzmann streams populations along discrete velocities and collides them toward equilibrium. Navier–Stokes is what you get after the moments.'
-order: 1
+blurb: 'Stream discrete-velocity populations, collide them toward equilibrium, and read Navier–Stokes off the moments.'
+order: 6
 tier: 'advanced'
 minutes: 16
 teaches:
@@ -10,44 +10,159 @@ requires:
   - 'pde'
   - 'cfl-condition'
 runtime: 'none'
-status: 'draft'
+status: 'live'
+updated: 2026-09-10
 ---
 
-Open with the tension, not the definition. What does the reader currently believe that
-this lesson is going to complicate?
-
-## The idea
-
-Build it up. Use `$inline$` and `$$display$$` for math.
+Three numbers on a site: going left, sitting, going right. They sit in the ratio $1:4:1$, so the net velocity is zero. You **stream** — each population takes one step along its lattice velocity — and you refuse to collide.
 
 <Predict
-  id="06-lbm-first-prediction"
-  question="Ask something the reader can be productively wrong about."
+  id="lbm-stream-only"
+  question="A rest bump on a D1Q3 ring. Stream only, no collide. After a handful of steps, what do you see?"
   options={[
-    { key: 'a', label: 'The intuitive answer', why: 'Why it is tempting, and exactly where it breaks.' },
-    { key: 'b', label: 'The correct answer', why: 'Why it is right, in one or two sentences.' },
+    { key: 'a', misconception: 'lbm-rest-means-still', label: 'The bump sits. Net velocity is zero, so nothing moves.', why: "Rest is a cancellation, not a freeze. Left-going, rest, and right-going mass are all there. Stream sends them to different sites, and the cancellation falls apart." },
+    { key: 'b', label: 'It spreads like heat. Three velocities mix, so the bump diffuses in place.', why: "Mixing would need collisions. Stream-only is three independent advected gases. Nothing at a site talks to the other two directions." },
+    { key: 'c', label: 'It splits into three copies that fly at −1, 0, and +1.', why: "Correct. f_{+1} shifts one site right every step, f_{−1} one site left, f_0 stays. A rest bump was w_i ρ. Stream un-cancels it." },
+    { key: 'd', misconception: 'lbm-is-navier-stokes-fd', label: 'It translates as a fluid blob at the sound speed, the way a PDE for u would.', why: "That is the colliding gas, and even then you get two acoustic pulses, not a stored velocity field sliding along. Stream-only has no fluid — the moments are whatever the three copies leave behind." },
   ]}
-  correct="b"
+  correct="c"
 >
 
-The payoff, revealed only after they commit. Usually a simulation.
+Left: the three populations. Right: the same numbers summed into $\rho$ and $u$. Play. Then toggle **collide + stream**.
+
+<LbmLab
+  mode="d1q3"
+  collide={false}
+  caption="Stream-only, the bump splits. Collide puts the three directions back in conversation — two acoustic pulses, damping at a rate set by τ. Mass is a readout, not a hope."
+/>
 
 </Predict>
 
-<Recall id="06-lbm-card" concept="lattice-boltzmann">
-  <div slot="front">The question to answer from memory in three months.</div>
+Rest was $f_i = w_i\rho$ with $w = \{\tfrac16,\tfrac23,\tfrac16\}$. Collision is what rebuilds that cancellation after streaming has moved the pieces.
 
-The answer, written so it teaches rather than merely confirms.
+$$
+f_i^\star = f_i + \tfrac{1}{\tau}\bigl(f_i^{\mathrm{eq}}(\rho,u) - f_i\bigr),
+\qquad
+f_i(x, t+1) = f_i^\star(x - e_i)
+$$
+
+$\rho$ and $u$ are moments of the populations you already have. You never stored a fluid.
+
+$$
+\rho = \sum_i f_i, \qquad \rho u = \sum_i e_i f_i
+$$
+
+A [partial differential equation](../../fields-and-continua/from-particles-to-fields/) for a fluid is an equation for those moments. Lattice Boltzmann never discretises it. The state is $f_i$. Navier–Stokes is what the moments look like after enough of this map.
+
+<Classify
+  id="lbm-which-operator"
+  prompt="Each of these is a stream, a collide, or a moment — a readout, not an evolution. Sorting them is the method."
+  buckets={[
+    { key: 'stream', label: 'stream', accent: 'cyan' },
+    { key: 'collide', label: 'collide', accent: 'magenta' },
+    { key: 'moment', label: 'moment / readout', accent: 'iris' },
+  ]}
+  items={[
+    { key: 'shift', label: 'f_{+1} moves one site right', bucket: 'stream', why: 'Pull: f_{+1}(x) ← f_{+1}(x − 1). A permutation of the lattice.' },
+    { key: 'relax', label: 'relax f toward f^eq(ρ, u)', bucket: 'collide', why: 'BGK. Local. Uses the moments of this site, writes new populations at this site.' },
+    { key: 'bounce', label: 'bounce-back at a wall', bucket: 'stream', why: 'The unknown incoming population is the opposite outgoing one. The wall lives on the link, during the shift.' },
+    { key: 'rho', label: 'ρ = Σ f_i', bucket: 'moment', why: 'A sum. Not an update. Collision is built so this number does not change.' },
+    { key: 'vel', label: 'ρu = Σ e_i f_i', bucket: 'moment', why: 'The other hydrodynamic number. Guo forcing adds g/2 here; you still do not store u as state.' },
+    { key: 'tau', label: 'ν = c_s² (τ − 1/2)', bucket: 'collide', why: 'τ is the BGK relaxation time. Streaming does not see it. Viscosity is a collision fact.' },
+    { key: 'wrap', label: 'periodic wrap of f_{−1}', bucket: 'stream', why: 'The left-going population arriving from the right neighbour — still a shift, now on a ring.' },
+  ]}
+  explanation="Stream moves populations along links. Collide relaxes them toward an equilibrium built from the moments. The moments are how you read a fluid off a gas that no longer remembers it had more than a handful of velocities."
+/>
+
+<Recall id="lbm-stream-collide-moments" concept="lattice-boltzmann">
+  <div slot="front">What does lattice Boltzmann store, what do the two operators do, and how do you get density and velocity?</div>
+
+The state is discrete-velocity populations $f_i$. **Stream** shifts each $f_i$ along its lattice velocity $e_i$ (bounce-back at a wall). **Collide** relaxes $f$ toward $f^{\mathrm{eq}}(\rho,u)$ with rate $1/\tau$. Density and velocity are moments, $\rho=\sum f_i$ and $\rho u=\sum e_i f_i$ — readouts, not the variables you stepped. Navier–Stokes is recovered from that map, not discretised.
 
 </Recall>
 
-<Tier level="advanced">
+## A channel that was never a velocity field
 
-The treatment for someone who already has the working version. Derivations, edge cases,
-the reason the standard explanation is a simplification.
+Nine velocities on a square lattice: rest, axis-aligned, diagonals. Weights $4/9$, $1/9$, $1/36$. $c_s^2=1/3$. Same two operators. Walls are bounce-back — the no-slip sits halfway along the link, not on a node. A body force (Guo) drives the channel.
+
+<SketchCurve
+  id="lbm-poiseuille-sketch"
+  scenario="lbm-poiseuille-parabola"
+  prompt="Steady force-driven channel, no-slip walls at y/H = 0 and 1. Sketch u / u_max against y/H. It starts at 0 on the bottom wall."
+  hint="Halfway bounce-back kills u on the links, not on the first fluid node. The NS profile for this force is a parabola, not a Couette ramp."
+  explanation="A parabola. Navier–Stokes Poiseuille is u(y) = (g / 2ν) y (H − y). LBM never stored that field — the profile is the first moment of nine populations after enough stream–collide steps. A linear ramp would be Couette (a moving lid, no force). Walls at 0.5 lattice units outside the first fluid row, which is why the end nodes are not quite zero."
+/>
+
+The dashed curve is the NS parabola at this $\tau$. Cyan is the moment $\sum e_x f_i$ of the gas you are actually stepping.
+
+<LbmLab
+  mode="poiseuille"
+  caption="Left: u_x on the lattice, walls in magenta. Right: the same mid-plane profile against the NS parabola. Drag τ and the height follows 1/(τ − 1/2)."
+/>
+
+Chapman–Enskog — a multi-scale expansion of the discrete Boltzmann equation — is the proof that those moments satisfy Navier–Stokes with kinematic viscosity
+
+$$
+\nu = c_s^2\bigl(\tau - \tfrac12\bigr) = \tfrac13\bigl(\tau - \tfrac12\bigr).
+$$
+
+Doubling $(\tau-\tfrac12)$ doubles $\nu$ and halves the mid-channel speed. Hunt that.
+
+<Tune
+  id="lbm-tau-umax"
+  scenario="lbm-tau-umax"
+  prompt="Force-driven D2Q9 channel. Drag τ until the mid-channel speed is half of its value at τ = 1."
+  hint="ν ∝ (τ − 1/2). Halving u_max means doubling the viscosity, so τ − 1/2 doubles from 1/2 to 1."
+  explanation="τ = 1.5. At τ = 1, ν = 1/6. At τ = 1.5, ν = 1/3. Same force, same H, Poiseuille u_max = g H² / (8ν) halves. The curve is measured from the BGK channel, not drawn in by hand — that is the viscosity claim."
+/>
+
+How fast is that midplane, in lattice units? The tempting numbers are $1$ (one link per step) and $c_s\approx 0.577$.
+
+<Estimate
+  id="lbm-umax"
+  scenario="lbm-umax"
+  prompt="Mid-channel speed of the D2Q9 Poiseuille demo. τ = 1, g = 10^{−4}, bounce-back walls. Lattice units."
+  explanation="Around 0.017 — a few percent of the sound speed. The lattice speed 1 is how fast a population streams, not how fast the fluid goes. Low Mach is the deal LBM makes with the second-order equilibrium: u has to stay well below c_s or the expansion that recovered Navier–Stokes is a lie."
+/>
+
+The [CFL](../../fields-and-continua/cfl/) lesson asked how far information travels in one step, in mesh units. Here the discrete velocities *are* $\pm 1$ and the diagonals. Streaming is always one link. You do not pick $\Delta t$. The Courant number of the populations is identically 1. What can still detonate is $\tau$ and Mach.
+
+<Predict
+  id="lbm-tau-half"
+  question="You drag τ toward 1/2 on the channel. Viscosity vanishes. What actually happens?"
+  options={[
+    { key: 'a', misconception: 'lbm-tau-is-cfl', label: 'Nothing bad — τ is a time-step knob, and smaller is more accurate.', why: "τ is not Δt. Streaming is already one link per step, always. τ → 1/2 is the inviscid limit of BGK, and past it the relaxation overshoots: f* = f + (1/τ)(f^eq − f) with 1/τ > 2." },
+    { key: 'b', label: 'The fluid gets more viscous. Larger relaxation time means more friction.', why: "Opposite. Larger τ is slower relaxation, more viscosity. τ → 1/2 is *less* viscosity. τ → ∞ is the overdamped gas." },
+    { key: 'c', label: 'ν → 0 and the scheme sits on a stability wall. Not a CFL cliff — an over-relaxed collision.', why: "Correct. ν = c_s²(τ − 1/2). The populations still stream one link. The collision is pulling twice as hard as a return to equilibrium, and the channel will not stay a parabola for long." },
+    { key: 'd', misconception: 'lbm-collide-is-numerical', label: 'Collision is cosmetic dissipation. Turning it down just makes the stream-only split come back.', why: "Turning collision down (τ up) is more dissipation, not less. Turning it toward 1/2 is less viscosity and then instability. Stream-only is the other experiment — ω = 0, which is τ → ∞, the opposite pole." },
+  ]}
+  correct="c"
+>
+
+Drag $\tau$ on the channel toward $0.55$. The parabola shoots up (inviscid), then the readout stops being a number you trust.
+
+</Predict>
+
+<Tier level="advanced" title="Chapman–Enskog, Mach, and when this is a costume">
+
+The equilibrium is a second-order Hermite expansion of a Maxwellian, truncated at $u^2$:
+
+$$
+f_i^{\mathrm{eq}} = w_i\rho\Bigl(1 + \frac{e_i\cdot u}{c_s^2} + \frac{(e_i\cdot u)^2}{2c_s^4} - \frac{u^2}{2c_s^2}\Bigr).
+$$
+
+Chapman–Enskog expands $f_i = f_i^{\mathrm{eq}} + \varepsilon f_i^{(1)}+\cdots$ in the Knudsen number. The $\varepsilon^0$ solvability condition is mass and momentum conservation (which BGK is built to satisfy). The $\varepsilon^1$ condition is Navier–Stokes, with that viscosity $\nu=c_s^2(\tau-\tfrac12)$ and a bulk viscosity that LBM does not let you pick independently of $\tau$ — one of the reasons MRT and regularised LBM exist.
+
+The truncation is why **Mach** is a wall. $u$ has to stay $\ll c_s$ or the missing $u^3$ terms in $f^{\mathrm{eq}}$ are no longer small, and you are simulating a weakly compressible gas with the wrong equilibrium, not incompressible NS. The demo channel at $\tau=1$ runs at $\mathrm{Ma}\sim 0.03$ on purpose.
+
+Halfway bounce-back is second-order for this Poiseuille (the walls sit on the links; the error in $u$ is a known $\tau$-dependent shift). For a curved body it drops to first order unless you interpolate (Bouzidi, Filippova–Hänel). The lattice-gas ancestor (FHP) had the same velocities and a discrete collision table; LBM is what you get when occupation numbers become real $f_i$ and the collision becomes linear.
+
+When LBM is a good CFD engine: low-Ma incompressible flow, complex bounce-back geometry, trivial parallelism (collide is local, stream is a neighbour shift). When it is a costume: high Mach, some thermal problems, any BC that is not naturally a statement about populations. Then you are wearing kinetic clothing over a PDE you should have discretised.
 
 </Tier>
 
 ## What to carry forward
 
-Two or three lines connecting to what comes next.
+- The state is $f_i$. Stream along lattice links; collide toward $f^{\mathrm{eq}}$; $\rho$ and $u$ are moments.
+- Viscosity is a collision fact: $\nu=c_s^2(\tau-\tfrac12)$. CFL is already 1 — you do not pick $\Delta t$.
+- Navier–Stokes is recovered from this map, not stored. If you needed a different PDE, this is the wrong gas.

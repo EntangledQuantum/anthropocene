@@ -1,3 +1,35 @@
-title: 'lattice boltzmann'
-blurb: 'TODO: one sentence, plain language.'
-tags: []
+title: 'Lattice Boltzmann'
+blurb: 'Stream discrete-velocity populations, collide them toward equilibrium. Density and velocity are moments; Navier–Stokes is recovered, not stored.'
+notation: 'f_i(x+e_i, t+1) = f_i^* \quad \rho=\sum_i f_i \quad \rho u=\sum_i e_i f_i'
+tags:
+  - ch5
+misconceptions:
+  - id: 'lbm-rest-means-still'
+    name: 'Equilibrium at rest means the populations do not move.'
+    signal: 'Expects a rest bump to sit still under streaming, because net velocity is zero.'
+    correction: 'Rest is a cancellation of left-going, rest, and right-going mass. Stream sends those three to different sites. Collision is what puts them back in conversation so the cancellation can travel as a fluid.'
+  - id: 'lbm-is-navier-stokes-fd'
+    name: 'LBM is a finite-difference scheme for Navier–Stokes.'
+    signal: 'Looks for a stencil on u and p, or treats f_i as a disguise for the same update.'
+    correction: 'The state is the populations f_i. Density and velocity are moments of those populations. Navier–Stokes is what a Chapman–Enskog expansion of the stream–collide map recovers — you never discretised it.'
+  - id: 'lbm-is-molecular-dynamics'
+    name: 'LBM tracks particles the way molecular dynamics does.'
+    signal: 'Expects N-body collisions, stochastic pair events, or a temperature from kinetic energy of individuals.'
+    correction: 'f_i is a continuum density of particles going velocity e_i, not a list of particles. Lattice-gas automata were the discrete-particle ancestor. LBM replaced occupation numbers with real populations and a linear collision.'
+  - id: 'lbm-tau-is-cfl'
+    name: 'τ is a CFL / time-step knob.'
+    signal: 'Treats τ → 1/2 as a smaller time step, or expects to pick Δt independently of the lattice.'
+    correction: 'Streaming is always one lattice link. The Courant number of the discrete velocities is identically 1. τ is the BGK relaxation time; it sets the viscosity ν = c_s²(τ − 1/2). The stability wall at τ = 1/2 is inviscid over-relaxation, not a CFL violation.'
+  - id: 'lbm-collide-is-numerical'
+    name: 'Collision is a numerical trick; streaming is the physics.'
+    signal: 'Treats collide as artificial dissipation glued onto a lattice-gas advection, or expects stream-only to already be a fluid.'
+    correction: 'Both operators are the map. Stream-only is three independent advected gases. Collide-only never moves. Hydrodynamics is the conversation between them: collide builds f^eq from the moments, stream moves those moments by moving the populations.'
+references:
+  - label: 'Krüger et al., The Lattice Boltzmann Method (Springer, 2017)'
+    url: 'https://doi.org/10.1007/978-3-319-44649-3'
+  - label: "Qian, d'Humières, Lallemand (1992), Europhys. Lett. 17"
+    url: 'https://doi.org/10.1209/0295-5075/17/6/001'
+  - label: 'Chen & Doolen (1998), Annu. Rev. Fluid Mech. 30'
+    url: 'https://doi.org/10.1146/annurev.fluid.30.1.329'
+  - label: 'Guo, Zheng, Shi (2002), Phys. Rev. E 65 — forcing'
+    url: 'https://doi.org/10.1103/PhysRevE.65.046308'

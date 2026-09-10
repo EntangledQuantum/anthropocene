@@ -133,6 +133,12 @@ describe('estimate scenarios agree with the prose that quotes them', () => {
     expect(t).toBeGreaterThan(0.9 * 2 * Math.PI);
     expect(t).toBeLessThan(1.1 * 2 * Math.PI);
   });
+
+  it('D2Q9 Poiseuille mid-channel speed is a few percent of c_s, not 1', () => {
+    const t = ESTIMATE_SCENARIOS['lbm-umax'].truth();
+    expect(t).toBeGreaterThan(0.008);
+    expect(t).toBeLessThan(0.04);
+  });
 });
 
 describe('every scenario is answerable on its own slider', () => {

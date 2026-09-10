@@ -24,6 +24,7 @@ import { CATCH_X0, atanShift, stepsUntil } from '../../lib/numerics/newton.ts';
 import { pictureResidual2 } from '../../lib/numerics/svd.ts';
 import { DEMO_RESTART, DEMO_WIND, GMRES_N, convectionProblem, gmres } from '../../lib/numerics/gmres.ts';
 import { measuredPlasmaPeriod } from '../../lib/numerics/pic.ts';
+import { CS, demoPoiseuille } from '../../lib/numerics/lbm.ts';
 
 /**
  * Named quantities for `<Estimate>`.
@@ -430,6 +431,21 @@ const picPlasmaPeriod: EstimateScenario = {
   truth: () => measuredPlasmaPeriod(),
 };
 
+/* Mid-channel speed of the demo D2Q9 Poiseuille. Tempting answers are the
+   lattice speed 1 and the sound speed; the actual peak is a few percent of c_s. */
+const lbmUmax: EstimateScenario = {
+  quantity: 'mid-channel speed of the D2Q9 Poiseuille demo (τ = 1, bounce-back channel, g = 10⁻⁴), in lattice units',
+  logRange: [-4, 0.5],
+  logStart: 0,
+  withinFactor: 4,
+  landmarks: [
+    { value: 1, label: 'lattice speed' },
+    { value: CS, label: 'c_s' },
+    { value: 0.01, label: '0.01' },
+  ],
+  truth: () => demoPoiseuille().umax,
+};
+
 export const ESTIMATE_SCENARIOS: Record<string, EstimateScenario> = {
   'euler-work-1e6': eulerWorkFor1e6,
   'rk4-work-1e6': rk4WorkFor1e6,
@@ -456,4 +472,5 @@ export const ESTIMATE_SCENARIOS: Record<string, EstimateScenario> = {
   'svd-rank2-residual': svdRank2Residual,
   'gm-stored-restart': gmStoredRestart,
   'pic-plasma-period': picPlasmaPeriod,
+  'lbm-umax': lbmUmax,
 };
