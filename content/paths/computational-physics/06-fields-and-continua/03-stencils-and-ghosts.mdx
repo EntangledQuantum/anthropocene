@@ -1,0 +1,54 @@
+---
+title: 'Boundaries are different animals'
+blurb: 'Interior stencils assume neighbours on both sides. A boundary node does not have them. Ghost points are how you keep the stencil and still impose the physics.'
+order: 1
+tier: 'core'
+minutes: 16
+teaches:
+  - 'ghost-points'
+  - 'boundary-stencils'
+requires:
+  - 'cfl-condition'
+  - 'pde'
+runtime: 'none'
+status: 'draft'
+---
+
+Open with the tension, not the definition. What does the reader currently believe that
+this lesson is going to complicate?
+
+## The idea
+
+Build it up. Use `$inline$` and `$$display$$` for math.
+
+<Predict
+  id="03-stencils-and-ghosts-first-prediction"
+  question="Ask something the reader can be productively wrong about."
+  options={[
+    { key: 'a', label: 'The intuitive answer', why: 'Why it is tempting, and exactly where it breaks.' },
+    { key: 'b', label: 'The correct answer', why: 'Why it is right, in one or two sentences.' },
+  ]}
+  correct="b"
+>
+
+The payoff, revealed only after they commit. Usually a simulation.
+
+</Predict>
+
+<Recall id="03-stencils-and-ghosts-card" concept="ghost-points">
+  <div slot="front">The question to answer from memory in three months.</div>
+
+The answer, written so it teaches rather than merely confirms.
+
+</Recall>
+
+<Tier level="advanced">
+
+The treatment for someone who already has the working version. Derivations, edge cases,
+the reason the standard explanation is a simplification.
+
+</Tier>
+
+## What to carry forward
+
+Two or three lines connecting to what comes next.
