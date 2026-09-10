@@ -1,0 +1,5 @@
+---
+import Island, { type GhostLabProps } from '../viz/GhostLab.tsx';
+const props = Astro.props as GhostLabProps;
+---
+<Island client:visible {...props} />

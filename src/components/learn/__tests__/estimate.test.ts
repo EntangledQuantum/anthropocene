@@ -57,6 +57,12 @@ describe('estimate scenarios agree with the prose that quotes them', () => {
   it('heat FTCS on 200 cells of [0,1] has max Δt = 1.25×10⁻⁵', () => {
     expect(ESTIMATE_SCENARIOS['cfl-heat-dt-n200'].truth()).toBeCloseTo(1.25e-5, 12);
   });
+
+  it('naive Neumann error is ~70× the ghost error on 32 intervals', () => {
+    const t = ESTIMATE_SCENARIOS['ghost-naive-ratio-n32'].truth();
+    expect(t).toBeGreaterThan(40);
+    expect(t).toBeLessThan(120);
+  });
 });
 
 describe('every scenario is answerable on its own slider', () => {

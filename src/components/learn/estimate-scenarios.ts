@@ -8,6 +8,7 @@ import { recoverDecayLambda } from '../../lib/numerics/adjoint.ts';
 import { rk4OrthoResidualAt } from '../../lib/numerics/constraints.ts';
 import { heatKernelRatio } from '../../lib/numerics/pde-types.ts';
 import { maxStableHeatDt } from '../../lib/numerics/pde1d.ts';
+import { solveError } from '../../lib/numerics/stencil-bc.ts';
 
 /**
  * Named quantities for `<Estimate>`.
@@ -197,6 +198,21 @@ const heatFtcsDtN200: EstimateScenario = {
   truth: () => maxStableHeatDt(1, 1 / 200),
 };
 
+/* Naive Neumann vs ghost, same 32-interval Poisson solve. The ratio is the
+   order gap made into a number: first-order error over second-order error. */
+const ghostNaiveRatioN32: EstimateScenario = {
+  quantity: 'how many times larger the naive Neumann max-error is than the ghost max-error, 32 intervals, u = eˣ',
+  logRange: [-0.3, 4],
+  logStart: 0.3,
+  withinFactor: 4,
+  landmarks: [
+    { value: 1, label: 'equal' },
+    { value: 10, label: 'ten' },
+    { value: 100, label: 'a hundred' },
+  ],
+  truth: () => solveError(32, 'neumann', 'naive') / solveError(32, 'neumann', 'ghost'),
+};
+
 export const ESTIMATE_SCENARIOS: Record<string, EstimateScenario> = {
   'euler-work-1e6': eulerWorkFor1e6,
   'rk4-work-1e6': rk4WorkFor1e6,
@@ -208,4 +224,5 @@ export const ESTIMATE_SCENARIOS: Record<string, EstimateScenario> = {
   'cons-rk4-ortho': consRk4Ortho,
   'pde-heat-tail': heatTailRatio,
   'cfl-heat-dt-n200': heatFtcsDtN200,
+  'ghost-naive-ratio-n32': ghostNaiveRatioN32,
 };

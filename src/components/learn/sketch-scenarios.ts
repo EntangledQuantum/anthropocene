@@ -8,6 +8,7 @@ import { mcRmse } from '../../lib/numerics/monte-carlo.ts';
 import { decayForward, decayLoss } from '../../lib/numerics/adjoint.ts';
 import { runPendulum } from '../../lib/numerics/constraints.ts';
 import { dependenceWidth } from '../../lib/numerics/pde-types.ts';
+import { errorSweep } from '../../lib/numerics/stencil-bc.ts';
 
 /**
  * Named targets for `<SketchCurve>`.
@@ -265,6 +266,25 @@ const waveDodWidth: SketchScenario = {
   truth: () => sample(80, 0, 0.8, (t) => dependenceWidth('hyperbolic', 0.5, t)),
 };
 
+/* Naive Neumann wall on Poisson: global max-error vs h, log-log. Slope 1,
+   not the interior stencil's slope of 2. The first point is given so the
+   learner has to commit to the slope. */
+const naiveNeumannSweep = errorSweep([8, 12, 16, 24, 32, 48, 64], 'neumann', 'naive');
+const naiveNeumannFirst = naiveNeumannSweep[0]!;
+const ghostNaiveErrorSlope: SketchScenario = {
+  xLabel: 'log₁₀ h',
+  yLabel: 'log₁₀ |error|',
+  xRange: [-1.85, -0.85],
+  yRange: [-2.35, -1.0],
+  tolerance: 0.32,
+  anchors: [{
+    x: Math.log10(naiveNeumannFirst.h),
+    y: Math.log10(naiveNeumannFirst.error),
+    label: 'n = 8',
+  }],
+  truth: () => naiveNeumannSweep.map((p) => ({ x: Math.log10(p.h), y: Math.log10(p.error) })),
+};
+
 export const SKETCH_SCENARIOS: Record<string, SketchScenario> = {
   'fd-u-curve': fdUCurve,
   'euler-convergence': eulerConvergence,
@@ -280,4 +300,5 @@ export const SKETCH_SCENARIOS: Record<string, SketchScenario> = {
   'ad-decay-loss-bowl': decayLossBowl,
   'cons-manifold-drift': consManifoldDrift,
   'pde-wave-width': waveDodWidth,
+  'ghost-naive-slope': ghostNaiveErrorSlope,
 };

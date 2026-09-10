@@ -1,3 +1,17 @@
 title: 'boundary stencils'
-blurb: 'TODO: one sentence, plain language.'
-tags: []
+blurb: 'At a wall the centred stencil is missing a neighbour. A one-sided replacement is a different animal and drops the order; a ghost encodes the BC so the interior stencil stays.'
+notation: '(u_{i-1} - 2u_i + u_{i+1})/h^2'
+tags:
+  - ch6
+misconceptions:
+  - id: 'onesided-keeps-order'
+    name: 'A one-sided wall stencil is still second order if the interior is.'
+    signal: 'Replaces the missing arm with (u_1 − u_0)/h and reads the method as second-order because most nodes still use three points.'
+    correction: 'The one-sided flux is a first-order approximation of u′. On Poisson that first-order wall becomes first-order global error. Counting interior nodes does not set the order — the worst truncation does, unless a ghost puts the centred stencil back.'
+  - id: 'skip-the-neighbour'
+    name: 'If a neighbour is missing, drop that arm of the stencil.'
+    signal: 'At the first interior node, writes (−2u_1 + u_2)/h² or sets the wall value to 0 and proceeds.'
+    correction: 'Dropping the arm throws away the boundary condition. For Dirichlet the missing neighbour is the wall value itself. For Neumann it is a ghost fixed by the flux. Skipping is a different BVP, not a discretisation of this one.'
+references:
+  - label: 'LeVeque, Finite Difference Methods for Ordinary and Partial Differential Equations (SIAM, 2007), §2.12'
+    url: 'https://doi.org/10.1137/1.9780898717839'

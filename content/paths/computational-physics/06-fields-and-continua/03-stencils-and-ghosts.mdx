@@ -1,7 +1,7 @@
 ---
 title: 'Boundaries are different animals'
 blurb: 'Interior stencils assume neighbours on both sides. A boundary node does not have them. Ghost points are how you keep the stencil and still impose the physics.'
-order: 1
+order: 3
 tier: 'core'
 minutes: 16
 teaches:
@@ -11,44 +11,141 @@ requires:
   - 'cfl-condition'
   - 'pde'
 runtime: 'none'
-status: 'draft'
+status: 'live'
+updated: 2026-09-10
 ---
 
-Open with the tension, not the definition. What does the reader currently believe that
-this lesson is going to complicate?
+The interior stencil for $u''$ is the same three samples at every node that has both neighbours:
 
-## The idea
+```ts
+(u[i - 1] - 2 * u[i] + u[i + 1]) / (h * h)
+```
 
-Build it up. Use `$inline$` and `$$display$$` for math.
+At $x = 0$ that left sample is not in the domain. Poisson on $[0, 1]$, manufactured field $u = e^x$, right wall Dirichlet. Left wall is Neumann: you know the flux $\sigma = u'(0)$, not the value.
 
 <Predict
-  id="03-stencils-and-ghosts-first-prediction"
-  question="Ask something the reader can be productively wrong about."
+  id="ghost-naive-order"
+  question="You keep the centred Laplacian on every interior node and write a one-sided flux at the wall, (u₁ − u₀)/h = σ. As you refine, the global max-error of this second-order Poisson solve becomes what?"
   options={[
-    { key: 'a', label: 'The intuitive answer', why: 'Why it is tempting, and exactly where it breaks.' },
-    { key: 'b', label: 'The correct answer', why: 'Why it is right, in one or two sentences.' },
+    { key: 'a', misconception: 'one-point-cannot-spoil', label: 'Still second order. One first-order equation at one node cannot spoil a second-order grid.', why: "Global max-error follows the worst node, not the typical one. A first-order wall infects the whole solve — the Green's function carries that error inward." },
+    { key: 'b', label: 'First order. The wall error infects the whole solve.', why: 'Correct. The one-sided flux is a first-order approximation of u′. On Poisson that becomes first-order global error, even though every interior stencil is still the centred three-point.' },
+    { key: 'c', label: 'The matrix is singular. A derivative at the wall does not pick a unique field.', why: 'Neumann on both ends would be singular up to a constant. The right wall is Dirichlet, so the discrete Laplacian is invertible. The solve exists. It is just first-order.' },
+    { key: 'd', label: 'Third order — a one-sided stencil reaches farther, so it should be more accurate.', why: 'Reach is not order. The one-sided first derivative is the forward difference you already know is first-order. Wider is not better when the Taylor terms do not cancel.' },
   ]}
   correct="b"
 >
 
-The payoff, revealed only after they commit. Usually a simulation.
+Dashed is $e^x$. Magenta is the one-sided wall. Switch the view to **order** and refine $n$. Slope 1, not 2.
+
+<GhostLab
+  bc="neumann"
+  method="naive"
+  n={12}
+  lockBc={true}
+  view="field"
+  caption="Naive Neumann on u″ = eˣ. The interior stencil never changed. The wall did — and the global error followed it."
+/>
 
 </Predict>
 
-<Recall id="03-stencils-and-ghosts-card" concept="ghost-points">
-  <div slot="front">The question to answer from memory in three months.</div>
+## Give the missing neighbour a job
 
-The answer, written so it teaches rather than merely confirms.
+The centred stencil at the wall wants a sample at $x = -h$. Nothing is there. Invent one.
+
+$$
+\frac{u_1 - u_{-1}}{2h} = \sigma \qquad\Rightarrow\qquad u_{-1} = u_1 - 2h\sigma
+$$
+
+That number is not a measurement. It is the Neumann condition, written as a neighbour, so the three-point stencil can sit at $x=0$ and stay itself:
+
+```ts
+uGhost = u[1] - 2 * h * sigma;
+(uGhost - 2 * u[0] + u[1]) / (h * h)  //  =  f(0)
+```
+
+The residual of that wall operator, on the exact field, collapses only at one ghost value. Hunt it.
+
+<Tune
+  id="ghost-hunt-value"
+  scenario="ghost-neumann-value"
+  prompt="n = 8, Neumann wall, exact eˣ sampled on the nodes. Drag the ghost u₋₁ until the wall residual drops to the interior's size."
+  hint="The centred flux (u₁ − u₋₁)/(2h) equals σ = 1. Solve for u₋₁. It is close to e^{-h}, but it is not a sample of e^x — it is the BC."
+  explanation="u₋₁ = u₁ − 2hσ. On these nodes that is e^{h} − 2h ≈ 0.883. A wrong ghost leaves a residual of size 1/h². The right ghost is the Neumann condition, not a point in the domain."
+/>
+
+The fictitious point sits to the left of the wall. The same $+1,-2,+1$ weights sit on (ghost, wall, $i=1$). Observed order returns to 2.
+
+<GhostLab
+  bc="neumann"
+  method="ghost"
+  n={12}
+  caption="Same Poisson, same n. The interior stencil did not change. The missing neighbour is now a ghost that encodes the flux."
+/>
+
+The one-sided wall was a different animal. The ghost is how you refuse to become one.
+
+Sketch the naive slope. It starts at $n=8$.
+
+<SketchCurve
+  id="ghost-error-slope"
+  scenario="ghost-naive-slope"
+  prompt="One-sided Neumann, max |error| against h, log-log. The interior stencil is second order. Sketch what the solve actually does."
+  hint="Global error follows the wall. A first-order flux is a line of slope 1 on these axes, not 2."
+  explanation="Slope 1. Every interior node is still the centred three-point, and none of that matters: the wall is first-order, and Poisson carries that error across the interval. The ghost method on the same plot is a line of slope 2 sitting well below."
+/>
+
+## Dirichlet already has the neighbour
+
+Switch the left wall to Dirichlet $u(0)=\alpha$. The missing neighbour of the first interior stencil is sitting on the wall, and you know it. Plug $u_0=\alpha$ into the centred three-point at $i=1$. No fictitious point. The wall *is* the neighbour.
+
+Naive here means something ruder: skip that value, pretend the missing sample is 0. You just solved $u(0)=0$, which is a different problem. Refining cannot fix the data you threw away.
+
+<Classify
+  id="ghost-fill-sort"
+  prompt="How is the missing neighbour filled? Same grid, same interior stencil."
+  buckets={[
+    { key: 'skip', label: 'thrown away', accent: 'magenta' },
+    { key: 'onesided', label: 'one-sided wall', accent: 'warn' },
+    { key: 'kept', label: 'interior stencil stays', accent: 'cyan' },
+  ]}
+  items={[
+    { key: 'dir-skip', label: 'Dirichlet, set the wall neighbour to 0', bucket: 'skip', why: 'That is a different BVP. The missing neighbour was the wall value itself.' },
+    { key: 'neu-naive', label: 'Neumann, (u₁ − u₀)/h = σ as the wall equation', bucket: 'onesided', why: 'A different animal: first-order flux, first-order global error.' },
+    { key: 'neu-ghost', label: 'Neumann, u₋₁ = u₁ − 2hσ, centred stencil at the wall', bucket: 'kept', why: 'The ghost is the flux, written as a neighbour. Order 2.' },
+    { key: 'dir-wall', label: 'Dirichlet, plug u₀ = α into the stencil at i = 1', bucket: 'kept', why: "The wall node is the missing neighbour, and it is known. That is the BC, not a special stencil." },
+    { key: 'interior', label: 'An interior node, both neighbours in the domain', bucket: 'kept', why: 'No wall. The three-point stencil was built for this.' },
+  ]}
+  explanation="Two ways the interior stencil stays: Dirichlet hands you the neighbour, Neumann invents one. One-sided is a different discretisation. Skipping is a different problem."
+/>
+
+The order gap is not a small constant. On 32 intervals it is already a factor you can feel.
+
+<Estimate
+  id="ghost-error-ratio"
+  scenario="ghost-naive-ratio-n32"
+  prompt="Same Poisson, 32 intervals, Neumann wall. How many times larger is the naive max-error than the ghost max-error?"
+  explanation="About 72. Naive is O(h), ghost is O(h²), and at h = 1/32 that ratio is already tens. Double n and the ratio doubles. The ghost is not a polish on a wall stencil. It is the difference between first order and second."
+/>
+
+An insulated wall is the same picture with $\sigma = 0$: $u_{-1} = u_1$, even reflection. Heat, a no-flux end, a symmetry plane — the missing neighbour is still the BC. The time-step restriction you already met in [When the grid explodes](../cfl/) is a property of the *interior* stencil, not of this wall treatment.
+
+<Recall id="ghost-missing-neighbour" concept="ghost-points">
+  <div slot="front">What is a ghost point, and why does the interior stencil get to stay?</div>
+
+A fictitious sample outside the domain whose value is chosen so the boundary condition is true. For Neumann, $(u_1 - u_{-1})/(2h) = \sigma$ fixes $u_{-1} = u_1 - 2h\sigma$. The centred three-point then sits at the wall as if both neighbours existed. The missing neighbour is the BC.
 
 </Recall>
 
-<Tier level="advanced">
+<Tier level="advanced" title="the wall residual can look first-order and the solve still be second">
 
-The treatment for someone who already has the working version. Derivations, edge cases,
-the reason the standard explanation is a simplification.
+Substitute the Neumann ghost into the three-point at $x=0$ and Taylor-expand on the exact field. The wall truncation is $O(h)$, not $O(h^2)$ — the ghost is not $u(-h)$, it differs by $(h^3/3)u'''+\cdots$. Global max-error is nevertheless $O(h^2)$. One dirty equation, Laplacian inverse of size $O(1)$, and the pollution still drops a power of $h$ relative to a *naive* one-sided wall, which really is first-order globally.
+
+That is the useful half of Gustafsson's principle: a boundary operator one order lower than the interior can be tolerated. It is not a licence to write $(u_1-u_0)/h=\sigma$ and call the method second-order. The ghost is the construction that actually delivers the extra order.
+
+Once every wall is a ghost (or a known Dirichlet value), space has become a matrix. Time, if the PDE has one, is an ODE of size $n$. That is the method of lines. The CFL number you already dragged is how you step that ODE; it does not tell you how to fill $u_{-1}$.
 
 </Tier>
 
 ## What to carry forward
 
-Two or three lines connecting to what comes next.
+The missing neighbour is a fictitious value that *is* the boundary condition. Dirichlet: the wall node, known. Neumann: $u_{-1}=u_1-2h\sigma$. One-sided is a different animal, and it is first-order. Keep the interior stencil; encode the BC as the neighbour it wanted.

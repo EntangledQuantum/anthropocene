@@ -25,6 +25,7 @@ import {
 import { densityAtVanishingPressure, latticePressure } from '../../lib/numerics/md.ts';
 import { hWhereRadiusFallsBelow, pendulumRadiusAt } from '../../lib/numerics/constraints.ts';
 import { runAdvection, runHeat } from '../../lib/numerics/pde1d.ts';
+import { neumannGhostTarget, residualWithTrialGhost } from '../../lib/numerics/stencil-bc.ts';
 
 /**
  * Named scenarios for `<Tune>`.
@@ -486,6 +487,42 @@ const cflHeatR: TuneScenario = {
   },
 };
 
+/* ── hunt the Neumann ghost ────────────────────────────────────────────── */
+
+const GHOST_N = 8;
+const ghostNeumannValue: TuneScenario = {
+  param: {
+    key: 'ghost', label: 'ghost value', symbol: 'u₋₁', min: 0.05, max: 1.6, step: 0.01, value: 0.28,
+    hint: 'Fictitious sample at x = −h. The centred wall stencil is (u₋₁ − 2u₀ + u₁)/h².',
+  },
+  target: neumannGhostTarget(GHOST_N),
+  tolerance: 0.07,
+  x: { label: 'x', domain: [0, 1] },
+  y: { label: 'residual D²u − u″' },
+  compute: (ghost: number) => {
+    const { x, residual, wall } = residualWithTrialGhost(GHOST_N, ghost);
+    const target = neumannGhostTarget(GHOST_N);
+    return {
+      series: [
+        {
+          key: 'interior', label: 'centred residual', color: 'cyan',
+          points: x.slice(1, -1).map((xi, i) => [xi, residual[i + 1]!] as const),
+        },
+        {
+          key: 'wall', label: 'wall residual', color: 'magenta', style: 'dots', width: 7,
+          points: [[0, wall]],
+        },
+      ],
+      readouts: [
+        { label: 'u₋₁', value: ghost.toFixed(3) },
+        { label: 'target', value: target.toFixed(3) },
+        { label: 'wall residual', value: wall.toExponential(2) },
+        { label: 'interior max', value: Math.max(...residual.slice(1, -1).map(Math.abs)).toExponential(2) },
+      ],
+    };
+  },
+};
+
 export const TUNE_SCENARIOS: Record<string, TuneScenario> = {
   'fd-optimum': fdOptimum,
   'euler-stability': eulerStability,
@@ -497,4 +534,5 @@ export const TUNE_SCENARIOS: Record<string, TuneScenario> = {
   'cons-drift-h': consDriftH,
   'cfl-upwind-cliff': cflUpwindCliff,
   'cfl-heat-r': cflHeatR,
+  'ghost-neumann-value': ghostNeumannValue,
 };

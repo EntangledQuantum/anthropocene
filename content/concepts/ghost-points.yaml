@@ -1,3 +1,19 @@
 title: 'ghost points'
-blurb: 'TODO: one sentence, plain language.'
-tags: []
+blurb: 'A fictitious sample outside the domain whose value is chosen so the boundary condition is true. The missing neighbour is the BC.'
+notation: 'u_{-1} = u_1 - 2h\sigma'
+tags:
+  - ch6
+misconceptions:
+  - id: 'ghost-is-physical'
+    name: 'A ghost is a real sample just outside the wall.'
+    signal: 'Treats u_{-1} as a measurement, or asks what physics lives at x = −h.'
+    correction: 'Nothing is sampled there. The ghost is the boundary condition rewritten as a neighbour so the interior stencil can stay. For Neumann, (u_1 − u_{-1})/(2h) = σ fixes u_{-1}. For Dirichlet the wall node itself is the missing neighbour, and it is known.'
+  - id: 'one-point-cannot-spoil'
+    name: 'One first-order equation at the wall cannot spoil a second-order grid.'
+    signal: 'Keeps the centred Laplacian in the interior, writes a one-sided flux at the wall, and expects the global error to stay O(h²).'
+    correction: 'Global max-error follows the worst node. A one-sided Neumann wall is first-order, and that first-order error infects the whole Poisson solve. A ghost restores second order without changing the interior stencil.'
+references:
+  - label: 'LeVeque, Finite Difference Methods for Ordinary and Partial Differential Equations (SIAM, 2007), ch. 2'
+    url: 'https://doi.org/10.1137/1.9780898717839'
+  - label: 'Strikwerda, Finite Difference Schemes and Partial Differential Equations, ch. 3'
+    url: 'https://doi.org/10.1137/1.9780898717938'
