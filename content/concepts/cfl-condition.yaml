@@ -1,3 +1,27 @@
-title: 'cfl condition'
-blurb: 'TODO: one sentence, plain language.'
-tags: []
+title: 'CFL condition'
+blurb: 'How far information travels in one step, in mesh units. If the true signal outruns the stencil, the grid explodes.'
+notation: '\nu = c \Delta t / \Delta x'
+tags:
+  - ch6
+misconceptions:
+  - id: 'cfl-sufficient'
+    name: 'CFL less than 1 means the scheme is stable.'
+    signal: 'Takes CFL = 0.5 on centred advection and is surprised when the grid detonates.'
+    correction: 'CFL < 1 means the stencil can see where the information comes from. It does not mean the stencil uses it stably. FTCS advection satisfies CFL and is still unconditionally unstable — a centred difference produces a pure-imaginary eigenvalue, and forward Euler''s stability region does not contain the imaginary axis.'
+  - id: 'smaller-dt-saves-ftcs'
+    name: 'A smaller time step will save an exploding centred scheme.'
+    signal: 'Halves Δt on FTCS advection and watches it explode more slowly.'
+    correction: 'For FTCS advection the amplification |G| = √(1 + ν² sin²θ) is at least 1 for every ν ≠ 0. Shrinking Δt shrinks ν but never puts |G| below 1. The scheme is the problem, not the step size.'
+  - id: 'smooth-means-right'
+    name: 'If the plot is smooth, the scheme is correct.'
+    signal: 'Accepts a decaying, widening pulse as the PDE because nothing blew up.'
+    correction: 'Boundedness is not truth. First-order upwind is exact advection plus a numerical viscosity (c Δx/2)(1 − ν) u_xx. The pulse shortens and widens while the true solution does neither. The question is always: is this wiggle the PDE or the scheme?'
+  - id: 'cfl-is-accuracy'
+    name: 'CFL is an accuracy requirement.'
+    signal: 'Treats CFL = 1 as a truncation-error target, or assumes a smaller CFL is always more accurate.'
+    correction: 'CFL is a domain-of-dependence / stability requirement, not an accuracy one. At CFL = 1, first-order upwind is an exact shift of one cell per step — more accurate than at CFL = 0.3, where the extra numerical viscosity smears the pulse.'
+references:
+  - label: 'Courant, Friedrichs, Lewy (1928), Math. Ann. 100'
+    url: 'https://doi.org/10.1007/BF01448839'
+  - label: 'English translation, IBM J. Res. Dev. 11 (1967)'
+    url: 'https://doi.org/10.1147/rd.112.0215'

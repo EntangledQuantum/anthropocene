@@ -53,6 +53,10 @@ describe('estimate scenarios agree with the prose that quotes them', () => {
     expect(t).toBeGreaterThan(2e-4);
     expect(t).toBeLessThan(2e-3);
   });
+
+  it('heat FTCS on 200 cells of [0,1] has max Δt = 1.25×10⁻⁵', () => {
+    expect(ESTIMATE_SCENARIOS['cfl-heat-dt-n200'].truth()).toBeCloseTo(1.25e-5, 12);
+  });
 });
 
 describe('every scenario is answerable on its own slider', () => {

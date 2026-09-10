@@ -7,6 +7,7 @@ import { gridEvaluations } from '../../lib/numerics/monte-carlo.ts';
 import { recoverDecayLambda } from '../../lib/numerics/adjoint.ts';
 import { rk4OrthoResidualAt } from '../../lib/numerics/constraints.ts';
 import { heatKernelRatio } from '../../lib/numerics/pde-types.ts';
+import { maxStableHeatDt } from '../../lib/numerics/pde1d.ts';
 
 /**
  * Named quantities for `<Estimate>`.
@@ -180,6 +181,22 @@ const heatTailRatio: EstimateScenario = {
   truth: () => heatKernelRatio(1, 0.05),
 };
 
+/* Heat FTCS: r = α Δt / Δx² ≤ 1/2 on 200 cells of the unit interval.
+   The number is the reason explicit diffusion is expensive — refine Δx
+   by two and you pay four in Δt. Computed from the same bound the lab uses. */
+const heatFtcsDtN200: EstimateScenario = {
+  quantity: 'largest stable FTCS time step for heat on 200 cells of [0, 1], α = 1',
+  logRange: [-7, -2],
+  logStart: -3.2,
+  withinFactor: 4,
+  landmarks: [
+    { value: 1e-3, label: 'a thousandth' },
+    { value: 1e-5, label: '10⁻⁵' },
+    { value: 1e-6, label: 'a millionth' },
+  ],
+  truth: () => maxStableHeatDt(1, 1 / 200),
+};
+
 export const ESTIMATE_SCENARIOS: Record<string, EstimateScenario> = {
   'euler-work-1e6': eulerWorkFor1e6,
   'rk4-work-1e6': rk4WorkFor1e6,
@@ -190,4 +207,5 @@ export const ESTIMATE_SCENARIOS: Record<string, EstimateScenario> = {
   'ad-recovered-lambda': recoveredLambdaError,
   'cons-rk4-ortho': consRk4Ortho,
   'pde-heat-tail': heatTailRatio,
+  'cfl-heat-dt-n200': heatFtcsDtN200,
 };

@@ -24,6 +24,7 @@ import {
 } from '../../lib/numerics/monte-carlo.ts';
 import { densityAtVanishingPressure, latticePressure } from '../../lib/numerics/md.ts';
 import { hWhereRadiusFallsBelow, pendulumRadiusAt } from '../../lib/numerics/constraints.ts';
+import { runAdvection, runHeat } from '../../lib/numerics/pde1d.ts';
 
 /**
  * Named scenarios for `<Tune>`.
@@ -412,6 +413,79 @@ const consDriftH: TuneScenario = {
   },
 };
 
+const capField = (v: number) => (Number.isFinite(v) ? Math.max(-8, Math.min(8, v)) : 8);
+
+/* ── CFL: hunt the upwind cliff at ν = 1 ──────────────────────────────── */
+
+const cflUpwindCliff: TuneScenario = {
+  param: {
+    key: 'cfl', label: 'CFL number', symbol: 'ν', min: 0.2, max: 1.6, step: 0.02, value: 0.45,
+    hint: 'How many mesh cells the bump travels in one step.',
+  },
+  target: 1,
+  tolerance: 0.08,
+  x: { label: 'x', domain: [0, 1] },
+  y: { label: 'u', domain: [-0.3, 1.4] },
+  compute: (cfl: number) => {
+    const run = runAdvection({ scheme: 'upwind', cfl, n: 80, tEnd: 0.45, nyquist: 1e-4 });
+    const blown = run.diverged || run.maxAbs > 1.6;
+    return {
+      series: [
+        {
+          key: 'exact', label: 'exact', color: 'ink', dash: [3, 3], width: 1,
+          points: (run.exact ?? []).map((u, i) => [run.x[i]!, u] as const),
+        },
+        {
+          key: 'upwind', label: blown ? 'upwind (exploded)' : 'upwind',
+          color: blown ? 'magenta' : 'cyan',
+          points: run.u.map((u, i) => [run.x[i]!, capField(u)] as const),
+        },
+      ],
+      readouts: [
+        { label: 'ν', value: cfl.toFixed(2) },
+        { label: '‖u‖∞', value: run.diverged ? '∞' : run.maxAbs.toFixed(3) },
+        { label: 'peak', value: run.diverged ? '—' : run.height.toFixed(3) },
+        { label: 'behaviour', value: blown ? 'exploding' : (cfl < 0.95 ? 'smearing' : 'translating') },
+      ],
+    };
+  },
+};
+
+/* ── heat FTCS: hunt r = 1/2 ──────────────────────────────────────────── */
+
+const cflHeatR: TuneScenario = {
+  param: {
+    key: 'r', label: 'diffusion number', symbol: 'r', min: 0.2, max: 0.8, step: 0.01, value: 0.28,
+    hint: 'r = α Δt / Δx². The checkerboard mode of FTCS heat dies when r exceeds 1/2.',
+  },
+  target: 0.5,
+  tolerance: 0.08,
+  x: { label: 'x', domain: [0, 1] },
+  y: { label: 'u', domain: [-0.3, 1.4] },
+  compute: (r: number) => {
+    const run = runHeat({ r, n: 64, nSteps: 200, nyquist: 1e-3 });
+    const blown = run.diverged || run.maxAbs > 1.6;
+    return {
+      series: [
+        {
+          key: 'u0', label: 'initial', color: 'ink', dash: [3, 3], width: 1,
+          points: run.u0.map((u, i) => [run.x[i]!, u] as const),
+        },
+        {
+          key: 'heat', label: blown ? 'FTCS (exploded)' : 'FTCS heat',
+          color: blown ? 'magenta' : 'cyan',
+          points: run.u.map((u, i) => [run.x[i]!, capField(u)] as const),
+        },
+      ],
+      readouts: [
+        { label: 'r', value: r.toFixed(2) },
+        { label: '‖u‖∞', value: run.diverged ? '∞' : run.maxAbs.toFixed(3) },
+        { label: 'behaviour', value: blown ? 'exploding' : 'diffusing' },
+      ],
+    };
+  },
+};
+
 export const TUNE_SCENARIOS: Record<string, TuneScenario> = {
   'fd-optimum': fdOptimum,
   'euler-stability': eulerStability,
@@ -421,4 +495,6 @@ export const TUNE_SCENARIOS: Record<string, TuneScenario> = {
   'mc-crossover': mcCrossover,
   'md-vanishing-pressure': mdVanishingPressure,
   'cons-drift-h': consDriftH,
+  'cfl-upwind-cliff': cflUpwindCliff,
+  'cfl-heat-r': cflHeatR,
 };

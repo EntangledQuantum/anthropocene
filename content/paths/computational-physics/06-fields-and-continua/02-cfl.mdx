@@ -1,7 +1,7 @@
 ---
 title: 'When the grid explodes'
 blurb: 'A scheme that looks reasonable, then turns a wave into noise. The CFL number is how far information travels in one step, in mesh units.'
-order: 1
+order: 2
 tier: 'core'
 minutes: 16
 teaches:
@@ -11,44 +11,184 @@ requires:
   - 'forward-euler'
   - 'numerical-stability'
 runtime: 'none'
-status: 'draft'
+status: 'live'
+updated: 2026-09-10
 ---
 
-Open with the tension, not the definition. What does the reader currently believe that
-this lesson is going to complicate?
+A bump on a line, travelling at speed $c$. You already know forward Euler and the centred difference. Combine them — FTCS, the first scheme everyone writes:
 
-## The idea
+```ts
+next[i] = u[i] - 0.5 * nu * (u[i + 1] - u[i - 1]);
+```
 
-Build it up. Use `$inline$` and `$$display$$` for math.
+The Courant number $\nu = c\,\Delta t / \Delta x$ is how many cells the bump travels in one step. Set it to $0.5$ — half a cell per step, well inside "information can only come from the neighbours."
 
 <Predict
-  id="02-cfl-first-prediction"
-  question="Ask something the reader can be productively wrong about."
+  id="cfl-ftcs-half"
+  question="FTCS advection at CFL = 0.5. After the bump has travelled a few widths, what do you see?"
   options={[
-    { key: 'a', label: 'The intuitive answer', why: 'Why it is tempting, and exactly where it breaks.' },
-    { key: 'b', label: 'The correct answer', why: 'Why it is right, in one or two sentences.' },
+    { key: 'a', misconception: 'cfl-sufficient', label: 'A translated bump, a little worse than exact. CFL below 1, so the stencil can see the information.', why: 'The stencil can see it. Seeing is not using it stably. A centred difference produces a pure-imaginary eigenvalue, and the stability region of forward Euler does not contain the imaginary axis. CFL below 1 is necessary, not sufficient.' },
+    { key: 'b', label: 'The grid explodes. CFL below 1 does not save a centred stencil on advection.', why: 'Correct. |G| = √(1 + ν² sin²θ) is at least 1 for every ν ≠ 0. The scheme is unconditionally unstable. Shrinking Δt just makes the detonation slower.' },
+    { key: 'c', misconception: 'smooth-means-right', label: 'The bump smears out but stays bounded. Dissipation from the time step.', why: 'That is the other failure, and it belongs to upwind, not to FTCS. Centred advection has no dissipation — it has anti-dissipation. The high-k modes grow.' },
+    { key: 'd', misconception: 'smaller-dt-saves-ftcs', label: 'Nothing bad yet — 0.5 is conservative. Halve Δt if you want more safety.', why: 'Halving Δt halves ν and |G| stays above 1. You cannot step your way into a stability region that does not exist.' },
   ]}
   correct="b"
 >
 
-The payoff, revealed only after they commit. Usually a simulation.
+Dashed is the exact travelling pulse. Drag CFL if you want; it will not save FTCS.
+
+<CflLab
+  equation="advection"
+  scheme="ftcs"
+  cfl={0.5}
+  lockEquation={true}
+  lockScheme={true}
+  caption="FTCS advection. The bump starts well. Then a 4Δx mode eats the grid. The triangle on the right still contains the characteristic — CFL below 1 — and the scheme detonates anyway."
+/>
 
 </Predict>
 
-<Recall id="02-cfl-card" concept="cfl-condition">
-  <div slot="front">The question to answer from memory in three months.</div>
+## Look the way the wind is blowing
 
-The answer, written so it teaches rather than merely confirms.
+The bump is coming from the left. Sample that neighbour:
+
+```ts
+next[i] = u[i] - nu * (u[i] - u[i - 1]);
+```
+
+Same $\nu$. Different stencil. Hunt the cliff.
+
+<Tune
+  id="cfl-upwind-cliff"
+  scenario="cfl-upwind-cliff"
+  prompt="First-order upwind on the travelling bump. Find the CFL number where it stops translating and starts exploding."
+  hint="The stencil sees one cell to the left. The bound is the CFL at which the true signal comes from exactly that cell."
+  explanation="ν = 1. One cell per step. Below it the characteristic sits inside the stencil; at 1 the update is the exact shift u_i ← u_{i−1}; past it the true path comes from a cell the stencil cannot see, and the update invents a value. The cliff does not care how accurate you wanted to be."
+/>
+
+Drag it yourself. The triangle and the field are two views of one number.
+
+<CflLab
+  equation="advection"
+  scheme="upwind"
+  cfl={0.8}
+  caption="Upwind advection. Drag ν across 1 and watch the true path (the bright line) leave the stencil triangle — then watch the field follow."
+/>
+
+$$
+\nu = \frac{c\,\Delta t}{\Delta x}
+$$
+
+is how far information travels in one step, **in mesh units**. After $n$ steps a two-point stencil has a domain of dependence $n$ cells wide. The physical one is a triangle of width $c\, n\,\Delta t$. The numerical triangle must contain the physical one. Courant, Friedrichs and Lewy, 1928. That is a necessary condition for convergence. It is not a stability certificate — FTCS just showed you the difference.
+
+<Recall id="cfl-mesh-units" concept="cfl-condition">
+  <div slot="front">What is the CFL number, and what does the triangle say you must not do?</div>
+
+$\nu = c\,\Delta t / \Delta x$ is how many mesh cells the signal crosses in one step. The stencil of an explicit scheme only sees its neighbours, so after $n$ steps its domain of dependence is a triangle $n$ cells wide. The true characteristic travels $c\, n\,\Delta t$. If that foot lands outside the triangle, the update is inventing a value and the grid explodes. CFL $\le$ 1 is necessary. It is not sufficient — a centred stencil can see the information and still detonate.
 
 </Recall>
 
-<Tier level="advanced">
+## The other failure
 
-The treatment for someone who already has the working version. Derivations, edge cases,
-the reason the standard explanation is a simplification.
+Stay below 1. Upwind is bounded. Watch the bump.
+
+<Predict
+  id="cfl-upwind-smear"
+  question="At CFL = 0.4 the upwind bump gets shorter and wider as it travels. What is that?"
+  options={[
+    { key: 'a', misconception: 'smooth-means-right', label: 'Physical diffusion — real advection has some viscosity, and a smooth plot means the scheme is working.', why: 'Linear advection has no viscosity. The true pulse translates rigidly. A plot that stays bounded can still be the wrong PDE.' },
+    { key: 'b', label: 'The scheme. First-order upwind is exact advection plus a numerical viscosity (c Δx/2)(1 − ν) u_xx.', why: 'Correct. The extra term is the truncation error of the one-sided difference. It vanishes at ν = 1, which is why that CFL is an exact shift, and it is large at ν = 0.4, which is why the pulse smears. Stable-looking, and still a lie.' },
+    { key: 'c', label: 'Instability that has not exploded yet. Give it longer.', why: 'Upwind at ν = 0.4 has |G| ≤ 1 at every wavenumber. The height drop is monotone dissipation, not a mode waiting to blow.' },
+    { key: 'd', misconception: 'cfl-is-accuracy', label: 'Phase error from taking too large a CFL. Smaller ν would track the peak better.', why: 'Smaller ν adds viscosity, it does not remove it. The most accurate upwind CFL for linear advection is 1, not 0.1. CFL is not an accuracy dial you always turn down.' },
+  ]}
+  correct="b"
+>
+
+Peak height is the readout to watch. The exact pulse (dashed) does not decay.
+
+<CflLab
+  equation="advection"
+  scheme="upwind"
+  cfl={0.4}
+  lockEquation={true}
+  lockScheme={true}
+  caption="Upwind at CFL = 0.4. Bounded, smooth, and the wrong equation. The pulse is being solved with extra diffusion the PDE does not have."
+/>
+
+</Predict>
+
+The question is always the same: *is this wiggle the PDE or the scheme?*
+
+## Same stencil, different units
+
+Heat, $u_t = \alpha u_{xx}$. Same three neighbours, different number:
+
+```ts
+next[i] = u[i] + r * (u[i + 1] - 2 * u[i] + u[i - 1]);
+```
+
+with $r = \alpha\,\Delta t / \Delta x^2$. The CFL argument in the strict sense never holds — heat fills the whole line instantly, and no explicit stencil contains that domain. Von Neumann still hands you a usable bound.
+
+<Tune
+  id="cfl-heat-r"
+  scenario="cfl-heat-r"
+  prompt="FTCS on a heat bump. Find the diffusion number r where the field stops decaying and a checkerboard eats the grid."
+  hint="The worst mode is the Nyquist sawtooth, gain G = 1 − 4r. Ask when |G| first exceeds 1."
+  explanation="r = 1/2. At the checkerboard, G = 1 − 4r, so |G| ≤ 1 forces r ≤ 1/2. A smooth bump can look fine past the bound for a while — the unstable mode is hiding at roundoff — and then a sawtooth appears out of nothing. That is the same explosion as CFL > 1, in different units."
+/>
+
+The bound is not gentle. Refine the mesh by two and $\Delta t$ must drop by four.
+
+<Estimate
+  id="cfl-heat-dt"
+  scenario="cfl-heat-dt-n200"
+  prompt="Heat on 200 cells of [0, 1], α = 1. Largest stable FTCS time step?"
+  explanation="1.25×10⁻⁵. r ≤ 1/2 and Δx = 1/200 give Δt ≤ (1/2) Δx². A million steps per unit time, before you have asked for any accuracy. Explicit diffusion is expensive; that is why implicit methods exist. The CFL triangle told you the same thing: if information is already everywhere, an explicit stencil pays Δt ~ Δx² to fake a finite speed."
+/>
+
+<Classify
+  id="cfl-symptom-sort"
+  prompt="Same grid, different costume. Sort what you actually saw — explosion, a bounded lie, or a faithful run."
+  buckets={[
+    { key: 'explodes', label: 'explodes', accent: 'magenta' },
+    { key: 'lie', label: 'bounded, but the wrong PDE', accent: 'warn' },
+    { key: 'honest', label: 'faithful', accent: 'cyan' },
+  ]}
+  items={[
+    { key: 'ftcs-half', label: 'FTCS advection, CFL = 0.5', bucket: 'explodes', why: 'Unconditionally unstable. CFL below 1 is not a certificate.' },
+    { key: 'up-over', label: 'Upwind advection, CFL = 1.4', bucket: 'explodes', why: 'The characteristic has left the stencil. CFL violated.' },
+    { key: 'up-smear', label: 'Upwind advection, CFL = 0.3', bucket: 'lie', why: 'Stable, smooth, and dissipating a pulse the PDE translates rigidly.' },
+    { key: 'up-one', label: 'Upwind advection, CFL = 1', bucket: 'honest', why: 'The exact one-cell shift. Viscosity term is zero.' },
+    { key: 'heat-hot', label: 'Heat FTCS, r = 0.7', bucket: 'explodes', why: 'Checkerboard gain |1 − 4r| > 1.' },
+    { key: 'heat-ok', label: 'Heat FTCS, r = 0.3', bucket: 'honest', why: 'The bump decays. That is the PDE.' },
+  ]}
+  explanation="Two explosions, one quiet lie, two honest runs. The picture to keep is the triangle: information cannot outrun the stencil. A plot that does not explode still has to be asked whether it is the PDE."
+/>
+
+<Tier level="advanced" title="why centred advection never sits in Euler's disc">
+
+Substitute a mode $u_j^n = G^n e^{i j \theta}$ into FTCS advection. The centred difference brings down $i\sin\theta$, and you get
+
+$$
+G = 1 - i\,\nu\sin\theta, \qquad |G| = \sqrt{1 + \nu^2\sin^2\theta} \ge 1.
+$$
+
+Equality only at $\theta = 0$. Every other mode grows, for every $\nu \ne 0$. The 4$\Delta x$ mode ($\theta = \pi/2$) is the fastest; the checkerboard is invisible to a centred difference, which is why it is *not* the killer here.
+
+Forward Euler's stability region is the disc $|1 + z| \le 1$ in the $z = h\lambda$ plane. A centred first derivative has a pure-imaginary eigenvalue. That disc does not contain the imaginary axis except at the origin. No $h$ will put the scheme inside.
+
+Upwind adds a real (dissipative) part. The eigenvalues move into the disc — for $\nu \le 1$. The modified equation is the caption:
+
+$$
+u_t + c u_x = \tfrac{c\,\Delta x}{2}(1 - \nu)\, u_{xx} + O(\Delta x^2).
+$$
+
+At $\nu = 1$ the right-hand side vanishes and the scheme is the shift operator. Below 1 you are solving a viscous problem you did not write down.
+
+Heat FTCS does the opposite: $G = 1 - 4r\sin^2(\theta/2)$, real, and the checkerboard $\theta = \pi$ is the worst, giving $G = 1 - 4r$. That is the $r = 1/2$ bound you just hunted.
 
 </Tier>
 
 ## What to carry forward
 
-Two or three lines connecting to what comes next.
+The CFL triangle: information cannot outrun the stencil. $\nu = c\,\Delta t/\Delta x$ is that comparison, in mesh units. Necessary, not sufficient — and a plot that does not explode can still be the scheme pretending to be physics.
