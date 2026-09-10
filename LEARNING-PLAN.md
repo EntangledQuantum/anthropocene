@@ -119,9 +119,10 @@ Paths worth creating once the first one is complete. Each becomes a directory un
 
 - ✅ **Linear Algebra, Computationally** — stencil is the matrix; Jacobi; CG; SSOR-PCG; two-grid; Householder QR; Newton basin; SVD; GMRES.
 - ✅ Reconstruction / Riemann — limited MUSCL; Godunov flux is \(f(\hat u(0))\).
-- ✅ PIC, LBM, SPH — charge on a grid; stream–collide–moments; kernel instead of a mesh.
+- ✅ PIC, LBM, SPH, DEM — charge on a grid; stream–collide; kernel; contact is the law.
 - ✅ Verification vs validation — a pretty picture is not a proof.
-- [ ] DEM, peridynamics, UQ as later costumes. WENO as a gym variant of reconstruction.
+- ✅ Uncertainty quantification — a single run is a sample.
+- [ ] Peridynamics, HPC/strong scaling, WENO as later costumes.
 - [ ] **Probability and Inference** — from sampling to Bayesian computation.
 - [ ] **Optimisation** — convexity, gradient methods, second-order methods, constraints.
 - [ ] **Signals and Transforms** — Fourier, wavelets, sampling, aliasing.
