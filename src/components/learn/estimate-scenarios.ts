@@ -25,6 +25,7 @@ import { pictureResidual2 } from '../../lib/numerics/svd.ts';
 import { DEMO_RESTART, DEMO_WIND, GMRES_N, convectionProblem, gmres } from '../../lib/numerics/gmres.ts';
 import { measuredPlasmaPeriod } from '../../lib/numerics/pic.ts';
 import { CS, demoPoiseuille } from '../../lib/numerics/lbm.ts';
+import { mmsErrorDrop } from '../../lib/numerics/vv.ts';
 
 /**
  * Named quantities for `<Estimate>`.
@@ -446,6 +447,21 @@ const lbmUmax: EstimateScenario = {
   truth: () => demoPoiseuille().umax,
 };
 
+/* Factor by which time-integrated MMS error falls when n doubles.
+   Order 2 means 4×; the number is measured, not typed. */
+const vvMmsDrop: EstimateScenario = {
+  quantity: 'factor the MMS L² error falls when you double n from 32 to 64 on manufactured heat',
+  logRange: [0, 1.7],
+  logStart: 0.3,
+  withinFactor: 1.7,
+  landmarks: [
+    { value: 2, label: 'order 1' },
+    { value: 4, label: 'order 2' },
+    { value: 16, label: 'order 4' },
+  ],
+  truth: () => mmsErrorDrop(32),
+};
+
 export const ESTIMATE_SCENARIOS: Record<string, EstimateScenario> = {
   'euler-work-1e6': eulerWorkFor1e6,
   'rk4-work-1e6': rk4WorkFor1e6,
@@ -473,4 +489,5 @@ export const ESTIMATE_SCENARIOS: Record<string, EstimateScenario> = {
   'gm-stored-restart': gmStoredRestart,
   'pic-plasma-period': picPlasmaPeriod,
   'lbm-umax': lbmUmax,
+  'vv-mms-drop': vvMmsDrop,
 };

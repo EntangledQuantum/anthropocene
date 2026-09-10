@@ -11,44 +11,156 @@ requires:
   - 'cfl-condition'
   - 'order-of-accuracy'
 runtime: 'none'
-status: 'draft'
+status: 'live'
+updated: 2026-09-11
 ---
 
-Open with the tension, not the definition. What does the reader currently believe that
-this lesson is going to complicate?
+You ran heat. The field is smooth. Nothing exploded — you already know the [CFL](/anthropocene/learn/computational-physics/fields-and-continua/cfl/) bound for this stencil. Here is the frame you would put in the paper.
 
-## The idea
-
-Build it up. Use `$inline$` and `$$display$$` for math.
+<VvLab
+  kind="half-stencil"
+  pretty={true}
+  lockKind={true}
+  n={48}
+  caption="FTCS heat, n = 48, r = 0.25. Bounded. Smooth. The plot you ship."
+/>
 
 <Predict
-  id="01-vv-first-prediction"
-  question="Ask something the reader can be productively wrong about."
+  id="vv-pretty-proof"
+  question="Is this picture a proof that the heat solver is correct?"
   options={[
-    { key: 'a', label: 'The intuitive answer', why: 'Why it is tempting, and exactly where it breaks.' },
-    { key: 'b', label: 'The correct answer', why: 'Why it is right, in one or two sentences.' },
+    { key: 'a', misconception: 'pretty-is-verified', label: 'Yes. Bounded, smooth, CFL-safe. That is what a correct run looks like.', why: "Boundedness is the CFL question, already closed. A wrong stencil, a missing source, and a consistent discretisation of the wrong PDE can all look like this." },
+    { key: 'b', misconception: 'one-grid-enough', label: 'Yes, if you refine once and it still looks the same.', why: "Looking the same is not a rate. A single extra grid cannot measure an order, and 'looks the same' will happily agree on a wrong PDE that both resolutions have already converged to." },
+    { key: 'c', label: 'No. A pretty field is not a test. You have not asked the discrete operator a question it can fail.', why: 'Correct. Verification is a question with a wrong answer: does the residual fall at the design order under systematic refinement?' },
+    { key: 'd', label: 'Yes, if the integral of u is conserved to roundoff.', why: 'Conservation is an identity of some updates and a hope in others. It can pass on a scheme that solves the wrong PDE. It is a useful audit, not a proof.' },
+  ]}
+  correct="c"
+>
+
+Dashed is the manufactured solution of $u_t = u_{xx} + f$ that this run was supposed to hit. The stencil is the 3-point Laplacian with an extra `/2`. Drag $n$. The residual does not fall.
+
+<VvLab
+  kind="half-stencil"
+  lockKind={true}
+  n={48}
+  caption="Same code, extra /2 on the Laplacian. Smooth, bounded, and the residual sits at ~14 for every mesh. Pretty is not a slope."
+/>
+
+</Predict>
+
+## Ask the operator a question it can fail
+
+Pick a field that is **not** a heat eigenmode. Plug it into the PDE. Whatever is left is a source. The field is then an exact solution of the forced equation, by construction. That is the **method of manufactured solutions** (Roache). It does not have to be physics — verification is a mathematical exercise.
+
+$$
+\hat u(x,t) = \sin(2\pi x)\cos(2\pi t), \qquad
+f = \hat u_t - \alpha \hat u_{xx}
+$$
+
+Run the same FTCS heat step, plus $\Delta t\, f$. The [order of accuracy](/anthropocene/learn/computational-physics/derivatives/finite-differences/) of the 3-point Laplacian is 2. With the diffusion number $r$ held fixed, $\Delta t \propto \Delta x^2$, so the time error is also $\Order(\Delta x^2)$. The residual of $\hat u$ in the discrete operator must fall as $\Delta x^2$. If it does not, the code is not the operator you think it is.
+
+The extra `/2` was a coefficient. Hunt the value that brings the slope back.
+
+<Tune
+  id="vv-coeff-order"
+  scenario="vv-laplacian-coeff"
+  prompt="The manufactured source assumes α = 1. Drag the coefficient in front of the Laplacian until the residual falls as Δx²."
+  hint="The extra /2 you just watched is α = 1/2. The slope returns when the stencil matches the source."
+  explanation="α = 1. Only then is the discrete operator the one the source was built for, and only then does the residual fall as Δx². Every other value is a perfectly consistent discretisation of a different equation — verified, if you manufactured for that α, and still the wrong physics."
+/>
+
+Draw the residual you get at α = 1. The slope *is* the order.
+
+<SketchCurve
+  id="vv-residual-sketch"
+  scenario="vv-mms-residual"
+  prompt="Sketch log₁₀ of the MMS residual against log₁₀ Δx for the 3-point heat operator with α = 1. It is already plotted at n = 16."
+  hint="The Laplacian is second order. A decade in Δx is two decades in residual."
+  explanation="A straight line of slope 2. That slope is the verification signature. The extra-/2 run you saw first is a line of slope ~0 at residual ≈ 14 — same family of pictures, different operator."
+/>
+
+<Estimate
+  id="vv-mms-drop"
+  scenario="vv-mms-drop"
+  prompt="Same manufactured heat. Double n from 32 to 64. By what factor does the L² error against û fall?"
+  explanation="About 4. Error is O(Δx²) and Δx halved, so the error drops by 4. A factor near 2 would have meant order 1 — a different stencil than the one you claimed. A factor near 1 would have meant you are converging to the wrong equation."
+/>
+
+## Two questions, not one
+
+**Verification:** did you solve the discrete problem you wrote? Residual vs $\Delta x$ at the design order.
+
+**Validation:** is that discrete problem the physics? MMS cannot answer this. A passing order study on the extra `/2` stencil, manufactured for $\alpha = 1/2$, is a verification of $\alpha = 1/2$ heat. It is silent on $\alpha = 1$.
+
+The [CFL](/anthropocene/learn/computational-physics/fields-and-continua/cfl/) lesson already showed you the quiet version of this: first-order upwind at $\nu = 0.4$ is bounded, smooth, and the wrong PDE — advection plus numerical viscosity. Refine. The viscosity vanishes and you recover advection. If the intended physics was heat, refinement never saves you.
+
+<Classify
+  id="vv-three-runs"
+  prompt="The same heat/advection code, three ways. Sort what each run actually earned."
+  buckets={[
+    { key: 'verified', label: 'verified the intended operator', accent: 'cyan' },
+    { key: 'wrong-physics', label: 'verified, wrong physics', accent: 'warn' },
+    { key: 'neither', label: 'no test', accent: 'magenta' },
+  ]}
+  items={[
+    { key: 'mms', label: 'Heat FTCS + manufactured source. Residual falls as Δx².', bucket: 'verified', why: 'The discrete operator matches the forced PDE you wrote. Order 2 is the proof, not the picture.' },
+    { key: 'half', label: 'Same Laplacian with an extra /2. Smooth sine. Residual stuck at ~14.', bucket: 'wrong-physics', why: 'Consistent and stable — a verified discretisation of α = 1/2. It is not the α = 1 operator the source assumed. The field does not care.' },
+    { key: 'pretty', label: 'One frame of the extra-/2 run. Smooth, bounded, no dashed line, no sweep.', bucket: 'neither', why: 'You never asked. A screenshot cannot fail, so it cannot verify.' },
+    { key: 'adv', label: 'Upwind of a Gaussian. Error vs heat stays O(1); error vs exact advection falls as Δx.', bucket: 'wrong-physics', why: 'You verified first-order advection. The intended physics was heat. Refinement makes the travelling bump a better travelling bump, never a spreading one.' },
+  ]}
+  explanation="Verification is a property of the pair (code, discrete problem). Validation is a property of the pair (discrete problem, physics). A pretty frame is a property of the colour map."
+/>
+
+Switch the lab yourself. Three runs, one residual plot.
+
+<VvLab
+  kind="mms"
+  n={32}
+  caption="MMS heat, extra /2, and upwind. The field is almost always pretty. The slope is the confession."
+/>
+
+<Predict
+  id="vv-order-is-physics"
+  question="You manufacture û for α = 1/2, run the extra-/2 stencil, and recover order 2. What have you shown?"
+  options={[
+    { key: 'a', misconception: 'order-is-validation', label: 'That the code solves heat with α = 1. Order 2 is the design order of the Laplacian.', why: 'You recovered the design order of the operator you actually wrote, α = 1/2. MMS never inspects the operator you meant.' },
+    { key: 'b', label: 'That you solved the discrete problem you wrote (α = 1/2). You have not validated α = 1.', why: 'Correct. Verification of the written equations, silence on the intended ones. Validation would need experiment, or a manufactured/exact solution of the physics you claim.' },
+    { key: 'c', misconception: 'pretty-is-verified', label: 'Nothing, until the field also matches the α = 1 exact solution by eye.', why: 'Eye is not a norm. The α = 1/2 field will look like heat. So will α = 1. So will a slightly wrong α. The slope against the intended manufactured solution is the test, and here it would be ~0.' },
+    { key: 'd', label: 'Nothing. A manufactured solution is fake, so a passing MMS study never counts as verification.', why: 'The fakery is the point. Verification is a mathematical exercise; û does not have to be physics. Refusing MMS because it is manufactured is refusing the only exact solution you can get for a general operator.' },
   ]}
   correct="b"
 >
 
-The payoff, revealed only after they commit. Usually a simulation.
+The matched-α run recovers order 2. The intended-α run does not. Both fields are sines.
 
 </Predict>
 
-<Recall id="01-vv-card" concept="verification">
-  <div slot="front">The question to answer from memory in three months.</div>
+<Recall id="vv-solved-right" concept="verification">
+  <div slot="front">Verification versus validation, in one line each. What does MMS actually prove?</div>
 
-The answer, written so it teaches rather than merely confirms.
+**Verification:** did I solve the discrete problem I wrote? The test is residual (or error) vs $\Delta x$ at the design order.
+
+**Validation:** is that discrete problem the physics I meant? Comparison to experiment, or to a higher-fidelity description of the intended system.
+
+MMS proves the first, for whatever operator you manufactured against. It cannot prove the second. A pretty picture proves neither.
 
 </Recall>
 
-<Tier level="advanced">
+<Tier level="advanced" title="code verification, solution verification, and what conservation does not buy">
 
-The treatment for someone who already has the working version. Derivations, edge cases,
-the reason the standard explanation is a simplification.
+Oberkampf's split inside verification:
+
+- **Code verification.** The software implements the intended discrete operator. MMS plus a grid-convergence study that recovers the design order, with a defined completion point. A theorem-like test: either the slope is $p$, or you have a bug.
+- **Solution verification.** *This* run, on *this* mesh, has an estimated numerical error. Richardson / GCI on the quantity of interest. Passing code verification does not certify a coarse production mesh.
+
+Conservation of mass, energy, or $\nabla\!\cdot\! B = 0$ is a **necessary audit**. It catches some bugs and some unstable runs. It does not catch a consistent discretisation of the wrong PDE — the extra `/2` conserves the mean just as well as the right Laplacian. Treat a conservation unit test as a smoke test, not as V&V.
+
+The method of exact solutions (MES) is MMS without the source: you need a genuine closed form of the unforced PDE. Fine when you have one (the sine eigenmode of heat). Useless for a general operator, which is why you manufacture.
 
 </Tier>
 
 ## What to carry forward
 
-Two or three lines connecting to what comes next.
+- **Verification** = solved the discrete problem. **Validation** = the discrete problem is the physics.
+- The test is residual vs $\Delta x$, at the design order. A pretty field is not a test.
+- You can verify the wrong equations perfectly. MMS will help you do it.

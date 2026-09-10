@@ -1,3 +1,15 @@
-title: 'validation'
-blurb: 'TODO: one sentence, plain language.'
-tags: []
+title: 'Validation'
+blurb: 'Are the equations you solved the physics you meant? Recovering the design order does not answer this.'
+notation: 'the discrete problem is the physics'
+tags:
+  - ch7
+misconceptions:
+  - id: 'order-is-validation'
+    name: 'Recovering the design order means the model is the physics.'
+    signal: 'Treats a passing MMS study as evidence the simulation predicts the real system.'
+    correction: 'MMS verifies that you solved the discrete problem you wrote. It is silent on whether that problem is heat, advection, or heat with the wrong α. Validation compares the verified model to experiment or to a higher-fidelity description of the intended physics.'
+references:
+  - label: 'Oberkampf and Trucano, Verification and validation in computational fluid dynamics, Prog. Aerosp. Sci. 38 (2002)'
+    url: 'https://doi.org/10.1016/S0376-0421(02)00005-2'
+  - label: 'Roache, Code Verification by the Method of Manufactured Solutions, J. Fluids Eng. 124 (2002)'
+    url: 'https://doi.org/10.1115/1.1436090'

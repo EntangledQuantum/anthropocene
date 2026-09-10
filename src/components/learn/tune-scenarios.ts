@@ -25,6 +25,7 @@ import {
 import { densityAtVanishingPressure, latticePressure } from '../../lib/numerics/md.ts';
 import { hWhereRadiusFallsBelow, pendulumRadiusAt } from '../../lib/numerics/constraints.ts';
 import { runAdvection, runHeat } from '../../lib/numerics/pde1d.ts';
+import { observedOrder, residualSweep } from '../../lib/numerics/vv.ts';
 import { neumannGhostTarget, residualWithTrialGhost } from '../../lib/numerics/stencil-bc.ts';
 import {
   cloneMac,
@@ -1064,6 +1065,57 @@ const lbmTauUmax: TuneScenario = {
   },
 };
 
+/* MMS residual vs Δx as you drag the coefficient in front of the Laplacian.
+   The manufactured source assumes α = 1. Only then does the residual fall
+   as Δx² — every other value is a verified solution of the wrong operator. */
+const vvLaplacianCoeff: TuneScenario = {
+  param: {
+    key: 'alpha',
+    label: 'Laplacian coefficient',
+    symbol: 'α',
+    min: 0.35,
+    max: 1.65,
+    step: 0.02,
+    value: 0.5,
+    hint: 'The 3-point stencil is multiplied by this α. The manufactured source was built with α = 1.',
+  },
+  target: 1,
+  tolerance: 0.08,
+  x: { label: 'Δx', scale: 'log', domain: [0.01, 0.07] },
+  y: { label: 'MMS residual', scale: 'log', domain: [0.005, 30] },
+  compute: (alpha: number) => {
+    const a = Math.max(0.35, Math.min(1.65, alpha));
+    const pts = residualSweep(a, 1);
+    const order = observedOrder(pts.map((p) => ({ dx: p.dx, error: p.residual })));
+    const matched = residualSweep(1, 1);
+    return {
+      series: [
+        {
+          key: 'matched',
+          label: 'α = 1',
+          color: 'ink',
+          dash: [3, 3],
+          width: 1.2,
+          points: matched.map((p) => [p.dx, p.residual] as const),
+        },
+        {
+          key: 'you',
+          label: 'your α',
+          color: Math.abs(a - 1) < 0.08 ? 'cyan' : 'magenta',
+          style: 'line+dots',
+          width: 2,
+          points: pts.map((p) => [p.dx, p.residual] as const),
+        },
+      ],
+      readouts: [
+        { label: 'α', value: a.toFixed(2) },
+        { label: 'residual order', value: Number.isFinite(order) ? order.toFixed(2) : '—' },
+        { label: 'residual @ n=32', value: (pts.find((p) => p.n === 32)?.residual ?? NaN).toExponential(2) },
+      ],
+    };
+  },
+};
+
 export const TUNE_SCENARIOS: Record<string, TuneScenario> = {
   'fd-optimum': fdOptimum,
   'euler-stability': eulerStability,
@@ -1089,4 +1141,5 @@ export const TUNE_SCENARIOS: Record<string, TuneScenario> = {
   'rie-park-shock': rieParkShock,
   'pic-deposit-split': picDepositSplit,
   'lbm-tau-umax': lbmTauUmax,
+  'vv-laplacian-coeff': vvLaplacianCoeff,
 };

@@ -23,6 +23,7 @@ import { demoPicture, droppedSigma } from '../../lib/numerics/svd.ts';
 import { DEMO_WIND, GMRES_N, convectionProblem, gmresHistory } from '../../lib/numerics/gmres.ts';
 import { riemannState } from '../../lib/numerics/riemann.ts';
 import { poiseuilleSketchProfile } from '../../lib/numerics/lbm.ts';
+import { residualSweep } from '../../lib/numerics/vv.ts';
 
 /**
  * Named targets for `<SketchCurve>`.
@@ -484,6 +485,23 @@ const lbmPoiseuilleParabola: SketchScenario = {
   truth: () => poiseuilleSketchProfile(),
 };
 
+/* Spatial MMS residual of the 3-point heat operator vs Δx, log-log.
+   A slope of 2 is the verification signature of the stencil. */
+const vvResidual16 = residualSweep(1, 1).find((p) => p.n === 16)!;
+const vvMmsResidual: SketchScenario = {
+  xLabel: 'log₁₀ Δx',
+  yLabel: 'log₁₀ residual',
+  xRange: [-2.05, -1.15],
+  yRange: [-2.2, -0.25],
+  tolerance: 0.28,
+  anchors: [{ x: Math.log10(vvResidual16.dx), y: Math.log10(vvResidual16.residual), label: 'n = 16' }],
+  truth: () =>
+    residualSweep(1, 1)
+      .filter((p) => p.residual > 0)
+      .map((p) => ({ x: Math.log10(p.dx), y: Math.log10(p.residual) }))
+      .sort((a, b) => a.x - b.x),
+};
+
 export const SKETCH_SCENARIOS: Record<string, SketchScenario> = {
   'fd-u-curve': fdUCurve,
   'euler-convergence': eulerConvergence,
@@ -513,4 +531,5 @@ export const SKETCH_SCENARIOS: Record<string, SketchScenario> = {
   'rec-tv-unlimited': recTvUnlimited,
   'rie-rarefaction-fan': rieRarefactionFan,
   'lbm-poiseuille-parabola': lbmPoiseuilleParabola,
+  'vv-mms-residual': vvMmsResidual,
 };

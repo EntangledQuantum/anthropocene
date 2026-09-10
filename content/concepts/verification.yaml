@@ -1,3 +1,19 @@
-title: 'verification'
-blurb: 'TODO: one sentence, plain language.'
-tags: []
+title: 'Verification'
+blurb: 'Did you solve the discrete problem you wrote? Residual vs mesh size is the test; a pretty field is not.'
+notation: '\|L_h \hat u - f\| = \Order(h^p)'
+tags:
+  - ch7
+misconceptions:
+  - id: 'pretty-is-verified'
+    name: 'A pretty field is a verified field.'
+    signal: 'Ships a smooth, bounded animation as evidence the solver is correct.'
+    correction: 'Boundedness is not a test of the discrete operator. A wrong stencil, a missing source, and a consistent discretisation of the wrong PDE can all look like heat. Verification asks a question the code can fail: does the residual fall at the design order under systematic refinement?'
+  - id: 'one-grid-enough'
+    name: 'One resolved-looking run is a verification.'
+    signal: 'Takes a single fine grid, notes that nothing blew up, and calls the code verified.'
+    correction: 'A single grid cannot measure an order. You need at least two, preferably a sweep, and you fit only in the asymptotic window — the same discipline as measuring order of accuracy on an ODE. Looking the same on a finer grid is not the same as falling as h^p.'
+references:
+  - label: 'Roache, Code Verification by the Method of Manufactured Solutions, J. Fluids Eng. 124 (2002)'
+    url: 'https://doi.org/10.1115/1.1436090'
+  - label: 'Oberkampf and Trucano, Verification and validation in computational fluid dynamics, Prog. Aerosp. Sci. 38 (2002)'
+    url: 'https://doi.org/10.1016/S0376-0421(02)00005-2'

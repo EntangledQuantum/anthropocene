@@ -139,6 +139,12 @@ describe('estimate scenarios agree with the prose that quotes them', () => {
     expect(t).toBeGreaterThan(0.008);
     expect(t).toBeLessThan(0.04);
   });
+
+  it('MMS heat error drops by about 4× when n doubles 32 → 64', () => {
+    const t = ESTIMATE_SCENARIOS['vv-mms-drop'].truth();
+    expect(t).toBeGreaterThan(3.2);
+    expect(t).toBeLessThan(5.2);
+  });
 });
 
 describe('every scenario is answerable on its own slider', () => {
