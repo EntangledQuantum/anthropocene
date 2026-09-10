@@ -1,3 +1,25 @@
-title: 'jacobi iteration'
-blurb: 'TODO: one sentence, plain language.'
-tags: []
+title: 'Jacobi iteration'
+blurb: 'Replace every unknown by a weighted average of its neighbours. High-k error dies; the leftover long wave is the spectral radius.'
+notation: 'u_i \leftarrow (1-\omega)u_i + \omega(u_{i-1}+u_{i+1}+h^2 f_i)/2'
+tags:
+  - linalg
+misconceptions:
+  - id: 'one-average-solves'
+    name: 'Harmonic functions are neighbour averages, so one Jacobi sweep should land on the solution.'
+    signal: 'Treats a Jacobi sweep as evaluating the mean-value formula for u, rather than as one step of a contraction.'
+    correction: 'The mean-value identity is the fixed point of the iteration, not the first iterate. One average of a mixed field is a slightly smoother mixed field. You are iterating, not solving.'
+  - id: 'more-sweeps-solves'
+    name: 'Enough Jacobi sweeps will solve Poisson at any resolution.'
+    signal: 'Expects the long-wave leftover to die at the same rate as the ripples, or guesses tens of sweeps to cut the error by 10× on a fine grid.'
+    correction: 'The spectral radius is μ_1 = cos(π/(n+1)), which sits at 1 − O(h²). Cutting the long wave by 10× takes O(n²) sweeps. Jacobi is a smoother, not a solver.'
+  - id: 'undamped-is-better'
+    name: 'A full Jacobi step (ω = 1) damps every mode better than a weighted step.'
+    signal: 'Sets ω = 1 because weighting looks like taking a smaller, less honest step.'
+    correction: 'Undamped Jacobi has |μ| ≈ 1 at both ends of the spectrum — the long wave and the Nyquist mode both stall. ω = 2/3 makes every high-k mode contract by at least 1/3, which is the point of a smoother.'
+references:
+  - label: 'Briggs, Henson & McCormick, A Multigrid Tutorial, ch. 2'
+    url: 'https://doi.org/10.1137/1.9780898719505'
+  - label: 'Saad, Iterative Methods for Sparse Linear Systems, ch. 4'
+    url: 'https://doi.org/10.1137/1.9780898718003'
+  - label: 'Strang, Computational Science and Engineering, §6.2'
+    url: 'https://doi.org/10.1137/1.9780961408817'

@@ -12,6 +12,9 @@ import { errorSweep } from '../../lib/numerics/stencil-bc.ts';
 import { HAT_SKETCH_INDEX, HAT_SKETCH_NODES, hat } from '../../lib/numerics/fem1d.ts';
 import { runBlob } from '../../lib/numerics/projection.ts';
 import { runFvm } from '../../lib/numerics/fvm1d.ts';
+import {
+  DEMO_N, JACOBI_SMOOTH_OMEGA, demoMixed, sweepHistory, zeros,
+} from '../../lib/numerics/iterative.ts';
 
 /**
  * Named targets for `<SketchCurve>`.
@@ -328,6 +331,21 @@ const projBlobArea: SketchScenario = {
   },
 };
 
+/* Weighted Jacobi on mixed k=1 + k=16 error. Residual crashes while the
+   high-k dies, then sits on the long-wave floor. Linear decay to zero is
+   the solver reflex this sketch is there to break. */
+const jacResidualStall: SketchScenario = {
+  xLabel: 'sweeps',
+  yLabel: 'log₁₀ ‖r‖ / ‖r₀‖',
+  xRange: [0, 40],
+  yRange: [-3.1, 0.25],
+  tolerance: 0.55,
+  anchors: [{ x: 0, y: 0, label: 'start' }],
+  truth: () => sweepHistory(
+    demoMixed(DEMO_N), zeros(DEMO_N), 40, 'jacobi', JACOBI_SMOOTH_OMEGA,
+  ).map((h) => ({ x: h.sweep, y: Math.log10(Math.max(h.res, 1e-16)) })),
+};
+
 export const SKETCH_SCENARIOS: Record<string, SketchScenario> = {
   'fd-u-curve': fdUCurve,
   'euler-convergence': eulerConvergence,
@@ -347,4 +365,5 @@ export const SKETCH_SCENARIOS: Record<string, SketchScenario> = {
   'fem-hat': femHat,
   'proj-blob-area': projBlobArea,
   'fvm-mass-flat': fvmMassFlat,
+  'jac-residual-stall': jacResidualStall,
 };

@@ -36,6 +36,9 @@ import {
   subtractGradient,
 } from '../../lib/numerics/projection.ts';
 import { flipWhereKeFraction, opposingKeRemaining } from '../../lib/numerics/mpm.ts';
+import {
+  DEMO_N, JACOBI_SMOOTH_OMEGA, jacobiDamping, jacobiSmoothingFactor,
+} from '../../lib/numerics/iterative.ts';
 
 /**
  * Named scenarios for `<Tune>`.
@@ -621,6 +624,40 @@ const mpmFlipHalfKe: TuneScenario = {
   },
 };
 
+/* Hunt ω that equalises |μ| at k = n/2 and at Nyquist. That is ω = 2/3,
+   and the high-k band then sits at 1/3 — the smoothing factor. */
+const jacOmegaSmooth: TuneScenario = {
+  param: {
+    key: 'omega', label: 'Jacobi weight', symbol: 'ω', min: 0.25, max: 1, step: 0.01, value: 1,
+    hint: 'ω = 1 is a full Jacobi step. Smaller ω damps the Nyquist mode; too small leaves k = n/2.',
+  },
+  target: JACOBI_SMOOTH_OMEGA,
+  tolerance: 0.08,
+  x: { label: 'mode k', domain: [1, DEMO_N] },
+  y: { label: '|μ_k|', domain: [0, 1.08] },
+  rules: [
+    { x: Math.ceil(DEMO_N / 2), label: 'high-k', color: 'rgba(255,77,158,0.45)' },
+    { y: 1 / 3, label: '1/3' },
+  ],
+  compute: (omega: number) => {
+    const mag = Array.from({ length: DEMO_N }, (_, i) => {
+      const k = i + 1;
+      return [k, Math.abs(jacobiDamping(k, DEMO_N, omega))] as const;
+    });
+    const highMax = jacobiSmoothingFactor(DEMO_N, omega);
+    return {
+      series: [
+        { key: 'mu', label: '|μ_k|', color: 'cyan', points: mag },
+      ],
+      readouts: [
+        { label: 'ω', value: omega.toFixed(2) },
+        { label: 'high-k max |μ|', value: highMax.toFixed(3) },
+        { label: '|μ_1|', value: Math.abs(jacobiDamping(1, DEMO_N, omega)).toFixed(4) },
+      ],
+    };
+  },
+};
+
 export const TUNE_SCENARIOS: Record<string, TuneScenario> = {
   'fd-optimum': fdOptimum,
   'euler-stability': eulerStability,
@@ -635,4 +672,5 @@ export const TUNE_SCENARIOS: Record<string, TuneScenario> = {
   'ghost-neumann-value': ghostNeumannValue,
   'proj-jacobi-1pct': projJacobiOnePercent,
   'mpm-flip-half': mpmFlipHalfKe,
+  'jac-omega-smooth': jacOmegaSmooth,
 };

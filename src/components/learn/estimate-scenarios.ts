@@ -14,6 +14,9 @@ import { leftoverMaxDiv } from '../../lib/numerics/projection.ts';
 import { opposingKeRemaining } from '../../lib/numerics/mpm.ts';
 import { JUMP_LEFT, JUMP_RIGHT, rankineHugoniot } from '../../lib/numerics/fvm1d.ts';
 import { laplacianNnz } from '../../lib/numerics/operator.ts';
+import {
+  DEMO_N, itersToReduce, jacobiSpectralRadius,
+} from '../../lib/numerics/iterative.ts';
 
 /**
  * Named quantities for `<Estimate>`.
@@ -290,6 +293,21 @@ const opLaplacianNnzN200: EstimateScenario = {
   truth: () => laplacianNnz(200, 'dirichlet'),
 };
 
+/* Undamped Jacobi on n = 31. ρ = cos(π/32) ≈ 0.995, so cutting the long
+   wave by 10× is hundreds of sweeps — the solver reflex guesses tens. */
+const jacItersTenth: EstimateScenario = {
+  quantity: 'undamped Jacobi sweeps to cut the k = 1 error by 10× on n = 31 Dirichlet Poisson',
+  logRange: [1, 4],
+  logStart: 1.5,
+  withinFactor: 3,
+  landmarks: [
+    { value: 10, label: 'ten' },
+    { value: 100, label: 'a hundred' },
+    { value: 1000, label: 'a thousand' },
+  ],
+  truth: () => itersToReduce(jacobiSpectralRadius(DEMO_N, 1), 0.1),
+};
+
 export const ESTIMATE_SCENARIOS: Record<string, EstimateScenario> = {
   'euler-work-1e6': eulerWorkFor1e6,
   'rk4-work-1e6': rk4WorkFor1e6,
@@ -307,4 +325,5 @@ export const ESTIMATE_SCENARIOS: Record<string, EstimateScenario> = {
   'mpm-pic-ke': mpmPicKe,
   'fvm-burgers-shock-speed': fvmBurgersShock,
   'op-laplacian-nnz-n200': opLaplacianNnzN200,
+  'jac-iters-tenth': jacItersTenth,
 };

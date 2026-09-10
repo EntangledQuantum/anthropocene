@@ -11,44 +11,164 @@ requires:
   - 'discrete-operator'
   - 'sparse-matrix'
 runtime: 'none'
-status: 'draft'
+status: 'live'
+updated: 2026-09-10
 ---
 
-Open with the tension, not the definition. What does the reader currently believe that
-this lesson is going to complicate?
-
-## The idea
-
-Build it up. Use `$inline$` and `$$display$$` for math.
+$n = 31$ interior nodes, Dirichlet Laplacian from
+[A matrix is a discrete operator](/anthropocene/learn/linear-algebra/operators/matrix-as-operator/).
+Poisson is $Au = 0$, so the field *is* the error. You start from a long wave plus a ripple.
 
 <Predict
-  id="01-jacobi-smoothing-first-prediction"
-  question="Ask something the reader can be productively wrong about."
+  id="jac-mixed-after-five"
+  question="Five weighted Jacobi sweeps (ω = 2/3). What does the error look like?"
   options={[
-    { key: 'a', label: 'The intuitive answer', why: 'Why it is tempting, and exactly where it breaks.' },
-    { key: 'b', label: 'The correct answer', why: 'Why it is right, in one or two sentences.' },
+    { key: 'a', misconception: 'one-average-solves', label: 'Almost zero. Each unknown becomes the average of its neighbours, and that is the solution of Au = 0.', why: "The mean-value identity is the fixed point, not the first iterate. One average of a mixed field is a slightly smoother mixed field. You are iterating a contraction, not evaluating a formula for u." },
+    { key: 'b', misconception: 'more-sweeps-solves', label: 'Still mixed, a bit smaller. Every mode shrinks by about the same factor.', why: 'That would be a solver with a single rate. Jacobi does not have one. High-k contracts hard; the long wave barely moves.' },
+    { key: 'c', label: 'The ripples are gone. The long wave is almost full size.', why: 'Correct. k = 16 dies by a factor of 1/3 per sweep, so five sweeps leave a thousandth. k = 1 sits at μ ≈ 0.997. The leftover is the first sine.' },
+    { key: 'd', label: 'The long wave dies; the ripples remain. High-k is the stiff part.', why: 'Backwards. High-k is what a local average can see. The long wave looks constant to a three-point stencil, so Jacobi cannot grab it.' },
+  ]}
+  correct="c"
+>
+
+Sweep. Watch the magenta bars collapse and the cyan k = 1 bar stay put. The residual becomes a sine, then the number stops moving.
+
+<JacobiLab
+  n={31}
+  omega={2 / 3}
+  method="jacobi"
+  initial="mixed"
+  lockMethod={true}
+  caption="Error e(x) at a fixed scale, residual r = −Ae, sine-mode spectrum of e. One state. Five sweeps kill the ripple; the long wave is the method, not a bug."
+/>
+
+</Predict>
+
+## A local average is a low-pass filter
+
+Jacobi writes, at every unknown,
+
+$$
+u_i \leftarrow (1-\omega)\,u_i + \omega\,\frac{u_{i-1}+u_{i+1}+h^2 f_i}{2}.
+$$
+
+The Dirichlet sine modes of $A$ are eigenvectors of that map. Mode $k$ is multiplied by
+
+$$
+\mu_k = 1 - 2\omega\sin^2\!\bigl(k\pi / (2(n+1))\bigr).
+$$
+
+For $\omega = 2/3$ and $k \ge n/2$, $|\mu_k| \le 1/3$. For $k = 1$, $\mu_1 \approx 1 - O(h^2)$. High-k dies. Low-k lives. That split *is* smoothing.
+
+<SketchCurve
+  id="jac-residual-sketch"
+  scenario="jac-residual-stall"
+  prompt="Sketch log₁₀ of the residual ratio over 40 weighted Jacobi sweeps, mixed start. It starts at 0."
+  hint="High-k dominates the residual (A amplifies it) and dies in a handful of sweeps. After that you are watching μ_1 ≈ 0.997."
+  explanation="The residual crashes while the ripple dies, then sits on a floor set by the long wave. A maps a sine of amplitude O(1) to a small smooth residual — so a quiet leftover is not a small error. Sketching a straight slide to −∞ is the solver reflex; the kink is the lesson."
+/>
+
+<RankOrder
+  id="jac-mode-rank"
+  prompt="n = 31, ω = 2/3. Rank these error modes by how much amplitude remains after five Jacobi sweeps."
+  lowLabel="least remains (dies)"
+  highLabel="most remains (stalls)"
+  items={[
+    { key: 'k16', label: 'k = 16 (one oscillation per two cells)', why: '|μ| = 1/3, so five sweeps leave (1/3)⁵ ≈ 0.004. Dead.' },
+    { key: 'k8', label: 'k = 8', why: '|μ| ≈ 0.80, so five sweeps leave about a third. Mid-range: neither a ripple nor a long wave.' },
+    { key: 'k1', label: 'k = 1 (the first sine)', why: '|μ| ≈ 0.997, so five sweeps leave 0.98. This is the leftover you just sketched.' },
+  ]}
+  correct={['k16', 'k8', 'k1']}
+  explanation="Damping is a function of k. The spectrum in the lab is this ranking, drawn."
+/>
+
+## As a solver it is the long wave, slowly
+
+The spectral radius of undamped Jacobi on this $A$ is the worst $|\mu_k|$,
+
+$$
+\rho = \cos\bigl(\pi/(n+1)\bigr) \approx 1 - \tfrac{\pi^2}{2}h^2.
+$$
+
+On $n = 31$ that is $0.995$. Each sweep of the leftover multiplies by $0.995$.
+
+<Estimate
+  id="jac-iters-to-tenth"
+  scenario="jac-iters-tenth"
+  prompt="Undamped Jacobi, n = 31. How many sweeps to cut the k = 1 error by 10×?"
+  explanation="log(0.1) / log(cos(π/32)) ≈ 477. The slider starts near thirty because that is what 'a method that works' feels like. Refine the grid and ρ moves closer to 1: the cost as a solver is O(n²) iterations. Smoothing cost is O(1) sweeps, independent of h."
+/>
+
+<Tune
+  id="jac-omega-smooth"
+  scenario="jac-omega-smooth"
+  prompt="Drag ω until the high-k band (right of the magenta mark) is as low and flat as you can make it. You are looking for the smoother, not the smallest |μ_1|."
+  hint="Balance |μ| at k = n/2 against |μ| at Nyquist. ω = 1 leaves the rightmost mode near 1."
+  explanation="ω = 2/3 equalises those two ends at 1/3. That number is the smoothing factor: every oscillatory mode shrinks by at least 3× per sweep, independent of h. ω = 1 is a worse smoother — |μ_n| ≈ 1, so the Nyquist mode stalls with the long wave. Weighting is not a smaller step. It is what makes high-k die."
+/>
+
+Switch the lab to **k = 16** alone, then to **hashed**, then set ω = 1 and look at the rightmost bar.
+
+<Recall id="jac-smoothing-card" concept="smoothing">
+  <div slot="front">What does a smoother do to mixed-frequency error, and what does it refuse to do?</div>
+
+It kills the oscillatory part in a few sweeps and leaves the long wave almost untouched. The residual looks smooth, then barely moves. That stall is the method working as a low-pass filter, not failing as a solver. The leftover is what a coarse grid is for.
+
+</Recall>
+
+## Gauss–Seidel is the same average, using what you just wrote
+
+Walk left to right. At node $i$ the left neighbour is already new:
+
+$$
+u_i \leftarrow \frac{u_{i-1}^{\mathrm{new}} + u_{i+1}^{\mathrm{old}} + h^2 f_i}{2}.
+$$
+
+<Predict
+  id="jac-gs-beat"
+  question="Same mixed start, five Gauss–Seidel sweeps instead of Jacobi. The leftover is…"
+  options={[
+    { key: 'a', label: 'gone. GS is a real solver; Jacobi was the warm-up.', why: 'GS is faster — ρ_GS = ρ_J², so one GS sweep matches two Jacobi sweeps on this A — and the leftover is still the long wave. Same stall, tighter beat.' },
+    { key: 'b', label: 'the same long wave, smaller than Jacobi left.', why: 'Correct. High-k still dies; k = 1 still stalls. GS just damps both a bit harder because each unknown sees a neighbour that has already been averaged.' },
+    { key: 'c', misconception: 'undamped-is-better', label: 'the ripple, because GS has a direction and lets high-k through.', why: 'GS has a direction, and it is still a local average. High-k is what a local average kills. Switch the lab to Gauss–Seidel and sweep five times.' },
+    { key: 'd', misconception: 'smooth-means-solved', label: 'a smooth residual of size ~ 10⁻⁸, so you are done.', why: 'Smooth is the shape of the leftover, not the size of the error. After five GS sweeps the field is still O(1). A quiet residual of a long wave is A doing its job, not a solved system.' },
   ]}
   correct="b"
 >
 
-The payoff, revealed only after they commit. Usually a simulation.
+<JacobiLab
+  n={31}
+  method="gauss-seidel"
+  initial="mixed"
+  lockOmega={true}
+  caption="Gauss–Seidel on the same mixed start. Five sweeps: ripple gone, long wave smaller than Jacobi left, still a sine. Not a new idea."
+/>
 
 </Predict>
 
-<Recall id="01-jacobi-smoothing-card" concept="jacobi-iteration">
-  <div slot="front">The question to answer from memory in three months.</div>
+<Recall id="jac-jacobi-card" concept="jacobi-iteration">
+  <div slot="front">Write the Jacobi update at one unknown, and name the eigenvalue that stops it from being a solver.</div>
 
-The answer, written so it teaches rather than merely confirms.
+$$
+u_i \leftarrow (1-\omega)\,u_i + \omega\,\frac{u_{i-1}+u_{i+1}+h^2 f_i}{2}.
+$$
+
+On this Laplacian the sine modes are eigenvectors with $\mu_k = 1 - 2\omega\sin^2(k\pi / (2(n+1)))$. The spectral radius is $\mu_1 = \cos(\pi/(n+1))$ when $\omega = 1$, which sits at $1 - O(h^2)$. That is the long wave. Jacobi (and GS) are smoothers.
 
 </Recall>
 
-<Tier level="advanced">
+<Tier level="advanced" title="n = 3, the Nyquist mode, and why the stall is a coarse grid">
 
-The treatment for someone who already has the working version. Derivations, edge cases,
-the reason the standard explanation is a simplification.
+On $n = 3$ the Jacobi factors are $\cos(\pi/4)$, $0$, $-\cos(\pi/4)$. The middle mode dies in one sweep. The two others stall at $1/\sqrt{2}$. The whole lesson, three unknowns.
+
+Undamped Jacobi ($\omega = 1$) has $|\mu_n| = \cos(\pi/(n+1))$ too — the Nyquist mode stalls with the long wave. That is why the smoother is weighted. $\omega = 2/3$ puts $|\mu| \le 1/3$ on the whole high-k half of the spectrum, and makes $\rho$ *worse* (closer to 1). A better smoother is a worse solver. Those are different jobs.
+
+Gauss–Seidel on this tridiagonal $A$ has eigenvalues $\cos^2(k\pi/(n+1))$, so $\rho_{\mathrm{GS}} = \rho_J^2$. The sine modes are *not* GS eigenvectors — the iteration matrix is not symmetric — but the leftover is still a long wave. Red-black GS is a later costume of the same split.
+
+As a solver, iterations to cut the error by a constant factor scale like $1/(1-\rho) \sim n^2$. Refine, wait longer. As a smoother, five sweeps suffice at every $h$. The long-wave leftover is a well-resolved sine on a grid twice as coarse. That is the next move, and it is not this lesson.
 
 </Tier>
 
 ## What to carry forward
 
-Two or three lines connecting to what comes next.
+High-k dies, low-k lives. After a few sweeps the residual is smooth and then it stops. That stall is not a failure of Jacobi — it is the definition of a smoother, and it is the error a coarse grid can see. Next, a different subspace: what matvecs can tell you from one residual.

@@ -1,3 +1,15 @@
-title: 'smoothing'
-blurb: 'TODO: one sentence, plain language.'
-tags: []
+title: 'Smoothing'
+blurb: 'A few stationary sweeps kill oscillatory error and leave a long wave that barely moves. That stall is the method working as a filter, not failing as a solver.'
+notation: '\mu_k = 1 - 2\omega\sin^2(k\pi / (2(n+1)))'
+tags:
+  - linalg
+misconceptions:
+  - id: 'smooth-means-solved'
+    name: 'A smooth residual is a small error, so the solve is almost done.'
+    signal: 'Reads a flat leftover residual as "we are there," or stops because the picture stopped changing.'
+    correction: 'A maps a long wave to a small residual. After the high-k dies, r looks smooth because e is a sine, not because e is small. The error can still be O(1). That leftover is what a coarse grid is for.'
+references:
+  - label: 'Briggs, Henson & McCormick, A Multigrid Tutorial, ch. 2'
+    url: 'https://doi.org/10.1137/1.9780898719505'
+  - label: 'Trottenberg, Oosterlee & Schüller, Multigrid, §2.1'
+    url: 'https://doi.org/10.1016/B978-0-12-701070-0.X5000-3'

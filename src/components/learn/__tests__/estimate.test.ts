@@ -87,6 +87,12 @@ describe('estimate scenarios agree with the prose that quotes them', () => {
   it('1D Dirichlet Laplacian on 200 unknowns has nnz = 3n−2 = 598', () => {
     expect(ESTIMATE_SCENARIOS['op-laplacian-nnz-n200'].truth()).toBe(598);
   });
+
+  it('undamped Jacobi on n = 31 needs ~477 sweeps to cut k = 1 by 10×', () => {
+    const t = ESTIMATE_SCENARIOS['jac-iters-tenth'].truth();
+    expect(t).toBeGreaterThan(400);
+    expect(t).toBeLessThan(600);
+  });
 });
 
 describe('every scenario is answerable on its own slider', () => {
