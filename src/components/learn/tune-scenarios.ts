@@ -23,6 +23,7 @@ import {
   mcRelativeRmse,
 } from '../../lib/numerics/monte-carlo.ts';
 import { densityAtVanishingPressure, latticePressure } from '../../lib/numerics/md.ts';
+import { hWhereRadiusFallsBelow, pendulumRadiusAt } from '../../lib/numerics/constraints.ts';
 
 /**
  * Named scenarios for `<Tune>`.
@@ -365,6 +366,52 @@ const mdVanishingPressure: TuneScenario = {
   },
 };
 
+/* ── index-reduced RK4 walks off the circle; hunt the h where |q| = 0.95 ─ */
+
+const CONS_TUNE_SPAN = 30;
+const CONS_TUNE_R = 0.95;
+const consDriftHTarget = hWhereRadiusFallsBelow(CONS_TUNE_R, CONS_TUNE_SPAN);
+
+const consDriftH: TuneScenario = {
+  param: { key: 'h', label: 'step size', symbol: 'h', min: 0.05, max: 0.36, step: 0.005, value: 0.08,
+           hint: 'Index-reduced RK4. Find the h at which |q| has fallen to 0.95 by t = 30.' },
+  target: consDriftHTarget,
+  tolerance: 0.12,
+  x: { label: 'h', domain: [0.05, 0.36] },
+  y: { label: '|q| at t = 30', domain: [0.58, 1.12] },
+  rules: [
+    { y: 1, color: 'rgba(159,232,112,0.4)', label: 'circle' },
+    { y: 0.95, color: 'rgba(242,238,247,0.35)', label: '|q| = 0.95' },
+  ],
+  compute: (h: number) => {
+    const hs: number[] = [];
+    for (let v = 0.05; v <= 0.36 + 1e-12; v += 0.01) hs.push(Number(v.toFixed(3)));
+    const rad = (hv: number) => {
+      const r = pendulumRadiusAt('index-rk4', hv, CONS_TUNE_SPAN);
+      if (!Number.isFinite(r) || r > 2) return 0.58;
+      return r;
+    };
+    const r = rad(h);
+    return {
+      series: [
+        {
+          key: 'r', label: '|q|', color: 'cyan',
+          points: hs.map((hv) => [hv, rad(hv)] as const),
+        },
+        {
+          key: 'you', label: 'your h', color: 'magenta', style: 'dots', width: 6,
+          points: [[h, r]],
+        },
+      ],
+      readouts: [
+        { label: 'h', value: h.toFixed(3) },
+        { label: '|q|', value: r.toFixed(4) },
+        { label: '|q| − 1', value: (r - 1).toExponential(2) },
+      ],
+    };
+  },
+};
+
 export const TUNE_SCENARIOS: Record<string, TuneScenario> = {
   'fd-optimum': fdOptimum,
   'euler-stability': eulerStability,
@@ -373,4 +420,5 @@ export const TUNE_SCENARIOS: Record<string, TuneScenario> = {
   'two-rate-cliff': twoRateCliff,
   'mc-crossover': mcCrossover,
   'md-vanishing-pressure': mdVanishingPressure,
+  'cons-drift-h': consDriftH,
 };

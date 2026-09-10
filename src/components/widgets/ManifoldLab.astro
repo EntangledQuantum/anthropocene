@@ -1,0 +1,5 @@
+---
+import Island, { type ManifoldLabProps } from '../viz/ManifoldLab.tsx';
+const props = Astro.props as ManifoldLabProps;
+---
+<Island client:visible {...props} />

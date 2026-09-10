@@ -47,6 +47,12 @@ describe('estimate scenarios agree with the prose that quotes them', () => {
     expect(t).toBeGreaterThan(0.005);
     expect(t).toBeLessThan(0.04);
   });
+
+  it('RK4 on vec(R) leaves SO(3) by about 6e-4 at h = 0.2, t = 24', () => {
+    const t = ESTIMATE_SCENARIOS['cons-rk4-ortho'].truth();
+    expect(t).toBeGreaterThan(2e-4);
+    expect(t).toBeLessThan(2e-3);
+  });
 });
 
 describe('every scenario is answerable on its own slider', () => {

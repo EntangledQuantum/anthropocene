@@ -1,7 +1,7 @@
 ---
 title: 'Staying on the manifold'
-blurb: 'Constraints are not optional decoration. A rotation that leaves SO(3) is not a slightly wrong rotation — it is a different object.'
-order: 1
+blurb: 'A rotation that leaves SO(3) is not a slightly wrong rotation — it is a different object. The constraint belongs inside the discrete map.'
+order: 3
 tier: 'advanced'
 minutes: 16
 teaches:
@@ -10,44 +10,227 @@ requires:
   - 'velocity-verlet'
   - 'variational-integrators'
 runtime: 'none'
-status: 'draft'
+status: 'live'
+updated: 2026-09-10
 ---
 
-Open with the tension, not the definition. What does the reader currently believe that
-this lesson is going to complicate?
-
-## The idea
-
-Build it up. Use `$inline$` and `$$display$$` for math.
+A pendulum is a particle that lives on a circle. Write it in Cartesian coordinates
+and the law is $g(q)=\tfrac12(x^2+y^2-1)=0$. Differentiate twice, solve for the
+multiplier $\lambda$, and you have an ordinary ODE on $\mathbb{R}^4$ whose *flow*
+stays on that circle. Hand the ODE to RK4.
 
 <Predict
-  id="03-constraints-first-prediction"
-  question="Ask something the reader can be productively wrong about."
+  id="cons-leaves-circle"
+  question="Index-reduced Cartesian pendulum, RK4, h = 0.2. After t = 40, what is |q|?"
   options={[
-    { key: 'a', label: 'The intuitive answer', why: 'Why it is tempting, and exactly where it breaks.' },
-    { key: 'b', label: 'The correct answer', why: 'Why it is right, in one or two sentences.' },
+    { key: 'a', misconception: 'index-reduction-enough', label: 'Still 1, to roundoff — the constraint is already in the ODE', why: 'The FLOW of the ODE stays on the circle. RK4 is a discrete map of that ODE, and the map was never asked to land on g = 0. Fourth order does not smuggle the manifold back in.' },
+    { key: 'b', label: 'A few percent off — the discrete map has left the circle', why: 'Correct. At this h the radius has fallen to about 0.95. The particle is no longer a pendulum. It is a nearby free particle that still feels a Lagrange-ish force, pointing at a point that is no longer on the circle.' },
+    { key: 'c', label: 'Exploded — RK4 is unstable at h = 0.2', why: 'Unstable would grow without bound in a handful of steps. This is slower: a secular walk off the manifold. Blow-up comes later, at larger h, and is a different failure.' },
+    { key: 'd', misconception: 'cleanup-after', label: 'Exactly 1 after you notice and project — the residual is just something to tidy', why: 'If you wait until the residual looks bad, the state has already been the wrong object for many steps. Cleanup after the fact does not un-simulate the walk.' },
   ]}
   correct="b"
 >
 
-The payoff, revealed only after they commit. Usually a simulation.
+The unit circle is the law. The magenta trail is the discrete trajectory. The
+iris dot is $q/|q|$ — where the particle *would* be if it were still a pendulum.
+The gap is the lesson.
+
+<ManifoldLab
+  system="pendulum"
+  method="index-rk4"
+  h={0.2}
+  caption="RK4 on the twice-differentiated constraint. g and q · v both walk off zero. Switch to SHAKE: g snaps to the axis, q · v does not. RATTLE kills both."
+/>
 
 </Predict>
 
-<Recall id="03-constraints-card" concept="constrained-integration">
-  <div slot="front">The question to answer from memory in three months.</div>
+The constraint of the continuous system is not a constraint of the discrete map
+unless the map is built to land on it. That is the whole idea, in one sentence.
 
-The answer, written so it teaches rather than merely confirms.
+## The tempting cleanup
+
+The obvious fix: after every step, set $q \leftarrow q/|q|$ and strip the radial
+velocity. The particle sits on the circle again. Job done?
+
+<Predict
+  id="cons-renorm-vs-shake"
+  question="After each RK4 step you project onto the circle. Is that SHAKE?"
+  options={[
+    { key: 'a', misconception: 'renorm-is-shake', label: 'Yes — SHAKE is that projection, applied every step', why: 'Same circle, different map. Projection pulls along ∇g at the NEW point, after a step that was never asked to know about g. SHAKE never leaves: it chooses λ so the Verlet update itself satisfies g(q_{n+1}) = 0, with the force along ∇g(q_n).' },
+    { key: 'b', label: 'No — SHAKE puts the multiplier inside the Verlet step, force along ∇g at the old point', why: 'Correct. The discrete constraint force is part of the update, in the direction the continuous theory wrote. Renormalising afterwards is a different force, applied to a different predictor. Watch the two trajectories diverge.' },
+    { key: 'c', misconception: 'renorm-is-shake', label: 'Yes, provided you also project the velocity — then it is RATTLE', why: 'Projecting (q, v) onto the tangent bundle after RK4 does land on TM, like RATTLE. It is still not RATTLE: RATTLE’s λ is the Verlet multiplier, and that map is symplectic. The projected RK4 map is not the same trajectory and not the same structure.' },
+    { key: 'd', misconception: 'cleanup-after', label: 'It does not matter — any map that ends on the circle is the constrained pendulum', why: 'The next state is the whole story. Two maps that both satisfy g = 0 can send the particle to different points, with different momenta, and only one of them is the discrete analogue of the constrained flow.' },
+  ]}
+  correct="b"
+/>
+
+SHAKE (Ryckaert, Ciccotti, Berendsen 1977) is [velocity Verlet](../verlet-vs-rk4/)
+with one extra unknown. For this spherical constraint:
+
+```ts
+const qUnc = q + h * v + 0.5 * h * h * f;   // f = (0, −1), gravity only
+const alpha = shakeAlpha(q, qUnc);           // Newton: |qUnc − α q|² = 1
+const qNext = qUnc - alpha * q;             // force along ∇g(q_n)
+```
+
+$\alpha = \tfrac12 h^2\lambda$ is chosen so $g(q_{n+1})=0$. The particle never
+leaves. RATTLE (Andersen 1983) then picks a second multiplier so
+$q_{n+1}\cdot v_{n+1}=0$ — and for a sphere, that second correction is exactly
+the tangent projection of the Verlet-completed velocity.
+
+Switch the lab to **SHAKE**, then **RATTLE**, then **RK4 + project**. SHAKE
+pins $g$ and leaves $q\cdot v$ at $O(h)$. RATTLE pins both, to roundoff.
+Projection pins both too — and the particle is not where RATTLE put it.
+
+<Recall id="cons-map-not-cleanup" concept="constrained-integration">
+  <div slot="front">Why is dividing by |q| after a step not the same as SHAKE?</div>
+
+SHAKE chooses the Lagrange multiplier so the Verlet step *itself* lands on
+$g(q_{n+1})=0$, with the constraint force along $\nabla g$ at the old position.
+Dividing by $|q|$ is a different map: it pulls along the new radius, after an
+update that was never asked to know about $g$. Same circle. Different discrete
+mechanics.
 
 </Recall>
 
-<Tier level="advanced">
+## Commit to the walk
 
-The treatment for someone who already has the working version. Derivations, edge cases,
-the reason the standard explanation is a simplification.
+Before the explanation hardens, draw the failure.
+
+<SketchCurve
+  id="cons-drift-sketch"
+  scenario="cons-manifold-drift"
+  prompt="Index-reduced RK4, h = 0.2, out to t = 40. Sketch |q|² − 1. It starts at exactly zero."
+  hint="The ODE’s flow conserves g. The discrete map has no such identity. The residual is free to accumulate in one direction."
+  explanation="A steady slide below zero. The radius shrinks by about five percent. This is not a stability explosion and not a bounded oscillation — it is the manifold leaking because nothing in the map holds it. SHAKE’s plot of the same quantity is a flat line at roundoff."
+/>
+
+The walk is a function of $h$. Find the step where the leak is a five-percent
+error in thirty time units — visible, and already a different object.
+
+<Tune
+  id="cons-drift-h"
+  scenario="cons-drift-h"
+  prompt="Index-reduced RK4, t = 30. Drag h until the radius has fallen to 0.95."
+  hint="Small h delays the walk; it does not put g(q_{n+1}) = 0 into the map. Past ~0.35 the method stops being a pendulum at all and blows."
+  explanation="Around h ≈ 0.24 the discrete map has walked five percent off the circle in a few periods. Smaller h postpones the theft. Only a map that enforces g(q_{n+1}) = 0 stops it. The floor at large h is the other failure — explosion — clipped onto the same chart."
+/>
+
+## A rotation that is not a rotation
+
+Same structure, different clothing. A rigid body lives on $SO(3)$:
+$R^\top R = I$, $\det R = +1$. The kinematics are $\dot R = R\hat\omega$.
+RK4 on the nine entries is the index-reduced move: the *flow* stays in the
+group, the discrete map does not.
+
+<Predict
+  id="cons-so3-object"
+  question="RK4 on the nine entries of R, constant ω. After a while RᵀR ≠ I. What is R?"
+  options={[
+    { key: 'a', misconception: 'slightly-wrong-rotation', label: 'A slightly wrong rotation — the angles are off by the local truncation error', why: 'Truncation error on SO(3) would be a nearby rotation. Once RᵀR leaves I, lengths and right angles are not preserved. The cube shears. That is not an angle error.' },
+    { key: 'b', label: 'Not a rotation — the linear map stretches lengths and shears angles', why: 'Correct. A rotation is an element of SO(3). Off the group, R is just a 3×3 matrix. The wireframe cube that was a cube is a parallelepiped.' },
+    { key: 'c', misconception: 'index-reduction-enough', label: 'Still in SO(3) up to roundoff; the residual is numerical noise', why: 'RK4’s orthogonality residual grows secularly, linearly in time at fixed h — far above roundoff. Lie-group exp sits at 10⁻¹⁵. The two maps do not disagree by machine epsilon.' },
+    { key: 'd', misconception: 'cleanup-after', label: 'A rotation in a different inner product; Gram–Schmidt will recover the same body', why: 'Gram–Schmidt after RK4 does sit back on SO(3), and it is not the Lie-group trajectory. Cleanup makes a rotation. It does not make the rotation the exponential map would have given you.' },
+  ]}
+  correct="b"
+>
+
+The cube is $Rv$ for the eight vertices of a cube. When $R$ leaves $SO(3)$ the
+cube shears. Switch to **Lie-group exp**: $R_{n+1}=R_n\exp(h\hat\omega)$
+(Rodrigues). The cube stays a cube because the discrete map was defined on the
+group.
+
+<ManifoldLab
+  system="rotation"
+  method="rk4"
+  h={0.2}
+  caption="RK4 on vec(R). ‖RᵀR − I‖_F climbs; det R wanders. Lie-group exp holds both at roundoff. Gram–Schmidt after RK4 sits on SO(3) and is a different rotation."
+/>
+
+</Predict>
+
+<Estimate
+  id="cons-rk4-ortho"
+  scenario="cons-rk4-ortho"
+  prompt="RK4 on the nine entries, constant ω, h = 0.2, t = 24. How large is ‖RᵀR − I‖_F?"
+  explanation="About 6×10⁻⁴ — not 10⁻¹⁵. The residual is a property of the map, visible, growing. The Lie-group step on the same interval sits at roundoff. Fourth order on the ambient space is not smallness on the group."
+/>
+
+<Classify
+  id="cons-sort-maps"
+  prompt="Each map either leaves the manifold, sits on it with velocity not tangent, or stays on the tangent bundle (or the group). The distinction is what the update is required to satisfy."
+  buckets={[
+    { key: 'leave', label: 'leaves the manifold', accent: 'magenta' },
+    { key: 'config', label: 'on M, not on TM', accent: 'cyan' },
+    { key: 'bundle', label: 'on the tangent bundle / group', accent: 'ok' },
+  ]}
+  items={[
+    { key: 'rk4p', label: 'RK4 on the index-reduced pendulum', bucket: 'leave', why: 'g̈ = 0 was imposed on the vector field, not on the map. g and q · v both drift.' },
+    { key: 'shake', label: 'SHAKE', bucket: 'config', why: 'g(q_{n+1}) = 0 is Newton’s target for λ. The hidden constraint q · v is O(h), not zero.' },
+    { key: 'rattle', label: 'RATTLE', bucket: 'bundle', why: 'A second multiplier hits q_{n+1} · v_{n+1} = 0. The state stays on TM. Symplectic (Leimkuhler & Skeel 1994).' },
+    { key: 'proj', label: 'RK4, then q ← q/|q| and strip radial v', bucket: 'bundle', why: 'Lands on TM by construction. Different map from RATTLE: same place-type, different point.' },
+    { key: 'rk4r', label: 'RK4 on the nine entries of R', bucket: 'leave', why: 'Ambient RK4 on M₃. RᵀR − I grows. The cube shears.' },
+    { key: 'lie', label: 'R ← R exp(h ω̂)', bucket: 'bundle', why: 'The exponential of a skew matrix is a rotation. The update is defined on SO(3), so it cannot leave.' },
+  ]}
+  explanation="On M means the configuration constraint holds. On TM means the hidden (velocity) constraint holds too — or, for a Lie group, that the state never left the group. Leaving means the discrete object is not the mechanical system you named."
+/>
+
+<Recall id="cons-shake-rattle" concept="constrained-integration">
+  <div slot="front">What does SHAKE impose, what does RATTLE add, and why is a Lie-group step different from both?</div>
+
+SHAKE: $g(q_{n+1})=0$ as part of a Verlet step, force along $\nabla g(q_n)$.
+RATTLE: also $q_{n+1}\cdot v_{n+1}=0$, so the state stays on the tangent bundle.
+
+A Lie-group step never leaves: $R_{n+1}=R_n\exp(h\hat\omega)$ is in $SO(3)$
+because the exponential of $\mathfrak{so}(3)$ *is* $SO(3)$. There is no residual
+to project. The constraint is the domain of the map.
+
+</Recall>
+
+<Tier level="advanced" title="why the cleanup is the wrong map">
+
+SHAKE and RATTLE are symplectic (Leimkuhler & Skeel 1994). They are the
+constrained analogue of the [discrete action](../variational-view/) that gave
+you Verlet: the multiplier is a discrete Euler–Lagrange unknown, not a
+post-process.
+
+Naive projection after an unconstrained or index-reduced step generally
+destroys that. It can sit on $TM$ and still fail to be a symplectic map, still
+fail to have a shadow Hamiltonian, still fail to be the variational update.
+The tests in `src/lib/numerics/constraints.ts` pin the cheap version of this:
+after forty steps the projected RK4 state is a visible distance from RATTLE,
+while both report $g=0$.
+
+For a sphere the RATTLE velocity correction *looks* like a projection. The
+difference is what it is projecting: the Verlet-completed velocity of a step
+whose $\lambda$ was chosen to hit $g(q_{n+1})=0$ along $\nabla g(q_n)$. Projecting
+RK4’s velocity is projecting a different vector.
+
+</Tier>
+
+<Tier level="frontier" title="index, hidden constraints, Lie algebra">
+
+Holonomic $g(q)=0$ is an index-3 DAE. Differentiating twice drops the index
+and produces an ODE whose invariant manifold is unstable under discretisation
+— the drift you just drew. Baumgarte stabilisation adds a feedback law to
+that ODE; it is a different compromise, not a structure-preserving map.
+
+The hidden constraint $\dot g = G(q)v=0$ is why SHAKE and RATTLE disagree at
+integer times. Viewed at half-steps they generate the same $(q,p_{n+1/2})$
+sequence; RATTLE is the one-step map on $TM$.
+
+On a Lie group the algebra is the tangent space at the identity. Munthe–Kaas
+lifts an RK method to the algebra and retracts with $\exp$ (or Cayley, or
+canonical coordinates of the second kind). The order-1 case is the step you
+ran. Higher order is the same idea with commutators. The point does not
+change: if the retraction lands in the group, there is no residual.
 
 </Tier>
 
 ## What to carry forward
 
-Two or three lines connecting to what comes next.
+- A constraint of the flow is not a constraint of the map. If the update is
+  not required to land on the manifold, the next state is a different object.
+- SHAKE/RATTLE put $g(q_{n+1})=0$ *inside* the step. Lie-group methods never
+  leave. Renormalising afterwards is a third map.
+- Ask what set the state must live in, and whether the discrete map knows.

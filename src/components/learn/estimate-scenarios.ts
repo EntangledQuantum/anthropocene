@@ -5,6 +5,7 @@ import { condInf, ill2x2, remainingDigits } from '../../lib/numerics/conditionin
 import { SPECTRAL_TARGETS, smallestK } from '../../lib/numerics/spectral.ts';
 import { gridEvaluations } from '../../lib/numerics/monte-carlo.ts';
 import { recoverDecayLambda } from '../../lib/numerics/adjoint.ts';
+import { rk4OrthoResidualAt } from '../../lib/numerics/constraints.ts';
 
 /**
  * Named quantities for `<Estimate>`.
@@ -147,6 +148,20 @@ const recoveredLambdaError: EstimateScenario = {
   truth: () => Math.abs(recoverDecayLambda(2, 0.5, { steps: 4, method: 'rk4' }).lambda - 2),
 };
 
+/* How far RK4 on vec(R) has left SO(3). The tempting answer is roundoff. */
+const consRk4Ortho: EstimateScenario = {
+  quantity: '‖RᵀR − I‖_F after RK4 on the nine entries of a rotation, constant ω, h = 0.2, t = 24',
+  logRange: [-12, 0],
+  logStart: -10,
+  withinFactor: 6,
+  landmarks: [
+    { value: 1e-15, label: 'roundoff' },
+    { value: 1e-8, label: 'tiny' },
+    { value: 1e-3, label: 'a thousandth' },
+  ],
+  truth: () => rk4OrthoResidualAt(0.2, 24),
+};
+
 export const ESTIMATE_SCENARIOS: Record<string, EstimateScenario> = {
   'euler-work-1e6': eulerWorkFor1e6,
   'rk4-work-1e6': rk4WorkFor1e6,
@@ -155,4 +170,5 @@ export const ESTIMATE_SCENARIOS: Record<string, EstimateScenario> = {
   'spec-modes-for-eps': specModesForEps,
   'grid-cost-d10-n4': gridCostD10N4,
   'ad-recovered-lambda': recoveredLambdaError,
+  'cons-rk4-ortho': consRk4Ortho,
 };

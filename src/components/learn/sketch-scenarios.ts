@@ -6,6 +6,7 @@ import { SCHEMES, TARGETS, complexStep, diffSweep, hSweep } from '../../lib/nume
 import { SPECTRAL_TARGETS, modalSweep } from '../../lib/numerics/spectral.ts';
 import { mcRmse } from '../../lib/numerics/monte-carlo.ts';
 import { decayForward, decayLoss } from '../../lib/numerics/adjoint.ts';
+import { runPendulum } from '../../lib/numerics/constraints.ts';
 
 /**
  * Named targets for `<SketchCurve>`.
@@ -234,6 +235,23 @@ const decayLossBowl: SketchScenario = {
   },
 };
 
+/* Index-reduced RK4 on the Cartesian pendulum: |q|² − 1 walks off zero.
+   Sketching this is the commitment that the discrete map does not inherit
+   the manifold of the ODE. Tempting sketches sit at zero or oscillate. */
+const consManifoldDrift: SketchScenario = {
+  xLabel: 't',
+  yLabel: '|q|² − 1',
+  xRange: [0, 40],
+  yRange: [-0.12, 0.04],
+  tolerance: 0.028,
+  anchors: [{ x: 0, y: 0, label: 'on the circle' }],
+  truth: () => {
+    const run = runPendulum('index-rk4', 0.2, 40);
+    const stride = Math.max(1, Math.floor(run.length / 160));
+    return run.filter((_, i) => i % stride === 0).map((s) => ({ x: s.t, y: 2 * s.g }));
+  },
+};
+
 export const SKETCH_SCENARIOS: Record<string, SketchScenario> = {
   'fd-u-curve': fdUCurve,
   'euler-convergence': eulerConvergence,
@@ -247,4 +265,5 @@ export const SKETCH_SCENARIOS: Record<string, SketchScenario> = {
   'spec-jump-rate': specJumpSlope,
   'mc-error-vs-n': mcErrorVsN,
   'ad-decay-loss-bowl': decayLossBowl,
+  'cons-manifold-drift': consManifoldDrift,
 };
