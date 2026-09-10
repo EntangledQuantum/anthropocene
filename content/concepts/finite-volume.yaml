@@ -1,3 +1,17 @@
 title: 'finite volume'
-blurb: 'TODO: one sentence, plain language.'
-tags: []
+blurb: 'Unknowns are cell averages. A cell changes only by the flux through its faces.'
+notation: 'Q_i^{n+1} = Q_i^n - \tfrac{\Delta t}{\Delta x}(F_{i+1/2} - F_{i-1/2})'
+tags:
+  - ch6
+misconceptions:
+  - id: 'fv-is-fd'
+    name: 'Finite volume is finite difference with extra words.'
+    signal: 'Treats cell averages as point samples and ignores that a face has one flux.'
+    correction: 'On a uniform Cartesian mesh the numbers can match — first-order upwind finite volume is the upwind difference. The meaning does not. The unknown is a cell average, the face carries one flux used by both cells, and that is why the global sum is an identity. Finite difference wrote a derivative; it happens to telescope here.'
+  - id: 'dissipation-kills-mass'
+    name: 'Numerical dissipation destroys mass.'
+    signal: 'Expects first-order upwind to lose mass because the pulse smears.'
+    correction: 'Dissipation rearranges mass. A smeared pulse is still the same integral if the update is in conservation form. Smearing is a lie about the shape, not a leak in the books.'
+references:
+  - label: 'LeVeque, Finite Volume Methods for Hyperbolic Problems (Cambridge, 2002), ch. 4'
+    url: 'https://doi.org/10.1017/CBO9780511791253'

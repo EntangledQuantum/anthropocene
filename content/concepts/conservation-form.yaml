@@ -1,3 +1,23 @@
 title: 'conservation form'
-blurb: 'TODO: one sentence, plain language.'
-tags: []
+blurb: 'One numerical flux per face, used by both cells. Interior fluxes telescope, so the global sum is an identity of the discrete map.'
+notation: '\sum_i Q_i^{n+1} = \sum_i Q_i^n - \tfrac{\Delta t}{\Delta x}(F_{\mathrm{out}} - F_{\mathrm{in}})'
+tags:
+  - ch6
+misconceptions:
+  - id: 'pde-conserves-so-scheme-does'
+    name: 'If the PDE conserves, any consistent discretisation conserves.'
+    signal: 'Picks a chain-rule form because it is algebraically equivalent, then is surprised when a shock leaks.'
+    correction: 'Smooth solutions of u_t + (u²/2)_x = 0 also satisfy u_t + u u_x = 0. Jumps do not. Discrete conservation is a property of the update — one flux per face, used twice — not a hope inherited from the PDE.'
+  - id: 'conservation-is-stability'
+    name: 'A scheme that conserves cannot explode, and CFL violation breaks conservation.'
+    signal: 'Treats a flat running total as a stability certificate, or expects the sum to drift the moment ν exceeds 1.'
+    correction: 'Conservation form telescopes at every CFL. Past the CFL bound the field is garbage and still sums to the same number, until overflow. CFL is a different question — information versus the stencil, not the books versus the faces.'
+  - id: 'chain-rule-is-fine'
+    name: 'u u_x is the same as (u²/2)_x, so discretise whichever is convenient.'
+    signal: 'Writes a product u_i (u_i − u_{i−1}) for Burgers and expects the shock to move at Rankine–Hugoniot speed.'
+    correction: 'The chain rule needs smoothness. At a jump the two cells no longer share a flux, mass leaves the books, and the discontinuity sits still or walks at the wrong speed (Hou–LeFloch 1994). Rankine–Hugoniot is [f]/[u]; a scheme that never formed [f] cannot get s right.'
+references:
+  - label: 'Lax and Wendroff, Comm. Pure Appl. Math. 13 (1960)'
+    url: 'https://doi.org/10.1002/cpa.3160130205'
+  - label: 'Hou and LeFloch, Math. Comp. 62 (1994)'
+    url: 'https://doi.org/10.1090/S0025-5718-1994-1223232-7'

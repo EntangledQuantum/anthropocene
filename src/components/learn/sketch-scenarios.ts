@@ -11,6 +11,7 @@ import { dependenceWidth } from '../../lib/numerics/pde-types.ts';
 import { errorSweep } from '../../lib/numerics/stencil-bc.ts';
 import { HAT_SKETCH_INDEX, HAT_SKETCH_NODES, hat } from '../../lib/numerics/fem1d.ts';
 import { runBlob } from '../../lib/numerics/projection.ts';
+import { runFvm } from '../../lib/numerics/fvm1d.ts';
 
 /**
  * Named targets for `<SketchCurve>`.
@@ -297,6 +298,21 @@ const femHat: SketchScenario = {
   truth: () => sample(80, 0, 1, (x) => hat(HAT_SKETCH_NODES, HAT_SKETCH_INDEX, x)),
 };
 
+/* Conservative Burgers jump, periodic. Mass / mass₀ is identically 1 up to
+   roundoff — the identity the lesson asks you to commit to as a shape. */
+const fvmMassFlat: SketchScenario = {
+  xLabel: 't',
+  yLabel: 'M / M₀',
+  xRange: [0, 0.6],
+  yRange: [0.72, 1.12],
+  tolerance: 0.045,
+  anchors: [{ x: 0, y: 1, label: 'M₀' }],
+  truth: () => runFvm({
+    equation: 'burgers', scheme: 'conservative', initial: 'jump',
+    n: 64, cfl: 0.4, tEnd: 0.6,
+  }).history.map((s) => ({ x: s.t, y: s.ratio })),
+};
+
 const projBlobArea: SketchScenario = {
   xLabel: 't',
   yLabel: 'A / A₀',
@@ -330,4 +346,5 @@ export const SKETCH_SCENARIOS: Record<string, SketchScenario> = {
   'ghost-naive-slope': ghostNaiveErrorSlope,
   'fem-hat': femHat,
   'proj-blob-area': projBlobArea,
+  'fvm-mass-flat': fvmMassFlat,
 };

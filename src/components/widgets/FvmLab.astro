@@ -1,0 +1,5 @@
+---
+import Island, { type FvmLabProps } from '../viz/FvmLab.tsx';
+const props = Astro.props as FvmLabProps;
+---
+<Island client:visible {...props} />

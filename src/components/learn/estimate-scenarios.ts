@@ -12,6 +12,7 @@ import { solveError } from '../../lib/numerics/stencil-bc.ts';
 import { naiveFdToFemL2Ratio } from '../../lib/numerics/fem1d.ts';
 import { leftoverMaxDiv } from '../../lib/numerics/projection.ts';
 import { opposingKeRemaining } from '../../lib/numerics/mpm.ts';
+import { JUMP_LEFT, JUMP_RIGHT, rankineHugoniot } from '../../lib/numerics/fvm1d.ts';
 
 /**
  * Named quantities for `<Estimate>`.
@@ -260,6 +261,19 @@ const mpmPicKe: EstimateScenario = {
   truth: () => opposingKeRemaining(0),
 };
 
+const fvmBurgersShock: EstimateScenario = {
+  quantity: 'shock speed of inviscid Burgers with left state 1 and right state 0',
+  logRange: [-1.2, 0.4],
+  logStart: 0,
+  withinFactor: 1.35,
+  landmarks: [
+    { value: 0.25, label: '¼' },
+    { value: 0.5, label: '½' },
+    { value: 1, label: 'the left state' },
+  ],
+  truth: () => rankineHugoniot('burgers', JUMP_LEFT, JUMP_RIGHT),
+};
+
 export const ESTIMATE_SCENARIOS: Record<string, EstimateScenario> = {
   'euler-work-1e6': eulerWorkFor1e6,
   'rk4-work-1e6': rk4WorkFor1e6,
@@ -275,4 +289,5 @@ export const ESTIMATE_SCENARIOS: Record<string, EstimateScenario> = {
   'fem-fd-l2-ratio': femFdL2Ratio,
   'proj-leftover-div': projLeftoverDiv,
   'mpm-pic-ke': mpmPicKe,
+  'fvm-burgers-shock-speed': fvmBurgersShock,
 };

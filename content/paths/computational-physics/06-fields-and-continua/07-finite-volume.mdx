@@ -1,7 +1,7 @@
 ---
 title: 'What is conserved, cell by cell'
 blurb: 'If the flux leaving this cell equals the flux entering the next, the sum cannot drift. Finite volume is that sentence made into a method.'
-order: 1
+order: 7
 tier: 'core'
 minutes: 16
 teaches:
@@ -11,44 +11,195 @@ requires:
   - 'pde'
   - 'cfl-condition'
 runtime: 'none'
-status: 'draft'
+status: 'live'
+updated: 2026-09-10
 ---
 
-Open with the tension, not the definition. What does the reader currently believe that
-this lesson is going to complicate?
-
-## The idea
-
-Build it up. Use `$inline$` and `$$display$$` for math.
+Two cells on a ring. The left one holds $1$, the right one holds $0$. You move stuff across the shared face by writing **one number** into both updates: whatever the left cell loses, the right cell is told to gain.
 
 <Predict
-  id="07-finite-volume-first-prediction"
-  question="Ask something the reader can be productively wrong about."
+  id="fvm-two-cell-sum"
+  question="After a few hundred steps, what has happened to the sum of the two cell averages?"
   options={[
-    { key: 'a', label: 'The intuitive answer', why: 'Why it is tempting, and exactly where it breaks.' },
-    { key: 'b', label: 'The correct answer', why: 'Why it is right, in one or two sentences.' },
+    { key: 'a', misconception: 'pde-conserves-so-scheme-does', label: 'It stays put only if the PDE conserves. Burgers can shock, so then the sum drifts.', why: 'The PDE is not being asked. The two writes are equal and opposite whether the flux came from advection or from Burgers. The sum is an identity of the update.' },
+    { key: 'b', misconception: 'conservation-is-stability', label: 'It holds until you violate CFL, then conservation fails with the grid.', why: 'CFL is a different question — you already saw the triangle. Conservation form telescopes at every CFL. Past the bound the field is garbage and still adds up, until overflow.' },
+    { key: 'c', label: 'It is still the initial sum, to roundoff. The two writes cancel.', why: 'Correct. One flux, used twice, opposite signs. Interior faces telescope. On a ring there is no boundary left, so the sum cannot change.' },
+    { key: 'd', misconception: 'dissipation-kills-mass', label: 'It drops. First-order upwind smears, and smearing is loss of mass.', why: 'Dissipation rearranges mass. A smeared jump is still the same integral if the face carried one flux. Smearing is a lie about the shape, not a leak in the books.' },
   ]}
-  correct="b"
+  correct="c"
 >
 
-The payoff, revealed only after they commit. Usually a simulation.
+Bars are cell averages. The highlighted face shows the number leaving the left cell and the number entering the right. Watch $M/M_0$ along the bottom.
+
+<FvmLab
+  equation="burgers"
+  scheme="conservative"
+  initial="jump"
+  n={24}
+  cfl={0.4}
+  lockEquation={true}
+  lockScheme={true}
+  lockInitial={true}
+  lockCfl={true}
+  caption="Conservation form, Burgers jump, periodic. Click a face. Leaving equals entering, and the running total is a ruler."
+/>
 
 </Predict>
 
-<Recall id="07-finite-volume-card" concept="finite-volume">
-  <div slot="front">The question to answer from memory in three months.</div>
+That update, written for every cell:
 
-The answer, written so it teaches rather than merely confirms.
+$$
+Q_i^{n+1} = Q_i^n - \frac{\Delta t}{\Delta x}\bigl(F_{i+1/2} - F_{i-1/2}\bigr)
+$$
+
+$Q_i$ is the **cell average**, not a point sample. $F_{i+1/2}$ lives on the face. Sum over $i$. Every interior flux appears once plus and once minus. Periodic: nothing remains. Discrete conservation is an **identity of the map**, not a hope about the PDE.
+
+<Recall id="fvm-one-flux" concept="finite-volume">
+  <div slot="front">What is stored in a finite-volume cell, and how is it allowed to change?</div>
+
+A cell average $Q_i$. It changes only by the flux through its two faces:
+
+$$
+Q_i^{n+1} = Q_i^n - \tfrac{\Delta t}{\Delta x}(F_{i+1/2} - F_{i-1/2}).
+$$
+
+One number per face, handed to both neighbours. That is the whole method, before anyone has chosen a formula for $F$.
 
 </Recall>
 
-<Tier level="advanced">
+## Same stencil, different sentence
 
-The treatment for someone who already has the working version. Derivations, edge cases,
-the reason the standard explanation is a simplification.
+On a uniform line with $c > 0$, Rusanov's flux collapses to $F_{i+1/2} = c\, Q_i$. The update is
+
+```ts
+next[i] = Q[i] - nu * (Q[i] - Q[i - 1]);
+```
+
+which is the first-order upwind difference you already took past the [CFL](/learn/computational-physics/fields-and-continua/cfl/) cliff. Stay at $\nu = 0.4$. That question is closed. What is new is the *meaning*: cell averages and a shared face, so the sum is an identity. Finite difference wrote a derivative; it happens to telescope here.
+
+<Predict
+  id="fvm-cartesian-same"
+  question="Uniform Cartesian mesh, linear advection. Finite-volume upwind versus finite-difference upwind. What is actually different?"
+  options={[
+    { key: 'a', misconception: 'fv-is-fd', label: 'Nothing. They are the same method; "cell average" is decoration.', why: 'The numbers match on this mesh. The meaning does not. Finite volume owns a face flux that both cells use; that is why the global sum cannot drift. Finite difference never promised that, and stops promising it the moment the flux is nonlinear.' },
+    { key: 'b', label: 'The numbers match. The unknowns do not: averages plus one flux per face, so the sum is an identity.', why: 'Correct. Cartesian coincidence, not a reason to stop. The next section takes the flux nonlinear and the coincidence ends.' },
+    { key: 'c', label: 'Finite volume survives CFL > 1; finite difference does not.', why: 'Both are the same stencil here, so they explode together. Conservation is not stability.' },
+    { key: 'd', label: 'They differ in every cell, because an average is not a sample.', why: 'On a linear problem with a piecewise-constant reconstruction the numbers are identical. The distinction is what the stencil is allowed to mean, which you only see once the flux is nonlinear or the mesh is not Cartesian.' },
+  ]}
+  correct="b"
+/>
+
+## Commit to the flat line
+
+Burgers, a jump, conservation form. $M/M_0$ starts at $1$. Draw what the running total does.
+
+<SketchCurve
+  id="fvm-mass-flat"
+  scenario="fvm-mass-flat"
+  prompt="Conservative Rusanov on a periodic Burgers jump. Sketch M/M₀ out to t = 0.6. It starts at 1."
+  hint="Every interior flux is added to one cell and subtracted from the other. The ring has no leftover face."
+  explanation="A ruler at 1. Not a slow numerical leak — the cancellation is algebraic. Roundoff sits around 10⁻¹⁶. If you drew a gentle slide, that is dissipation-kills-mass: smearing rearranges the jump, it does not take it off the books."
+/>
+
+## The chain rule is a smoothness theorem
+
+Inviscid Burgers is
+
+$$
+u_t + \bigl(\tfrac12 u^2\bigr)_x = 0.
+$$
+
+If $u$ is smooth, the chain rule says that is $u_t + u u_x = 0$. Discretise the second sentence the way upwind taught you:
+
+```ts
+next[i] = Q[i] - lambda * Q[i] * (Q[i] - Q[i - 1]);
+```
+
+There is no $F$ on the face. Each cell uses its own $Q_i$ as the wave speed. At a jump the two cells disagree about what crossed.
+
+<Predict
+  id="fvm-jump-leak"
+  question="Same Burgers jump. Conservation form versus that chain-rule upwind. The global sum…"
+  options={[
+    { key: 'a', misconception: 'chain-rule-is-fine', label: 'Both hold it. The two PDEs are the same equation.', why: 'They are the same equation for smooth u. A jump is not smooth. The chain rule has nothing to say about a discontinuity, and the discrete product does not telescope.' },
+    { key: 'b', label: 'Both drift a little. First-order error accumulates in the integral.', why: 'Conservation form has no such accumulation — you just drew the ruler. Order of accuracy is about the shape, not about whether the faces cancel.' },
+    { key: 'c', label: 'Conservation form holds it to roundoff. Chain-rule leaks at the jump.', why: 'Correct. Toggle chain-rule: the two face numbers split, the jump sits still, and M/M₀ walks off 1. The leak is the disagreement.' },
+    { key: 'd', misconception: 'dissipation-kills-mass', label: 'Conservation form smears the shock and loses mass to viscosity; chain-rule is sharper, so it holds the sum.', why: 'Rusanov is dissipative, and the sum still holds. Dissipation is a lie about the profile. The leak is a lie about the books, and it belongs to the scheme that never formed a shared flux.' },
+  ]}
+  correct="c"
+>
+
+Toggle **chain-rule**. The right-hand panel is the whole lesson: leaving versus entering.
+
+<FvmLab
+  equation="burgers"
+  scheme="nonconservative"
+  initial="jump"
+  n={24}
+  cfl={0.4}
+  lockInitial={true}
+  lockCfl={true}
+  caption="Start on chain-rule Burgers. The jump freezes and the total falls. Switch to shared flux: the jump walks, the two numbers agree, the total holds. Switch to advection: chain-rule is conservative upwind, so linear flux does not leak."
+/>
+
+</Predict>
+
+A still-smooth sine leaks a little — neighbours nearly agree, so the two "fluxes" nearly match. A jump leaks by $O(1)$. Burgers will turn a bump into a jump; after that the chain-rule scheme is solving a different problem.
+
+<Classify
+  id="fvm-who-conserves"
+  prompt="Which of these keep ΣQ as an identity of the update, and which let the books drift?"
+  buckets={[
+    { key: 'identity', label: 'ΣQ is an identity', accent: 'cyan' },
+    { key: 'drift', label: 'ΣQ can drift', accent: 'magenta' },
+  ]}
+  items={[
+    { key: 'cons-adv', label: 'shared flux, linear advection, pulse', bucket: 'identity', why: 'Rusanov is upwind. One F per face. Periodic sum cannot change.' },
+    { key: 'cons-jump', label: 'shared flux, Burgers, jump', bucket: 'identity', why: 'The identity does not care that the data jumped. You sketched this ruler.' },
+    { key: 'nc-adv', label: 'chain-rule upwind, linear advection, jump', bucket: 'identity', why: 'a(u) = c is constant, so the product is the conservative upwind scheme. Linear flux does not leak.' },
+    { key: 'nc-jump', label: 'chain-rule upwind, Burgers, jump', bucket: 'drift', why: 'a(u) = u disagrees across the face. Mass leaves the books; the shock sits still.' },
+    { key: 'nc-pulse', label: 'chain-rule upwind, Burgers, Gaussian pulse', bucket: 'drift', why: 'The identity is already gone. While the bump is smooth the leak is small; Burgers steepens it, and then the leak is a jump leak.' },
+    { key: 'cons-hot', label: 'shared flux, Burgers jump, CFL = 1.3', bucket: 'identity', why: 'Telescoping does not ask CFL. The field may explode; until overflow the sum still holds.' },
+  ]}
+  explanation="The identity is 'one flux, used twice.' Linear chain-rule happens to be that scheme. Nonlinear chain-rule is not, even on a sine, and a CFL violation does not cancel the cancellation."
+/>
+
+## The shock is conservation in one number
+
+A discontinuity of a conservation law moves at the Rankine–Hugoniot speed
+
+$$
+s = \frac{f(u_L) - f(u_R)}{u_L - u_R}.
+$$
+
+For Burgers, $f = u^2/2$, so a jump from $1$ to $0$ has $s = 1/2$. That is the same sentence as conservation form: the flux leaving the left state is what the right state receives, and the imbalance $[f]$ is what advances $[u]$.
+
+<Estimate
+  id="fvm-shock-speed"
+  scenario="fvm-burgers-shock-speed"
+  prompt="Inviscid Burgers, left state 1, right state 0. How fast does the shock move?"
+  explanation="1/2. Rankine–Hugoniot is [f]/[u] = ((1/2) − 0)/(1 − 0). The tempting 1 is the left state — the characteristic speed on the high side, not the shock speed. Chain-rule upwind never formed [f], so that scheme leaves the jump sitting at speed 0, which is the other tempting wrong number."
+/>
+
+A scheme in conservation form, if it converges, converges to a weak solution (Lax–Wendroff, 1960). A scheme that is not, at a shock, converges to the wrong jump (Hou–LeFloch, 1994). The telescoping is the reason.
+
+<Recall id="fvm-telescoping" concept="conservation-form">
+  <div slot="front">What makes a scheme conservative, in one line?</div>
+
+One numerical flux per face, used by both cells. Then every interior $F$ appears once plus and once minus, the sum telescopes, and the global integral can change only at the domain boundary. Periodic: it cannot change. That is an identity of the discrete map, not a property borrowed from the PDE.
+
+</Recall>
+
+<Tier level="advanced" title="why the chain rule fails at a jump, and what Lax–Wendroff actually says">
+
+For smooth $u$, $u u_x = (u^2/2)_x$ pointwise. For a jump, the distributional derivative of $u^2/2$ is $[f]\,\delta$, while $u$ times the derivative of $u$ is not a well-defined product. Any consistent discretisation of $u u_x$ inserts a Borel measure at the shock (Hou–LeFloch). That measure is the leak you watched, and it sets a shock speed that is not Rankine–Hugoniot.
+
+Lax–Wendroff is an *if* theorem: conservative, consistent fluxes, and a boundedly almost-everywhere convergent sequence imply the limit is a weak solution. It does not prove convergence. It says that if you got a limit, conservation form is what made it a weak solution. Entropy is a further selection; this lesson stops before Riemann solvers, limiters, and WENO, which are how you pick $F$. The telescoping does not care which $F$ you picked, only that both cells used it.
+
+On a non-Cartesian mesh the Cartesian coincidence with finite difference ends. The finite-volume unknown is still the cell average, the flux is still on the face, and the sum over cells still telescopes. That is why the method survives unstructured grids, which is the next costume of the same identity.
 
 </Tier>
 
 ## What to carry forward
 
-Two or three lines connecting to what comes next.
+One flux per face, used twice. Then the sum is an identity of the discrete map — conservation is not a hope about the PDE, and it is not stability. Rankine–Hugoniot is that identity at a jump: $s = [f]/[u]$. Riemann solvers and WENO are how you pick $F$. The telescoping does not care which $F$ you picked.

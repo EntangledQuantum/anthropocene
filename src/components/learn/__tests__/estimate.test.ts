@@ -79,6 +79,10 @@ describe('estimate scenarios agree with the prose that quotes them', () => {
   it('PIC opposing-pair transfer leaves KE = 1/16', () => {
     expect(ESTIMATE_SCENARIOS['mpm-pic-ke'].truth()).toBeCloseTo(0.0625, 12);
   });
+
+  it('Burgers 1|0 shock speed is 1/2 by Rankine–Hugoniot', () => {
+    expect(ESTIMATE_SCENARIOS['fvm-burgers-shock-speed'].truth()).toBeCloseTo(0.5, 12);
+  });
 });
 
 describe('every scenario is answerable on its own slider', () => {
