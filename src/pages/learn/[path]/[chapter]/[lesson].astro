@@ -24,6 +24,8 @@ import LJGas from '../../../../components/widgets/LJGas.astro';
 import InverseLab from '../../../../components/widgets/InverseLab.astro';
 import PinnLab from '../../../../components/widgets/PinnLab.astro';
 import ManifoldLab from '../../../../components/widgets/ManifoldLab.astro';
+import ContinuumLab from '../../../../components/widgets/ContinuumLab.astro';
+import DependenceLab from '../../../../components/widgets/DependenceLab.astro';
 
 /** The authoring vocabulary: every lesson may use these with no import.
  *  Adding a widget here is what makes it available to authors — see AGENTS.md. */
@@ -31,7 +33,7 @@ const lessonComponents = {
   Predict, Tune, SketchCurve, RankOrder, Classify, Estimate, Recall, Tier,
   Plot, SolverLab, ConvergenceLab, DerivativeLab, FloatLab, CancellationLab,
   StabilityExplorer, PhaseFlow, RichardsonTableau, AdaptiveLab, SpectralLab, LJGas,
-  InverseLab, PinnLab, ManifoldLab,
+  InverseLab, PinnLab, ManifoldLab, ContinuumLab, DependenceLab,
 };
 import { buildGraph, prerequisitesOf, unlockedBy } from '../../../../lib/graph/graph.ts';
 

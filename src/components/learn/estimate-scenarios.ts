@@ -6,6 +6,7 @@ import { SPECTRAL_TARGETS, smallestK } from '../../lib/numerics/spectral.ts';
 import { gridEvaluations } from '../../lib/numerics/monte-carlo.ts';
 import { recoverDecayLambda } from '../../lib/numerics/adjoint.ts';
 import { rk4OrthoResidualAt } from '../../lib/numerics/constraints.ts';
+import { heatKernelRatio } from '../../lib/numerics/pde-types.ts';
 
 /**
  * Named quantities for `<Estimate>`.
@@ -162,6 +163,23 @@ const consRk4Ortho: EstimateScenario = {
   truth: () => rk4OrthoResidualAt(0.2, 24),
 };
 
+/* Infinite speed, exponentially small. The heat kernel at distance 1 versus
+   the peak, at t = 0.05, κ = 1. People guess "zero" (a wave) or "about one"
+   (infinite speed means equal). The number is exp(5). */
+const heatTailRatio: EstimateScenario = {
+  quantity: 'how many times smaller the 1D heat kernel is at distance 1 than at the source, after t = 0.05 with κ = 1',
+  logRange: [0, 6],
+  logStart: 1,
+  withinFactor: 4,
+  landmarks: [
+    { value: 1, label: 'equal' },
+    { value: 10, label: 'ten' },
+    { value: 150, label: 'a hundred and fifty' },
+    { value: 1e4, label: 'ten thousand' },
+  ],
+  truth: () => heatKernelRatio(1, 0.05),
+};
+
 export const ESTIMATE_SCENARIOS: Record<string, EstimateScenario> = {
   'euler-work-1e6': eulerWorkFor1e6,
   'rk4-work-1e6': rk4WorkFor1e6,
@@ -171,4 +189,5 @@ export const ESTIMATE_SCENARIOS: Record<string, EstimateScenario> = {
   'grid-cost-d10-n4': gridCostD10N4,
   'ad-recovered-lambda': recoveredLambdaError,
   'cons-rk4-ortho': consRk4Ortho,
+  'pde-heat-tail': heatTailRatio,
 };

@@ -1,0 +1,10 @@
+---
+// Wrapper so lessons can write <ContinuumLab /> with no import and no client
+// directive: MDX components supplied through the `components` prop cannot
+// carry client:* directives themselves, so the directive lives here.
+import Island, { type ContinuumLabProps } from '../viz/ContinuumLab.tsx';
+
+type Props = Omit<ContinuumLabProps, 'children'>;
+const props = Astro.props as Props;
+---
+<Island client:visible {...props} />

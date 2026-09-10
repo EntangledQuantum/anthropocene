@@ -1,3 +1,17 @@
-title: 'continuum limit'
-blurb: 'TODO: one sentence, plain language.'
-tags: []
+title: 'Continuum limit'
+blurb: 'The same smooth function, stored as particles or as samples. Refine, and the list becomes a field.'
+notation: '\Delta x \to 0'
+tags:
+  - ch6
+misconceptions:
+  - id: 'particles-are-not-a-field'
+    name: 'Particles and fields are unrelated objects; the continuum is a different theory.'
+    signal: 'Refuses to treat a chain of masses as samples of u(x), or a grid as a list of particles.'
+    correction: 'The numbers are the same. Costume is interpretation. The continuum limit is what happens when that list gets dense enough to be a function.'
+  - id: 'more-particles-more-physics'
+    name: 'Doubling the particles changes the physics, not just the resolution.'
+    signal: 'Expects a different bump, or a different PDE, when N grows.'
+    correction: 'If the underlying u(x) is fixed, doubling N doubles the samples of the same function. The discrete Laplacian gets closer to u″; the physics does not change.'
+references:
+  - label: 'Courant, Friedrichs, Lewy, On the partial difference equations of mathematical physics (1928 / English 1967)'
+    url: 'https://doi.org/10.1147/rd.112.0215'

@@ -7,6 +7,7 @@ import { SPECTRAL_TARGETS, modalSweep } from '../../lib/numerics/spectral.ts';
 import { mcRmse } from '../../lib/numerics/monte-carlo.ts';
 import { decayForward, decayLoss } from '../../lib/numerics/adjoint.ts';
 import { runPendulum } from '../../lib/numerics/constraints.ts';
+import { dependenceWidth } from '../../lib/numerics/pde-types.ts';
 
 /**
  * Named targets for `<SketchCurve>`.
@@ -252,6 +253,18 @@ const consManifoldDrift: SketchScenario = {
   },
 };
 
+/* Domain of dependence of the 1D wave equation: a triangle of width 2ct.
+   Drawing this is committing to the triangle, not to a name. */
+const waveDodWidth: SketchScenario = {
+  xLabel: 't',
+  yLabel: 'width of domain of dependence',
+  xRange: [0, 0.8],
+  yRange: [0, 1.15],
+  tolerance: 0.14,
+  anchors: [{ x: 0, y: 0, label: 't = 0' }],
+  truth: () => sample(80, 0, 0.8, (t) => dependenceWidth('hyperbolic', 0.5, t)),
+};
+
 export const SKETCH_SCENARIOS: Record<string, SketchScenario> = {
   'fd-u-curve': fdUCurve,
   'euler-convergence': eulerConvergence,
@@ -266,4 +279,5 @@ export const SKETCH_SCENARIOS: Record<string, SketchScenario> = {
   'mc-error-vs-n': mcErrorVsN,
   'ad-decay-loss-bowl': decayLossBowl,
   'cons-manifold-drift': consManifoldDrift,
+  'pde-wave-width': waveDodWidth,
 };

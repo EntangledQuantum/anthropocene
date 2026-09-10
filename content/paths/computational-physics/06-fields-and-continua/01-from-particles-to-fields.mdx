@@ -1,7 +1,7 @@
 ---
 title: 'From particles to fields'
 blurb: 'A PDE is what you get when the thing you store is a field, not a list of particles. Three personalities, three domains of dependence.'
-order: 6
+order: 1
 tier: 'core'
 minutes: 16
 teaches:
@@ -11,44 +11,210 @@ requires:
   - 'forward-euler'
   - 'order-of-accuracy'
 runtime: 'none'
-status: 'draft'
+status: 'live'
+updated: 2026-09-10
 ---
 
-Open with the tension, not the definition. What does the reader currently believe that
-this lesson is going to complicate?
+Eight numbers on a line, sitting on a smooth bump. Call them masses. Call them
+samples of a function.
 
-## The idea
-
-Build it up. Use `$inline$` and `$$display$$` for math.
+Double the count. What did you just double?
 
 <Predict
-  id="01-from-particles-to-fields-first-prediction"
-  question="Ask something the reader can be productively wrong about."
+  id="pde-what-multiplies"
+  question="You refine from 8 points to 16. Same bump. What object multiplied?"
   options={[
-    { key: 'a', label: 'The intuitive answer', why: 'Why it is tempting, and exactly where it breaks.' },
-    { key: 'b', label: 'The correct answer', why: 'Why it is right, in one or two sentences.' },
+    { key: 'a', misconception: 'particles-are-not-a-field', label: 'Particles. A field is a different kind of object — it does not refine this way.', why: 'The numbers on the line are the same whether you draw beads or stems. A field is what that list becomes as N grows, not a second theory sitting next to it.' },
+    { key: 'b', misconception: 'more-particles-more-physics', label: 'Samples of a field. The masses were a different physical system.', why: 'A chain of masses with spacing h is a sample of u(x) at those nodes. Doubling N does not invent new physics; it resolves the same function more densely.' },
+    { key: 'c', label: 'The same list, either way. Costume is interpretation.', why: 'Correct. Particles and point samples store the same numbers. Refine either costume and you are sampling the same u(x) twice as often. That denser list becoming a function is the continuum limit.' },
+    { key: 'd', label: 'Fourier modes. A bump is a sum of sines, so refining adds frequencies.', why: 'Modes are a third costume of the same function, not what this list stores. Here each entry is a value at a point — a particle position or a sample. Modes come later.' },
   ]}
-  correct="b"
+  correct="c"
 >
 
-The payoff, revealed only after they commit. Usually a simulation.
+The two drawings below are one state. Toggle them. Drag N. Watch the discrete
+second derivative chase $u''$.
+
+<ContinuumLab caption="Same u(x). Beads or stems. The readout is max |D²u − u″| on the interior nodes — a real second difference, not a fitted cartoon." />
 
 </Predict>
 
-<Recall id="01-from-particles-to-fields-card" concept="pde">
-  <div slot="front">The question to answer from memory in three months.</div>
+An ODE stored a state vector. A PDE stores a field $u(x)$ — or $u(x,t)$. The
+continuum limit is the move from the list to the function.
 
-The answer, written so it teaches rather than merely confirms.
+That field has a question an ODE never asked.
+
+## Poisson does not pick a field
+
+Five samples. You know the three interior second differences: all zero. You do
+not know the two endpoints.
+
+$$
+(D^2 u)_i = \frac{u_{i-1} - 2u_i + u_{i+1}}{h^2}
+$$
+
+<Predict
+  id="pde-poisson-null"
+  question="How many fields on those five nodes have vanishing interior second differences?"
+  options={[
+    { key: 'a', misconception: 'n-equations-n-unknowns', label: 'Exactly one. Five numbers, five constraints.', why: 'You have three interior equations on five unknowns. The system is underdetermined before any boundary is set. Square-and-unique is what Dirichlet buys you, not what D² gives you for free.' },
+    { key: 'b', label: 'None. Zero second differences force the zero field.', why: 'Zero is a solution. It is not the only one. The operator that produced those zeros has a kernel.' },
+    { key: 'c', label: 'Infinitely many: any straight line.', why: 'Correct. Interior second differences kill constants and ramps — the discrete kernel of u″ = 0. Without a boundary, Poisson does not pick a field.' },
+    { key: 'd', label: 'Infinitely many: any constant. A slope would show up in the differences.', why: 'A slope does not. D² of (0, 1, 2, 3, 4) is exactly (0, 0, 0). The continuous kernel is two-dimensional, and the stencil agrees.' },
+  ]}
+  correct="c"
+>
+
+So $u_{xx} = f$ on an interval is not an initial-value problem. It is a
+boundary-value problem. Pin $u$ at both ends and the discrete Laplacian becomes
+invertible. Leave them free and you are looking at a null space.
+
+</Predict>
+
+That is the elliptic personality: **the value at any interior point needs the
+whole interval, including both ends.** There is no time. Information does not
+travel; it is already everywhere.
+
+## Three shapes
+
+A PDE type is not a discriminant $B^2 - AC$. It is the shape of the data a
+point depends on.
+
+- **Hyperbolic** (wave $u_{tt} = c^2 u_{xx}$, advection $u_t + c u_x = 0$): a
+  triangle. Finite speed.
+- **Parabolic** (heat $u_t = \kappa u_{xx}$): the whole past, the instant $t > 0$.
+  Infinite speed, exponentially small tails.
+- **Elliptic** (Poisson $u_{xx} = f$): the whole interval, always. No time.
+
+Drag the probe. Switch type. The picture is the classification.
+
+<DependenceLab caption="Wave: a characteristic triangle. Heat: a one-sided fill of the whole past. Poisson: a Green's tent that touches both ends. The strip is the data on [0, 1] the probe actually uses." />
+
+<Classify
+  id="pde-dependence-sort"
+  prompt="Sort these by the shape of the domain of dependence — what data the value at one interior point actually uses."
+  buckets={[
+    { key: 'elliptic', label: 'elliptic — whole interval, no time', accent: 'iris' },
+    { key: 'parabolic', label: 'parabolic — whole past, instantly', accent: 'cyan' },
+    { key: 'hyperbolic', label: 'hyperbolic — a triangle', accent: 'magenta' },
+  ]}
+  items={[
+    { key: 'steady', label: 'A steady field on [0, 1]: changing either endpoint moves the midpoint', bucket: 'elliptic', why: 'No time, both walls. That is Poisson.' },
+    { key: 'heat-pulse', label: 'A pulse at x = 0 is felt at x = 1 at every t > 0, exponentially small', bucket: 'parabolic', why: 'The heat kernel is strictly positive everywhere the instant t > 0.' },
+    { key: 'wave-wait', label: 'A pulse at x = 0 is silent at x = 1 until t = 1/c', bucket: 'hyperbolic', why: 'The characteristic triangle has not reached x = 1 yet. Finite speed.' },
+    { key: 'null', label: 'The discrete operator has a constant null space until you pin a boundary', bucket: 'elliptic', why: 'Without a wall the Laplacian does not pick a field. That is the elliptic missing-data symptom.' },
+    { key: 'inflow', label: 'You march in time; data enters only where characteristics point inward', bucket: 'hyperbolic', why: 'The triangle (or the characteristic) tells you which wall is inflow. The other wall is determined, not prescribed.' },
+    { key: 'whole-past', label: 'You march in time; every past value on the whole interval has a say', bucket: 'parabolic', why: 'One-sided in time, the whole line in space. That fill is heat.' },
+  ]}
+  explanation="Three pictures to keep: a triangle, a one-sided fill, the whole interval. The type is which of those a point needs — equivalently, what information must enter through the boundary."
+/>
+
+Commit to the triangle as a curve, not a name. Midpoint of $[0, 1]$, wave speed
+$c = 1$. Width of the domain of dependence against $t$. It starts at exactly
+zero.
+
+<SketchCurve
+  id="pde-wave-width"
+  scenario="pde-wave-width"
+  prompt="Sketch the width of the wave's domain of dependence at x = 0.5, against t. c = 1. Start at the origin."
+  hint="Each characteristic runs at speed c. Two of them, both ways, until they hit a wall."
+  explanation="Width = 2ct until the triangle hits both walls at t = 0.5, then a plateau at 1. After that the midpoint needs the whole interval — and both boundary histories. The triangle became the whole domain, which is when a hyperbolic problem starts to look elliptic in space."
+/>
+
+## Which wall
+
+Same interval, different costume. Right-going advection
+
+$$
+u_t + u_x = 0 \quad \text{on } [0,1]
+$$
+
+The solution is $u(x,t) = u(x-t,\,0)$, until the foot of the characteristic
+walks off the left end.
+
+<Predict
+  id="pde-which-boundary"
+  question="Which end of [0, 1] must you specify for u_t + u_x = 0?"
+  options={[
+    { key: 'a', misconception: 'all-pdes-need-same-data', label: 'Both. A PDE on an interval always needs two walls.', why: 'Poisson does. A wave (two families of characteristics) does. Right-going advection has one family, entering from the left. The right wall is outflow — determined, not prescribed.' },
+    { key: 'b', misconception: 'outflow-needs-data', label: 'The right end. That is where the wave is going.', why: 'The signal leaves through the right wall, which is why you must not specify it. Specifying outflow overdetermines the problem and the extra data is ignored or it reflects.' },
+    { key: 'c', label: 'The left end. Characteristics enter there.', why: 'Correct. Data travels with the characteristic. For c > 0 that is left → right, so the left wall is the one the domain of dependence can still reach after it has left the initial line.' },
+    { key: 'd', misconception: 'pde-is-long-ode', label: 'Neither. Initial data on [0, 1] is enough for all time, like an ODE.', why: 'An ODE never walks off the end of space. At (x, t) = (0.2, 0.5) the foot is at x = −0.3, which is not on the initial line. That value has to come in through x = 0.' },
+  ]}
+  correct="c"
+>
+
+The question a PDE type answers: **what information must enter through the
+boundary?** For this advection, the left wall. For a 1D wave, both walls (two
+families). For heat, both walls and the whole past. For Poisson, both walls and
+nothing else — there is no past.
+
+</Predict>
+
+Heat still surprises people who have just drawn a triangle.
+
+The 1D heat kernel on the line is
+
+$$
+G(x,t) = \frac{1}{\sqrt{4\pi\kappa t}}\,\exp\!\left(-\frac{x^2}{4\kappa t}\right)
+$$
+
+Strictly positive everywhere the instant $t > 0$. Infinite speed. The tails are
+not a delay; they are an exponential.
+
+<Estimate
+  id="pde-heat-tail"
+  scenario="pde-heat-tail"
+  prompt="At t = 0.05, κ = 1: how many times smaller is the heat kernel at distance 1 than at the source?"
+  explanation="exp(1² / (4κt)) = exp(5) ≈ 148. Infinite speed does not mean equal influence. It means the far tail is small, not zero. A wave at this (x, t) would still be silent."
+/>
+
+<Recall id="pde-three-pictures" concept="pde">
+  <div slot="front">What is the domain of dependence for a 1D wave, for heat, and for Poisson?</div>
+
+Wave: a characteristic triangle of width $2ct$, clipped to the interval. Heat:
+the whole past, instantly — a one-sided fill. Poisson: the whole interval,
+always, both ends, no time. The type of a PDE is which of those three a point
+needs.
 
 </Recall>
 
-<Tier level="advanced">
+<Recall id="pde-needs-boundary" concept="continuum-limit">
+  <div slot="front">Why can you not recover a field from its second differences alone?</div>
 
-The treatment for someone who already has the working version. Derivations, edge cases,
-the reason the standard explanation is a simplification.
+Interior $D^2$ kills constants and ramps. The kernel is two-dimensional, same
+as $u'' = 0$. Poisson is a boundary-value problem: the ends are the missing
+data, not a cleanup after the solve. Particles and samples of that field are
+the same list; the continuum limit is the list becoming $u(x)$.
+
+</Recall>
+
+A numerical stencil has a domain of dependence too — the grid points a value
+can actually see. If that discrete triangle is *smaller* than the PDE's
+triangle, the scheme cannot converge: it is missing data the solution depends
+on. That mismatch is the CFL condition, and it is the next lesson. Do not
+confuse it with the PDE's own triangle. The PDE's triangle is physics. CFL is
+whether your stencil covers it.
+
+<Tier level="advanced" title="periodic Poisson is singular until the load sums to zero">
+
+On a ring there are no ends to pin. The periodic discrete Laplacian annihilates
+constants, so $D^2 u = f$ has a solution only when $\sum f_i = 0$ — otherwise
+you are asking a constant mode to equal something it cannot. Even then the
+solution is unique only up to a constant; you still have to pin one value.
+
+That compatibility condition is the discrete divergence theorem: the flux
+around a closed loop sums to zero. It is the same null space you just met,
+wearing periodic clothes. Dirichlet hid it by deleting the kernel.
 
 </Tier>
 
 ## What to carry forward
 
-Two or three lines connecting to what comes next.
+A PDE stores a field. Particles and samples are two costumes of the same list;
+the continuum limit is that list becoming $u(x)$.
+
+The type is a picture: triangle, one-sided fill, whole interval. That picture
+is what must enter through the boundary.
+
+Next: if your stencil's triangle is smaller than the PDE's, the grid explodes.
