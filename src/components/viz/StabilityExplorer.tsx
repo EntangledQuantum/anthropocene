@@ -133,6 +133,7 @@ interface MethodSpec {
   /** R(z) on the CPU, for the readouts and the trajectory. */
   R: (re: number, im: number) => [number, number];
   aStable: boolean;
+  lStable: boolean;
   note: string;
 }
 
@@ -147,12 +148,12 @@ const cmul = (a: [number, number], b: [number, number]): [number, number] => [
 
 const METHODS: MethodSpec[] = [
   {
-    key: 'forward-euler', label: 'Forward Euler', code: 0, aStable: false,
+    key: 'forward-euler', label: 'Forward Euler', code: 0, aStable: false, lStable: false,
     R: (re, im) => [1 + re, im],
     note: 'A disc of radius 1 centred at −1. Touches the imaginary axis only at the origin, so an undamped oscillator is unstable at every step size.',
   },
   {
-    key: 'rk2', label: 'RK2', code: 1, aStable: false,
+    key: 'rk2', label: 'RK2', code: 1, aStable: false, lStable: false,
     R: (re, im) => {
       const z: [number, number] = [re, im];
       const z2 = cmul(z, z);
@@ -161,7 +162,7 @@ const METHODS: MethodSpec[] = [
     note: 'Bulges further left than Euler, and still pinches to the origin on the imaginary axis.',
   },
   {
-    key: 'rk4', label: 'RK4', code: 2, aStable: false,
+    key: 'rk4', label: 'RK4', code: 2, aStable: false, lStable: false,
     R: (re, im) => {
       const z: [number, number] = [re, im];
       const z2 = cmul(z, z);
@@ -175,12 +176,12 @@ const METHODS: MethodSpec[] = [
     note: 'The famous lobed shape. Crucially it DOES cover a stretch of the imaginary axis (to about ±2.83i), which is why RK4 can integrate an oscillator at all.',
   },
   {
-    key: 'backward-euler', label: 'Backward Euler', code: 3, aStable: true,
+    key: 'backward-euler', label: 'Backward Euler', code: 3, aStable: true, lStable: true,
     R: (re, im) => cdiv([1, 0], [1 - re, -im]),
-    note: 'Stable everywhere EXCEPT a disc in the right half-plane. It covers the entire left half-plane: A-stable, no step-size limit at all.',
+    note: 'Stable everywhere EXCEPT a disc in the right half-plane. It covers the entire left half-plane: A-stable, no step-size limit at all. R(z) → 0 as z → −∞, so stiff modes die in one step — L-stable.',
   },
   {
-    key: 'trapezoid', label: 'Implicit trapezoid', code: 4, aStable: true,
+    key: 'trapezoid', label: 'Implicit trapezoid', code: 4, aStable: true, lStable: false,
     R: (re, im) => cdiv([1 + re / 2, im / 2], [1 - re / 2, -im / 2]),
     note: 'Stable in exactly the left half-plane. A-stable, but |R| → 1 as z → −∞, so violently stiff modes ring instead of damping — it is not L-stable.',
   },
@@ -416,6 +417,7 @@ export default function StabilityExplorer({
           <Readout label="|R(z)|" value={formatValue(mag, 4)} accent={stable ? 'ok' : 'magenta'} />
           <Readout label="verdict" value={stable ? 'stable' : 'unstable'} accent={stable ? 'ok' : 'magenta'} />
           <Readout label="A-stable?" value={method.aStable ? 'yes' : 'no'} accent={method.aStable ? 'ok' : 'warn'} />
+          <Readout label="L-stable?" value={method.lStable ? 'yes' : 'no'} accent={method.lStable ? 'ok' : 'warn'} />
         </ReadoutRow>
 
         <p style={{ margin: '14px 0 0', fontSize: '0.98rem', lineHeight: 1.6, color: 'var(--color-ink-soft)' }}>

@@ -1,7 +1,7 @@
 import { endpointError, stepSweep } from '../../lib/numerics/convergence.ts';
-import { forwardEuler, rk4, integrate, velocityVerlet } from '../../lib/numerics/ode.ts';
+import { forwardEuler, rk4, integrate, velocityVerlet, trapezoid } from '../../lib/numerics/ode.ts';
 import { invariantDrift } from '../../lib/numerics/convergence.ts';
-import { decay, oscillator } from '../../lib/numerics/problems.ts';
+import { decay, oscillator, TWO_RATE_FAST } from '../../lib/numerics/problems.ts';
 import { SCHEMES, TARGETS, complexStep, diffSweep, hSweep } from '../../lib/numerics/diff.ts';
 
 /**
@@ -149,6 +149,24 @@ const cstepNoU: SketchScenario = {
   },
 };
 
+/* Implicit trapezoid on a stiff decay: A-stable, not L-stable. One step
+   multiplies by ≈ −1, so the solution sign-flips at nearly full amplitude
+   while the true solution is already 0. Sketching this is the L-stability
+   test — a smooth drop to zero is backward Euler, and a blow-up is explicit. */
+const trapezoidRing: SketchScenario = {
+  xLabel: 't',
+  yLabel: 'y',
+  xRange: [0, 2],
+  yRange: [-1.25, 1.25],
+  tolerance: 0.42,
+  anchors: [{ x: 0, y: 1, label: 'y(0) = 1' }],
+  truth: () => {
+    const problem = decay(TWO_RATE_FAST);
+    const { t, y } = integrate(trapezoid, problem.f, problem.y0, 0, 2, 0.1);
+    return t.map((tt, i) => ({ x: tt, y: y[i][0] }));
+  },
+};
+
 export const SKETCH_SCENARIOS: Record<string, SketchScenario> = {
   'fd-u-curve': fdUCurve,
   'euler-convergence': eulerConvergence,
@@ -156,4 +174,5 @@ export const SKETCH_SCENARIOS: Record<string, SketchScenario> = {
   'verlet-energy-bounded': verletEnergyBounded,
   'euler-unstable': eulerUnstable,
   'cstep-no-u': cstepNoU,
+  'trapezoid-ring': trapezoidRing,
 };

@@ -75,6 +75,33 @@ export function kepler(e = 0.6): Problem {
   };
 }
 
+/** Linear two-rate decay. Slow component first, so a default trajectory
+ *  plot is the quantity you actually care about. The fast mode is a
+ *  transient that dies in a few hundredths; it is coupled into the slow
+ *  equation so you cannot "just not integrate it". Explicit methods still
+ *  have their step set by λ_fast. */
+export const TWO_RATE_FAST = 400;
+export const TWO_RATE_SLOW = 1;
+
+export function twoRate(lambdaFast = TWO_RATE_FAST, lambdaSlow = TWO_RATE_SLOW): Problem {
+  const denom = lambdaSlow - lambdaFast;
+  return {
+    key: 'two-rate',
+    label: `Two-rate decay (λ = ${lambdaFast}, ${lambdaSlow})`,
+    latex: String.raw`\dot y_s = -\lambda_s y_s + y_f,\quad \dot y_f = -\lambda_f y_f`,
+    f: (_t, [ys, yf]) => [-lambdaSlow * ys + yf, -lambdaFast * yf],
+    y0: [1, 1],
+    t0: 0,
+    span: 5,
+    exact: (t) => {
+      const yf = Math.exp(-lambdaFast * t);
+      const c = 1 - 1 / denom;
+      return [yf / denom + c * Math.exp(-lambdaSlow * t), yf];
+    },
+    labels: ['slow', 'fast'],
+  };
+}
+
 /** Van der Pol. Non-stiff at μ = 1, genuinely stiff by μ = 1000 — the
  *  standard demonstration that step size can be set by stability rather than
  *  by accuracy. */
@@ -113,4 +140,9 @@ export const PROBLEMS: Record<string, () => Problem> = {
   kepler: () => kepler(0.6),
   'van-der-pol': () => vanDerPol(5),
   'lotka-volterra': () => lotkaVolterra(),
+  'two-rate': () => twoRate(),
+  'stiff-decay': () => {
+    const p = decay(TWO_RATE_FAST);
+    return { ...p, span: 2, key: 'stiff-decay' };
+  },
 };

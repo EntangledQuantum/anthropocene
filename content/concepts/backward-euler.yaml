@@ -3,3 +3,12 @@ blurb: 'Evaluate the slope at the destination instead of the origin. Requires so
 notation: 'y_{n+1} = y_n + h f(t_{n+1}, y_{n+1})'
 tags:
   - ch3
+misconceptions:
+  - id: 'fixed-point-fine'
+    name: 'Just keep plugging the guess back into the update; Newton is overkill.'
+    signal: 'Implements the implicit step as y ← y_n + h f(t_{n+1}, y) and iterates.'
+    correction: 'That map contracts only when h·|∂f/∂y| < 1 — exactly the step-size limit of forward Euler. The moment stiffness makes the implicit method worth using, fixed-point iteration diverges. Newton is what actually delivers A-stability.'
+  - id: 'implicit-is-more-accurate'
+    name: 'Evaluating the slope at the endpoint is more accurate, and that is why implicit methods work on stiff problems.'
+    signal: 'Attributes survival of a large step to a better local error rather than to the stability region.'
+    correction: 'Backward Euler is first order — the same order as forward Euler. It survives because R(z) = 1/(1 − z) stays ≤ 1 on the whole left half-plane, not because the truncation term is smaller. Implicit trapezoid is second order and A-stable, and it still rings on stiff modes because it is not L-stable.'

@@ -2,9 +2,8 @@ import type { Series } from '../viz/chart-core.ts';
 import type { AxisSpec } from '../viz/chart-core.ts';
 import type { ParamSpec } from '../viz/controls.tsx';
 import { SCHEMES, TARGETS, diffSweep, hSweep } from '../../lib/numerics/diff.ts';
-import { integrate } from '../../lib/numerics/ode.ts';
-import { decay } from '../../lib/numerics/problems.ts';
-import { forwardEuler } from '../../lib/numerics/ode.ts';
+import { integrate, forwardEuler, backwardEuler } from '../../lib/numerics/ode.ts';
+import { decay, twoRate, TWO_RATE_FAST } from '../../lib/numerics/problems.ts';
 import { norm2, sub } from '../../lib/numerics/types.ts';
 import {
   ILL_EPS,
@@ -221,9 +220,63 @@ const quadNaiveCliff: TuneScenario = {
   },
 };
 
+/* ── two-rate stiffness cliff ──────────────────────────────────────────── */
+
+const clip = (v: number, lo: number, hi: number) => Math.max(lo, Math.min(hi, v));
+
+const twoRateCliff: TuneScenario = {
+  param: {
+    key: 'h', label: 'step size', symbol: 'h',
+    min: 0.001, max: 0.12, step: 0.0005, value: 0.05, log: true,
+    hint: 'A step that looks generous for the slow clock. The fast one disagrees.',
+  },
+  target: 2 / TWO_RATE_FAST,   // forward Euler dies when h λ_fast > 2
+  tolerance: 0.2,
+  x: { label: 't' },
+  y: { label: 'y' },
+  rules: [{ y: 0, color: 'rgba(242,238,247,0.35)' }],
+  compute: (h: number) => {
+    const problem = twoRate();
+    const fe = integrate(forwardEuler, problem.f, problem.y0, 0, 2, h);
+    const be = integrate(backwardEuler, problem.f, problem.y0, 0, 2, h);
+    const peakSlow = Math.max(...fe.y.map((s) => Math.abs(s[0])));
+    const growing = peakSlow > 1.5 || fe.diverged;
+
+    return {
+      series: [
+        {
+          key: 'fe-slow', label: 'forward Euler, slow', color: growing ? 'magenta' : 'orchid',
+          points: fe.t.map((t, i) => [t, clip(fe.y[i][0], -3, 3)] as const),
+        },
+        {
+          key: 'fe-fast', label: 'forward Euler, fast', color: 'iris',
+          points: fe.t.map((t, i) => [t, clip(fe.y[i][1], -3, 3)] as const),
+        },
+        {
+          key: 'be-slow', label: 'backward Euler, slow', color: 'cyan',
+          points: be.t.map((t, i) => [t, clip(be.y[i][0], -3, 3)] as const),
+        },
+        {
+          key: 'exact-slow', label: 'exact slow', color: 'ink', dash: [3, 3], width: 1,
+          points: Array.from({ length: 200 }, (_, i) => {
+            const t = (2 * i) / 199;
+            return [t, problem.exact!(t)[0]] as const;
+          }),
+        },
+      ],
+      readouts: [
+        { label: 'h λ_fast', value: (h * TWO_RATE_FAST).toFixed(2) },
+        { label: 'peak |slow|', value: peakSlow.toExponential(2) },
+        { label: 'forward Euler', value: growing ? 'growing' : 'decaying' },
+      ],
+    };
+  },
+};
+
 export const TUNE_SCENARIOS: Record<string, TuneScenario> = {
   'fd-optimum': fdOptimum,
   'euler-stability': eulerStability,
   'ill-2x2-perturb': ill2x2Perturb,
   'quad-naive-cliff': quadNaiveCliff,
+  'two-rate-cliff': twoRateCliff,
 };

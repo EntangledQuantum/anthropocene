@@ -3,7 +3,7 @@ title: 'Stiffness, and evaluating the slope where you are going'
 blurb: 'When the fastest mode in the system forces a step size thousands of times smaller than accuracy needs. The fix costs a nonlinear solve per step and is worth it.'
 order: 3
 tier: 'advanced'
-minutes: 30
+minutes: 16
 teaches:
   - 'backward-euler'
   - 'a-stability'
@@ -11,26 +11,228 @@ teaches:
 requires:
   - 'forward-euler'
   - 'rk4'
-status: 'draft'
+status: 'live'
+updated: 2026-09-10
 ---
 
-:::note
-This lesson is **outlined but not yet written**. The concept graph already knows what it
-will own, so lessons downstream of it link here rather than re-teaching the material.
-Everything below is the plan.
-:::
+Two clocks, one system. The slow one is the physics. The fast one died in the first millisecond. Take a step that looks generous for the slow clock.
 
-## Planned outline
+$$
+\dot y_s = -y_s + y_f, \qquad \dot y_f = -400\, y_f, \qquad y(0) = (1, 1)
+$$
 
-1. A concrete stiff system: two modes with timescales separated by 10^6.
-2. Backward Euler, and why the unknown appearing on both sides is the whole point.
-3. Solving the implicit step with Newton, and why fixed-point iteration fails exactly when you need it.
-4. Stability regions in the complex plane; A-stability and L-stability.
-5. The implicit trapezoid rings on stiff modes while backward Euler damps them - L-stability made visible.
-6. BDF methods and what production stiff solvers actually use.
+After $t \approx 0.02$ the fast mode is gone and the slow one is ordinary exponential decay. Forward Euler on that slow decay would be happy with $h = 0.05$. Take it anyway.
 
-## Interactives planned
+<Predict
+  id="stiff-explicit-dies"
+  question="At h = 0.05 — ten times larger than 2/400 — what happens to the SLOW variable?"
+  options={[
+    { key: 'a', misconception: 'ignore-fast-mode', label: 'Everyone tracks it. The fast mode is already dead, so it cannot hurt the step.', why: 'Tempting, and true of the exact solution: ys is essentially e^{-t}. The method does not get to skip a mode because it is boring. The fast eigenvalue sits in the same Jacobian.' },
+    { key: 'b', label: 'Forward Euler and RK4 blow up. Backward Euler tracks the slow decay.', why: 'Correct. The step is set by λ_fast = 400, not by how fast the solution is actually moving. Implicit evaluation of the slope is what lets backward Euler ignore that limit.' },
+    { key: 'c', misconception: 'stiff-means-hard', label: 'All three blow up. A gap of 400 in the rates means the problem is badly posed.', why: 'The problem is fine — the true slow solution is a smooth e^{-t}. Stiffness is a property of the pair (problem, explicit method), not a defect in the ODE.' },
+    { key: 'd', misconception: 'higher-order-fixes-stiffness', label: 'RK4 survives. Its stability region is larger, so a 4th-order method absorbs the fast mode.', why: 'RK4 reaches to about −2.8 on the real axis instead of Euler’s −2. That is a small constant. At hλ = −20 both sit miles outside their regions.' },
+  ]}
+  correct="b"
+>
 
-Each numbered point above gets at least one thing you can manipulate, not a figure. See
-`AGENTS.md` for the widget vocabulary and the rule that every lesson ships at least one
-graded interaction and one recall card.
+Drag $h$ down. The explosion is not gradual — it is a cliff, and the cliff is set by the mode you do not care about.
+
+<SolverLab
+  problem="two-rate"
+  methods={['forward-euler', 'rk4', 'backward-euler']}
+  initial={['forward-euler', 'rk4', 'backward-euler']}
+  views={['trajectory', 'error']}
+  h={0.05}
+  hRange={[0.001, 0.12]}
+  span={4}
+  caption="Slow component of the two-rate system. Dashed is the exact slow solution, essentially e^{-t}. Explicit methods detonate; backward Euler follows the dashed line at a step the others cannot take."
+/>
+
+</Predict>
+
+Find the cliff with your hands. Start at that "reasonable" $h = 0.05$.
+
+<Tune
+  id="stiff-cliff"
+  scenario="two-rate-cliff"
+  prompt="Forward Euler on the two-rate system. Find the step size where the slow variable stops decaying and starts blowing up."
+  hint="The slow eigenvalue would allow h below 2. The fast one is 400 times larger, and it is the one that sets the limit."
+  explanation="h = 2/λ_fast = 0.005. Below it, |1 − hλ_fast| stays under 1 and both components decay. Above it the fast mode explodes and, because the equations are coupled, takes the slow variable with it. The threshold does not care that the fast mode has already vanished, and it does not care how accurate you wanted to be. That is stiffness: stability, not accuracy, sets Δt."
+/>
+
+<Recall id="stiff-timescale-recall" concept="stiffness">
+  <div slot="front">A solution is slow and smooth. An explicit method still needs a tiny step. What is going on, and what is the name for it?</div>
+
+The Jacobian has a large negative eigenvalue — a fast transient that has already decayed. Explicit methods remain responsible for it: their stability region is bounded, so $h$ is forced below $O(1/|\lambda_{\mathrm{fast}}|)$ even though accuracy on the slow motion would have accepted something much larger.
+
+That gap is **stiffness**. It is not a badly posed problem and it is not a rapidly changing solution. It is a timescale separation that explicit methods cannot ignore.
+
+</Recall>
+
+## Evaluate the slope where you are going
+
+Forward Euler uses the slope at the point you are standing. The implicit move is to use the slope at the point you have not reached yet:
+
+$$
+y_{n+1} = y_n + h\, f(t_{n+1}, y_{n+1})
+$$
+
+The unknown is on both sides. That is the whole method. This is the code this page runs:
+
+```ts
+export const backwardEuler = {
+  step: (f, t, y, h) =>
+    newtonSolve(
+      (guess) => guess.map((gi, i) => gi - y[i] - h * f(t + h, guess)[i]),
+      axpy(h, f(t, y), y),   // explicit Euler as the opening guess
+    ),
+};
+```
+
+On $y' = -\lambda y$ the amplification factor is $R(z) = 1/(1 - z)$ with $z = h\lambda$. For every decaying problem and every positive step, $|R|$ stays below 1. There is no step-size stability limit. That is what you just watched.
+
+It costs a nonlinear solve per step. The way you do that solve is not optional.
+
+<Predict
+  id="stiff-newton"
+  question="To solve y = y_n + h f(t_{n+1}, y), why Newton rather than “keep plugging the guess back in until it settles”?"
+  options={[
+    { key: 'a', misconception: 'fixed-point-fine', label: 'Newton is faster, but fixed-point iteration also converges — it just takes more loops.', why: 'Fixed-point on that map is y ← y_n + h f(t_{n+1}, y). It contracts only when h·|∂f/∂y| is less than 1, which is the same restriction that already killed forward Euler. When stiffness makes the implicit method worth using, this iteration diverges.' },
+    { key: 'b', label: 'Fixed-point contracts only when h |∂f/∂y| is less than 1 — exactly the regime where implicit methods have no advantage.', why: 'Correct, and it is the comment sitting in newtonSolve. Newton linearises the residual, so the contraction condition is no longer the stability limit of the method. That is what actually delivers A-stability.' },
+    { key: 'c', label: 'Newton is required because the ODE is nonlinear. On a linear problem the two iterations agree.', why: 'The two-rate system is linear, and fixed-point still diverges the moment hλ_fast > 1. Linearity makes Newton a one-step linear solve; it does not rescue fixed-point.' },
+    { key: 'd', label: 'They are the same iteration written two ways.', why: 'Newton iterates on g(y) = 0 with a Jacobian. Fixed-point iterates the update map. Same equation, different maps, and only one of them converges when you need it.' },
+  ]}
+  correct="b"
+>
+
+The comment in the solver, which is not decoration:
+
+```ts
+/** Implicit steps MUST use Newton rather than fixed-point iteration: the
+ *  fixed-point map y ↦ y_n + h f(t, y) contracts only when h·|∂f/∂y| < 1,
+ *  which is exactly the regime where an implicit method has no advantage.
+ *  Solving with Newton is what actually delivers unconditional stability. */
+```
+
+</Predict>
+
+<Recall id="stiff-backward-recall" concept="backward-euler">
+  <div slot="front">Write the backward Euler step. Why is the unknown on both sides, and why must the solve be Newton?</div>
+
+$$
+y_{n+1} = y_n + h f(t_{n+1}, y_{n+1})
+$$
+
+Evaluating the slope at the *destination* puts $y_{n+1}$ on the right-hand side, so each step is an equation, not a formula. Fixed-point iteration of that formula contracts only when $h$ is already small enough for forward Euler. Newton on the residual is what keeps the method stable at the steps stiffness demands.
+
+</Recall>
+
+## The region that swallows the left half-plane
+
+Every one-step method applied to $y' = \lambda y$ collapses to $y_{n+1} = R(z)\, y_n$ with $z = h\lambda$. The method is stable where $|R(z)| \le 1$. That set is a **region in the complex plane** — a shape, not an inequality.
+
+Explicit $R$ is a polynomial, so $|R| \to \infty$ as $|z| \to \infty$, so the region is bounded. Implicit $R$ is rational, which is what lets it cover the whole left half-plane.
+
+A method whose stability region contains every $z$ with negative real part is **A-stable**. No explicit method is. Dahlquist, 1963.
+
+<StabilityExplorer
+  methods={['forward-euler', 'rk4', 'backward-euler', 'trapezoid']}
+  initial="backward-euler"
+  z={[-2.5, 0]}
+  caption="Drag z = hλ. Bright is |R| ≤ 1. Switch from RK4 to backward Euler and watch the region swallow the entire left half-plane — that swallow is A-stability. Then switch to implicit trapezoid: still A-stable, but look at |R| as you drag far left."
+/>
+
+<Classify
+  id="stiff-method-sort"
+  prompt="Sort these by what their stability region actually buys. A-stable means the left half-plane is inside the region. L-stable means that, and also R(z) → 0 as z → −∞, so stiff modes die instead of ringing."
+  buckets={[
+    { key: 'neither', label: 'not A-stable', accent: 'magenta' },
+    { key: 'a-only', label: 'A-stable, not L-stable', accent: 'warn' },
+    { key: 'al', label: 'A-stable and L-stable', accent: 'cyan' },
+  ]}
+  items={[
+    { key: 'fe', label: 'Forward Euler', bucket: 'neither', why: 'A disc of radius 1 at −1. Bounded, so some decaying problems sit outside it.' },
+    { key: 'rk4', label: 'RK4', bucket: 'neither', why: 'Larger lobes, still bounded. R(z) is a degree-4 polynomial.' },
+    { key: 'trap', label: 'Implicit trapezoid', bucket: 'a-only', why: 'Stable in exactly the left half-plane, but R(z) → −1 as z → −∞, so a stiff mode flips sign at nearly full amplitude.' },
+    { key: 'be', label: 'Backward Euler', bucket: 'al', why: 'R(z) = 1/(1 − z) covers the left half-plane and tends to 0 at infinity. Stiff modes die in one step.' },
+  ]}
+  explanation="The picture to keep: explicit regions are islands; backward Euler is the sea. Trapezoid fills the same sea but will not drown a stiff mode — it just keeps it bobbing. That last distinction is L-stability, and it is about to be visible as a curve."
+/>
+
+## A-stable is not the same as damping
+
+One giant step, $h = 0.1$, on $y' = -400 y$ with $y(0) = 1$. The true solution is $e^{-40} \approx 0$. Both implicit methods are A-stable, so both will stay bounded. They do not do the same thing.
+
+<Predict
+  id="stiff-l-stability"
+  question="After that one step, where is each method?"
+  options={[
+    { key: 'a', misconception: 'a-stable-is-l-stable', label: 'Both sit near 0. A-stable means stiff transients get killed.', why: 'A-stability only promises boundedness. Implicit trapezoid has R(−40) ≈ −0.95, so the step lands near −1 and the next near +1. It rings at the step frequency forever.' },
+    { key: 'b', label: 'Backward Euler damps to ≈ 0. Implicit trapezoid flips sign and stays near amplitude 1.', why: 'Correct. R_BE(−40) = 1/41 ≈ 0.024, so the mode is gone in one step — L-stable. R_trap(−40) = −39/41 ≈ −0.95, so the mode is a persistent sawtooth. Same left half-plane; different |R(∞)|.' },
+    { key: 'c', misconception: 'implicit-is-more-accurate', label: 'Trapezoid tracks better — it is second order, backward Euler is only first.', why: 'Order describes the truncation error as h → 0, which is not the regime you are in. At z = −40 the higher-order method is the one that refuses to damp.' },
+    { key: 'd', label: 'Both ring. Rational R(z) always has |R| → 1 at infinity.', why: 'Only if numerator and denominator have the same degree. Backward Euler is 0/1; trapezoid is 1/1. That is the entire difference between L-stable and not.' },
+  ]}
+  correct="b"
+>
+
+Commit to the shape before the plot confirms it. The true solution is already a flat line at zero.
+
+<SketchCurve
+  id="stiff-ring-sketch"
+  scenario="trapezoid-ring"
+  prompt="Sketch implicit trapezoid on y′ = −400y at h = 0.1, starting from 1. Not a smooth drop, and not a blow-up. What does “not L-stable” look like?"
+  hint="R(z) ≈ −1 for this z. Multiplying by a number close to −1 each step does something specific to the sign, and almost nothing to the size."
+  explanation="A decaying square wave: each step multiplies by ≈ −0.95, so the solution flips about zero and sheds amplitude only slowly. Backward Euler on the same step would have been at 0.024, then at 6×10^{-4} — gone. Production stiff solvers (BDF, Radau) insist on L-stability for exactly this picture."
+/>
+
+<SolverLab
+  problem="stiff-decay"
+  methods={['forward-euler', 'backward-euler', 'trapezoid']}
+  initial={['backward-euler', 'trapezoid']}
+  views={['trajectory']}
+  h={0.1}
+  hRange={[0.005, 0.25]}
+  span={2}
+  caption="y′ = −400y at a step no explicit method can take. Backward Euler is a spike then silence. Implicit trapezoid is the ring. Toggle forward Euler on if you want the third fate."
+/>
+
+</Predict>
+
+<Recall id="stiff-a-stable-recall" concept="a-stability">
+  <div slot="front">What does A-stable mean, why is no explicit method A-stable, and what extra demand is L-stability?</div>
+
+**A-stable:** the stability region contains the whole left half-plane — the method stays bounded on $y' = \lambda y$ whenever $\lambda$ has negative real part, at every positive step.
+
+No explicit Runge–Kutta method can be: $R(z)$ is a polynomial, polynomials are unbounded, so $\{z : |R(z)| \le 1\}$ is a bounded island. Dahlquist’s second barrier says the same for linear multistep methods, and adds that no A-stable multistep method can exceed order 2.
+
+**L-stable:** A-stable *and* $R(z) \to 0$ as $z \to \infty$. Backward Euler is; implicit trapezoid is not. The difference is a stiff mode that dies versus one that rings.
+
+</Recall>
+
+<Tier level="advanced" title="Dahlquist’s second barrier, and what production codes actually run">
+
+Dahlquist (1963) proved three things about linear multistep methods at once:
+
+1. No *explicit* multistep method is A-stable.
+2. No A-stable multistep method has order greater than 2.
+3. Among the A-stable order-2 methods, the implicit trapezoid rule has the smallest error constant.
+
+That is why you cannot just “take more steps of history” and keep A-stability. The way out is to leave the multistep family: implicit Runge–Kutta (Radau IIA is L-stable at high order) or to accept a slightly smaller region — **BDF** methods of order 3–6 are $A(\alpha)$-stable, covering a wedge that is wide enough for the eigenvalues that actually appear. BDF2 is A-stable and L-stable; it is the workhorse inside CVODE and `ode15s`.
+
+The practical question is the one this lesson opened with: *is my step small because the physics is fast, or because the scheme is explicit?* If the solution is slow and $h$ is being set by $\lambda_{\mathrm{fast}}$, switch family. Do not shrink $h$ by another factor of ten.
+
+</Tier>
+
+<Tier level="frontier" title="the same gap in other clothes">
+
+Van der Pol at large $\mu$ is this lesson on a cubic nullcline: long slow drifts, then a fast jump. Robertson chemical kinetics is three species with rates spanning $10^6$. A spatial discretisation of $u_t = u_{xx}$ is a two-rate system with $\lambda_{\mathrm{fast}} \sim 1/\Delta x^2$ — that is why explicit heat-equation schemes have a CFL of $\tfrac12$, and why the first implicit method you met may have been called Crank–Nicolson (trapezoid, in disguise, and it rings).
+
+In every costume the picture is the same. Left half-plane filled, or not. $R(\infty) = 0$, or not. Newton, or the iteration silently becomes the thing you were trying to avoid.
+
+</Tier>
+
+## What to carry forward
+
+- **Stiffness** is a timescale gap. The fast mode is usually the boring one. Stability, not accuracy, sets $h$.
+- **Backward Euler** evaluates the slope at the destination. The solve is Newton; fixed-point is forward Euler in a loop.
+- **A-stable** fills the left half-plane. **L-stable** also kills $R(\infty)$. Trapezoid has the first and not the second, and you can see the ring.

@@ -1,5 +1,6 @@
 title: 'A-stability'
 blurb: 'A method is A-stable when it stays bounded on decaying problems for ANY step size.'
+notation: '|R(z)| \le 1 \text{ for all } \operatorname{Re} z < 0'
 tags:
   - ch3
 misconceptions:
@@ -7,3 +8,20 @@ misconceptions:
     name: 'An unstable run is just an inaccurate one — tighten the tolerance and it will settle.'
     signal: 'Responds to a blow-up by reducing the error tolerance rather than changing method or step.'
     correction: 'Accuracy degrades smoothly; stability fails at a cliff. Past h = 2/lambda forward Euler does not give a worse answer, it gives an unbounded one, and no tolerance setting reaches back across that threshold.'
+  - id: 'explicit-can-be-a-stable'
+    name: 'Enough stages and an explicit method can cover the left half-plane.'
+    signal: 'Looks at RK4''s lobes, imagines adding more, and expects the region to eventually fill Re z < 0.'
+    correction: 'R(z) of an explicit Runge–Kutta method is a polynomial. Polynomials go to infinity as |z| does, so the region |R| ≤ 1 is always bounded. No explicit method is A-stable. That is Dahlquist, not a gap waiting to be filled by a clever tableau.'
+  - id: 'a-stable-is-l-stable'
+    name: 'If a method is stable for any step, stiff modes get damped.'
+    signal: 'Treats A-stability as "the numerical solution behaves like the true one on fast transients."'
+    correction: 'A-stability only asks that the solution stay bounded. Implicit trapezoid is A-stable, but R(z) → −1 as z → −∞, so a stiff mode rings at amplitude ~1 instead of dying. L-stability is the extra demand that R(∞) = 0.'
+  - id: 'a-stable-means-accurate'
+    name: 'A-stable methods are more accurate, which is why they survive large steps.'
+    signal: 'Picks backward Euler over RK4 on a non-stiff problem because "unconditional stability sounds like a better method."'
+    correction: 'Backward Euler is first order. A-stability is a statement about boundedness on y′ = λy for Re λ < 0, not about truncation error. On a smooth non-stiff problem RK4 will beat it by orders of magnitude at equal cost.'
+references:
+  - label: 'Dahlquist 1963, BIT — A-stability and the second barrier'
+    url: 'https://doi.org/10.1007/BF01963532'
+  - label: 'Hairer & Wanner, Solving Ordinary Differential Equations II'
+    url: 'https://doi.org/10.1007/978-3-642-05221-7'

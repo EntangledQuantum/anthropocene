@@ -66,9 +66,10 @@ export const rk4: Integrator = {
 };
 
 /* ─────────────────────────────────────────────────────────────────────────
-   Implicit methods. Solved with a fixed-point iteration rather than a Newton
-   solve — enough for the mildly stiff problems in the lessons, and it keeps
-   the mechanism visible: the state appears on BOTH sides of the equation.
+   Implicit methods. The unknown appears on both sides, so each step is a
+   nonlinear solve. Newton, not fixed-point: the fixed-point map contracts
+   only when h·|∂f/∂y| < 1, which is exactly the regime where an implicit
+   method has no advantage. See newtonSolve.
    ───────────────────────────────────────────────────────────────────────── */
 
 /** Backward Euler. First order, but A-stable: no step-size stability limit.
@@ -197,6 +198,54 @@ export const integratorByKey = (key: string): Integrator => {
   if (!found) throw new Error(`Unknown integrator "${key}"`);
   return found;
 };
+
+/* ── amplification factor R(z) on y' = λy, z = hλ ──────────────────────── */
+
+const cdiv = (a: [number, number], b: [number, number]): [number, number] => {
+  const d = b[0] * b[0] + b[1] * b[1];
+  return [(a[0] * b[0] + a[1] * b[1]) / d, (a[1] * b[0] - a[0] * b[1]) / d];
+};
+const cmul = (a: [number, number], b: [number, number]): [number, number] => [
+  a[0] * b[0] - a[1] * b[1],
+  a[0] * b[1] + a[1] * b[0],
+];
+
+/** Amplification factor R(z) of a one-step method on the Dahlquist test
+ *  equation y' = λy, z = hλ. Returned as [Re, Im]. Absolutely stable
+ *  exactly where |R(z)| ≤ 1. */
+export function amplification(key: string, re: number, im = 0): [number, number] {
+  const z: [number, number] = [re, im];
+  switch (key) {
+    case 'forward-euler':
+      return [1 + re, im];
+    case 'midpoint':
+    case 'heun':
+    case 'rk2': {
+      const z2 = cmul(z, z);
+      return [1 + re + 0.5 * z2[0], im + 0.5 * z2[1]];
+    }
+    case 'rk4': {
+      const z2 = cmul(z, z);
+      const z3 = cmul(z2, z);
+      const z4 = cmul(z3, z);
+      return [
+        1 + re + z2[0] / 2 + z3[0] / 6 + z4[0] / 24,
+        im + z2[1] / 2 + z3[1] / 6 + z4[1] / 24,
+      ];
+    }
+    case 'backward-euler':
+      return cdiv([1, 0], [1 - re, -im]);
+    case 'trapezoid':
+      return cdiv([1 + re / 2, im / 2], [1 - re / 2, -im / 2]);
+    default:
+      throw new Error(`No amplification factor for "${key}"`);
+  }
+}
+
+export function amplificationMag(key: string, re: number, im = 0): number {
+  const [a, b] = amplification(key, re, im);
+  return Math.hypot(a, b);
+}
 
 /* ── driving a solver ──────────────────────────────────────────────────── */
 

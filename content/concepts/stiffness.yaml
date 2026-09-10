@@ -1,5 +1,6 @@
 title: 'Stiffness'
 blurb: 'When a system''s fastest mode forces a far smaller step than accuracy alone would need.'
+notation: 'h \ll 1/|\lambda_{\mathrm{fast}}| \text{ even though the solution is slow}'
 tags:
   - ch3
 misconceptions:
@@ -7,3 +8,15 @@ misconceptions:
     name: 'Stiff means the problem is hard or badly posed.'
     signal: 'Treats stiffness as something to fix in the model rather than in the solver.'
     correction: 'Stiffness is a separation of timescales, and the fast mode is usually the physically boring one that has already decayed. The problem is fine; an explicit method is simply the wrong tool for it.'
+  - id: 'stiff-means-fast-solution'
+    name: 'Stiff means the solution itself is changing rapidly.'
+    signal: 'Looks at a smooth, slowly varying curve and concludes the problem cannot be stiff.'
+    correction: 'The interesting solution is often slow and smooth. What is large is an eigenvalue of the Jacobian — a nearby fast transient that has already died. Explicit methods still have to resolve it.'
+  - id: 'ignore-fast-mode'
+    name: 'If I do not care about the fast transient I can take a big step anyway.'
+    signal: 'Chooses h from the slow physics and is surprised when the run explodes.'
+    correction: 'The fast eigenvalue sits in the same system. In a coupled problem it pollutes the slow variable the moment the method goes unstable on it. You do not get to skip a mode because it is boring.'
+  - id: 'higher-order-fixes-stiffness'
+    name: 'A higher-order explicit method will handle the fast mode — its stability region is bigger.'
+    signal: 'Reaches for RK4 on a stiff problem because 4 > 1 and the region looks larger on the plot.'
+    correction: 'RK4''s real-axis reach is about 2.8 rather than Euler''s 2. That is a small constant. No explicit method is A-stable: R(z) is a polynomial, so |R| → ∞ as |z| → ∞. The step is still set by λ_fast.'
