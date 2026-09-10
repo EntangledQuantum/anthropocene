@@ -117,8 +117,8 @@ npm run content:gaps          # what is structurally missing right now
 Paths worth creating once the first one is complete. Each becomes a directory under
 `content/paths/` the moment its first lesson is scaffolded.
 
-- ✅ **Linear Algebra, Computationally** — stencil is the matrix; Jacobi; CG; SSOR-PCG; two-grid; Householder QR; Newton basin.
-- [ ] SVD, GMRES (next).
+- ✅ **Linear Algebra, Computationally** — stencil is the matrix; Jacobi; CG; SSOR-PCG; two-grid; Householder QR; Newton basin; SVD; GMRES.
+- [ ] Reconstruction / Riemann (FVM next). Least squares as a gym variant of QR.
 - [ ] **Probability and Inference** — from sampling to Bayesian computation.
 - [ ] **Optimisation** — convexity, gradient methods, second-order methods, constraints.
 - [ ] **Signals and Transforms** — Fourier, wavelets, sampling, aliasing.
