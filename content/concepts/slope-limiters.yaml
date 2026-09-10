@@ -1,3 +1,21 @@
 title: 'slope limiters'
-blurb: 'TODO: one sentence, plain language.'
-tags: []
+blurb: 'A limiter zeros or clips a reconstructed slope wherever it would invent a new extremum. That is how a second-order scheme escapes Godunov''s theorem.'
+notation: '\delta_i = \mathrm{minmod}(Q_i - Q_{i-1},\; Q_{i+1} - Q_i)'
+tags:
+  - ch6
+misconceptions:
+  - id: 'limiter-is-viscosity'
+    name: 'A limiter is extra numerical viscosity you add for stability.'
+    signal: 'Treats minmod as a global smearing term, or expects it to ruin a smooth sine the way first-order upwind does.'
+    correction: 'A limiter is a nonlinear switch on the slope. On a smooth ramp with matching one-sided differences it returns the unlimited slope. It is first-order only where it has to be — at a jump, and at a smooth extremum.'
+  - id: 'tvd-is-first-order-everywhere'
+    name: 'TVD means the whole scheme is first-order.'
+    signal: 'Ranks minmod with piecewise-constant Godunov on a sine, because "TVD cannot be second-order."'
+    correction: 'Godunov''s theorem is about *linear* monotone schemes. A limiter is nonlinear, so the scheme can be second-order on smooth monotone data and first-order at extrema. That local drop is real (Osher–Chakravarthy); it is not a global downgrade.'
+references:
+  - label: 'Sweby, SIAM J. Numer. Anal. 21 (1984) — the φ(r) region'
+    url: 'https://doi.org/10.1137/0721062'
+  - label: 'Harten, J. Comput. Phys. 49 (1983) — TVD'
+    url: 'https://doi.org/10.1016/0021-9991(83)90136-5'
+  - label: 'Godunov, Mat. Sb. 47 (1959) — linear monotone schemes are first-order'
+    url: 'https://www.mathnet.ru/eng/sm4873'

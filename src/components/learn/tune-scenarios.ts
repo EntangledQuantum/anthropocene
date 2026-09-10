@@ -51,6 +51,9 @@ import {
 import {
   DEMO_WIND, GMRES_N, convectionProblem, gmresHistory, restartNeeded,
 } from '../../lib/numerics/gmres.ts';
+import {
+  TUNE_QC, TUNE_QL, TUNE_QR, faceFromDelta, reconstructionPolyline, tvdDeltaBound,
+} from '../../lib/numerics/reconstruction.ts';
 
 /**
  * Named scenarios for `<Tune>`.
@@ -915,6 +918,51 @@ const gmRestartM: TuneScenario = {
   },
 };
 
+/* Three cells 0 | 0.8 | 1. Drag the middle slope until the right face
+   touches the neighbour — the Sweby upper bound. Fromm's unlimited 0.5
+   overshoots; the bound is computed, not typed. */
+const recTvdBound = tvdDeltaBound(TUNE_QL, TUNE_QC, TUNE_QR);
+const recTvdSlope: TuneScenario = {
+  param: {
+    key: 'delta', label: 'slope in the middle cell', symbol: 'δ',
+    min: 0, max: 1, step: 0.01, value: 0.72,
+    hint: 'The faces of the middle cell are Q ± δ/2. Too steep and the right face crosses 1.',
+  },
+  target: recTvdBound,
+  tolerance: 0.15,
+  x: { label: 'x', domain: [0, 3] },
+  y: { label: 'u', domain: [-0.12, 1.45] },
+  rules: [
+    { y: TUNE_QR, label: 'right neighbour', color: 'rgba(143,156,245,0.55)' },
+    { y: TUNE_QL, label: 'left neighbour', color: 'rgba(143,156,245,0.55)' },
+  ],
+  compute: (delta) => {
+    const line = reconstructionPolyline(TUNE_QL, TUNE_QC, TUNE_QR, delta);
+    const { left, right } = faceFromDelta(TUNE_QC, delta);
+    const overshoot = right > TUNE_QR + 1e-12 || left < TUNE_QL - 1e-12;
+    return {
+      series: [
+        {
+          key: 'rec', label: 'reconstruction',
+          color: overshoot ? 'magenta' : 'cyan',
+          style: 'line', width: 2,
+          points: line.map((p) => [p.x, p.y] as const),
+        },
+        {
+          key: 'avg', label: 'cell averages',
+          color: 'aqua', style: 'dots', width: 7,
+          points: [[0.5, TUNE_QL], [1.5, TUNE_QC], [2.5, TUNE_QR]],
+        },
+      ],
+      readouts: [
+        { label: 'δ', value: delta.toFixed(3) },
+        { label: 'right face', value: right.toFixed(3) },
+        { label: 'overshoot', value: overshoot ? 'yes' : 'no' },
+      ],
+    };
+  },
+};
+
 export const TUNE_SCENARIOS: Record<string, TuneScenario> = {
   'fd-optimum': fdOptimum,
   'euler-stability': eulerStability,
@@ -936,4 +984,5 @@ export const TUNE_SCENARIOS: Record<string, TuneScenario> = {
   'nt-basin-edge': ntBasinEdge,
   'svd-flatten-kappa': svdFlattenKappa,
   'gm-restart-m': gmRestartM,
+  'rec-tvd-slope': recTvdSlope,
 };

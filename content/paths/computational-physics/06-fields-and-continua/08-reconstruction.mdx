@@ -1,7 +1,7 @@
 ---
 title: 'The slope inside the cell'
-blurb: 'Piecewise-constant cells are first-order. A limited slope inside the cell buys a second order without new oscillations. The limiter is the whole lesson.'
-order: 1
+blurb: 'Unlimited reconstruction rings at a jump. A limiter stops the slope at the neighbour. TV cannot increase.'
+order: 8
 tier: 'advanced'
 minutes: 16
 teaches:
@@ -11,44 +11,153 @@ requires:
   - 'finite-volume'
   - 'cfl-condition'
 runtime: 'none'
-status: 'draft'
+status: 'live'
+updated: 2026-09-10
 ---
 
-Open with the tension, not the definition. What does the reader currently believe that
-this lesson is going to complicate?
+A square pulse on a ring. [Finite volume](/learn/computational-physics/fields-and-continua/finite-volume/) stored the cell averages and moved them with one flux per face. Inside each cell the reconstruction was **piecewise constant** — first-order Godunov. The jump smears.
 
-## The idea
-
-Build it up. Use `$inline$` and `$$display$$` for math.
+You can do better. Draw a line through each cell, read the faces off that line, flux those. Unlimited linear reconstruction. Second-order, on paper.
 
 <Predict
-  id="08-reconstruction-first-prediction"
-  question="Ask something the reader can be productively wrong about."
+  id="rec-unlimited-rings"
+  question="Advect that square pulse with an unlimited slope in every cell. What happens to the jump?"
   options={[
-    { key: 'a', label: 'The intuitive answer', why: 'Why it is tempting, and exactly where it breaks.' },
-    { key: 'b', label: 'The correct answer', why: 'Why it is right, in one or two sentences.' },
+    { key: 'a', misconception: 'higher-order-is-monotone', label: 'It gets sharper and stays monotone. Second-order is closer to the truth.', why: "Order is a smoothness theorem. At a jump the leading error term is not small. Unlimited Fromm is linear and second-order, so it cannot be monotone — Godunov's theorem, 1959." },
+    { key: 'b', label: 'New maxima appear. The slope sticks past the neighbours and TV grows.', why: 'Correct. The reconstructed face overshoots the neighbouring average. That new extremum is an oscillation, and it travels. Watch min Q, max Q, and TV/TV₀.' },
+    { key: 'c', misconception: 'reconstruction-is-spectral', label: 'The pulse translates exactly. A slope through three averages recovered the discontinuity.', why: 'You only have cell averages. A line is a guess — second-order on smooth data, a lie at a jump. Spectral methods are a different contract, with a different failure at discontinuities.' },
+    { key: 'd', misconception: 'slope-breaks-conservation', label: 'The sum of the cell averages drifts. A slope means the faces no longer share a flux.', why: "The update is still one flux per face, used twice. Reconstruction picks the states that flux sees. Telescoping does not care which slope produced them. Stay at ν = 0.4 — the CFL question is closed." },
   ]}
   correct="b"
 >
 
-The payoff, revealed only after they commit. Usually a simulation.
+Bars are cell averages. The bright line inside each cell is the reconstructed slope. The right-hand zoom is three cells around the steepest slope. TV/TV₀ runs along the bottom.
+
+<RecLab
+  limiter="unlimited"
+  initial="jump"
+  n={32}
+  lockLimiter={true}
+  lockInitial={true}
+  caption="Unlimited Fromm, square pulse, ν = 0.4. The slope sticks past the neighbour. New maxima appear. TV climbs."
+/>
 
 </Predict>
 
-<Recall id="08-reconstruction-card" concept="reconstruction">
-  <div slot="front">The question to answer from memory in three months.</div>
+Godunov (1959): a **linear** scheme that never makes new extrema is at most first-order. Unlimited MUSCL is linear and second-order, so it must ring. The way out is a *nonlinear* switch on the slope.
 
-The answer, written so it teaches rather than merely confirms.
+$$
+\delta_i = \mathrm{minmod}\bigl(Q_i - Q_{i-1},\; Q_{i+1} - Q_i\bigr)
+$$
+
+If the two one-sided differences disagree — you are at an extremum, or at a jump — minmod returns $0$ and the cell goes flat. If they agree, it takes the shallower one, so both faces stay between the neighbours.
+
+```ts
+delta[i] = minmod(Q[i] - Q[i - 1], Q[i + 1] - Q[i]);
+face[i]  = Q[i] + 0.5 * (1 - nu) * delta[i];
+next[i]  = Q[i] - nu * (face[i] - face[i - 1]);
+```
+
+Same conservation form. Same $\nu = 0.4$. The limiter is the only new line.
+
+<Recall id="rec-godunov-card" concept="reconstruction">
+  <div slot="front">What lives inside a finite-volume cell, and how does a face get its value?</div>
+
+A cell average $Q_i$ — that is all that is stored. A reconstruction guesses a function inside the cell from neighbouring averages and reads the faces off that guess. Piecewise constant: the face is $Q_i$. Piecewise linear: $Q_i \pm \tfrac12 \delta_i$. Unlimited $\delta_i$ is second-order and rings at a jump.
 
 </Recall>
 
-<Tier level="advanced">
+Toggle **minmod**. The slope stops at the neighbour. TV/TV₀ sits on 1. Superbee is the same contract, more compressive — it sits on the upper Sweby bound instead of the lower one.
 
-The treatment for someone who already has the working version. Derivations, edge cases,
-the reason the standard explanation is a simplification.
+<RecLab
+  limiter="minmod"
+  initial="jump"
+  n={32}
+  caption="Start on minmod. TV cannot increase. Switch to unlimited: rings. Switch to superbee: still TVD, sharper. Switch the data to a sine: unlimited is just a second-order line."
+/>
+
+Total variation of the cell averages is
+
+$$
+\mathrm{TV}(Q) = \sum_i \lvert Q_{i+1} - Q_i \rvert.
+$$
+
+A scheme is TVD when $\mathrm{TV}(Q^{n+1}) \le \mathrm{TV}(Q^n)$. Sketch what unlimited Fromm does to that ratio.
+
+<SketchCurve
+  id="rec-tv-unlimited"
+  scenario="rec-tv-unlimited"
+  prompt="Unlimited Fromm on a periodic square pulse. Sketch TV/TV₀ out to t = 0.5. It starts at 1."
+  hint="The reconstructed slope invents new extrema on the first few steps. Those extrema are variation, and they do not go away."
+  explanation="A climb, then a plateau around 1.2. Not a ruler at 1 — that is minmod — and not a gentle smear-down. The extra variation is the rings you watched. If you drew a flat line, that is higher-order-is-monotone: you expected second-order to be a better jump, not a worse one."
+/>
+
+<Classify
+  id="rec-who-rings"
+  prompt="Which of these invent new extrema, and which keep TV from increasing?"
+  buckets={[
+    { key: 'rings', label: 'new extrema, TV grows', accent: 'magenta' },
+    { key: 'tvd', label: 'TV cannot increase', accent: 'cyan' },
+  ]}
+  items={[
+    { key: 'unlim-jump', label: 'unlimited Fromm, square pulse', bucket: 'rings', why: 'Linear and second-order. Godunov says it must ring. You sketched this climb.' },
+    { key: 'minmod-jump', label: 'minmod, square pulse', bucket: 'tvd', why: 'The slope is zero at the jump. No new extremum, TV stays put.' },
+    { key: 'superbee-jump', label: 'superbee, square pulse', bucket: 'tvd', why: 'Upper Sweby bound, still TVD. Compressive, not oscillatory.' },
+    { key: 'const-jump', label: 'piecewise constant, square pulse', bucket: 'tvd', why: 'First-order upwind. Smears. Smearing is not ringing — TV falls, it does not grow.' },
+    { key: 'unlim-sine', label: 'unlimited Fromm, smooth sine', bucket: 'tvd', why: 'No jump, so the linear scheme has nothing to ring on. Second-order and monotone on this data.' },
+    { key: 'minmod-sine', label: 'minmod, smooth sine', bucket: 'tvd', why: 'The limiter clips a little at the peaks. TV falls slightly. It does not grow.' },
+  ]}
+  explanation="The linear scheme rings at a discontinuity and nowhere else. A limiter is a local switch, not extra viscosity you pour over the whole grid."
+/>
+
+## The slope that just touches
+
+Three cells: $0$, $0.8$, $1$. Unlimited Fromm takes $\delta = \tfrac12(0.8 + 0.2) = 0.5$, so the right face is $0.8 + 0.25 = 1.05$ — past the neighbour. Hunt the largest $\delta$ whose faces stay inside.
+
+<Tune
+  id="rec-tvd-slope"
+  scenario="rec-tvd-slope"
+  prompt="Three cells 0 | 0.8 | 1. Find the largest slope in the middle cell that does not overshoot the neighbours."
+  hint="The right face is Q + δ/2. It is allowed to touch 1, not to cross it."
+  explanation="δ = 0.4. That is 2 min(Δ₋, Δ₊): the Sweby upper bound, the steepest TVD slope. Fromm's 0.5 sits outside. minmod takes the shallower one-sided difference and lands well inside. A limiter is this bound, applied in every cell, every step."
+/>
+
+<Recall id="rec-limiter-card" concept="slope-limiters">
+  <div slot="front">What does a slope limiter do that a linear scheme cannot?</div>
+
+It is a **nonlinear** switch: $\delta_i = \mathrm{minmod}(Q_i - Q_{i-1},\; Q_{i+1} - Q_i)$ (or superbee, MC, van Leer — any $\varphi(r)$ inside Sweby's region). Linear monotone schemes are first-order, by Godunov's theorem. A limiter makes the scheme nonlinear, so it can be second-order on smooth monotone data and flatten at a jump. TV cannot increase.
+
+</Recall>
+
+## The other costume
+
+Same code, a smooth sine, one period, equal $N$ and equal CFL. Rank by $L^1$ error.
+
+<RankOrder
+  id="rec-sine-rank"
+  prompt="Smooth sine, N = 64, ν = 0.4, one period. Rank these reconstructions by L¹ error, largest error first."
+  lowLabel="largest L¹ error"
+  highLabel="smallest L¹ error"
+  items={[
+    { key: 'constant', label: 'piecewise constant', why: 'First-order upwind. The sine smears. Error is tens of percent of the amplitude.' },
+    { key: 'minmod', label: 'minmod', why: "TVD, so it clips the peaks — Godunov's theorem still bites at smooth extrema. On the rest of the sine it is second-order. Error drops an order of magnitude from piecewise constant." },
+    { key: 'superbee', label: 'superbee', why: 'Upper Sweby bound: less clipping than minmod, still TVD. Slightly sharper on a sine, and it can square off a ramp if you let it.' },
+    { key: 'unlimited', label: 'unlimited Fromm', why: 'No limiter, no jump, honest second-order. Two orders of magnitude below piecewise constant. This is the costume where the linear scheme is allowed to win.' },
+  ]}
+  correct={['constant', 'minmod', 'superbee', 'unlimited']}
+  explanation="A limiter is not extra viscosity. On a smooth ramp it returns the unlimited slope. It is first-order only where it has to be — at a jump, and at a smooth extremum. That local drop is real; it is not a global downgrade to Godunov."
+/>
+
+<Tier level="advanced" title="Sweby, extrema, and what WENO is for">
+
+Sweby's second-order TVD region is $0 \le \varphi(r) \le \min(2r, 2)$ for $r > 0$, and $\varphi(r) = 0$ for $r < 0$. minmod is the lower boundary $\varphi = \max(0, \min(1, r))$. superbee is the upper boundary $\varphi = \max(0, \min(2r, 1), \min(r, 2))$. MC (van Leer) is the central slope clipped into that region. Any $\varphi$ inside is TVD and second-order on smooth monotone data.
+
+TVD schemes are at most first-order at a *smooth* extremum (Osher–Chakravarthy). You saw minmod clip the sine's peaks. That is not a bug in the implementation; it is the theorem biting in a second place. WENO (Jiang–Shu 1996) is the reconstruction that refuses this: it weights several candidate stencils so the scheme stays high-order through a peak and still drops to upwind at a genuine jump. It is a sequel, not a limiter with a different name.
+
+The two reconstructed states at a face still disagree — $u^L_{i+1/2}$ from the left cell, $u^R_{i+1/2}$ from the right. For linear advection with $c > 0$ the upwind choice is obvious. For a nonlinear flux it is not. That is the Riemann problem.
 
 </Tier>
 
 ## What to carry forward
 
-Two or three lines connecting to what comes next.
+The function inside the cell is a guess. Unlimited, that guess rings at a jump — Godunov's theorem, because the scheme is linear. A limiter is the nonlinear switch that stops the slope at the neighbour, and then TV cannot increase. Next: the two face states still disagree, and a flux has to be chosen from that disagreement.

@@ -12,6 +12,7 @@ import { errorSweep } from '../../lib/numerics/stencil-bc.ts';
 import { HAT_SKETCH_INDEX, HAT_SKETCH_NODES, hat } from '../../lib/numerics/fem1d.ts';
 import { runBlob } from '../../lib/numerics/projection.ts';
 import { runFvm } from '../../lib/numerics/fvm1d.ts';
+import { runMuscl } from '../../lib/numerics/reconstruction.ts';
 import {
   DEMO_N, JACOBI_SMOOTH_OMEGA, demoMixed, sweepHistory, zeros,
   cgHistory, dirichletPoisson, pcgHistory, hashedField,
@@ -441,6 +442,21 @@ const gmResidualSketch: SketchScenario = {
   truth: () => gmWindyHist.map((s) => ({ x: s.k, y: Math.log10(Math.max(s.residualNorm, 1e-18)) })),
 };
 
+/* Unlimited Fromm on a periodic square pulse. TV/TV₀ starts at 1 and climbs
+   as the reconstructed slope invents new extrema. minmod's curve is a ruler
+   at 1 — that is a different sketch, and a different lesson beat. */
+const recTvUnlimited: SketchScenario = {
+  xLabel: 't',
+  yLabel: 'TV / TV₀',
+  xRange: [0, 0.5],
+  yRange: [0.88, 1.48],
+  tolerance: 0.09,
+  anchors: [{ x: 0, y: 1, label: 'TV₀' }],
+  truth: () => runMuscl({
+    limiter: 'unlimited', initial: 'jump', n: 64, cfl: 0.4, tEnd: 0.5,
+  }).history.map((s) => ({ x: s.t, y: s.ratio })),
+};
+
 export const SKETCH_SCENARIOS: Record<string, SketchScenario> = {
   'fd-u-curve': fdUCurve,
   'euler-convergence': eulerConvergence,
@@ -467,4 +483,5 @@ export const SKETCH_SCENARIOS: Record<string, SketchScenario> = {
   'nt-residual-catch': ntResidualCatch,
   'svd-residual-vs-rank': svdResidualVsRank,
   'gm-residual-nonsym': gmResidualSketch,
+  'rec-tv-unlimited': recTvUnlimited,
 };

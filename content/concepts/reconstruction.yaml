@@ -1,3 +1,23 @@
 title: 'reconstruction'
-blurb: 'TODO: one sentence, plain language.'
-tags: []
+blurb: 'The function inside a cell is not stored. You guess a line from neighbouring averages and read the faces off that line.'
+notation: 'u_{i+1/2}^L = Q_i + \tfrac12 \delta_i'
+tags:
+  - ch6
+misconceptions:
+  - id: 'higher-order-is-monotone'
+    name: 'A second-order scheme is always closer to the truth, so a jump just gets sharper.'
+    signal: 'Expects unlimited linear reconstruction to square up a discontinuity without new extrema.'
+    correction: 'Order is a smoothness theorem. At a jump the leading error term is not small. Unlimited Fromm is linear and second-order, so Godunov (1959) says it cannot be monotone — it rings. A limiter is the nonlinear escape.'
+  - id: 'reconstruction-is-spectral'
+    name: 'Reconstruction recovers the exact function inside the cell.'
+    signal: 'Treats a slope through three averages as if it were a spectral expansion of the true field.'
+    correction: 'You only have cell averages. A line is a guess, second-order on smooth data and a lie at a discontinuity. Spectral methods are a different contract, with a different failure at jumps.'
+  - id: 'slope-breaks-conservation'
+    name: 'Putting a slope in the cell means the faces no longer share one flux.'
+    signal: 'Expects the global sum to drift once reconstruction is switched on.'
+    correction: 'The update is still one flux per face, used twice. Reconstruction picks the *states* that flux sees. Telescoping does not care which slope produced them.'
+references:
+  - label: 'van Leer, J. Comput. Phys. 32 (1979) — MUSCL'
+    url: 'https://doi.org/10.1016/0021-9991(79)90145-1'
+  - label: 'LeVeque, Finite Volume Methods for Hyperbolic Problems (Cambridge, 2002), ch. 6'
+    url: 'https://doi.org/10.1017/CBO9780511791253'
