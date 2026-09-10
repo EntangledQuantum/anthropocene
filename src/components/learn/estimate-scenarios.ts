@@ -16,6 +16,7 @@ import { JUMP_LEFT, JUMP_RIGHT, rankineHugoniot } from '../../lib/numerics/fvm1d
 import { laplacianNnz } from '../../lib/numerics/operator.ts';
 import {
   DEMO_N, itersToReduce, jacobiSpectralRadius,
+  dirichletPoisson, jacobiStepsUntil,
 } from '../../lib/numerics/iterative.ts';
 
 /**
@@ -308,6 +309,19 @@ const jacItersTenth: EstimateScenario = {
   truth: () => itersToReduce(jacobiSpectralRadius(DEMO_N, 1), 0.1),
 };
 
+const cgJacobiTo1e6: EstimateScenario = {
+  quantity: 'Jacobi sweeps to drive ‖r‖₂ below 10⁻⁶ on the n = 8 Dirichlet Poisson (CG is already there at step 8)',
+  logRange: [0, 4],
+  logStart: 1,
+  withinFactor: 3,
+  landmarks: [
+    { value: 8, label: 'CG steps' },
+    { value: 80, label: 'eighty' },
+    { value: 1000, label: 'a thousand' },
+  ],
+  truth: () => jacobiStepsUntil(dirichletPoisson(8, 'mixed').b, 1e-6, 2000),
+};
+
 export const ESTIMATE_SCENARIOS: Record<string, EstimateScenario> = {
   'euler-work-1e6': eulerWorkFor1e6,
   'rk4-work-1e6': rk4WorkFor1e6,
@@ -326,4 +340,5 @@ export const ESTIMATE_SCENARIOS: Record<string, EstimateScenario> = {
   'fvm-burgers-shock-speed': fvmBurgersShock,
   'op-laplacian-nnz-n200': opLaplacianNnzN200,
   'jac-iters-tenth': jacItersTenth,
+  'cg-jacobi-to-1e-6': cgJacobiTo1e6,
 };

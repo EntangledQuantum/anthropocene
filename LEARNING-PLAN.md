@@ -117,8 +117,8 @@ npm run content:gaps          # what is structurally missing right now
 Paths worth creating once the first one is complete. Each becomes a directory under
 `content/paths/` the moment its first lesson is scaffolded.
 
-- ✅ **Linear Algebra, Computationally** — first lesson live: a matrix is a discrete operator.
-- [ ] Jacobi smoothing and Krylov/CG (Wave 5). Then QR/SVD, preconditioners.
+- ✅ **Linear Algebra, Computationally** — stencil is the matrix; Jacobi smoothing; CG Krylov plane.
+- [ ] Preconditioners, GMRES, multigrid (next). Then QR/SVD.
 - [ ] **Probability and Inference** — from sampling to Bayesian computation.
 - [ ] **Optimisation** — convexity, gradient methods, second-order methods, constraints.
 - [ ] **Signals and Transforms** — Fourier, wavelets, sampling, aliasing.

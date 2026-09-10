@@ -14,6 +14,7 @@ import { runBlob } from '../../lib/numerics/projection.ts';
 import { runFvm } from '../../lib/numerics/fvm1d.ts';
 import {
   DEMO_N, JACOBI_SMOOTH_OMEGA, demoMixed, sweepHistory, zeros,
+  cgHistory, dirichletPoisson,
 } from '../../lib/numerics/iterative.ts';
 
 /**
@@ -346,6 +347,19 @@ const jacResidualStall: SketchScenario = {
   ).map((h) => ({ x: h.sweep, y: Math.log10(Math.max(h.res, 1e-16)) })),
 };
 
+/* CG on n = 8 Dirichlet Poisson. Euclidean residual wobbles, then hits
+   roundoff at k = n. Jacobi on this scale is a line at the top. */
+const cgN8 = cgHistory(dirichletPoisson(8, 'mixed').b, 12);
+const cgResidualCliff: SketchScenario = {
+  xLabel: 'k',
+  yLabel: 'log₁₀ ‖r‖₂',
+  xRange: [0, 12],
+  yRange: [-16.5, 1],
+  tolerance: 2.3,
+  anchors: [{ x: 0, y: Math.log10(Math.max(cgN8[0]!.residualNorm, 1e-18)), label: '‖r₀‖' }],
+  truth: () => cgN8.map((s) => ({ x: s.k, y: Math.log10(Math.max(s.residualNorm, 1e-18)) })),
+};
+
 export const SKETCH_SCENARIOS: Record<string, SketchScenario> = {
   'fd-u-curve': fdUCurve,
   'euler-convergence': eulerConvergence,
@@ -366,4 +380,5 @@ export const SKETCH_SCENARIOS: Record<string, SketchScenario> = {
   'proj-blob-area': projBlobArea,
   'fvm-mass-flat': fvmMassFlat,
   'jac-residual-stall': jacResidualStall,
+  'cg-residual-cliff': cgResidualCliff,
 };

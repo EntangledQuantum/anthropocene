@@ -16,8 +16,9 @@
    residual() and the same A.
    ───────────────────────────────────────────────────────────────────────── */
 
-import { applyLaplacian, dot, laplacianGrid } from './operator.ts';
-import { norm2 } from './types.ts';
+import { applyLaplacian, cholesky, denseLaplacian, dot, laplacian1d, laplacianGrid, sampleField } from './operator.ts';
+import { axpy, norm2, sub } from './types.ts';
+import { solveDense } from './linalg.ts';
 
 export const DEMO_N = 31;
 export const JACOBI_SMOOTH_OMEGA = 2 / 3;
@@ -227,4 +228,268 @@ export function powerRadius(
     u = u.map((v) => v / nrm);
   }
   return norm2(stationarySweep(u, f, method, omega));
+}
+
+/* ── Krylov / CG (Wave 5, appended onto the Jacobi smoother) ──────────── */
+
+export type Matvec = (x: number[]) => number[];
+
+export interface IterStep {
+  k: number;
+  x: number[];
+  r: number[];
+  residualNorm: number;
+}
+
+export interface CgStep extends IterStep {
+  /** Search direction. A-orthogonal to every previous p. */
+  p: number[];
+}
+
+export interface DirichletPoisson {
+  n: number;
+  h: number;
+  x: number[];
+  b: number[];
+  applyA: Matvec;
+}
+
+export type PoissonLoad = 'ones' | 'sine' | 'mixed';
+
+/** Canonical 1D Poisson −u″ = f on [0,1], homogeneous Dirichlet.
+ *  `mixed` breaks the low-mode eigenvector so n = 2 still has a 2D Krylov
+ *  plane (a constant load *is* that mode). */
+export function dirichletPoisson(n: number, load: PoissonLoad = 'mixed'): DirichletPoisson {
+  if (n < 1) throw new Error('need n ≥ 1');
+  const op = laplacian1d(n, 'dirichlet');
+  const applyA: Matvec = (u) => applyLaplacian(u, 'dirichlet');
+  let b: number[];
+  if (load === 'ones') b = new Array(n).fill(1);
+  else if (load === 'sine') b = op.x.map((xi) => Math.PI * Math.PI * Math.sin(Math.PI * xi));
+  else {
+    const bump = sampleField('bump', op.x);
+    const spike = sampleField('spike', op.x, Math.max(0, Math.floor(n / 3)));
+    b = bump.map((v, i) => v + 0.55 * spike[i]!);
+  }
+  return { n, h: op.h, x: op.x, b, applyA };
+}
+
+export const residualOf = (applyA: Matvec, x: number[], b: number[]): number[] =>
+  sub(b, applyA(x));
+
+/** uᵀAv. A must be self-adjoint for this to equal vᵀAu. */
+export function aInner(applyA: Matvec, u: number[], v: number[]): number {
+  return dot(u, applyA(v));
+}
+
+/** [r, Ar, A²r, …, A^{k−1}r]. The columns that span K_k. */
+export function krylovPowers(applyA: Matvec, r0: number[], k: number): number[][] {
+  const cols: number[][] = [];
+  if (k < 1) return cols;
+  let v = r0.slice();
+  cols.push(v.slice());
+  for (let i = 1; i < k; i++) {
+    v = applyA(v);
+    cols.push(v);
+  }
+  return cols;
+}
+
+/* ── Jacobi on this Laplacian (comparison baseline for CG) ─────────────── */
+
+/** One Jacobi sweep. For the Dirichlet three-point stencil this is
+ *  xᵢ ← (x_{i−1} + x_{i+1})/2 + (h²/2) bᵢ, walls contributing 0. */
+export function jacobiLaplacianSweep(x: number[], b: number[]): number[] {
+  const n = x.length;
+  const { h } = laplacianGrid(n, 'dirichlet');
+  const w = (h * h) / 2;
+  const next = new Array<number>(n);
+  for (let i = 0; i < n; i++) {
+    const left = i === 0 ? 0 : x[i - 1]!;
+    const right = i === n - 1 ? 0 : x[i + 1]!;
+    next[i] = 0.5 * (left + right) + w * b[i]!;
+  }
+  return next;
+}
+
+export function jacobiResidualHistory(
+  b: number[],
+  steps: number,
+  x0?: number[],
+): IterStep[] {
+  const n = b.length;
+  let x = x0 ? x0.slice() : new Array(n).fill(0);
+  const applyA: Matvec = (u) => applyLaplacian(u, 'dirichlet');
+  const out: IterStep[] = [];
+  for (let k = 0; k <= steps; k++) {
+    const r = residualOf(applyA, x, b);
+    out.push({ k, x: x.slice(), r, residualNorm: norm2(r) });
+    if (k < steps) x = jacobiLaplacianSweep(x, b);
+  }
+  return out;
+}
+
+/** First k where Jacobi residual ≤ target. Returns maxSteps + 1 if it never
+ *  gets there — the overlay's honest "Jacobi has not caught CG" answer. */
+export function jacobiStepsUntil(
+  b: number[],
+  target: number,
+  maxSteps: number,
+  x0?: number[],
+): number {
+  const n = b.length;
+  let x = x0 ? x0.slice() : new Array(n).fill(0);
+  const applyA: Matvec = (u) => applyLaplacian(u, 'dirichlet');
+  for (let k = 0; k <= maxSteps; k++) {
+    if (norm2(residualOf(applyA, x, b)) <= target) return k;
+    x = jacobiLaplacianSweep(x, b);
+  }
+  return maxSteps + 1;
+}
+
+/* ── steepest descent (the gradient-descent CG is not) ─────────────────── */
+
+export function steepestDescentHistory(
+  applyA: Matvec,
+  b: number[],
+  steps: number,
+  x0?: number[],
+): IterStep[] {
+  const n = b.length;
+  let x = x0 ? x0.slice() : new Array(n).fill(0);
+  let r = residualOf(applyA, x, b);
+  const out: IterStep[] = [{ k: 0, x: x.slice(), r: r.slice(), residualNorm: norm2(r) }];
+  for (let k = 1; k <= steps; k++) {
+    const rr = dot(r, r);
+    if (rr === 0) {
+      out.push({ k, x: x.slice(), r: r.slice(), residualNorm: 0 });
+      continue;
+    }
+    const Ar = applyA(r);
+    const rAr = dot(r, Ar);
+    if (rAr <= 0) break;
+    const alpha = rr / rAr;
+    x = axpy(alpha, r, x);
+    r = axpy(-alpha, Ar, r);
+    out.push({ k, x: x.slice(), r: r.slice(), residualNorm: norm2(r) });
+  }
+  return out;
+}
+
+/* ── conjugate gradient ────────────────────────────────────────────────── */
+
+/**
+ * Hestenes–Stiefel CG. Short recurrence, one matvec per step.
+ *
+ *   α = (r·r) / (pᵀAp)
+ *   x ← x + α p
+ *   r ← r − α Ap
+ *   β = (r₊·r₊) / (r·r)
+ *   p ← r₊ + β p
+ *
+ * Default is to run `maxIter` steps even after the residual has dropped,
+ * so the finite-termination floor is visible rather than cropped.
+ */
+export function conjugateGradient(
+  applyA: Matvec,
+  b: number[],
+  { x0, maxIter, tol = 0 }: { x0?: number[]; maxIter?: number; tol?: number } = {},
+): CgStep[] {
+  const n = b.length;
+  const steps = maxIter ?? n;
+  let x = x0 ? x0.slice() : new Array(n).fill(0);
+  let r = residualOf(applyA, x, b);
+  let p = r.slice();
+  let rr = dot(r, r);
+  const out: CgStep[] = [{ k: 0, x: x.slice(), r: r.slice(), p: p.slice(), residualNorm: Math.sqrt(rr) }];
+
+  for (let k = 1; k <= steps; k++) {
+    if (rr === 0 || (tol > 0 && Math.sqrt(rr) <= tol)) {
+      out.push({ k, x: x.slice(), r: r.slice(), p: p.slice(), residualNorm: Math.sqrt(rr) });
+      continue;
+    }
+    const Ap = applyA(p);
+    const pAp = dot(p, Ap);
+    if (pAp <= 0) break;
+    const alpha = rr / pAp;
+    x = axpy(alpha, p, x);
+    r = axpy(-alpha, Ap, r);
+    const rrNew = dot(r, r);
+    const beta = rr === 0 ? 0 : rrNew / rr;
+    p = axpy(beta, p, r);
+    rr = rrNew;
+    out.push({ k, x: x.slice(), r: r.slice(), p: p.slice(), residualNorm: Math.sqrt(rr) });
+  }
+  return out;
+}
+
+export function cgHistory(
+  b: number[],
+  steps: number,
+  x0?: number[],
+): CgStep[] {
+  return conjugateGradient((u) => applyLaplacian(u, 'dirichlet'), b, {
+    x0,
+    maxIter: steps,
+  });
+}
+
+/** Exact (dense) Dirichlet Poisson solve, for energy ellipses and tests. */
+export function poissonExact(b: number[]): number[] {
+  const x = solveDense(denseLaplacian(b.length, 'dirichlet'), b);
+  if (!x) throw new Error('Dirichlet Laplacian is SPD — solve must succeed');
+  return x;
+}
+
+export function energyNormSq(applyA: Matvec, e: number[]): number {
+  return aInner(applyA, e, e);
+}
+
+/** Project v onto span{cols} in the Euclidean inner product (tiny n). */
+export function inSpanResidual(cols: number[][], v: number[], tol = 1e-8): boolean {
+  if (cols.length === 0) return norm2(v) <= tol;
+  const m = cols.length;
+  const n = v.length;
+  const G = Array.from({ length: m }, () => new Array<number>(m).fill(0));
+  const rhs = new Array<number>(m).fill(0);
+  for (let i = 0; i < m; i++) {
+    rhs[i] = dot(cols[i]!, v);
+    for (let j = 0; j <= i; j++) {
+      const g = dot(cols[i]!, cols[j]!);
+      G[i]![j] = g;
+      G[j]![i] = g;
+    }
+  }
+  const c = solveDense(G, rhs);
+  if (!c) return norm2(v) <= tol;
+  const proj = new Array(n).fill(0);
+  for (let i = 0; i < m; i++) {
+    const ci = c[i]!;
+    const col = cols[i]!;
+    for (let j = 0; j < n; j++) proj[j] += ci * col[j]!;
+  }
+  return norm2(sub(v, proj)) <= tol * Math.max(1, norm2(v));
+}
+
+/** Level set eᵀ A e = level in two unknowns. The 2D energy ellipse. */
+export function spdEllipse(
+  A: number[][],
+  center: number[],
+  level: number,
+  samples = 96,
+): [number, number][] {
+  if (A.length !== 2) throw new Error('energy ellipse is the two-unknown picture');
+  const L = cholesky(A);
+  if (!L) throw new Error('A is not SPD');
+  const rho = Math.sqrt(Math.max(0, level));
+  const pts: [number, number][] = [];
+  for (let i = 0; i <= samples; i++) {
+    const th = (2 * Math.PI * i) / samples;
+    const u0 = rho * Math.cos(th);
+    const u1 = rho * Math.sin(th);
+    const y1 = u1 / L[1]![1]!;
+    const y0 = (u0 - L[1]![0]! * y1) / L[0]![0]!;
+    pts.push([center[0]! + y0, center[1]! + y1]);
+  }
+  return pts;
 }

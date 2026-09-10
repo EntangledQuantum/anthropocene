@@ -1,3 +1,23 @@
 title: 'conjugate gradient'
-blurb: 'TODO: one sentence, plain language.'
-tags: []
+blurb: 'On SPD A, CG picks the A-best residual in the Krylov plane. That is why it is not gradient descent.'
+notation: 'x_k = \arg\min_{x \in x_0+K_k} \|x^*-x\|_A'
+tags:
+  - linalg
+misconceptions:
+  - id: 'cg-is-gradient-descent'
+    name: 'CG is steepest descent on the energy, with a better line search.'
+    signal: 'Treats the search direction as the residual, or expects only consecutive residuals to be orthogonal.'
+    correction: 'Steepest descent orthogonalizes the residual against the last step and then retraces. CG builds A-orthogonal search directions, so the residual is orthogonal to the whole Krylov space so far and no previous step is undone.'
+  - id: 'iterative-never-exact'
+    name: 'Iterative means the answer is always approximate.'
+    signal: 'Expects a residual floor set by the method, independent of n, or treats finite termination as a bug.'
+    correction: 'On an n-dimensional SPD problem, K_n is the whole space, so CG in exact arithmetic hits x* at step n. The floor you see is roundoff, not a truncated iteration.'
+  - id: 'jacobi-will-catch-up'
+    name: 'Enough Jacobi sweeps will catch CG; they are the same slope with a different constant.'
+    signal: 'Ranks the methods by a rate that does not grow, or guesses that matching CG takes about n extra Jacobi steps.'
+    correction: 'Jacobi is a fixed polynomial in A, linear with rate cos(π/(n+1)). CG rebuilds an optimal polynomial over a growing plane. Matching the n-step CG residual takes hundreds of Jacobi sweeps on this Laplacian, not n more.'
+references:
+  - label: 'Hestenes & Stiefel, Methods of conjugate gradients for solving linear systems (1952)'
+    url: 'https://doi.org/10.6028/jres.049.044'
+  - label: 'Shewchuk, An Introduction to the Conjugate Gradient Method Without the Agonizing Pain'
+    url: 'https://www.cs.cmu.edu/~quake-papers/painless-conjugate-gradient.pdf'

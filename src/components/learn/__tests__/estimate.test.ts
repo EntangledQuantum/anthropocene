@@ -93,6 +93,12 @@ describe('estimate scenarios agree with the prose that quotes them', () => {
     expect(t).toBeGreaterThan(400);
     expect(t).toBeLessThan(600);
   });
+
+  it('Jacobi needs a couple of hundred sweeps to hit 10⁻⁶ on n = 8 Poisson; CG does it in 8', () => {
+    const t = ESTIMATE_SCENARIOS['cg-jacobi-to-1e-6'].truth();
+    expect(t).toBeGreaterThan(150);
+    expect(t).toBeLessThan(300);
+  });
 });
 
 describe('every scenario is answerable on its own slider', () => {

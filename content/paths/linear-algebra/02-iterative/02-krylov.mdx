@@ -1,7 +1,7 @@
 ---
 title: 'The residual''s own subspace'
 blurb: 'CG never forms A inverse. It builds a basis from r, Ar, A²r, … and picks the best residual in that plane. That is why it is not gradient descent.'
-order: 1
+order: 2
 tier: 'core'
 minutes: 16
 teaches:
@@ -11,44 +11,208 @@ requires:
   - 'jacobi-iteration'
   - 'discrete-operator'
 runtime: 'none'
-status: 'draft'
+status: 'live'
+updated: 2026-09-10
 ---
 
-Open with the tension, not the definition. What does the reader currently believe that
-this lesson is going to complicate?
-
-## The idea
-
-Build it up. Use `$inline$` and `$$display$$` for math.
+Same 1D Poisson. $A$ is the stencil you already applied. Jacobi has been
+sweeping — [high frequencies die, then it stalls](/anthropocene/learn/linear-algebra/iterative/jacobi-smoothing/).
+Sixteen interior unknowns. Sixteen iterations. You still have not formed $A^{-1}$.
 
 <Predict
-  id="02-krylov-first-prediction"
-  question="Ask something the reader can be productively wrong about."
+  id="cg-sixteen-steps"
+  question="After 16 steps on this 16-unknown Dirichlet Poisson, what has happened to the residual?"
   options={[
-    { key: 'a', label: 'The intuitive answer', why: 'Why it is tempting, and exactly where it breaks.' },
-    { key: 'b', label: 'The correct answer', why: 'Why it is right, in one or two sentences.' },
+    { key: 'a', misconception: 'jacobi-will-catch-up', label: 'Both drop at a similar linear rate; CG is a bit steeper', why: "Jacobi's rate is fixed. CG's polynomial grows with the plane it has earned. They are not the same slope with a different constant." },
+    { key: 'b', label: 'CG is at roundoff; Jacobi has barely moved', why: 'Correct. At k = n the Krylov plane is the whole space, so CG hits x*. Jacobi is still walking with rate cos(π/(n+1)).' },
+    { key: 'c', misconception: 'cg-is-gradient-descent', label: 'CG residual drops monotonically like a line search; Jacobi oscillates', why: "CG does not minimise ‖r‖₂. The Euclidean residual can rise on the first steps — it is the A-norm of the error that is monotone. Jacobi is the smooth linear decay." },
+    { key: 'd', misconception: 'need-the-inverse', label: 'Neither moved. Sixteen matvecs cannot invert a 16×16 matrix', why: 'You never needed the inverse. Sixteen applications of A to the residual span R¹⁶. That is enough to finish.' },
   ]}
   correct="b"
 >
 
-The payoff, revealed only after they commit. Usually a simulation.
+Drag $k$. Switch the right-hand axis to $\|\mathrm{e}\|_A$ if the Euclidean residual going *up* at $k=1$ bothers you — that energy is what CG actually minimises.
+
+<KrylovLab
+  n={16}
+  view="history"
+  k0={16}
+  caption="Dirichlet Poisson, n = 16. Jacobi (cyan) is almost flat. CG (magenta) wobbles, then the floor at k = 16 is roundoff. Toggle steepest descent: it is better than Jacobi and not in the same sport as CG."
+/>
 
 </Predict>
 
-<Recall id="02-krylov-card" concept="krylov">
-  <div slot="front">The question to answer from memory in three months.</div>
+## The span of what $A$ can tell you
 
-The answer, written so it teaches rather than merely confirms.
+Start from $r_0 = b - Ax_0$. Apply $A$. You now own two vectors. Apply it
+again. The only subspace those matvecs have earned is
+
+$$
+K_k = \operatorname{span}\{r_0,\, Ar_0,\, A^2 r_0,\, \ldots,\, A^{k-1} r_0\}.
+$$
+
+That is the Krylov plane. There is no second object behind it — the same
+loop that *is* $A$ in [the operator lesson](/anthropocene/learn/linear-algebra/operators/matrix-as-operator/).
+
+<Predict
+  id="cg-what-is-krylov"
+  question="After four matvecs starting from r, which subspace have you actually built?"
+  options={[
+    { key: 'a', misconception: 'krylov-is-eigenbasis', label: 'The span of the first four eigenvectors of A', why: 'Eigenvectors would be a different basis of the same Rⁿ, and you do not have them. The matvecs built powers of A on r, not a diagonalisation.' },
+    { key: 'b', label: 'span{r, Ar, A²r, A³r} — everything four applications of A can tell you from this residual', why: 'Correct. K₄ is exactly those four vectors. CG will pick the A-best residual in that plane and nowhere else.' },
+    { key: 'c', misconception: 'need-the-inverse', label: 'span{r, A⁻¹r, A⁻²r, A⁻³r} — you have started to invert A', why: 'No inverse was formed. Each step applied A, not A⁻¹. Walking toward the inverse is a different method (and a later lesson).' },
+    { key: 'd', label: 'The four Jacobi iterates. Krylov is a name for the smoother', why: 'Jacobi is a fixed polynomial in A. The Krylov plane is the space that polynomial (and better ones) live in. CG chooses a new polynomial at every k.' },
+  ]}
+  correct="b"
+>
+
+CG takes the unique $x_k \in x_0 + K_k$ that minimises $\|x^* - x\|_A$. Equivalently: the residual $r_k$ is orthogonal to the whole plane $K_k$. That is the $A$-best residual you can pick without another matvec.
+
+</Predict>
+
+## Not gradient descent
+
+Steepest descent also line-searches. Its next residual is orthogonal to the
+*last* residual. Then it steps along the new residual, which is not
+$A$-orthogonal to the last search, and it undoes work.
+
+CG keeps the residuals orthogonal to **every** previous residual, by making
+the search directions $A$-orthogonal — conjugate diameters of the energy
+ellipse.
+
+```ts
+const Ap = applyA(p);                    // the only matvec
+const alpha = dot(r, r) / dot(p, Ap);
+x = axpy(alpha, p, x);
+r = axpy(-alpha, Ap, r);
+p = axpy(dot(r, r) / rrOld, p, r);      // A-orthogonalize against the last p
+```
+
+One matvec. A three-term recurrence. The next residual stands perpendicular
+to the last one.
+
+<Predict
+  id="cg-not-steepest"
+  question="In the Krylov plane, what is the one geometric fact that makes CG not steepest descent?"
+  options={[
+    { key: 'a', misconception: 'cg-is-gradient-descent', label: 'A longer line search along the residual. Same direction, better step length', why: 'The first CG step is steepest descent. After that the direction is no longer the residual: it has been A-orthogonalized against every previous p.' },
+    { key: 'b', label: 'Search directions are A-orthogonal, so the residual is orthogonal to the whole plane so far', why: 'Correct. rₖ · rⱼ = 0 for all j < k, and pₖᵀ A pⱼ = 0. Steepest descent only has rₖ₊₁ · rₖ = 0, and then it retraces.' },
+    { key: 'c', label: 'CG minimises ‖r‖₂ in the plane; steepest descent minimises energy', why: 'The other way around. CG minimises ‖e‖_A (energy). Minimising ‖r‖₂ over the same Krylov space is MINRES, which is a later method and a different inner product.' },
+    { key: 'd', label: 'CG uses the Jacobi smoother as a search direction', why: 'Jacobi is a fixed average of neighbours. It is not in the CG recurrence at all.' },
+  ]}
+  correct="b"
+>
+
+Two unknowns, so the Krylov plane *is* the page. CG reaches $x^*$ in two
+steps. Steepest descent zigzags along the ellipse. Watch $r_k \cdot r_{k-1}$
+and $p_k^\top A p_{k-1}$ sit at zero.
+
+<KrylovLab
+  n={2}
+  view="plane"
+  k0={2}
+  caption="Energy ellipses of the n = 2 Dirichlet Poisson. Magenta hits the centre at k = 2. Toggle steepest descent: same first step, then a bounce. The readouts rₖ · rₖ₋₁ and pₖᵀ A pₖ₋₁ are the orthogonality the picture is claiming."
+/>
+
+</Predict>
+
+<SketchCurve
+  id="cg-residual-sketch"
+  scenario="cg-residual-cliff"
+  prompt="n = 8 Dirichlet Poisson. Sketch log₁₀ ‖r‖₂ for CG against iteration k. It starts at log₁₀ ‖r₀‖. Draw through k = 12."
+  hint="The Euclidean residual is allowed to wobble. At k = n the plane is the whole space."
+  explanation="A plateau, then a cliff onto the roundoff floor at k = n. Jacobi on this vertical scale is a line at the top. The floor is not a truncated iteration — K₈ = R⁸, so CG is done."
+/>
+
+<Recall id="cg-recall-krylov" concept="krylov">
+  <div slot="front">What is the Krylov subspace K_k, in one sentence, and why does a solver that only applies A live there?</div>
+
+$K_k = \operatorname{span}\{r, Ar, \ldots, A^{k-1}r\}$ — everything $k$
+matvecs can tell you from one residual. A method that never forms $A^{-1}$
+has earned no other coordinates to search in. CG picks the $A$-best residual
+in that plane.
 
 </Recall>
 
-<Tier level="advanced">
+## Exact in $n$ steps
 
-The treatment for someone who already has the working version. Derivations, edge cases,
-the reason the standard explanation is a simplification.
+Eight unknowns. Hunt the $k$ where the residual first drops below $10^{-10}$.
+
+<Tune
+  id="cg-cliff-k"
+  scenario="cg-termination-cliff"
+  prompt="n = 8. Move k until CG residual first drops below 10⁻¹⁰."
+  hint="K_k grows by one dimension per step. When it fills R⁸, there is nowhere left for the residual to hide."
+  explanation="k = 7, then the floor. In exact arithmetic CG terminates by step n; here the last mode is already gone one step early. The cliff is finite termination, not a tolerance you chose."
+/>
+
+<Estimate
+  id="cg-jacobi-to-1e-6"
+  scenario="cg-jacobi-to-1e-6"
+  prompt="Same n = 8 Poisson. CG is at roundoff by step 8. How many Jacobi sweeps to drive ‖r‖₂ below 10⁻⁶?"
+  explanation="A couple of hundred. Jacobi is linear with rate cos(π/9) ≈ 0.94. Matching a residual CG finished at k = 8 is not 'a few extra sweeps.' The methods are not the same slope."
+/>
+
+<Classify
+  id="cg-classify"
+  prompt="Each statement is a property of one method on this SPD Poisson. Sort them."
+  buckets={[
+    { key: 'jacobi', label: 'Jacobi', accent: 'cyan' },
+    { key: 'sd', label: 'steepest descent', accent: 'iris' },
+    { key: 'cg', label: 'CG', accent: 'magenta' },
+  ]}
+  items={[
+    { key: 'fixed', label: 'each step is a fixed average of neighbours', bucket: 'jacobi', why: 'xᵢ ← (x_{i−1} + x_{i+1})/2 + (h²/2) bᵢ. A polynomial in A that does not grow.' },
+    { key: 'last', label: 'next residual orthogonal only to the last residual', bucket: 'sd', why: 'The line search gives rₖ₊₁ · rₖ = 0. The step after that is free to undo it.' },
+    { key: 'all', label: 'residual orthogonal to the whole Krylov plane so far', bucket: 'cg', why: 'rₖ ⊥ K_k. Equivalently the error is A-orthogonal to every previous search.' },
+    { key: 'conj', label: 'search directions are A-orthogonal', bucket: 'cg', why: 'pᵢᵀ A pⱼ = 0. Conjugate diameters of the energy ellipse. That is the name.' },
+    { key: 'nsteps', label: 'exact in n steps on n unknowns (SPD, exact arithmetic)', bucket: 'cg', why: 'K_n = Rⁿ, so the A-best residual in that plane is zero.' },
+    { key: 'retrace', label: 'retraces: the (k+2)nd step can undo the kth', bucket: 'sd', why: 'Without conjugacy the new residual is a legal search that has a component along an old p.' },
+  ]}
+  explanation="Jacobi is a fixed smoother. Steepest descent is gradient descent on the energy and retraces. CG is the A-best residual in a growing plane, which is why it is not gradient descent."
+/>
+
+<Recall id="cg-recall-cg" concept="conjugate-gradient">
+  <div slot="front">What does CG minimise at step k, over what set, and why is that not steepest descent?</div>
+
+CG minimises $\|x^* - x\|_A$ over $x \in x_0 + K_k$. Steepest descent
+minimises energy only along the current residual, then retraces. CG's
+search directions are $A$-orthogonal, so the residual is orthogonal to the
+whole plane so far and no previous step is undone. On SPD $A$, that finishes
+in $n$ steps.
+
+</Recall>
+
+<Tier level="advanced" title="the rate, clustering, and where this stops">
+
+The $A$-norm error after $k$ steps satisfies
+
+$$
+\frac{\|e_k\|_A}{\|e_0\|_A} \le 2 \left(\frac{\sqrt{\kappa}-1}{\sqrt{\kappa}+1}\right)^k,
+$$
+
+with $\kappa = \lambda_{\max}/\lambda_{\min}$. For this Dirichlet Laplacian
+$\kappa \sim n^2$, so the bound is $O(n)$ iterations — and the overlay you
+watched is that bound being pessimistic, because CG cares about the *whole*
+spectrum. Clustered eigenvalues shrink the effective Krylov dimension: a
+matrix with $m$ distinct eigenvalues is done in $m$ steps.
+
+The Euclidean residual is not monotone. $\|e\|_A$ is. Looking at $\|r\|_2$
+go up on the first step is not instability; it is CG refusing to minimise
+the wrong norm.
+
+This lesson stops before the next two facts, on purpose. If $A$ is not SPD,
+the $A$-norm is not a norm and the short recurrence breaks — that is MINRES
+and GMRES, later. A cheap fake inverse that clusters the spectrum is a
+preconditioner, and it is the algorithm; Krylov is then the accelerator.
+Neither is in this plane.
 
 </Tier>
 
 ## What to carry forward
 
-Two or three lines connecting to what comes next.
+$K_k = \operatorname{span}\{r, Ar, \ldots\}$ is everything matvecs can tell
+you from one residual. CG picks the $A$-best point in that plane: residuals
+orthogonal, search directions $A$-orthogonal, exact in $n$ steps. Jacobi
+will not catch it. The picture to keep is the next residual standing
+perpendicular to the last one.

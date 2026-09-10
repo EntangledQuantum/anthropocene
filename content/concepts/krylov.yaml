@@ -1,3 +1,19 @@
-title: 'krylov'
-blurb: 'TODO: one sentence, plain language.'
-tags: []
+title: 'Krylov subspace'
+blurb: 'Everything matvecs can tell you from one residual: span{r, Ar, A²r, …}.'
+notation: 'K_k = \mathrm{span}\{r, Ar, \ldots, A^{k-1}r\}'
+tags:
+  - linalg
+misconceptions:
+  - id: 'need-the-inverse'
+    name: 'Solving Au = b means forming A inverse.'
+    signal: 'Looks for a factorization, or treats a matvec as a poor substitute for the inverse.'
+    correction: 'A Krylov method never forms A inverse. After k applications of A to the residual you have earned the plane span{r, Ar, …, A^{k-1}r}, and that is the whole search space.'
+  - id: 'krylov-is-eigenbasis'
+    name: 'The Krylov space is the eigenspace of A.'
+    signal: 'Names K_k as the span of eigenvectors, or thinks you must diagonalise A before iterating.'
+    correction: 'K_k is the span of the powers of A on one vector. Eigenvectors would be a different basis of the same R^n, and you do not have them. The matvecs built this plane for free.'
+references:
+  - label: 'Trefethen & Bau, Numerical Linear Algebra, Lectures 33 and 38'
+    url: 'https://doi.org/10.1137/1.9780898719574'
+  - label: 'Saad, Iterative Methods for Sparse Linear Systems, ch. 6'
+    url: 'https://doi.org/10.1137/1.9780898718003'

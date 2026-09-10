@@ -38,6 +38,7 @@ import {
 import { flipWhereKeFraction, opposingKeRemaining } from '../../lib/numerics/mpm.ts';
 import {
   DEMO_N, JACOBI_SMOOTH_OMEGA, jacobiDamping, jacobiSmoothingFactor,
+  cgHistory, dirichletPoisson,
 } from '../../lib/numerics/iterative.ts';
 
 /**
@@ -658,6 +659,41 @@ const jacOmegaSmooth: TuneScenario = {
   },
 };
 
+/* Finite termination: n = 8, residual first drops below 10⁻¹⁰ at k = 7. */
+const cgCliffRun = cgHistory(dirichletPoisson(8, 'mixed').b, 12);
+const cgCliffK = cgCliffRun.findIndex((s) => s.k > 0 && s.residualNorm < 1e-10);
+const cgTerminationCliff: TuneScenario = {
+  param: {
+    key: 'k', label: 'CG steps', symbol: 'k', min: 0, max: 12, step: 1, value: 3,
+    hint: 'The Euclidean residual can wobble for a while. Then the Krylov plane is the whole space.',
+  },
+  target: cgCliffK,
+  tolerance: 0.18,
+  x: { label: 'k', domain: [0, 12] },
+  y: { label: 'log₁₀ ‖r‖₂', domain: [-16.5, 1] },
+  rules: [{ y: -10, label: '10⁻¹⁰', color: 'magenta' }],
+  compute: (kRaw: number) => {
+    const k = Math.max(0, Math.min(12, Math.round(kRaw)));
+    const pt = cgCliffRun[k]!;
+    return {
+      series: [
+        {
+          key: 'curve', label: 'CG residual', color: 'magenta',
+          points: cgCliffRun.map((s) => [s.k, Math.log10(Math.max(s.residualNorm, 1e-18))] as const),
+        },
+        {
+          key: 'you', label: 'your k', color: 'cyan', style: 'dots', width: 6,
+          points: [[k, Math.log10(Math.max(pt.residualNorm, 1e-18))]],
+        },
+      ],
+      readouts: [
+        { label: 'k', value: String(k) },
+        { label: '‖r‖₂', value: pt.residualNorm.toExponential(2) },
+      ],
+    };
+  },
+};
+
 export const TUNE_SCENARIOS: Record<string, TuneScenario> = {
   'fd-optimum': fdOptimum,
   'euler-stability': eulerStability,
@@ -673,4 +709,5 @@ export const TUNE_SCENARIOS: Record<string, TuneScenario> = {
   'proj-jacobi-1pct': projJacobiOnePercent,
   'mpm-flip-half': mpmFlipHalfKe,
   'jac-omega-smooth': jacOmegaSmooth,
+  'cg-termination-cliff': cgTerminationCliff,
 };

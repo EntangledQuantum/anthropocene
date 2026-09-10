@@ -34,6 +34,7 @@ import MpmLab from '../../../../components/widgets/MpmLab.astro';
 import FvmLab from '../../../../components/widgets/FvmLab.astro';
 import OperatorLab from '../../../../components/widgets/OperatorLab.astro';
 import JacobiLab from '../../../../components/widgets/JacobiLab.astro';
+import KrylovLab from '../../../../components/widgets/KrylovLab.astro';
 
 /** The authoring vocabulary: every lesson may use these with no import.
  *  Adding a widget here is what makes it available to authors — see AGENTS.md. */
@@ -42,7 +43,7 @@ const lessonComponents = {
   Plot, SolverLab, ConvergenceLab, DerivativeLab, FloatLab, CancellationLab,
   StabilityExplorer, PhaseFlow, RichardsonTableau, AdaptiveLab, SpectralLab, LJGas,
   InverseLab, PinnLab, ManifoldLab, ContinuumLab, DependenceLab, CflLab,
-  GhostLab, FemLab, ProjectionLab, MpmLab, FvmLab, OperatorLab, JacobiLab,
+  GhostLab, FemLab, ProjectionLab, MpmLab, FvmLab, OperatorLab, JacobiLab, KrylovLab,
 };
 import { buildGraph, prerequisitesOf, unlockedBy } from '../../../../lib/graph/graph.ts';
 
