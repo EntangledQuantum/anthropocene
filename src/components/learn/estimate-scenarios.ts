@@ -27,6 +27,7 @@ import { measuredPlasmaPeriod } from '../../lib/numerics/pic.ts';
 import { CS, demoPoiseuille } from '../../lib/numerics/lbm.ts';
 import { mmsErrorDrop } from '../../lib/numerics/vv.ts';
 import { SURFACE_RHO_RATIO } from '../../lib/numerics/sph.ts';
+import { restOverlapRatio } from '../../lib/numerics/dem.ts';
 
 /**
  * Named quantities for `<Estimate>`.
@@ -478,6 +479,21 @@ const sphSurfaceRho: EstimateScenario = {
   truth: () => SURFACE_RHO_RATIO,
 };
 
+/* A grain of mass 1, radius 0.05, k_n = 5×10⁴, sitting on a floor at g = 10.
+   Rest overlap is mg/k_n. People guess 0 (hard) or 0.1 (visible). */
+const demRestOverlap: EstimateScenario = {
+  quantity: 'rest overlap of a grain on a floor, as a fraction of its radius (m = 1, R = 0.05, k_n = 5×10⁴, g = 10)',
+  logRange: [-4, 0],
+  logStart: -1,
+  withinFactor: 3,
+  landmarks: [
+    { value: 1, label: 'a radius' },
+    { value: 0.1, label: 'visible' },
+    { value: 0.001, label: '10⁻³' },
+  ],
+  truth: () => restOverlapRatio(),
+};
+
 export const ESTIMATE_SCENARIOS: Record<string, EstimateScenario> = {
   'euler-work-1e6': eulerWorkFor1e6,
   'rk4-work-1e6': rk4WorkFor1e6,
@@ -507,4 +523,5 @@ export const ESTIMATE_SCENARIOS: Record<string, EstimateScenario> = {
   'lbm-umax': lbmUmax,
   'vv-mms-drop': vvMmsDrop,
   'sph-surface-rho': sphSurfaceRho,
+  'dem-rest-overlap': demRestOverlap,
 };

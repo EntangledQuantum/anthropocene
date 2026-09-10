@@ -1,7 +1,7 @@
 ---
 title: 'Contact is the constitutive law'
 blurb: 'DEM particles do not overlap in the continuum sense. A spring-dashpot at the contact is the whole of granular flow, once.'
-order: 1
+order: 8
 tier: 'advanced'
 minutes: 16
 teaches:
@@ -10,44 +10,152 @@ requires:
   - 'molecular-dynamics'
   - 'constrained-integration'
 runtime: 'none'
-status: 'draft'
+status: 'live'
+updated: 2026-09-11
 ---
 
-Open with the tension, not the definition. What does the reader currently believe that
-this lesson is going to complicate?
-
-## The idea
-
-Build it up. Use `$inline$` and `$$display$$` for math.
+Two grains in a sandpile. They look like they touch. You never wrote a Mohr–Coulomb yield surface. What is the force between them?
 
 <Predict
-  id="08-dem-first-prediction"
-  question="Ask something the reader can be productively wrong about."
+  id="dem-when-force"
+  question="Two discs in a pile, apparently in contact. The force on that pair is —"
   options={[
-    { key: 'a', label: 'The intuitive answer', why: 'Why it is tempting, and exactly where it breaks.' },
-    { key: 'b', label: 'The correct answer', why: 'Why it is right, in one or two sentences.' },
+    { key: 'a', misconception: 'dem-repose-is-written', label: 'The bulk yield stress, acting on the contact area. The pile has a φ, and the contact carries it.', why: "That is continuum soil mechanics. DEM does not store a stress tensor. There is no φ to look up. Whatever slope the pile holds will have to come from this pair, and the next, and the next." },
+    { key: 'b', label: 'Zero until they overlap, then a spring. The overlap is a penalty for rigidity.', why: "Correct. Soft-sphere DEM is a contact law, not a bulk law. Force lives at overlaps. No overlap, no force — even if the drawing looks like they touch." },
+    { key: 'c', misconception: 'dem-is-md', label: 'A Lennard-Jones-like well, on at every distance, the way MD does a pair.', why: "MD stores V(r) at every r until a cutoff. DEM is identically zero until the discs interpenetrate. Shrink the grains and you are resolving more contacts, not converging a molecular PDE." },
+    { key: 'd', misconception: 'dem-hard-no-overlap', label: 'Zero, always. Rigid grains never overlap; the constraint handles it.', why: "That is the hard-sphere / SHAKE costume. Soft-sphere DEM lets them overlap a little so a spring can stand in for rigidity. True non-overlap is a constraint, and you already know what that costs." },
   ]}
   correct="b"
 >
 
-The payoff, revealed only after they commit. Usually a simulation.
+Drag overlap. The left panel is the discs; the right panel is the same state as a force. Magenta when they interpenetrate.
+
+<DemLab
+  mode="contact"
+  lockMode={true}
+  caption="One pair. δ > 0 is the only time a force exists. The hockey-stick on the right is the constitutive law of the whole pile."
+/>
 
 </Predict>
 
-<Recall id="08-dem-card" concept="discrete-element">
-  <div slot="front">The question to answer from memory in three months.</div>
+Overlap of two discs, then the linear spring–dashpot of Cundall & Strack (1979):
 
-The answer, written so it teaches rather than merely confirms.
+$$
+\delta = R_i + R_j - |x_i - x_j|, \qquad
+F_n = k_n \delta - \gamma_n v_n \quad (\delta > 0)
+$$
+
+and $F_n = 0$ otherwise. $v_n$ is the relative speed along the line of centres. Tangential: a second spring, truncated at $\mu F_n$. That is the whole material.
+
+<SketchCurve
+  id="dem-force-overlap"
+  scenario="dem-force-overlap"
+  prompt="Sketch F_n against overlap δ. It is exactly zero when they are apart. The anchor is the instant they touch."
+  hint="No well, no infinity, no δ^{3/2}. A hockey stick: dead until contact, then a straight spring."
+  explanation="F_n = k_n δ for δ > 0, and 0 before. Lennard-Jones is on at every r. Hertz is a curve. A rigid wall is a vertical line. The linear spring is the penalty that stands in for rigidity."
+/>
+
+The dashpot is why a bounce is not elastic. Reduced mass $m^* = m/2$ for equal discs; damping ratio $\zeta = \gamma_n / (2\sqrt{k_n m^*})$. Underdamped, the outgoing relative speed is
+
+$$
+e = \exp\bigl(-\zeta\pi / \sqrt{1-\zeta^2}\bigr).
+$$
+
+<Tune
+  id="dem-restitution"
+  scenario="dem-restitution"
+  prompt="A head-on bounce of two equal discs. Drag the damping ratio until the measured restitution is 1/2."
+  hint="Half-speed is underdamped, not a brick. ζ near 0.22, not 0.6."
+  explanation="e = 1/2 sits at ζ ≈ 0.216. The cyan curve is the analytic oscillator; the magenta dot is a real two-particle bounce from the same spring–dashpot. Restitution is not a coefficient you paste onto a collision — it is the damping of the contact."
+/>
+
+A grain sitting on a floor is the same spring, at rest: $k_n \delta = mg$. Take $k_n \to \infty$ and the overlap vanishes. That is the hard-sphere limit, and it kills the explicit step, because the contact duration is $t_c \sim \pi\sqrt{m^*/k_n}$.
+
+<Estimate
+  id="dem-rest-overlap"
+  scenario="dem-rest-overlap"
+  prompt="One grain, m = 1, R = 0.05, k_n = 5×10⁴, g = 10, sitting on a floor. What is the rest overlap as a fraction of R?"
+  explanation="δ/R = mg / (k_n R) = 0.004. Not zero — that would be a constraint — and not a tenth of a radius, which you would see. The penalty is small on purpose. Raise k_n by 100× and overlap drops by 100×, and so does Δt."
+/>
+
+You already know a [constraint](../../structure-preserving/constraints/) that lands on $\delta = 0$ by construction. Soft-sphere DEM does not. It pays a penalty and a tiny $\Delta t$ instead of a multiplier.
+
+Now pour the discs.
+
+<Predict
+  id="dem-frictionless-pile"
+  question="Frictionless discs, no rolling resistance, poured onto a floor. What slope does the pile hold?"
+  options={[
+    { key: 'a', misconception: 'dem-frictionless-slopes', label: 'About 30°, like sand. Being discrete is enough.', why: "Sand is not a pile of frictionless circles. Smooth discs have nothing to lock a slope with. Geometry of a hex packing can fake a face for a moment; then they roll." },
+    { key: 'b', label: 'arctan of the stiffness. Soft grains slump more.', why: "k_n sets overlap, not the angle. A stiffer pile is thinner at each contact and needs a smaller Δt. The slope is friction." },
+    { key: 'c', label: 'None. They spread into a monolayer, like a fluid.', why: "Correct. Without μ and rolling resistance there is no bulk yield. The pancake is the constitutive law of frictionless contact, once." },
+    { key: 'd', label: '90°. They stack. Discs on discs, a column.', why: "A square stack of frictionless discs is not stable under gravity. They squeeze out sideways. A column is what you get from walls, not from the contact law." },
+  ]}
+  correct="c"
+>
+
+Play. Then drag μ to zero and reset. The magenta lines are the free surface. Colour is speed.
+
+<DemLab
+  mode="pile"
+  lockMode={true}
+  caption="Same spring–dashpot, now a heap. μ = 0 pancakes; μ > 0 holds a slope. The angle is an output, not a parameter you typed on the pile."
+/>
+
+</Predict>
+
+The angle of repose is $\mu$ and the resistance to roll, counted out over the contact network. Rolling resistance is how a disc pretends it is not a circle — real sand has corners.
+
+Same contacts, a silo. Nothing new was written.
+
+<DemLab
+  mode="hopper"
+  lockMode={true}
+  caption="Hopper. Discharge, arches, a stagnant zone — all of them are the pair law you already sketched, plus walls."
+/>
+
+[Molecular dynamics](../molecular-dynamics/) stores a potential at every distance. A hard constraint puts $\delta = 0$ inside the map. DEM is the penalty in between.
+
+<Classify
+  id="dem-which-law"
+  prompt="Which law is this?"
+  buckets={[
+    { key: 'md', label: 'molecular dynamics', accent: 'cyan' },
+    { key: 'dem', label: 'discrete element', accent: 'magenta' },
+    { key: 'hard', label: 'hard constraint', accent: 'iris' },
+  ]}
+  items={[
+    { key: 'lj', label: 'V(r) at every distance, until a cutoff', bucket: 'md', why: 'The force is −∇V, on at every r. That is MD.' },
+    { key: 'sd', label: 'F = kδ − γv, and only while overlapping', bucket: 'dem', why: 'Zero until contact. The penalty is the whole constitutive law.' },
+    { key: 'shake', label: 'δ = 0 is part of the discrete map, like SHAKE', bucket: 'hard', why: 'A constraint, not a spring. The next state lands on the manifold.' },
+    { key: 'repose', label: "the pile's slope is μ, not a yield surface you wrote", bucket: 'dem', why: 'No σ(ε) for the bulk. The angle is an output of the contacts.' },
+    { key: 'well', label: 'restitution comes from climbing out of a potential well', bucket: 'md', why: 'A conservative well returns what you put in, minus whatever a thermostat stole.' },
+    { key: 'event', label: 'collisions are instantaneous; Δt is the free-flight to the next hit', bucket: 'hard', why: 'Event-driven hard spheres. No overlap, no spring, no contact duration.' },
+  ]}
+  explanation="MD is a stored V(r). DEM is a penalty that is off until overlap. Hard-sphere and SHAKE put non-overlap inside the map. The pile does not get its own material law — it inherits one from the contacts."
+/>
+
+<Recall id="dem-one-line" concept="discrete-element">
+  <div slot="front">Where does a sandpile’s constitutive law live?</div>
+
+At the contacts. $F_n = k_n\delta - \gamma_n v_n$ for $\delta > 0$, and zero otherwise. The bulk has no $\sigma(\varepsilon)$. Angle of repose, hopper discharge, a bounce — the same local law, counted out over a network. Overlap is a penalty for rigidity: $k\to\infty$ recovers the hard constraint and kills the explicit step.
 
 </Recall>
 
-<Tier level="advanced">
+<Tier level="advanced" title="Hertz, rolling resistance, and the penalty">
 
-The treatment for someone who already has the working version. Derivations, edge cases,
-the reason the standard explanation is a simplification.
+Hertz contact is $F_n \propto \delta^{3/2}$ for elastic spheres. The linear spring is the pedagogical cousin: same hockey-stick, constant $t_c$, an $e$ you can write in closed form. Production DEM often uses Hertz–Mindlin plus a history spring; the picture does not change.
+
+Perfect discs with sliding friction still roll. A single disc on an incline rolls at any angle. Rolling resistance (Ai, Chen, Rotter, Ooi 2011) is a Coulomb torque that stands in for shape. Turn it off and a 2D pile slumps even with $\mu > 0$. That is why this lab’s $\mu$ slider also scales $\mu_r$.
+
+The explicit step has to resolve $t_c$. A common rule is $\Delta t \approx 0.1\, t_c$ with $t_c = \pi / \sqrt{k_n/m^* - (\gamma_n/2m^*)^2}$. Stiffer contacts, smaller overlap, more steps. Coarse-graining into a continuum stress (the inverse of this lesson) is how you leave that trap. Coupling DEM–FEM or DEM–MPM puts the penalty on one side of a wall and a field on the other.
+
+True rigidity is the [constrained](../../structure-preserving/constraints/) map you already have: a multiplier, not a spring. Non-smooth contact (Moreau–Jean) is that costume for grains. Soft-sphere DEM is what you run when you can afford the penalty.
 
 </Tier>
 
 ## What to carry forward
 
-Two or three lines connecting to what comes next.
+Overlap → force. The pile’s slope is the contact law, once.
+
+MD is a potential at every $r$. A constraint lands on $\delta = 0$. DEM is the penalty in between, and $\Delta t$ is the price.

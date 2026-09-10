@@ -59,6 +59,7 @@ import {
 import { nodeCharge, xWhereLeftFraction } from '../../lib/numerics/pic.ts';
 import { channelUmaxAtTau, poiseuilleUmaxSweep } from '../../lib/numerics/lbm.ts';
 import { latticeDensityRatio } from '../../lib/numerics/sph.ts';
+import { measuredRestitution, restitutionOf, TUNE_E, TUNE_ZETA } from '../../lib/numerics/dem.ts';
 import {
   UQ_JENSEN_RATIO,
   UQ_LAMBDA_MAX,
@@ -1211,6 +1212,44 @@ const uqJensenT: TuneScenario = {
   },
 };
 
+/* Linear spring–dashpot: drag ζ until a head-on bounce comes off at half
+   speed. The curve is analytic e(ζ); the magenta dot is a measured bounce. */
+const demECurve: [number, number][] = Array.from({ length: 50 }, (_, i) => {
+  const z = 0.04 + (0.72 - 0.04) * (i / 49);
+  return [z, restitutionOf(z)];
+});
+const demRestitution: TuneScenario = {
+  param: {
+    key: 'zeta', label: 'damping ratio', symbol: 'ζ',
+    min: 0.04, max: 0.72, step: 0.01, value: 0.62,
+    hint: 'ζ = γ / (2 √(k m*)). Underdamped below 1. Half-speed bounce is near 0.22.',
+  },
+  target: TUNE_ZETA,
+  tolerance: 0.14,
+  x: { label: 'ζ', domain: [0.04, 0.72] },
+  y: { label: 'restitution e', domain: [0, 1.05] },
+  rules: [
+    { y: TUNE_E, label: 'e = 1/2', color: 'iris' },
+    { x: TUNE_ZETA, label: 'ζ(1/2)', color: 'magenta' },
+  ],
+  compute: (zeta) => {
+    const z = Math.max(0.04, Math.min(0.72, zeta));
+    const e = restitutionOf(z);
+    const measured = measuredRestitution(z);
+    return {
+      series: [
+        { key: 'curve', label: 'e(ζ)', color: 'cyan', points: demECurve },
+        { key: 'you', label: 'measured bounce', color: 'magenta', style: 'dots', width: 7, points: [[z, measured]] },
+      ],
+      readouts: [
+        { label: 'ζ', value: z.toFixed(2) },
+        { label: 'e analytic', value: e.toFixed(3) },
+        { label: 'e measured', value: measured.toFixed(3) },
+      ],
+    };
+  },
+};
+
 export const TUNE_SCENARIOS: Record<string, TuneScenario> = {
   'fd-optimum': fdOptimum,
   'euler-stability': eulerStability,
@@ -1239,4 +1278,5 @@ export const TUNE_SCENARIOS: Record<string, TuneScenario> = {
   'vv-laplacian-coeff': vvLaplacianCoeff,
   'sph-complete-h': sphCompleteH,
   'uq-jensen-t': uqJensenT,
+  'dem-restitution': demRestitution,
 };

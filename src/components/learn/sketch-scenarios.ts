@@ -25,6 +25,7 @@ import { riemannState } from '../../lib/numerics/riemann.ts';
 import { poiseuilleSketchProfile } from '../../lib/numerics/lbm.ts';
 import { residualSweep } from '../../lib/numerics/vv.ts';
 import { cubicShape } from '../../lib/numerics/sph.ts';
+import { SKETCH_KN, staticNormalForce } from '../../lib/numerics/dem.ts';
 import {
   UQ_LAMBDA_MAX,
   UQ_LAMBDA_MIN,
@@ -539,6 +540,16 @@ const uqPushforwardPdf: SketchScenario = {
     expPushforwardDensity(y, UQ_LAMBDA_MIN, UQ_LAMBDA_MAX, UQ_SKETCH_T)),
 };
 
+const demForceOverlap: SketchScenario = {
+  xLabel: 'overlap δ',
+  yLabel: 'F_n',
+  xRange: [-0.03, 0.05],
+  yRange: [-8, 48],
+  tolerance: 5.5,
+  anchors: [{ x: 0, y: 0, label: 'touch' }],
+  truth: () => sample(80, -0.03, 0.05, (d) => staticNormalForce(d, SKETCH_KN)),
+};
+
 export const SKETCH_SCENARIOS: Record<string, SketchScenario> = {
   'fd-u-curve': fdUCurve,
   'euler-convergence': eulerConvergence,
@@ -571,4 +582,5 @@ export const SKETCH_SCENARIOS: Record<string, SketchScenario> = {
   'vv-mms-residual': vvMmsResidual,
   'sph-cubic-w': sphCubicW,
   'uq-output-density': uqPushforwardPdf,
+  'dem-force-overlap': demForceOverlap,
 };

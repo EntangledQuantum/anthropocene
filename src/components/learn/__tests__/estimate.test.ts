@@ -150,6 +150,12 @@ describe('estimate scenarios agree with the prose that quotes them', () => {
     const t = ESTIMATE_SCENARIOS['sph-surface-rho'].truth();
     expect(t).toBeCloseTo(5 / 6, 12);
   });
+
+  it('DEM rest overlap is a few thousandths of a radius, not zero and not visible', () => {
+    const t = ESTIMATE_SCENARIOS['dem-rest-overlap'].truth();
+    expect(t).toBeGreaterThan(0.001);
+    expect(t).toBeLessThan(0.02);
+  });
 });
 
 describe('every scenario is answerable on its own slider', () => {
