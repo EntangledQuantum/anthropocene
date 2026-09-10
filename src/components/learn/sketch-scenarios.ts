@@ -17,6 +17,7 @@ import {
   cgHistory, dirichletPoisson, pcgHistory, hashedField,
 } from '../../lib/numerics/iterative.ts';
 import { twoGridHistory } from '../../lib/numerics/multigrid.ts';
+import { SKETCH_X0, atanShift, logResidualHistory } from '../../lib/numerics/newton.ts';
 
 /**
  * Named targets for `<SketchCurve>`.
@@ -390,6 +391,24 @@ const mgResidualCycles: SketchScenario = {
   })),
 };
 
+/* Newton on arctan(x) − 1/2 from a start inside the basin. Residual
+   drops 10⁻¹, 10⁻³, 10⁻⁶, 10⁻¹³ — quadratic, then a roundoff floor. */
+const ntResidualCatch: SketchScenario = {
+  xLabel: 'k',
+  yLabel: 'log₁₀ |F|',
+  xRange: [0, 8],
+  yRange: [-16.5, 0.5],
+  tolerance: 1.8,
+  anchors: [{ x: 0, y: Math.log10(Math.max(atanShift.F([SKETCH_X0])[0]!, 1e-18)), label: '|F(x₀)|' }],
+  truth: () => {
+    const hist = logResidualHistory(atanShift, [SKETCH_X0], 8, { maxIter: 8, tol: 1e-18 });
+    const last = hist.at(-1)!;
+    const out = hist.map((s) => ({ x: s.k, y: s.logR }));
+    for (let k = last.k + 1; k <= 8; k++) out.push({ x: k, y: last.logR });
+    return out;
+  },
+};
+
 export const SKETCH_SCENARIOS: Record<string, SketchScenario> = {
   'fd-u-curve': fdUCurve,
   'euler-convergence': eulerConvergence,
@@ -413,4 +432,5 @@ export const SKETCH_SCENARIOS: Record<string, SketchScenario> = {
   'cg-residual-cliff': cgResidualCliff,
   'pc-ssor-residual': pcSsorResidual,
   'mg-residual-cycles': mgResidualCycles,
+  'nt-residual-catch': ntResidualCatch,
 };

@@ -44,6 +44,7 @@ import {
   cond2Gram, gram, gramExcess, householderQR, lostColumnEps,
   nearParallelPair, r22Abs,
 } from '../../lib/numerics/qr.ts';
+import { atanShift, basinRightEdge, fateOf, newtonRun } from '../../lib/numerics/newton.ts';
 
 /**
  * Named scenarios for `<Tune>`.
@@ -775,6 +776,50 @@ const qrLostColumn: TuneScenario = {
   },
 };
 
+/* Hunt the right-hand edge of Newton's basin on arctan(x) − 1/2.
+   Residual history crashes to roundoff inside; past the cliff |x| flies. */
+const ntRightEdge = basinRightEdge();
+const ntBasinEdge: TuneScenario = {
+  param: {
+    key: 'x0',
+    label: 'starting guess',
+    symbol: 'x₀',
+    min: 0.4,
+    max: 3.4,
+    step: 0.02,
+    value: 1,
+    hint: 'Inside, log |F| falls off a cliff. Past the edge the iterates fly in four steps.',
+  },
+  target: ntRightEdge,
+  tolerance: 0.035,
+  x: { label: 'k', domain: [0, 12] },
+  y: { label: 'log₁₀ |F|', domain: [-16.5, 1.2] },
+  rules: [{ y: -12, label: '10⁻¹²', color: 'magenta' }],
+  compute: (x0Raw: number) => {
+    const x0 = Math.max(0.4, Math.min(3.4, x0Raw));
+    const run = newtonRun(atanShift, [x0], { maxIter: 12 });
+    const fate = fateOf(run, atanShift);
+    const last = run.at(-1)!;
+    return {
+      series: [
+        {
+          key: 'res',
+          label: fate === 'catch' ? 'catch' : 'diverge',
+          color: fate === 'catch' ? 'cyan' : 'magenta',
+          style: 'line+dots',
+          width: 2,
+          points: run.map((s) => [s.k, Math.log10(Math.max(s.residualNorm, 1e-18))] as const),
+        },
+      ],
+      readouts: [
+        { label: 'x₀', value: x0.toFixed(2) },
+        { label: 'fate', value: fate === 'catch' ? 'catch' : 'diverge' },
+        { label: '|x_N|', value: last.finite ? Math.abs(last.x[0]!).toFixed(3) : '∞' },
+      ],
+    };
+  },
+};
+
 export const TUNE_SCENARIOS: Record<string, TuneScenario> = {
   'fd-optimum': fdOptimum,
   'euler-stability': eulerStability,
@@ -793,4 +838,5 @@ export const TUNE_SCENARIOS: Record<string, TuneScenario> = {
   'cg-termination-cliff': cgTerminationCliff,
   'pc-ssor-omega': pcSsorOmega,
   'qr-lost-column': qrLostColumn,
+  'nt-basin-edge': ntBasinEdge,
 };

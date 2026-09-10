@@ -1,7 +1,7 @@
 ---
 title: 'Linearise, solve, repeat'
-blurb: 'A nonlinear residual F(x)=0 is a sequence of linear systems. Newton''s Jacobian is the operator you already know how to invert poorly. The lesson is the basin, not the formula.'
-order: 1
+blurb: 'A nonlinear residual is a sequence of linear systems. Quadratic once you are in the basin; the same operator flies from a start outside it.'
+order: 5
 tier: 'advanced'
 minutes: 16
 teaches:
@@ -10,44 +10,120 @@ requires:
   - 'conjugate-gradient'
   - 'conditioning'
 runtime: 'none'
-status: 'draft'
+status: 'live'
+updated: 2026-09-10
 ---
 
-Open with the tension, not the definition. What does the reader currently believe that
-this lesson is going to complicate?
-
-## The idea
-
-Build it up. Use `$inline$` and `$$display$$` for math.
+$F(x) = \arctan x - \tfrac12$. One real root, at $\tan\tfrac12 \approx 0.546$. $F'(x) = 1/(1+x^2)$, never zero. There is nothing wrong with the derivative.
 
 <Predict
-  id="05-newton-first-prediction"
-  question="Ask something the reader can be productively wrong about."
+  id="nt-start-at-three"
+  question="Start at x₀ = 3. Eight Newton steps later, |F| is…"
   options={[
-    { key: 'a', label: 'The intuitive answer', why: 'Why it is tempting, and exactly where it breaks.' },
-    { key: 'b', label: 'The correct answer', why: 'Why it is right, in one or two sentences.' },
+    { key: 'a', misconception: 'newton-always-catches', label: 'Roundoff. Unique root, F′ never zero, so Newton always catches.', why: "The local theorem needs a start already near the root. Unique and F′ ≠ 0 does not draw a basin around the whole line. x₀ = 3 is outside it." },
+    { key: 'b', misconception: 'newton-is-linear', label: 'A few digits smaller. Residual drops at a steady rate, like Jacobi.', why: "A constant factor per step is a linear iteration. Newton either squares the error or throws you off the chart. A shallow slide is the wrong sport." },
+    { key: 'c', label: 'Huge. The iterates already flew.', why: "Correct. The first step lands near −4.5, the next near 35, then thousands. Same F, same formula, start outside the basin." },
+    { key: 'd', label: 'Oscillating in a 2-cycle, the folklore cubic trap.', why: "That cycle is x³ − 2x + 2, starting at 0. This F has no attracting 2-cycle on the real line. From 3 you do not hover. You leave." },
   ]}
-  correct="b"
+  correct="c"
 >
 
-The payoff, revealed only after they commit. Usually a simulation.
+Drag $x_0$. Cyan on the strip catches; magenta flies. Residual history is the other view of the same start.
+
+<NewtonLab
+  x0={3}
+  jacobian="exact"
+  lockJacobian={true}
+  caption="F(x) = arctan(x) − 1/2. Magenta dashed line is the tangent you invert: J δ = −F. Cobweb is the orbit. The strip is the basin. One state."
+/>
 
 </Predict>
 
-<Recall id="05-newton-card" concept="newtons-method">
-  <div slot="front">The question to answer from memory in three months.</div>
+## Linearise, solve, repeat
 
-The answer, written so it teaches rather than merely confirms.
+At the current $x$, replace $F$ by its tangent and solve for the intercept:
+
+$$
+F(x) + J(x)\,\delta = 0 \qquad\text{i.e.}\qquad J(x)\,\delta = -F(x),
+$$
+
+then $x \leftarrow x + \delta$. That linear system *is* the step. In one unknown it is a division. In $n$ unknowns it is a linear solve you already own: [conjugate gradient](/anthropocene/learn/linear-algebra/iterative/krylov/) when $J$ is SPD, another Krylov method when it is not. The outer iteration does not care how you invert $J$. It cares whether $x$ was in the basin.
+
+Drag $x_0$ onto the cyan band. Residual: $10^{-1}$, $10^{-3}$, $10^{-6}$, $10^{-13}$. That accelerating drop is quadratic. Drag it onto magenta. Same formula, same $F$, and the iterates fly.
+
+The cyan band is the basin of attraction. Quadratic is what happens *once you are in it*.
+
+<SketchCurve
+  id="nt-residual-catch"
+  scenario="nt-residual-catch"
+  prompt="Sketch log₁₀ |F| over 8 Newton steps from x₀ = 0.05, well inside. It starts at about −0.35."
+  hint="Error squares each step, so log |F| falls faster and faster, then sits on roundoff. A straight slide is Picard, not Newton."
+  explanation="−0.35, −1.45, −3.2, −6.7, −13.6, then the floor. Each step roughly doubles the number of correct digits. A straight line of slope −1 would be a linear method. The kink onto the floor is success, not a bug."
+/>
+
+<Tune
+  id="nt-basin-edge"
+  scenario="nt-basin-edge"
+  prompt="Drag x₀ to the right-hand edge of the basin — the last start that still crashes to roundoff."
+  hint="Inside, log |F| falls off a cliff by k = 8. Past the edge the iterates leave in four steps. The cliff sits just past 2."
+  explanation="The right edge is just past 2.05. x₀ = 2 still catches, in seven steps. x₀ = 2.2 is already gone. F′ is 0.2 there, perfectly invertible — the linear solve succeeded. Newton walked off the cliff."
+/>
+
+## A handful, not a dozen
+
+From $x_0 = 0.2$ you are well inside. $|F|$ starts around $0.3$. Linear intuition says many steps to $10^{-12}$. Commit.
+
+<Estimate
+  id="nt-steps-to-eps"
+  scenario="nt-steps-to-eps"
+  prompt="From x₀ = 0.2, how many Newton steps drive |F| below 10⁻¹²?"
+  explanation="Four. Error squares, so three or four steps turn a tenth into roundoff. A linear method with rate 1/2 would need about 40. Picard (J = I) from the same start takes a couple of dozen. The rate is the operator, not the residual."
+/>
+
+## Did the linear solve fail, or did Newton walk off a cliff?
+
+A small residual of $J\delta + F$ means the step was the Newton step. It does not mean $x$ was in the basin. [Conditioning of $J$](/anthropocene/learn/computational-physics/numerical-reality/conditioning-vs-stability/) is a third question: tiny $J\delta + F$ and a wrong $x$ when $\kappa(J)$ ate the digits.
+
+<Classify
+  id="nt-who-failed"
+  prompt="Each of these is a Newton run that did not finish. Sort by what actually broke."
+  buckets={[
+    { key: 'cliff', label: 'Newton left the basin', accent: 'magenta' },
+    { key: 'inner', label: 'the linear solve of J δ = −F failed', accent: 'cyan' },
+    { key: 'kappa', label: 'J is a sensitive operator', accent: 'iris' },
+  ]}
+  items={[
+    { key: 'flew', label: '|F| jumped; the 1×1 Jacobian was 0.2 and well inverted', bucket: 'cliff', why: "The correction J δ = −F was computed. Then x + δ left the chart. That is the basin, not the solve." },
+    { key: 'nan', label: 'The step is NaN. J is singular at this x, so δ does not exist', bucket: 'inner', why: "No linear solve, no Newton step. The operator you tried to invert has no inverse here." },
+    { key: 'cgstall', label: 'Inner CG residual stuck at 0.4 |F|; J is SPD, 40 steps, no preconditioner', bucket: 'inner', why: "Inexact Newton with a forcing term that never dropped. The outer residual cannot fall if the inner solve never produced a δ." },
+    { key: 'tinyj', label: '|J δ + F| is 10⁻¹⁴ but x is wrong in the first digit; κ(J) ~ 10¹²', bucket: 'kappa', why: "The linear solve did its job in the residual. Forward error is κ times that. Same story as a sensitive A u = b." },
+  ]}
+  explanation="Three different operators, three different failures. If it exploded and J was fine, you left the basin. If δ never arrived, the inner solve failed. If the residual of Jδ + F is tiny and x is still junk, you are looking at κ(J)."
+/>
+
+Toggle to Picard, $J = I$. The strip goes cyan across the window you can see; the residual crawls linearly. Same $F$. A different operator. A wrong Jacobian is not a worse step length.
+
+<NewtonLab
+  x0={3}
+  jacobian="exact"
+  caption="Same F. Switch J = I: x₀ = 3 now catches, linearly. The basin grew because the operator changed, not because F did."
+/>
+
+<Recall id="nt-basin-card" concept="newtons-method">
+  <div slot="front">What does Newton actually do at each step, and what decides whether that step helps?</div>
+
+It linearises: solve $J(x)\,\delta = -F(x)$, then $x \leftarrow x + \delta$. Quadratic catch once $x$ is in the basin of attraction. Outside it the same operator diverges. A wrong $J$ (Picard, frozen, a sloppy inner solve) is a different iteration with a different basin and a different rate.
 
 </Recall>
 
 <Tier level="advanced">
 
-The treatment for someone who already has the working version. Derivations, edge cases,
-the reason the standard explanation is a simplification.
+Inexact Newton accepts an approximate $\delta$ as long as $\|J\delta + F\| \le \eta\|F\|$. Keep $\eta$ bounded away from 1 and you get linear; send $\eta \to 0$ and you get superlinear; $\eta = O(\|F\|)$ recovers quadratic. Jacobian-free Newton–Krylov never forms $J$: it probes $Jv \approx \bigl(F(x+\varepsilon v)-F(x)\bigr)/\varepsilon$ and feeds that matvec to Krylov. You already own the inner method.
+
+When the basin is a speck you do not take a "better Newton step". You continue: embed $F$ in a homotopy or a pseudo-transient, walk a curve of solvable problems into the basin, then Newton finishes.
 
 </Tier>
 
 ## What to carry forward
 
-Two or three lines connecting to what comes next.
+The picture is the basin. Quadratic once you are in it. A bad Jacobian is a different operator. If it exploded, ask which of those three you are looking at before you blame the linear solver.

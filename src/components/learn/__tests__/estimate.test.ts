@@ -115,6 +115,10 @@ describe('estimate scenarios agree with the prose that quotes them', () => {
     expect(t).toBeGreaterThan(1e16);
     expect(t).toBeLessThan(3e16);
   });
+
+  it('Newton from x₀ = 0.2 hits |F| < 10⁻¹² in four steps', () => {
+    expect(ESTIMATE_SCENARIOS['nt-steps-to-eps'].truth()).toBe(4);
+  });
 });
 
 describe('every scenario is answerable on its own slider', () => {

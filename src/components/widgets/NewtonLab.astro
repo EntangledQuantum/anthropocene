@@ -1,0 +1,10 @@
+---
+// Wrapper so lessons can write <NewtonLab /> with no import and no client
+// directive: MDX components supplied through the `components` prop cannot
+// carry client:* directives themselves, so the directive lives here.
+import Island, { type NewtonLabProps } from '../viz/NewtonLab.tsx';
+
+type Props = Omit<NewtonLabProps, 'children'>;
+const props = Astro.props as Props;
+---
+<Island client:visible {...props} />

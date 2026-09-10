@@ -20,6 +20,7 @@ import {
 } from '../../lib/numerics/iterative.ts';
 import { twoGridReduction } from '../../lib/numerics/multigrid.ts';
 import { QR_EPS, gramCond2Exact } from '../../lib/numerics/qr.ts';
+import { CATCH_X0, atanShift, stepsUntil } from '../../lib/numerics/newton.ts';
 
 /**
  * Named quantities for `<Estimate>`.
@@ -364,6 +365,19 @@ const qrKappaAtA: EstimateScenario = {
   truth: () => gramCond2Exact(QR_EPS),
 };
 
+const ntStepsToEps: EstimateScenario = {
+  quantity: 'Newton steps from x₀ = 0.2 to drive |F| below 10⁻¹² on arctan(x) − 1/2',
+  logRange: [0, 2],
+  logStart: 1.15,
+  withinFactor: 2,
+  landmarks: [
+    { value: 3, label: 'three' },
+    { value: 10, label: 'ten' },
+    { value: 30, label: 'thirty' },
+  ],
+  truth: () => stepsUntil(atanShift, [CATCH_X0], 1e-12),
+};
+
 export const ESTIMATE_SCENARIOS: Record<string, EstimateScenario> = {
   'euler-work-1e6': eulerWorkFor1e6,
   'rk4-work-1e6': rk4WorkFor1e6,
@@ -386,4 +400,5 @@ export const ESTIMATE_SCENARIOS: Record<string, EstimateScenario> = {
   'pc-ssor-steps-1e-8': pcSsorSteps1e8,
   'mg-ratio-vs-n': mgRatioVsN,
   'qr-kappa-ata': qrKappaAtA,
+  'nt-steps-to-eps': ntStepsToEps,
 };

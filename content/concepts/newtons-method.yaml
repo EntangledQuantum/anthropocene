@@ -1,3 +1,27 @@
-title: 'newtons method'
-blurb: 'TODO: one sentence, plain language.'
-tags: []
+title: "Newton's method"
+blurb: 'Linearise F, solve J δ = −F, step. Quadratic once you are in the basin; the same operator flies from a start outside it.'
+notation: 'x_{n+1} = x_n + \delta,\quad J(x_n)\delta = -F(x_n)'
+tags:
+  - linalg
+misconceptions:
+  - id: 'newton-always-catches'
+    name: 'Unique root and F′ never zero means Newton converges from anywhere.'
+    signal: 'Treats the local quadratic theorem as a global guarantee, or expects more steps to save a start that has already flown.'
+    correction: 'The hypotheses are local. The basin of attraction is a bounded set for many F, even when F′ is never zero. Outside it the same linearisation throws you to infinity. More Newton steps make that worse, not better.'
+  - id: 'newton-is-linear'
+    name: 'Newton residual drops at a constant rate, like Jacobi.'
+    signal: 'Sketches a straight line on log |F| against iteration, or guesses a dozen-plus steps to go from 10⁻¹ to 10⁻¹².'
+    correction: 'Inside the basin the error squares each step, so log |F| falls faster and faster — a cliff, not a slope. A straight line is Picard (J = I) or a stationary iteration, a different operator.'
+  - id: 'jacobian-is-a-scale'
+    name: 'The Jacobian is just a step length. Any approximate J is still Newton.'
+    signal: 'Replaces J by I or a frozen matrix and still expects a quadratic catch, or blames the linear solver when a wrong J walks off the cliff.'
+    correction: 'J is the linear operator you invert. Replace it and you have a different iteration: Picard, frozen-Newton, a sloppy inexact step. The basin and the rate both change. A bad Jacobian is a different operator, not a worse stepsize.'
+references:
+  - label: 'Kelley, Iterative Methods for Linear and Nonlinear Equations (SIAM, 1995)'
+    url: 'https://doi.org/10.1137/1.9781611970944'
+  - label: 'Deuflhard, Newton Methods for Nonlinear Problems (Springer, 2011)'
+    url: 'https://doi.org/10.1007/978-3-642-23899-4'
+  - label: 'Knoll & Keyes, Jacobian-free Newton–Krylov methods, JCP 193 (2004)'
+    url: 'https://doi.org/10.1016/j.jcp.2003.08.010'
+  - label: 'Dembo, Eisenstat & Steihaug, Inexact Newton methods, SINUM 19 (1982)'
+    url: 'https://doi.org/10.1137/0719025'
