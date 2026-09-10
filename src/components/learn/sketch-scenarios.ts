@@ -4,6 +4,7 @@ import { invariantDrift } from '../../lib/numerics/convergence.ts';
 import { decay, oscillator, TWO_RATE_FAST } from '../../lib/numerics/problems.ts';
 import { SCHEMES, TARGETS, complexStep, diffSweep, hSweep } from '../../lib/numerics/diff.ts';
 import { SPECTRAL_TARGETS, modalSweep } from '../../lib/numerics/spectral.ts';
+import { mcRmse } from '../../lib/numerics/monte-carlo.ts';
 
 /**
  * Named targets for `<SketchCurve>`.
@@ -199,6 +200,23 @@ const specJumpSlope: SketchScenario = {
     ).map((p) => ({ x: Math.log10(p.n), y: Math.log10(p.error) })),
 };
 
+/* Monte Carlo RMSE against sample count, log-log: a straight line of slope
+   −1/2. Sketching this is the commitment that "four times the samples buy
+   twice the accuracy" — the tempting wrong line is slope −1. */
+const mcErrorVsN: SketchScenario = {
+  xLabel: 'log₁₀ N',
+  yLabel: 'log₁₀ (RMSE)',
+  xRange: [1.5, 4.5],
+  yRange: [-3.2, -0.7],
+  tolerance: 0.4,
+  anchors: [{
+    x: 1.5,
+    y: Math.log10(mcRmse(1, 10 ** 1.5)),
+    label: 'N = 32',
+  }],
+  truth: () => sample(80, 1.5, 4.5, (logN) => Math.log10(mcRmse(1, 10 ** logN))),
+};
+
 export const SKETCH_SCENARIOS: Record<string, SketchScenario> = {
   'fd-u-curve': fdUCurve,
   'euler-convergence': eulerConvergence,
@@ -209,4 +227,5 @@ export const SKETCH_SCENARIOS: Record<string, SketchScenario> = {
   'trapezoid-ring': trapezoidRing,
   'spec-smooth-cliff': specSmoothCliff,
   'spec-jump-slope': specJumpSlope,
+  'mc-error-vs-n': mcErrorVsN,
 };

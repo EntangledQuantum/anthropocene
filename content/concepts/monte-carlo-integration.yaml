@@ -1,5 +1,22 @@
 title: 'Monte Carlo integration'
 blurb: 'Trade determinism for dimension-independence: error falls as 1/sqrt(N) no matter how many dimensions.'
-notation: '\Order(N^{-1/2})'
+notation: 'I_N = N^{-1}\sum f(X_i),\ \mathrm{error}\sim\sigma N^{-1/2}'
 tags:
   - ch5
+misconceptions:
+  - id: 'grid-always-more-accurate'
+    name: 'A second-order grid is always more accurate than random samples.'
+    signal: 'Picks the product midpoint in high dimension because it is the higher-order method.'
+    correction: 'Order is 2/d for a product rule. Past a handful of dimensions that exponent is worse than 1/2, and the grid cannot even spend a typical budget.'
+  - id: 'mc-error-is-1-over-n'
+    name: 'Twice the samples give twice the accuracy.'
+    signal: 'Treats Monte Carlo like a first-order deterministic rule, or sketches a slope of −1.'
+    correction: 'The error is the standard error of a mean, σ/√N. Four times the samples buy two times the accuracy.'
+  - id: 'mc-rate-depends-on-dimension'
+    name: 'Monte Carlo must get worse in high dimension because the space is larger.'
+    signal: 'Expects the 1/√N slope to flatten as d grows, the way a product grid does.'
+    correction: 'The Central Limit Theorem does not know what d is. The rate stays −1/2; only the constant σ can grow with dimension.'
+  - id: 'importance-changes-rate'
+    name: 'Importance sampling is a higher-order method.'
+    signal: 'Expects the log-log slope to steepen when the sampling density changes.'
+    correction: 'A better density shrinks σ. The estimator is still a sample mean, so the exponent is still −1/2.'

@@ -3,6 +3,7 @@ import { forwardEuler, rk4 } from '../../lib/numerics/ode.ts';
 import { decay } from '../../lib/numerics/problems.ts';
 import { condInf, ill2x2, remainingDigits } from '../../lib/numerics/conditioning.ts';
 import { SPECTRAL_TARGETS, smallestK } from '../../lib/numerics/spectral.ts';
+import { gridEvaluations } from '../../lib/numerics/monte-carlo.ts';
 
 /**
  * Named quantities for `<Estimate>`.
@@ -115,10 +116,26 @@ const specModesForEps: EstimateScenario = {
   truth: () => smallestK(SPECTRAL_TARGETS.expSin, 1e-12),
 };
 
+/* The curse as a number: four points per axis feels modest until you raise
+   it to the tenth power. Computed from the same n^d the grid actually spends. */
+const gridCostD10N4: EstimateScenario = {
+  quantity: 'function evaluations a 4-point-per-axis product grid spends in 10 dimensions',
+  logRange: [3, 8],
+  logStart: 4.3,
+  withinFactor: 5,
+  landmarks: [
+    { value: 1e4, label: 'ten thousand' },
+    { value: 1e6, label: 'a million' },
+    { value: 1e8, label: 'a hundred million' },
+  ],
+  truth: () => gridEvaluations(4, 10),
+};
+
 export const ESTIMATE_SCENARIOS: Record<string, EstimateScenario> = {
   'euler-work-1e6': eulerWorkFor1e6,
   'rk4-work-1e6': rk4WorkFor1e6,
   'double-digits': doubleDigits,
   'ill-2x2-digits': ill2x2Digits,
   'spec-modes-for-eps': specModesForEps,
+  'grid-cost-d10-n4': gridCostD10N4,
 };

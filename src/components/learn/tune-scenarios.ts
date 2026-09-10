@@ -14,6 +14,14 @@ import {
   relRootError,
   solveIllPerturbed,
 } from '../../lib/numerics/conditioning.ts';
+import {
+  COMPARISON_BUDGET,
+  crossoverDimension,
+  finestGrid,
+  gridRelativeError,
+  gridSweep,
+  mcRelativeRmse,
+} from '../../lib/numerics/monte-carlo.ts';
 
 /**
  * Named scenarios for `<Tune>`.
@@ -273,10 +281,50 @@ const twoRateCliff: TuneScenario = {
   },
 };
 
+/* ── Monte Carlo vs product grid as dimension climbs ───────────────────── */
+
+const mcCrossover: TuneScenario = {
+  param: { key: 'd', label: 'dimension', symbol: 'd', min: 1, max: 12, step: 1, value: 1 },
+  target: crossoverDimension(COMPARISON_BUDGET),
+  tolerance: 0.08,   // integer d; only the exact crossover checks
+  x: { label: 'N (evaluations)', scale: 'log', domain: [4, 8192] },
+  y: { label: 'relative error', scale: 'log', domain: [1e-4, 0.4] },
+  compute: (dRaw: number) => {
+    const d = Math.round(dRaw);
+    const grid = gridSweep(d, COMPARISON_BUDGET);
+    const { n, N } = finestGrid(d, COMPARISON_BUDGET);
+    const mcN = Array.from({ length: 40 }, (_, i) => 8 * 2 ** ((i / 39) * Math.log2(COMPARISON_BUDGET / 8)));
+    const gridErr = n === 0 ? Number.POSITIVE_INFINITY : gridRelativeError(d, n);
+    const mcErr = mcRelativeRmse(d, n === 0 ? COMPARISON_BUDGET : N);
+    const mcWins = n === 0 || mcErr < gridErr;
+
+    return {
+      series: [
+        {
+          key: 'mc', label: 'Monte Carlo RMSE', color: 'magenta',
+          points: mcN.map((Nv) => [Nv, mcRelativeRmse(d, Nv)] as const),
+        },
+        {
+          key: 'grid', label: 'product midpoint', color: 'cyan', style: 'line+dots', width: 3,
+          points: grid.map((p) => [p.N, p.err] as const),
+        },
+      ],
+      readouts: [
+        { label: 'n / axis', value: n === 0 ? 'cannot fit' : String(n) },
+        { label: 'N grid', value: n === 0 ? '—' : String(N) },
+        { label: 'grid error', value: n === 0 ? '—' : gridErr.toExponential(2) },
+        { label: 'MC RMSE', value: mcErr.toExponential(2) },
+        { label: 'winner', value: mcWins ? 'Monte Carlo' : 'grid' },
+      ],
+    };
+  },
+};
+
 export const TUNE_SCENARIOS: Record<string, TuneScenario> = {
   'fd-optimum': fdOptimum,
   'euler-stability': eulerStability,
   'ill-2x2-perturb': ill2x2Perturb,
   'quad-naive-cliff': quadNaiveCliff,
   'two-rate-cliff': twoRateCliff,
+  'mc-crossover': mcCrossover,
 };

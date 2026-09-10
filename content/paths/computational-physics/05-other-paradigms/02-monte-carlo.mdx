@@ -1,33 +1,165 @@
 ---
 title: 'When randomness beats determinism'
-blurb: 'Every deterministic quadrature rule degrades exponentially with dimension. Monte Carlo error is O(N^-1/2) in any number of dimensions, which eventually makes it the only option.'
+blurb: 'A product grid dies as N^{-p/d}. Monte Carlo error is σ/√N in any dimension, so past a handful of axes the random method is the more accurate one.'
 order: 2
-tier: 'frontier'
-minutes: 28
+tier: 'advanced'
+minutes: 16
 teaches:
   - 'monte-carlo-integration'
 requires:
   - 'floating-point'
-status: 'draft'
+runtime: 'none'
+status: 'live'
+updated: 2026-09-10
 ---
 
-:::note
-This lesson is **outlined but not yet written**. The concept graph already knows what it
-will own, so lessons downstream of it link here rather than re-teaching the material.
-Everything below is the plan.
-:::
+Ten dimensions. Two points per axis. That is a midpoint grid of $2^{10} = 1024$
+evaluations — every cell centre of a $2\times 2\times\cdots\times 2$ lattice. You
+have the same budget of 1024 uniform random samples of the same smooth function,
+$f(x) = \exp(\sum_i x_i)$ on the unit cube.
 
-## Planned outline
+The grid is a second-order rule. The samples have no order at all. Which relative
+error is smaller?
 
-1. The curse of dimensionality, quantified against a grid-based rule.
-2. Why the O(N^-1/2) rate does not depend on dimension at all.
-3. Importance sampling and control variates: reducing the constant, never the rate.
-4. Markov chain Monte Carlo, detailed balance, and Metropolis-Hastings.
-5. Quasi-Monte Carlo: low-discrepancy sequences that beat the square-root rate for smooth integrands.
-6. Where this lives in physics: path integrals, lattice QCD, statistical mechanics.
+<Predict
+  id="mc-who-wins-d10"
+  question="1024 evaluations in ten dimensions: a two-point-per-axis midpoint grid, versus 1024 uniform samples. Which relative error is smaller?"
+  options={[
+    { key: 'a', misconception: 'grid-always-more-accurate', label: 'The grid — it is a second-order rule, and random points have no order', why: 'The natural prediction, and it is right in one dimension by orders of magnitude. Order for a product rule is 2/d, not 2. At d = 10 that exponent is already shallower than 1/2, and two points per axis means h = 1/2.' },
+    { key: 'b', label: 'About the same — equal budget, equal accuracy', why: 'Cost is equal. Accuracy is not. The two methods have different exponents, so the same N buys different errors.' },
+    { key: 'c', label: 'Monte Carlo — two points per axis is a step of 1/2, and 1024 random samples beat a step that coarse', why: 'Correct. The grid relative error is about 10%; Monte Carlo RMS error is about 3.4%. The "worse" method won, and not by a hair.' },
+    { key: 'd', label: 'The grid is essentially exact — the integrand is a product of one-dimensional functions', why: 'Separability makes the product rule convenient to analyse, not exact. Midpoint is exact for linears; exp is not linear. Each axis still carries an O(h^2) error, and ten of them compound.' },
+  ]}
+  correct="c"
+>
 
-## Interactives planned
+The function did not change. The exponent did.
 
-Each numbered point above gets at least one thing you can manipulate, not a figure. See
-`AGENTS.md` for the widget vocabulary and the rule that every lesson ships at least one
-graded interaction and one recall card.
+</Predict>
+
+A one-dimensional midpoint has error $\Order(h^2)$. In $d$ dimensions you take $n$
+points per axis, so $N = n^d$ and $h = N^{-1/d}$. The same $\Order(h^2)$ is
+
+$$
+\Order(N^{-2/d})
+$$
+
+At $d = 4$ that exponent is already $-1/2$. Past that, it is shallower than Monte
+Carlo's.
+
+Monte Carlo does not have an $h$. It has a sample mean:
+
+```ts
+function monteCarlo(f, dim, N, rng) {
+  let sum = 0;
+  const x = new Array(dim);
+  for (let i = 0; i < N; i++) {
+    for (let k = 0; k < dim; k++) x[k] = rng();
+    sum += f(x);
+  }
+  return sum / N;
+}
+```
+
+The error of a mean is $\sigma/\sqrt{N}$. The Central Limit Theorem does not know
+what $d$ is. Caflisch's one-line summary: that independence is why Monte Carlo is
+the only viable method for a wide range of high-dimensional integrals, and also
+why it is slow.
+
+Draw the rate before you see it. One dimension, so nothing else is in the way.
+It starts at the amber point ($N = 32$).
+
+<SketchCurve
+  id="mc-error-sketch"
+  scenario="mc-error-vs-n"
+  prompt="RMSE of plain Monte Carlo on ∫₀¹ eˣ dx, against sample count N. Log-log. It starts at the amber point."
+  hint="A sample mean. Doubling N does not halve the error."
+  explanation="A straight line of slope −1/2. The RMSE is σ/√N with σ ≈ 0.49 for this integrand. Four times the samples buy twice the accuracy; ten times the accuracy is a hundred times the samples — never ten. That is the whole cost of the method, and it is the same cost in one dimension as in twenty."
+/>
+
+Now the grid's slope, $2/d$, *does* care. Slide the dimension and watch the
+product midpoint flatten, then run out of points. Find the lowest $d$ where Monte
+Carlo first wins, at a budget of 4096 evaluations.
+
+<Tune
+  id="mc-crossover-dim"
+  scenario="mc-crossover"
+  prompt="Find the lowest dimension where Monte Carlo's relative RMSE drops below the product-midpoint error. Budget: 4096 evaluations, spent on the finest tensor grid that fits — and the same N for Monte Carlo."
+  hint="The grid's log-log slope is 2/d. At d = 1 it is a cliff. Watch it flatten."
+  explanation="d = 6. The rates already met at d = 4; the grid's smaller constant held until here. From d = 13 even two points per axis no longer fit in the budget."
+/>
+
+That last fact as a number. Four points per axis is the coarsest mesh you would
+still call a grid.
+
+<Estimate
+  id="mc-grid-cost-d10"
+  scenario="grid-cost-d10-n4"
+  prompt="You want four points per axis in ten dimensions. How many function evaluations is that?"
+  explanation="4¹⁰ = 1,048,576. The same million is two points per axis in twenty dimensions. That is the curse as a number: nᵈ, not n·d. Monte Carlo spends whatever N you give it, in any d."
+/>
+
+<Recall id="mc-rate-recall" concept="monte-carlo-integration">
+  <div slot="front">Why does Monte Carlo beat a product grid in high dimension, even though its error only falls as 1/√N?</div>
+
+A product rule of one-dimensional order $p$ has error $\Order(N^{-p/d})$, because
+$N = n^d$ so $h = N^{-1/d}$. Monte Carlo's RMSE is $\sigma/\sqrt{N}$ in every
+dimension — the CLT does not see $d$. Once $d > 2p$ the Monte Carlo exponent is
+already steeper, and a few dimensions later the grid cannot even spend a typical
+budget (two points per axis is $2^d$ evaluations). Variance is the remaining
+cost; it lives in $\sigma$, not in the exponent.
+
+</Recall>
+
+The constant $\sigma$ *can* grow with dimension, and it is the one thing you can
+attack. Importance sampling draws from a density $q$ closer to where $f$ is large,
+and averages $f/q$ instead of $f$. Unbiased for any $q$ that charges the cube.
+Still a sample mean. Still $\Order(N^{-1/2})$. The line drops. It does not rotate.
+
+<Predict
+  id="mc-importance-slope"
+  question="You switch from uniform samples to a better density q. On a log-log plot of RMSE against N, what happens to the Monte Carlo error curve?"
+  options={[
+    { key: 'a', misconception: 'importance-changes-rate', label: 'The slope steepens toward −1 — a better density is a higher-order method', why: 'Tempting, and it is what quasi-Monte Carlo is trying to do by changing the POINTS. Changing the density does not change the fact that you are averaging N random weights.' },
+    { key: 'b', label: 'The line drops (smaller error at every N) but the slope stays −1/2', why: 'Correct. You shrank σ. The estimator is still a mean of N independent terms, so the exponent is still −1/2. Four times the samples still buy twice the accuracy; they just start from a better place.' },
+    { key: 'c', misconception: 'mc-rate-depends-on-dimension', label: 'The slope becomes dimension-dependent, like a product grid', why: 'Importance sampling does not restore a mesh. There is still no h and no n-per-axis. The CLT still does not know what d is.' },
+    { key: 'd', label: 'The error becomes exactly zero — a perfect density reproduces the integral in one sample', why: 'True of the optimal q, which is f/I. Constructing it requires the integral you are trying to compute. You never have it. Getting closer still only buys a constant.' },
+  ]}
+  correct="b"
+>
+
+Control variates and antithetic pairs are the same move in different clothes:
+attack $\sigma$, leave the exponent alone.
+
+</Predict>
+
+<Tier level="frontier" title="quasi-Monte Carlo, and why it is not a free 1/N">
+
+Replace the random points with a low-discrepancy sequence — Halton, Sobol, a
+lattice. The Koksma–Hlawka inequality then bounds the error by
+$V(f)\, D_N^*$, and the star-discrepancy of these sequences is
+$\Order((\log N)^d / N)$. Closer to $1/N$ than $1/\sqrt{N}$, on paper.
+
+Two catches, both real. The $(\log N)^d$ eventually explodes, so in genuine
+high dimension the bound is worse than Monte Carlo's. And the gain you actually
+see lives in integrands of **low effective dimension** — most of the variance
+sits in a few coordinates or a few-way interactions (Caflisch, Morokoff, Owen).
+Reparametrize so that is true (Brownian bridge, PCA of a covariance), and
+quasi-MC can look like $N^{-1}$ on a finance problem that is nominally
+256-dimensional.
+
+It is still quadrature of a function you can evaluate. It is not a Markov
+chain. Metropolis is a later lesson, for when you cannot write $f$ down, only
+the ratio $f(x')/f(x)$.
+
+</Tier>
+
+## What to carry forward
+
+- A product rule of order $p$ is order $p/d$ in $d$ dimensions. Monte Carlo is
+  order $1/2$ in every dimension. That crossover is why high-dimensional
+  integration throws darts.
+- Variance is the cost. Importance sampling, control variates, antithetic pairs —
+  all of them buy a smaller $\sigma$, never a better exponent.
+- Next: when the measure itself is the hard part, not the integral of a function
+  you can evaluate.
