@@ -1,6 +1,6 @@
 ---
-title: 'Linear Algebra, Computationally'
-blurb: 'Every method in this studio eventually becomes Au = b. Seeing A as a stencil, not a table of numbers, is the whole of computational linear algebra.'
+title: 'A matrix is a discrete operator'
+blurb: 'See a stencil become a matrix, and a dense table of the same numbers hide the method.'
 order: 1
 tier: 'core'
 minutes: 16
@@ -11,44 +11,228 @@ requires:
   - 'central-difference'
   - 'conditioning'
 runtime: 'none'
-status: 'draft'
+status: 'live'
+updated: 2026-09-10
 ---
 
-Open with the tension, not the definition. What does the reader currently believe that
-this lesson is going to complicate?
+Five interior nodes on $[0,1]$. You already have a stencil for $-u''$:
 
-## The idea
+$$
+\frac{-u_{i-1} + 2u_i - u_{i+1}}{h^2} = f_i
+$$
 
-Build it up. Use `$inline$` and `$$display$$` for math.
+Poisson is $Au = f$. $A$ is $5\times 5$.
 
 <Predict
-  id="01-matrix-as-operator-first-prediction"
-  question="Ask something the reader can be productively wrong about."
+  id="op-nnz-five"
+  question="How many entries of A are nonzero?"
   options={[
-    { key: 'a', label: 'The intuitive answer', why: 'Why it is tempting, and exactly where it breaks.' },
-    { key: 'b', label: 'The correct answer', why: 'Why it is right, in one or two sentences.' },
+    { key: 'a', misconception: 'matrix-is-a-table', label: '25 — it is a 5×5 matrix', why: "A 5×5 table has 25 slots. Almost all of them are structurally zero. Counting slots is counting the costume, not the operator." },
+    { key: 'b', label: '13 — three per interior row, two at each end', why: 'Correct. Each unknown sees itself and its two neighbours. The two end rows are missing a neighbour, so nnz = 3n − 2 = 13.' },
+    { key: 'c', misconception: 'sparsity-is-optimization', label: '15 — three per row, five rows', why: 'Close, and it would be right on a periodic grid. Dirichlet ends have no left or right neighbour, so two entries never appear.' },
+    { key: 'd', label: '5 — only the diagonal is the operator', why: 'The off-diagonals are the method. Without them neighbouring nodes would not talk, and Poisson would not couple the grid.' },
   ]}
   correct="b"
 >
 
-The payoff, revealed only after they commit. Usually a simulation.
+The spy is the matrix. Three bands. Click a row: those are the samples it reads.
+
+<OperatorLab
+  n={5}
+  bc="dirichlet"
+  field="bump"
+  view="spy"
+  lockN={true}
+  lockBc={true}
+  caption="Dirichlet Laplacian, n = 5. Magenta is the diagonal 2/h², cyan the off-diagonal −1/h². Everything else is not missing data — it is 'this unknown does not see that unknown.'"
+/>
 
 </Predict>
 
-<Recall id="01-matrix-as-operator-card" concept="discrete-operator">
-  <div slot="front">The question to answer from memory in three months.</div>
+## A row is a stencil
 
-The answer, written so it teaches rather than merely confirms.
+The $i$-th row of $A$ *is* the three-point stencil, written at node $i$. Applying $A$ to a vector is applying that stencil at every unknown.
+
+```ts
+out[i] = (2 * u[i] - u[i - 1] - u[i + 1]) / (h * h);
+```
+
+That loop **is** $A$. There is no table behind it.
+
+<Predict
+  id="op-row-reads"
+  question="n = 7, Dirichlet. Row 3 of A. Which samples of u does (Au)₃ actually use?"
+  options={[
+    { key: 'a', misconception: 'apply-mixes-everything', label: 'All seven. A matrix-vector product mixes every entry of u into every output.', why: "That is what a dense row does. This row is not dense. The stencil at node 3 cannot see u₀ or u₆." },
+    { key: 'b', label: 'u₂, u₃, u₄ — itself and its two neighbours', why: 'Correct. Row 3 is zeros except columns 2, 3, 4. Click it. The green marks on u are exactly those three samples, and (Au)₃ is their weighted sum.' },
+    { key: 'c', label: 'Only u₃. Off-diagonals are bookkeeping.', why: 'Without the neighbours, (Au)₃ would be (2/h²) u₃, which is not −u″. The off-diagonals are the second-difference.' },
+    { key: 'd', label: 'u₀ through u₃ — causality, nothing to the right', why: 'This operator has no preferred direction. The centred stencil looks both ways. A first-derivative upwind would be one-sided; this is not that.' },
+  ]}
+  correct="b"
+>
+
+Click row 3. Switch the field to **spike eᵢ**: $A$ applied to a spike *is* the stencil — one column of $A$, three numbers, the rest zero.
+
+<OperatorLab
+  n={7}
+  bc="dirichlet"
+  field="spike"
+  view="spy"
+  caption="Spike at the selected node. Au is the selected column of A, which is the stencil. Grow n: three bands stay three bands."
+/>
+
+</Predict>
+
+## The walls are in the operator
+
+A constant has $u'' = 0$, so the tempting prediction is $A\mathbf{1} = 0$.
+
+<Predict
+  id="op-constant-dirichlet"
+  question="Dirichlet Laplacian, homogeneous walls. u = (1, 1, …, 1) on the interior nodes. What is Au?"
+  options={[
+    { key: 'a', misconception: 'no-bc-still-spd', label: 'Zero everywhere. A constant has u″ = 0, so the discrete operator must annihilate it.', why: "The interior stencil of a constant is zero. The two end stencils are not: each is missing a neighbour, and that neighbour is the wall, which is 0, not 1. The walls live in A." },
+    { key: 'b', label: 'Spikes at both ends, zero in the interior', why: 'Correct. (Au)₀ = (2·1 − 0 − 1)/h² = 1/h², same at the other wall. Interior rows see 1, 1, 1 and cancel. Switch the field to constant.' },
+    { key: 'c', label: '2/h² times the constant, from the diagonal', why: 'That forgets the off-diagonals. Interior they cancel the diagonal; at the walls they cannot, because one neighbour is a wall value of 0.' },
+    { key: 'd', label: 'A smooth bump. Discretization smears constants.', why: 'Nothing is smeared. The interior is exactly zero. The spikes are the Dirichlet data, not numerical diffusion.' },
+  ]}
+  correct="b"
+>
+
+Switch the field to **constant**. Spikes at the walls, flat zero in the interior. The kernel you expected needs a grid with no wall.
+
+<OperatorLab
+  n={7}
+  bc="dirichlet"
+  field="constant"
+  view="spy"
+  lockBc={true}
+  caption="Dirichlet, u = 1 on every interior node. Au is 1/h² at the two ends and 0 in between — the walls, not diffusion."
+/>
+
+</Predict>
+
+## The table hides the method
+
+Same numbers. Switch the lab to **dense table** and grow $n$. At $n = 5$ you can still read the three bands. At $n = 24$ the table is a wall of zeros and the bands are a rumour. The spy still says the same sentence: a three-point stencil.
+
+Sparsity is not a storage trick. The zeros are the operator refusing to see distant nodes.
+
+<Estimate
+  id="op-nnz-n200"
+  scenario="op-laplacian-nnz-n200"
+  prompt="200 interior unknowns, Dirichlet. How many entries of A are nonzero?"
+  explanation="598. nnz = 3n − 2. The dense table would ask you to store 40,000 slots, of which 39,402 are the method saying 'no'. Starting at 10⁴ is the table reflex; the stencil never needed it."
+/>
+
+<RankOrder
+  id="op-store-n100"
+  prompt="n = 100 interior unknowns, Dirichlet Laplacian. Rank these by how many numbers you must store to apply A."
+  lowLabel="fewest numbers"
+  highLabel="most numbers"
+  items={[
+    { key: 'stencil', label: 'the three stencil weights (−1, 2, −1)/h²', why: 'Three numbers, plus the loop. That is the operator.' },
+    { key: 'sparse', label: 'the sparse matrix: every nonzero entry', why: '3n − 2 = 298 triplets. Same information as the stencil, written out once per row, ends trimmed.' },
+    { key: 'dense', label: 'the dense table of all n² slots', why: '10,000 numbers, 9,702 of them zero. The table is a costume of the stencil.' },
+  ]}
+  correct={['stencil', 'sparse', 'dense']}
+  explanation="Apply-A never needed the table. A sparse format is already a concession to 'I will write the stencil as a matrix.' The method is the three weights."
+/>
+
+## Wrap the rod
+
+Identify the two ends. Each end stencil now has a neighbour: the other end. Two extra nonzeros appear in the corners of the spy, and every row has three entries.
+
+<Predict
+  id="op-periodic-wrap"
+  question="Same 1D Laplacian, periodic. n = 8. What does the spy gain, and what does A 1 become?"
+  options={[
+    { key: 'a', label: 'Two corner nonzeros; A 1 = 0 exactly', why: 'Correct. The wrap is u₀ talking to u₇. Every row now sees three ones, so the stencil of a constant cancels. Constants are a kernel. Switch BC to periodic, field to constant.' },
+    { key: 'b', misconception: 'no-bc-still-spd', label: 'Two corner nonzeros; A is still SPD, unique solve for every b', why: 'The corners are right. SPD is not. A 1 = 0, so A is singular. Dirichlet was what made it definite.' },
+    { key: 'c', label: 'Nothing. Periodicity is a boundary condition, not a matrix entry.', why: 'A boundary condition that names a missing neighbour becomes a matrix entry. Here the missing neighbour is a real unknown on the other end.' },
+    { key: 'd', misconception: 'sparsity-is-optimization', label: 'The matrix fills in. Wrapping couples everyone to everyone.', why: 'Wrapping couples each node to one extra neighbour, not to the whole grid. nnz goes from 3n−2 to 3n, not to n².' },
+  ]}
+  correct="a"
+>
+
+<OperatorLab
+  n={8}
+  bc="periodic"
+  field="constant"
+  view="spy"
+  caption="Periodic n = 8. Corners are the wrap. Constant u, Au = 0. The Dirichlet lab next door is the same stencil with the walls put back."
+/>
+
+</Predict>
+
+Dirichlet $A$ is SPD: every eigenvalue is positive, $Au=b$ has a unique answer. How far that answer jumps when $b$ wiggles is $\kappa(A)$ — already named in [Conditioning versus stability](/anthropocene/learn/computational-physics/numerical-reality/conditioning-vs-stability/). For this Laplacian $\kappa$ grows like $1/h^2$ as you refine; that is the *problem* getting harder, not a solver failing.
+
+<Classify
+  id="op-local-or-global"
+  prompt="Each matrix is some linear map. Sort by whether a row is a local stencil or a global mix of every unknown."
+  buckets={[
+    { key: 'local', label: 'local stencil', accent: 'cyan' },
+    { key: 'global', label: 'global mix', accent: 'magenta' },
+  ]}
+  items={[
+    { key: 'dirichlet', label: '1D Dirichlet Laplacian', bucket: 'local', why: 'Three bands, nnz = 3n−2. The stencil you started with.' },
+    { key: 'periodic', label: '1D periodic Laplacian', bucket: 'local', why: 'Three bands plus two wrap corners. Still three samples per row.' },
+    { key: 'fivept', label: '2D five-point Laplacian', bucket: 'local', why: 'Five samples: centre and four neighbours. The spy grows two more bands, a distance n apart, from the grid numbering — still local.' },
+    { key: 'mass', label: 'Diagonal mass matrix', bucket: 'local', why: 'One sample: itself. As local as an operator gets.' },
+    { key: 'hilbert', label: 'Hilbert matrix 1/(i+j+1)', bucket: 'global', why: 'Every entry is nonzero. There is no stencil. This is a dense integral operator in costume.' },
+    { key: 'randn', label: 'Dense Gaussian random matrix', bucket: 'global', why: 'No locality, no structure. Applying it really does mix everyone into everyone.' },
+  ]}
+  explanation="Locality of the physics is sparsity of A. A dense table can store a local operator, and in doing so it hides the only fact that matters."
+/>
+
+<Recall id="op-stencil-card" concept="discrete-operator">
+  <div slot="front">What is a matrix that came from a finite-difference stencil, and what does one row of it do?</div>
+
+The matrix *is* the stencil, written once per unknown. Row $i$ of the 1D Laplacian reads $u_{i-1}, u_i, u_{i+1}$ and writes
+
+$$
+(Au)_i = \frac{-u_{i-1} + 2u_i - u_{i+1}}{h^2}.
+$$
+
+There is no second object behind the loop. A dense table of the same numbers is a costume that hides the bands.
 
 </Recall>
 
-<Tier level="advanced">
+<Recall id="op-sparse-card" concept="sparse-matrix">
+  <div slot="front">Why is the 1D Dirichlet Laplacian sparse, and what is nnz in terms of n?</div>
 
-The treatment for someone who already has the working version. Derivations, edge cases,
-the reason the standard explanation is a simplification.
+Because the stencil is local: an unknown does not see distant nodes, so those entries are structurally zero, not "approximately small."
+
+$$
+\mathrm{nnz}(A) = 3n - 2
+$$
+
+for $n$ interior unknowns (three per interior row, two at each Dirichlet end). The zeros are the method. Storing $n^2$ slots would store the costume.
+
+</Recall>
+
+<Tier level="advanced" title="eigenmodes, the 2D spy, and the kernel">
+
+The Dirichlet matrix $(1/h^2)\mathrm{tridiag}(-1,2,-1)$ is diagonalised by sines. On $n$ interior nodes of $[0,1]$,
+
+$$
+\lambda_k = 4(n+1)^2 \sin^2\!\bigl(k\pi / (2(n+1))\bigr), \qquad k=1,\ldots,n.
+$$
+
+The smallest is $\lambda_1 \to \pi^2$, the first eigenvalue of $-d^2/dx^2$. Switch the lab to $\sin(\pi x)$: the Rayleigh quotient $u^\top A u / u^\top u$ sits on that number. The eigenvector of $A$ *is* a discrete physical mode.
+
+In two dimensions the five-point stencil
+
+$$
+\frac{4u_{i,j} - u_{i-1,j} - u_{i+1,j} - u_{i,j-1} - u_{i,j+1}}{h^2}
+$$
+
+is still local — five samples — but the spy is no longer tridiagonal. Number the grid row-wise and the north/south neighbours land $n$ columns off the diagonal. Two extra bands, far from the main diagonal, that are still next-door on the grid. Ordering is a costume; the stencil is the fact. (Fill-in during factorization is what happens when you *forget* that, and it is a later lesson.)
+
+Periodic and pure-Neumann Laplacians share a kernel: constants, or, in 2D elasticity, rigid motions. The question "what physical mode is this eigenvector?" is the one to keep asking. A zero eigenvalue is a mode the operator cannot see.
 
 </Tier>
 
 ## What to carry forward
 
-Two or three lines connecting to what comes next.
+$A$ is a stencil, not a spreadsheet. Sparsity is locality of the physics, written as structurally zero entries. Dirichlet makes this Laplacian SPD; periodicity gives it a kernel. How sensitive $Au=b$ is, once $A$ is SPD, is $\kappa$ — already named, not re-derived here.

@@ -13,6 +13,7 @@ import { naiveFdToFemL2Ratio } from '../../lib/numerics/fem1d.ts';
 import { leftoverMaxDiv } from '../../lib/numerics/projection.ts';
 import { opposingKeRemaining } from '../../lib/numerics/mpm.ts';
 import { JUMP_LEFT, JUMP_RIGHT, rankineHugoniot } from '../../lib/numerics/fvm1d.ts';
+import { laplacianNnz } from '../../lib/numerics/operator.ts';
 
 /**
  * Named quantities for `<Estimate>`.
@@ -274,6 +275,21 @@ const fvmBurgersShock: EstimateScenario = {
   truth: () => rankineHugoniot('burgers', JUMP_LEFT, JUMP_RIGHT),
 };
 
+/* 1D Dirichlet Laplacian, 200 interior unknowns. nnz = 3n−2, not n².
+   The slider starts at 10⁴ so the dense-table reflex is the first guess. */
+const opLaplacianNnzN200: EstimateScenario = {
+  quantity: 'nonzero entries in the 1D Dirichlet Laplacian on 200 interior unknowns',
+  logRange: [1, 6],
+  logStart: 4,
+  withinFactor: 2,
+  landmarks: [
+    { value: 200, label: 'n' },
+    { value: 600, label: '3n' },
+    { value: 4e4, label: 'n²' },
+  ],
+  truth: () => laplacianNnz(200, 'dirichlet'),
+};
+
 export const ESTIMATE_SCENARIOS: Record<string, EstimateScenario> = {
   'euler-work-1e6': eulerWorkFor1e6,
   'rk4-work-1e6': rk4WorkFor1e6,
@@ -290,4 +306,5 @@ export const ESTIMATE_SCENARIOS: Record<string, EstimateScenario> = {
   'proj-leftover-div': projLeftoverDiv,
   'mpm-pic-ke': mpmPicKe,
   'fvm-burgers-shock-speed': fvmBurgersShock,
+  'op-laplacian-nnz-n200': opLaplacianNnzN200,
 };

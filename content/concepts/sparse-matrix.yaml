@@ -1,3 +1,15 @@
-title: 'sparse matrix'
-blurb: 'TODO: one sentence, plain language.'
-tags: []
+title: 'Sparse matrix'
+blurb: 'Almost every entry is zero, and the zeros are the method: a local stencil does not see distant unknowns.'
+notation: '\mathrm{nnz}(A) = 3n-2'
+tags:
+  - linalg
+misconceptions:
+  - id: 'sparsity-is-optimization'
+    name: 'Zeros are a storage trick. The mathematics is still the full table.'
+    signal: 'Stores or reasons about n² entries, or treats sparsity as a software detail that a faster machine would make irrelevant.'
+    correction: 'The zeros are structural. A three-point stencil cannot produce a dense row. nnz = 3n−2 is the operator, not a compression of it. Fill-in later, during factorization, is a different event.'
+references:
+  - label: 'Saad, Iterative Methods for Sparse Linear Systems, ch. 3'
+    url: 'https://doi.org/10.1137/1.9780898718003'
+  - label: 'LeVeque, Finite Difference Methods for Ordinary and Partial Differential Equations, §2.4–2.5'
+    url: 'https://doi.org/10.1137/1.9780898717839'

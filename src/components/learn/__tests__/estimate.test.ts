@@ -83,6 +83,10 @@ describe('estimate scenarios agree with the prose that quotes them', () => {
   it('Burgers 1|0 shock speed is 1/2 by Rankine–Hugoniot', () => {
     expect(ESTIMATE_SCENARIOS['fvm-burgers-shock-speed'].truth()).toBeCloseTo(0.5, 12);
   });
+
+  it('1D Dirichlet Laplacian on 200 unknowns has nnz = 3n−2 = 598', () => {
+    expect(ESTIMATE_SCENARIOS['op-laplacian-nnz-n200'].truth()).toBe(598);
+  });
 });
 
 describe('every scenario is answerable on its own slider', () => {

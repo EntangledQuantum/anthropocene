@@ -1,3 +1,23 @@
-title: 'discrete operator'
-blurb: 'TODO: one sentence, plain language.'
-tags: []
+title: 'Discrete operator'
+blurb: 'A matrix whose action on a grid vector is a stencil applied at every unknown. A is the operator, not a table of numbers.'
+notation: '(Au)_i = (-u_{i-1} + 2u_i - u_{i+1}) / h^2'
+tags:
+  - linalg
+misconceptions:
+  - id: 'matrix-is-a-table'
+    name: 'A matrix is a dense spreadsheet of n² independent numbers.'
+    signal: 'Counts n² entries, or tries to read the method off a printed table of the same numbers.'
+    correction: 'When A comes from a stencil, almost every entry is structurally zero. The method is the three numbers the stencil writes, repeated once per unknown. The table is a costume.'
+  - id: 'apply-mixes-everything'
+    name: 'Matrix-vector multiply mixes every entry of u into every output.'
+    signal: 'Treats (Au)_i as a global average, or cannot say which samples of u a given row reads.'
+    correction: 'Row i of a local operator reads only the neighbours in the stencil. For the 1D Laplacian that is u_{i−1}, u_i, u_{i+1}. Distant samples are not mixed in; they are not seen.'
+  - id: 'no-bc-still-spd'
+    name: 'The discrete Laplacian is always invertible, boundary conditions optional.'
+    signal: 'Expects Au = b to have a unique answer on a periodic or pure-Neumann grid, or treats constants as ordinary right-hand sides.'
+    correction: 'Without a Dirichlet wall, constants sit in the kernel: A 1 = 0. The matrix is symmetric positive semidefinite, not definite. Dirichlet is what makes it SPD.'
+references:
+  - label: 'Trefethen & Bau, Numerical Linear Algebra, Lectures 1–2'
+    url: 'https://doi.org/10.1137/1.9780898719574'
+  - label: 'LeVeque, Finite Difference Methods for Ordinary and Partial Differential Equations, ch. 2'
+    url: 'https://doi.org/10.1137/1.9780898717839'
