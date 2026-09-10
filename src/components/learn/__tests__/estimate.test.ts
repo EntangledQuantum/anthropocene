@@ -119,6 +119,10 @@ describe('estimate scenarios agree with the prose that quotes them', () => {
   it('Newton from x₀ = 0.2 hits |F| < 10⁻¹² in four steps', () => {
     expect(ESTIMATE_SCENARIOS['nt-steps-to-eps'].truth()).toBe(4);
   });
+
+  it('rank-2 leftover of the 8×8 picture is σ₃ = 0.4, not σ₁', () => {
+    expect(ESTIMATE_SCENARIOS['svd-rank2-residual'].truth()).toBeCloseTo(0.4, 8);
+  });
 });
 
 describe('every scenario is answerable on its own slider', () => {

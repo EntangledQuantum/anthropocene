@@ -18,6 +18,7 @@ import {
 } from '../../lib/numerics/iterative.ts';
 import { twoGridHistory } from '../../lib/numerics/multigrid.ts';
 import { SKETCH_X0, atanShift, logResidualHistory } from '../../lib/numerics/newton.ts';
+import { demoPicture, droppedSigma } from '../../lib/numerics/svd.ts';
 
 /**
  * Named targets for `<SketchCurve>`.
@@ -409,6 +410,22 @@ const ntResidualCatch: SketchScenario = {
   },
 };
 
+/* 2-norm leftover after keeping k modes of the 8×8 picture: log₁₀ σ_{k+1}.
+   A staircase, not a smooth decay — each dropped σ is a hard floor. */
+const svdPicture = demoPicture();
+const svdResidualVsRank: SketchScenario = {
+  xLabel: 'rank k',
+  yLabel: 'log₁₀ ‖A − Aₖ‖₂',
+  xRange: [0, 7],
+  yRange: [-4.2, 1.1],
+  tolerance: 0.85,
+  anchors: [{ x: 0, y: Math.log10(droppedSigma(svdPicture, 0)), label: 'σ₁' }],
+  truth: () => Array.from({ length: 8 }, (_, k) => ({
+    x: k,
+    y: Math.log10(Math.max(droppedSigma(svdPicture, k), 1e-18)),
+  })),
+};
+
 export const SKETCH_SCENARIOS: Record<string, SketchScenario> = {
   'fd-u-curve': fdUCurve,
   'euler-convergence': eulerConvergence,
@@ -433,4 +450,5 @@ export const SKETCH_SCENARIOS: Record<string, SketchScenario> = {
   'pc-ssor-residual': pcSsorResidual,
   'mg-residual-cycles': mgResidualCycles,
   'nt-residual-catch': ntResidualCatch,
+  'svd-residual-vs-rank': svdResidualVsRank,
 };

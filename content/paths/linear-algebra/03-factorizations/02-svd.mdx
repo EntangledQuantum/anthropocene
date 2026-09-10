@@ -1,7 +1,7 @@
 ---
 title: 'A stretch, a rotation, another stretch'
 blurb: 'Every matrix is a rotation, a stretch of the axes, and a rotation back. The singular values are those stretches. Rank, condition, and the best low-rank picture all live there.'
-order: 1
+order: 2
 tier: 'core'
 minutes: 16
 teaches:
@@ -11,44 +11,171 @@ requires:
   - 'qr-factorization'
   - 'conditioning'
 runtime: 'none'
-status: 'draft'
+status: 'live'
+updated: 2026-09-10
 ---
 
-Open with the tension, not the definition. What does the reader currently believe that
-this lesson is going to complicate?
+A unit circle. This matrix:
 
-## The idea
+$$
+A = \begin{bmatrix} 1 & 1 \\ 0 & 1 \end{bmatrix}.
+$$
 
-Build it up. Use `$inline$` and `$$display$$` for math.
+The unit *square* becomes a parallelogram with sides $(1,0)$ and $(1,1)$ — the columns. What does the unit *circle* become?
 
 <Predict
-  id="02-svd-first-prediction"
-  question="Ask something the reader can be productively wrong about."
+  id="svd-circle-image"
+  question="The image of the unit circle under this shear is…"
   options={[
-    { key: 'a', label: 'The intuitive answer', why: 'Why it is tempting, and exactly where it breaks.' },
-    { key: 'b', label: 'The correct answer', why: 'Why it is right, in one or two sentences.' },
+    { key: 'a', misconception: 'circle-stays-circle', label: 'A bigger circle. Linear maps scale lengths the same in every direction.', why: "Det A = 1, so areas are preserved, and both eigenvalues are 1. None of that makes lengths isotropic. A rotation-times-scale would keep a circle; a shear does not." },
+    { key: 'b', misconception: 'square-image-is-circle-image', label: 'The parallelogram spanned by the columns. Same picture as the unit square.', why: "The unit square maps to that parallelogram. The unit circle is a different set. Its image is an ellipse that sits inside and outside the parallelogram at different places." },
+    { key: 'c', misconception: 'axes-are-columns', label: 'An ellipse whose axes are the columns (1, 0) and (1, 1)', why: "An ellipse, yes. Those axes, no. The columns are A e₁ and A e₂. The axes are the images of the right singular vectors, which are not the coordinate axes." },
+    { key: 'd', label: 'An ellipse. The axes are not the columns.', why: "Correct. A sends the unit circle to an ellipse. Axis lengths are the singular values, φ and 1/φ. The faint arrows in the lab are the columns; the bright ones are the axes." },
   ]}
-  correct="b"
+  correct="d"
 >
 
-The payoff, revealed only after they commit. Usually a simulation.
+Dashed circle, magenta ellipse, cyan/magenta axes. The faint arrows are the columns — nearby, and still the wrong pair.
+
+<SvdLab
+  view="ellipse"
+  rank={2}
+  lockView={true}
+  lockSigma={true}
+  lockRank={true}
+  caption="Dashed: unit circle. Magenta fill: A times that circle. Bright arrows: σ₁ u₁ and σ₂ u₂. Faint arrows: columns of A."
+/>
 
 </Predict>
 
-<Recall id="02-svd-card" concept="svd">
-  <div slot="front">The question to answer from memory in three months.</div>
+## Two stretches and the rotations that aim them
 
-The answer, written so it teaches rather than merely confirms.
+$A$ does three things, in order:
+
+$$
+A = U\,\Sigma\,V^{\mathsf T}.
+$$
+
+$V^{\mathsf T}$ rotates the circle so its axes sit on $e_1, e_2$. $\Sigma = \mathrm{diag}(\sigma_1,\sigma_2)$ stretches those axes — that is the two stretches of the title. $U$ rotates the ellipse into place. $\sigma_1 \ge \sigma_2 \ge 0$ are the axis lengths.
+
+For this shear they are the golden ratio and its reciprocal: $\sigma_1 = \varphi \approx 1.618$, $\sigma_2 = 1/\varphi \approx 0.618$.
+
+[Householder QR](/anthropocene/learn/linear-algebra/factorizations/qr/) wrote one orthogonal factor. SVD writes two, and isolates the stretch on the diagonal. Orthogonal $U$ and $V$ do not stretch, so the whole stretch of $A$ is $\Sigma$.
+
+Drag $\sigma_2$. The axes stay put. The ellipse flattens. Set rank $k = 1$ and the ellipse collapses to the major-axis segment — the best rank-1 picture of $A$.
+
+<SvdLab
+  view="ellipse"
+  rank={2}
+  lockView={true}
+  caption="σ₁ is pinned at φ. Thin σ₂ and the ellipse flattens; κ₂ = σ₁/σ₂ climbs. Rank 1 keeps only the cyan axis."
+/>
+
+## The stretch the eigenvalues hide
+
+Both eigenvalues of this shear are $1$. A Jordan block; not even diagonalizable. $|\lambda_{\max}|/|\lambda_{\min}| = 1$.
+
+<Predict
+  id="svd-eig-not-kappa"
+  question="What is κ₂ of the shear?"
+  options={[
+    { key: 'a', misconception: 'eigenvalues-are-stretches', label: '1. Both eigenvalues are 1, so nothing stretches.', why: "That ratio is |λ_max|/|λ_min|. It equals κ₂ when A is normal. A shear is not. The ellipse already showed two different axis lengths." },
+    { key: 'b', label: 'φ² ≈ 2.618 — the axis ratio σ₁/σ₂', why: "Correct. κ₂(A) = σ_max/σ_min. For this shear that is φ / (1/φ) = φ². Conditioning named the stretch; SVD is where you read it off." },
+    { key: 'c', label: '√2. The long column has length √2, the short one has length 1.', why: "Column lengths are ‖A e_i‖, not singular values. σ_i = ‖A v_i‖ for the right singular vectors v_i, which are not e_i." },
+    { key: 'd', label: 'φ ≈ 1.618, the long axis alone', why: "σ₁ is the operator 2-norm, ‖A‖₂. The condition number is a ratio of two stretches, long over short. Dropping the short axis pretends A is a scale." },
+  ]}
+  correct="b"
+/>
+
+The thinness of the ellipse *is* $\kappa_2$. [Conditioning](/anthropocene/learn/computational-physics/numerical-reality/conditioning-vs-stability/) already told you a disk of inputs becomes a long ellipse of outputs. Those axis lengths are $\sigma_{\max}$ and $\sigma_{\min}$.
+
+<Tune
+  id="svd-flatten-kappa"
+  scenario="svd-flatten-kappa"
+  prompt="Flatten the ellipse until κ₂ hits 10. σ₁ stays at φ ≈ 1.618."
+  hint="κ₂ = σ₁/σ₂. You want σ₂ = φ/10 ≈ 0.162."
+  explanation="σ₂ = φ/10 ≈ 0.162. The major axis did not move. Ten is the axis ratio. The original shear had both eigenvalues equal to 1; those are not the number you just tuned. The QR lesson pair — nearly parallel columns — was this ellipse with σ_min ~ ε."
+/>
+
+## Drop the small stretch
+
+The rank-$k$ picture is the SVD with $\sigma_{k+1},\sigma_{k+2},\ldots$ set to zero:
+
+$$
+A_k = \sum_{i=1}^{k} \sigma_i\, u_i v_i^{\mathsf T}.
+$$
+
+Eckart–Young: among all matrices of rank at most $k$, this $A_k$ is the closest to $A$ in the 2-norm, and the leftover *is* the first dropped $\sigma$:
+
+$$
+\|A - A_k\|_2 = \sigma_{k+1}.
+$$
+
+<Predict
+  id="svd-eckart-closest"
+  question="Among rank-1 matrices, the closest to A in 2-norm is…"
+  options={[
+    { key: 'a', misconception: 'axes-are-columns', label: 'The first column, outer-producted with a unit vector in that direction', why: "That is some rank-1 matrix. It is the truncated SVD only if the first column is already a left singular vector. For the shear, it is not. Residual would be larger than σ₂." },
+    { key: 'b', misconception: 'drop-small-entries', label: 'A with its smallest entry zeroed', why: "Zeroing an entry does not even prescribe the rank — the shear already has a zero, and is still rank 2. Closest of a given rank is a statement about singular values, not about the table." },
+    { key: 'c', label: 'σ₁ u₁ v₁ᵀ. Residual exactly σ₂.', why: "Correct. Truncate after one singular value. The leftover 2-norm is the dropped σ. No other rank-1 matrix gets closer; that is Eckart–Young, not a heuristic." },
+    { key: 'd', label: 'The leading eigenvector of A, scaled by λ_max', why: "That is a truncated eigendecomposition. For a non-symmetric A it is a different rank-1 matrix, and it is not the 2-norm minimizer. The shear is the warning: eigenvalues sat at 1 and told you nothing about the ellipse." },
+  ]}
+  correct="c"
+/>
+
+The same fact in another costume. An $8\times 8$ built from eight orthogonal modes, spectrum $5,\;1.6,\;0.4,\;0.1,\;\ldots$ Keep two. What leftover?
+
+<Estimate
+  id="svd-rank2-residual"
+  scenario="svd-rank2-residual"
+  prompt="Keep two modes of the 8×8 picture. What is ‖A − A₂‖₂?"
+  explanation="0.4, which is σ₃ — the first dropped singular value. Not σ₁ = 5 (the whole picture), not σ₂ = 1.6 (the last one you kept), not the mean of the tail. The 2-norm leftover is always the next σ. Frobenius leftover is the Pythagorean sum of the tail, larger, still not the mean."
+/>
+
+<SvdLab
+  view="picture"
+  rank={2}
+  lockView={true}
+  lockSigma={true}
+  caption="Left: A. Right: Aₖ. Cyan bars kept, magenta bars dropped. The residual readout is the first dropped bar."
+/>
+
+<SketchCurve
+  id="svd-residual-vs-rank"
+  scenario="svd-residual-vs-rank"
+  prompt="Sketch log₁₀ ‖A − Aₖ‖₂ against rank k for the picture. It starts at log₁₀ 5 ≈ 0.70."
+  hint="Each k drops the leftover onto the next σ. A staircase, not a smooth slide. k = 0 is σ₁; k = 2 is 0.4."
+  explanation="A staircase whose treads are log σ_{k+1}. Jumping from 5 to 1.6 to 0.4 to 0.1. A straight slide would mean a geometric spectrum with no preferred rank. The floor you land on at k is the first σ you did not keep."
+/>
+
+<Recall id="svd-decomposition" concept="svd">
+  <div slot="front">What does A = U Σ Vᵀ do to the unit circle, and where is κ₂ in that picture?</div>
+
+$V^{\mathsf T}$ rotates, $\Sigma$ stretches the axes by $\sigma_1 \ge \cdots \ge \sigma_n \ge 0$, $U$ rotates the ellipse into place. The axis lengths *are* the singular values. $\kappa_2(A) = \sigma_{\max}/\sigma_{\min}$. Eigenvalues of a non-normal $A$ can hide that stretch completely.
 
 </Recall>
 
-<Tier level="advanced">
+<Recall id="svd-eckart-young" concept="low-rank">
+  <div slot="front">What is the closest rank-k matrix to A in 2-norm, and what leftover do you pay?</div>
 
-The treatment for someone who already has the working version. Derivations, edge cases,
-the reason the standard explanation is a simplification.
+The truncated SVD $A_k = \sum_{i=1}^{k} \sigma_i u_i v_i^{\mathsf T}$. Eckart–Young: $\|A - A_k\|_2 = \sigma_{k+1}$. Zeroing small entries of $A$ is a different, worse, not-even-rank-$k$ move.
+
+</Recall>
+
+<Tier level="advanced" title="polar form, and why this SVD is not the one you ship">
+
+$A = U_p P$ with $P = \sqrt{A^{\mathsf T}A}$ SPD (the stretch) and $U_p$ orthogonal (the rotation) is the polar decomposition. SVD factors $P$ further: $P = V\Sigma V^{\mathsf T}$, and $U_p = UV^{\mathsf T}$. One stretch, then a split onto coordinate axes.
+
+$V$ *is* the eigenvector matrix of $A^{\mathsf T}A$, and $U$ of $AA^{\mathsf T}$. Forming $A^{\mathsf T}A$ to compute them squares $\kappa$, the sin the [QR lesson](/anthropocene/learn/linear-algebra/factorizations/qr/) exists to name. The 2×2 and 8×8 here can afford it. A production SVD bidiagonalises with Householder (Golub–Kahan) and never writes the Gram.
+
+Thin SVD: $U$ is $m\times r$, $\Sigma$ is $r\times r$, $V$ is $n\times r$, $r = \mathrm{rank}(A)$. Full SVD pads with bases for $\ker A$ and $\ker A^{\mathsf T}$. Compression uses the thin one, truncated.
+
+Mirsky: the same $A_k$ also minimises every unitarily invariant norm, including Frobenius, where the leftover is $\sqrt{\sigma_{k+1}^2 + \cdots + \sigma_n^2}$.
 
 </Tier>
 
 ## What to carry forward
 
-Two or three lines connecting to what comes next.
+$A = U\Sigma V^{\mathsf T}$. The unit circle becomes an ellipse; $\sigma$ are the axes; $\kappa_2 = \sigma_{\max}/\sigma_{\min}$.
+
+Drop small $\sigma$. Eckart–Young: that is the best rank-$k$ picture, and the leftover 2-norm is the first one you dropped.

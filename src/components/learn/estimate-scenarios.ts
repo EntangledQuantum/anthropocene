@@ -21,6 +21,7 @@ import {
 import { twoGridReduction } from '../../lib/numerics/multigrid.ts';
 import { QR_EPS, gramCond2Exact } from '../../lib/numerics/qr.ts';
 import { CATCH_X0, atanShift, stepsUntil } from '../../lib/numerics/newton.ts';
+import { pictureResidual2 } from '../../lib/numerics/svd.ts';
 
 /**
  * Named quantities for `<Estimate>`.
@@ -378,6 +379,22 @@ const ntStepsToEps: EstimateScenario = {
   truth: () => stepsUntil(atanShift, [CATCH_X0], 1e-12),
 };
 
+/* Rank-2 truncation of the 8×8 picture. 2-norm leftover is σ₃, not σ₁
+   and not the mean of the tail. */
+const svdRank2Residual: EstimateScenario = {
+  quantity: '‖A − A₂‖₂ of the 8×8 picture whose singular values are 5, 1.6, 0.4, 0.1, …',
+  logRange: [-2, 2],
+  logStart: 0.7,
+  withinFactor: 2.5,
+  landmarks: [
+    { value: 5, label: 'σ₁' },
+    { value: 1.6, label: 'σ₂' },
+    { value: 0.4, label: 'σ₃' },
+    { value: 0.1, label: 'σ₄' },
+  ],
+  truth: () => pictureResidual2(2),
+};
+
 export const ESTIMATE_SCENARIOS: Record<string, EstimateScenario> = {
   'euler-work-1e6': eulerWorkFor1e6,
   'rk4-work-1e6': rk4WorkFor1e6,
@@ -401,4 +418,5 @@ export const ESTIMATE_SCENARIOS: Record<string, EstimateScenario> = {
   'mg-ratio-vs-n': mgRatioVsN,
   'qr-kappa-ata': qrKappaAtA,
   'nt-steps-to-eps': ntStepsToEps,
+  'svd-rank2-residual': svdRank2Residual,
 };

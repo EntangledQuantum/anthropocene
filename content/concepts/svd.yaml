@@ -1,3 +1,27 @@
-title: 'svd'
-blurb: 'TODO: one sentence, plain language.'
-tags: []
+title: 'SVD'
+blurb: 'Every matrix is a rotation, a stretch of the axes, and a rotation back. The singular values are those stretches — the axis lengths of the ellipse A draws from the unit circle.'
+notation: 'A = U\Sigma V^{\mathsf T}'
+tags:
+  - linalg
+misconceptions:
+  - id: 'circle-stays-circle'
+    name: 'A linear map scales the unit circle into a bigger circle.'
+    signal: 'Expects an isotropic scale, or thinks a 2×2 with det 1 cannot change lengths.'
+    correction: 'A maps the unit circle to an ellipse. The two axis lengths are the singular values. They are equal only when A is a scalar times an orthogonal matrix.'
+  - id: 'axes-are-columns'
+    name: 'The axes of the image ellipse are the columns of A.'
+    signal: 'Points at a₁ and a₂ as the major and minor axes, or treats e₁, e₂ as the right singular vectors.'
+    correction: 'The columns are A e₁ and A e₂. The axes are σ_i u_i — the images of the right singular vectors, not of the coordinate axes. For a shear they sit nearby and are still the wrong arrows.'
+  - id: 'square-image-is-circle-image'
+    name: 'The image of the unit circle is the parallelogram spanned by the columns.'
+    signal: 'Confuses the unit square (which does become that parallelogram) with the unit circle (which becomes an ellipse).'
+    correction: 'The unit square maps to a parallelogram with sides equal to the columns. The unit circle maps to an ellipse whose axes are the singular vectors. Two different sets; two different pictures.'
+  - id: 'eigenvalues-are-stretches'
+    name: 'The stretch of A is |λ_max|/|λ_min|, so a shear with λ = 1, 1 does not stretch.'
+    signal: 'Reads κ off the eigenvalues, or claims the shear is perfectly conditioned because its spectrum sits at 1.'
+    correction: 'κ₂(A) = σ_max/σ_min, not |λ_max|/|λ_min|. Those agree when A is normal. A shear is a Jordan block: both eigenvalues are 1, and the ellipse still has axis ratio φ² ≈ 2.618.'
+references:
+  - label: 'Trefethen & Bau, Lectures 4–5'
+    url: 'https://doi.org/10.1137/1.9780898719574'
+  - label: 'Golub & Van Loan, Matrix Computations, ch. 8'
+    url: 'https://doi.org/10.1137/1.9781421407944'

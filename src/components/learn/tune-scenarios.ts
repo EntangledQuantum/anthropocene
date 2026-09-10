@@ -45,6 +45,9 @@ import {
   nearParallelPair, r22Abs,
 } from '../../lib/numerics/qr.ts';
 import { atanShift, basinRightEdge, fateOf, newtonRun } from '../../lib/numerics/newton.ts';
+import {
+  PHI, flattenSigma2ForKappa, kappa2, lessonEllipse,
+} from '../../lib/numerics/svd.ts';
 
 /**
  * Named scenarios for `<Tune>`.
@@ -820,6 +823,45 @@ const ntBasinEdge: TuneScenario = {
   },
 };
 
+/* Flatten the lesson ellipse until κ₂ = σ₁/σ₂ hits 10. σ₁ is pinned at φ. */
+const svdKappa10 = flattenSigma2ForKappa(10);
+const svdKappaCurve = Array.from({ length: 48 }, (_, i) => {
+  const s2 = 0.04 + (1.4 - 0.04) * (i / 47);
+  return [s2, kappa2(lessonEllipse(s2))] as const;
+});
+const svdFlattenKappa: TuneScenario = {
+  param: {
+    key: 'sigma2',
+    label: 'minor axis',
+    symbol: 'σ₂',
+    min: 0.04,
+    max: 1.4,
+    step: 0.01,
+    value: 0.9,
+    hint: 'σ₁ stays at φ ≈ 1.618. κ₂ = σ₁/σ₂ climbs as the ellipse flattens.',
+  },
+  target: svdKappa10,
+  tolerance: 0.12,
+  x: { label: 'σ₂', domain: [0.04, 1.4] },
+  y: { label: 'κ₂', domain: [1, 50], scale: 'log' },
+  rules: [{ y: 10, label: 'κ = 10', color: 'magenta' }],
+  compute: (s2Raw: number) => {
+    const s2 = Math.max(0.04, Math.min(1.4, s2Raw));
+    const k = kappa2(lessonEllipse(s2));
+    return {
+      series: [
+        { key: 'kappa', label: 'κ₂(σ₂)', color: 'cyan', points: [...svdKappaCurve] },
+        { key: 'you', label: 'you', color: 'magenta', style: 'dots', width: 6, points: [[s2, k]] },
+      ],
+      readouts: [
+        { label: 'σ₁', value: PHI.toFixed(3) },
+        { label: 'σ₂', value: s2.toFixed(3) },
+        { label: 'κ₂', value: k.toFixed(2) },
+      ],
+    };
+  },
+};
+
 export const TUNE_SCENARIOS: Record<string, TuneScenario> = {
   'fd-optimum': fdOptimum,
   'euler-stability': eulerStability,
@@ -839,4 +881,5 @@ export const TUNE_SCENARIOS: Record<string, TuneScenario> = {
   'pc-ssor-omega': pcSsorOmega,
   'qr-lost-column': qrLostColumn,
   'nt-basin-edge': ntBasinEdge,
+  'svd-flatten-kappa': svdFlattenKappa,
 };

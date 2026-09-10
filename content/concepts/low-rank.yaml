@@ -1,3 +1,19 @@
-title: 'low rank'
-blurb: 'TODO: one sentence, plain language.'
-tags: []
+title: 'Low-rank approximation'
+blurb: 'The closest matrix of rank k, in 2-norm or Frobenius, is the SVD truncated after k singular values. The leftover 2-norm is the first dropped σ.'
+notation: 'A_k = \sum_{i=1}^{k} \sigma_i u_i v_i^{\mathsf T}'
+tags:
+  - linalg
+misconceptions:
+  - id: 'drop-small-entries'
+    name: 'The best low-rank picture is A with its small entries zeroed.'
+    signal: 'Zeros the tiniest numbers in the table, or keeps the largest row, and treats that as the Eckart–Young matrix.'
+    correction: 'Zeroing entries does not even give a prescribed rank. The closest rank-k matrix is the truncated SVD. Residual in 2-norm is exactly σ_{k+1}, not the size of the entries you dropped.'
+  - id: 'residual-is-mean-sigma'
+    name: 'The leftover after keeping k modes is an average of the tail, or still σ₁.'
+    signal: 'Estimates ‖A − A_k‖₂ as the mean of the dropped σ, as σ₁, or as the last kept σ.'
+    correction: '‖A − A_k‖₂ = σ_{k+1}, the first dropped singular value. The rest of the tail sits inside that ball. Frobenius leftover is the Pythagorean sum of the tail, which is larger, still not the mean.'
+references:
+  - label: 'Eckart & Young, The approximation of one matrix by another of lower rank (1936)'
+    url: 'https://doi.org/10.1007/BF02288367'
+  - label: 'Trefethen & Bau, Lecture 5'
+    url: 'https://doi.org/10.1137/1.9780898719574'
