@@ -550,7 +550,7 @@ const demForceOverlap: SketchScenario = {
   truth: () => sample(80, -0.03, 0.05, (d) => staticNormalForce(d, SKETCH_KN)),
 };
 
-export const SKETCH_SCENARIOS: Record<string, SketchScenario> = {
+const CORE_SKETCH_SCENARIOS: Record<string, SketchScenario> = {
   'fd-u-curve': fdUCurve,
   'euler-convergence': eulerConvergence,
   'rk4-energy-drift': rk4EnergyDrift,
@@ -584,3 +584,20 @@ export const SKETCH_SCENARIOS: Record<string, SketchScenario> = {
   'uq-output-density': uqPushforwardPdf,
   'dem-force-overlap': demForceOverlap,
 };
+
+/* ── contributed packs ─────────────────────────────────────────────────────
+   Scenarios authored alongside a lesson live in `scenarios/<lesson-id>.ts`
+   and are picked up from here automatically. Dropping a file in that folder
+   registers its scenarios with no edit to this file, so several authors can
+   add lessons at once without colliding. See AGENTS.md §7.
+   ──────────────────────────────────────────────────────────────────────── */
+const sketchPacks = import.meta.glob<{ sketch?: Record<string, SketchScenario> }>(
+  './scenarios/*.ts',
+  { eager: true },
+);
+
+export const SKETCH_SCENARIOS: Record<string, SketchScenario> = Object.assign(
+  {},
+  CORE_SKETCH_SCENARIOS,
+  ...Object.values(sketchPacks).map((m) => m.sketch ?? {}),
+);

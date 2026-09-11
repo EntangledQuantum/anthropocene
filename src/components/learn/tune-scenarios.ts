@@ -1250,7 +1250,7 @@ const demRestitution: TuneScenario = {
   },
 };
 
-export const TUNE_SCENARIOS: Record<string, TuneScenario> = {
+const CORE_TUNE_SCENARIOS: Record<string, TuneScenario> = {
   'fd-optimum': fdOptimum,
   'euler-stability': eulerStability,
   'ill-2x2-perturb': ill2x2Perturb,
@@ -1280,3 +1280,20 @@ export const TUNE_SCENARIOS: Record<string, TuneScenario> = {
   'uq-jensen-t': uqJensenT,
   'dem-restitution': demRestitution,
 };
+
+/* ── contributed packs ─────────────────────────────────────────────────────
+   Scenarios authored alongside a lesson live in `scenarios/<lesson-id>.ts`
+   and are picked up from here automatically. Dropping a file in that folder
+   registers its scenarios with no edit to this file, so several authors can
+   add lessons at once without colliding. See AGENTS.md §7.
+   ──────────────────────────────────────────────────────────────────────── */
+const tunePacks = import.meta.glob<{ tune?: Record<string, TuneScenario> }>(
+  './scenarios/*.ts',
+  { eager: true },
+);
+
+export const TUNE_SCENARIOS: Record<string, TuneScenario> = Object.assign(
+  {},
+  CORE_TUNE_SCENARIOS,
+  ...Object.values(tunePacks).map((m) => m.tune ?? {}),
+);

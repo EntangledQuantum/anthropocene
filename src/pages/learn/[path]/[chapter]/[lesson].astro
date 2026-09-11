@@ -1,66 +1,25 @@
 ---
 import { render } from 'astro:content';
 import LessonLayout from '../../../../layouts/Lesson.astro';
-import Predict from '../../../../components/widgets/Predict.astro';
-import Tune from '../../../../components/widgets/Tune.astro';
-import Recall from '../../../../components/widgets/Recall.astro';
-import Tier from '../../../../components/widgets/Tier.astro';
-import SketchCurve from '../../../../components/widgets/SketchCurve.astro';
-import RankOrder from '../../../../components/widgets/RankOrder.astro';
-import Classify from '../../../../components/widgets/Classify.astro';
-import Estimate from '../../../../components/widgets/Estimate.astro';
-import StabilityExplorer from '../../../../components/widgets/StabilityExplorer.astro';
-import PhaseFlow from '../../../../components/widgets/PhaseFlow.astro';
-import Plot from '../../../../components/widgets/Plot.astro';
-import SolverLab from '../../../../components/widgets/SolverLab.astro';
-import ConvergenceLab from '../../../../components/widgets/ConvergenceLab.astro';
-import DerivativeLab from '../../../../components/widgets/DerivativeLab.astro';
-import FloatLab from '../../../../components/widgets/FloatLab.astro';
-import CancellationLab from '../../../../components/widgets/CancellationLab.astro';
-import RichardsonTableau from '../../../../components/widgets/RichardsonTableau.astro';
-import AdaptiveLab from '../../../../components/widgets/AdaptiveLab.astro';
-import SpectralLab from '../../../../components/widgets/SpectralLab.astro';
-import LJGas from '../../../../components/widgets/LJGas.astro';
-import InverseLab from '../../../../components/widgets/InverseLab.astro';
-import PinnLab from '../../../../components/widgets/PinnLab.astro';
-import ManifoldLab from '../../../../components/widgets/ManifoldLab.astro';
-import ContinuumLab from '../../../../components/widgets/ContinuumLab.astro';
-import DependenceLab from '../../../../components/widgets/DependenceLab.astro';
-import CflLab from '../../../../components/widgets/CflLab.astro';
-import GhostLab from '../../../../components/widgets/GhostLab.astro';
-import FemLab from '../../../../components/widgets/FemLab.astro';
-import ProjectionLab from '../../../../components/widgets/ProjectionLab.astro';
-import MpmLab from '../../../../components/widgets/MpmLab.astro';
-import FvmLab from '../../../../components/widgets/FvmLab.astro';
-import RecLab from '../../../../components/widgets/RecLab.astro';
-import RiemannLab from '../../../../components/widgets/RiemannLab.astro';
-import OperatorLab from '../../../../components/widgets/OperatorLab.astro';
-import JacobiLab from '../../../../components/widgets/JacobiLab.astro';
-import KrylovLab from '../../../../components/widgets/KrylovLab.astro';
-import PreconditionerLab from '../../../../components/widgets/PreconditionerLab.astro';
-import TwoGridLab from '../../../../components/widgets/TwoGridLab.astro';
-import QrLab from '../../../../components/widgets/QrLab.astro';
-import NewtonLab from '../../../../components/widgets/NewtonLab.astro';
-import SvdLab from '../../../../components/widgets/SvdLab.astro';
-import GmresLab from '../../../../components/widgets/GmresLab.astro';
-import PicLab from '../../../../components/widgets/PicLab.astro';
-import LbmLab from '../../../../components/widgets/LbmLab.astro';
-import VvLab from '../../../../components/widgets/VvLab.astro';
-import SphLab from '../../../../components/widgets/SphLab.astro';
-import UqLab from '../../../../components/widgets/UqLab.astro';
-import DemLab from '../../../../components/widgets/DemLab.astro';
-
 /** The authoring vocabulary: every lesson may use these with no import.
- *  Adding a widget here is what makes it available to authors — see AGENTS.md. */
-const lessonComponents = {
-  Predict, Tune, SketchCurve, RankOrder, Classify, Estimate, Recall, Tier,
-  Plot, SolverLab, ConvergenceLab, DerivativeLab, FloatLab, CancellationLab,
-  StabilityExplorer, PhaseFlow, RichardsonTableau, AdaptiveLab, SpectralLab, LJGas,
-  InverseLab, PinnLab, ManifoldLab, ContinuumLab, DependenceLab, CflLab,
-  GhostLab, FemLab, ProjectionLab, MpmLab, FvmLab, RecLab, RiemannLab, OperatorLab, JacobiLab, KrylovLab,
-  PreconditionerLab, TwoGridLab, QrLab, NewtonLab, SvdLab, GmresLab, PicLab, LbmLab,
-  VvLab, SphLab, UqLab, DemLab,
-};
+ *
+ *  Every `.astro` file in `components/widgets/` is registered under its own
+ *  filename, so **adding a widget is adding a file** — no edit here, and no
+ *  merge conflict when several authors add widgets at once. The wrappers are
+ *  what carry the client directive; React components cannot. See AGENTS.md §8.
+ */
+const widgetModules = import.meta.glob<{ default: unknown }>(
+  "../../../../components/widgets/*.astro",
+  { eager: true },
+);
+
+const lessonComponents = Object.fromEntries(
+  Object.entries(widgetModules).map(([file, mod]) => [
+    file.slice(file.lastIndexOf("/") + 1, -".astro".length),
+    mod.default,
+  ]),
+);
+
 import { buildGraph, prerequisitesOf, unlockedBy } from '../../../../lib/graph/graph.ts';
 
 export async function getStaticPaths() {

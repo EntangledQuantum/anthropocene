@@ -494,7 +494,7 @@ const demRestOverlap: EstimateScenario = {
   truth: () => restOverlapRatio(),
 };
 
-export const ESTIMATE_SCENARIOS: Record<string, EstimateScenario> = {
+const CORE_ESTIMATE_SCENARIOS: Record<string, EstimateScenario> = {
   'euler-work-1e6': eulerWorkFor1e6,
   'rk4-work-1e6': rk4WorkFor1e6,
   'double-digits': doubleDigits,
@@ -525,3 +525,20 @@ export const ESTIMATE_SCENARIOS: Record<string, EstimateScenario> = {
   'sph-surface-rho': sphSurfaceRho,
   'dem-rest-overlap': demRestOverlap,
 };
+
+/* ── contributed packs ─────────────────────────────────────────────────────
+   Scenarios authored alongside a lesson live in `scenarios/<lesson-id>.ts`
+   and are picked up from here automatically. Dropping a file in that folder
+   registers its scenarios with no edit to this file, so several authors can
+   add lessons at once without colliding. See AGENTS.md §7.
+   ──────────────────────────────────────────────────────────────────────── */
+const estimatePacks = import.meta.glob<{ estimate?: Record<string, EstimateScenario> }>(
+  './scenarios/*.ts',
+  { eager: true },
+);
+
+export const ESTIMATE_SCENARIOS: Record<string, EstimateScenario> = Object.assign(
+  {},
+  CORE_ESTIMATE_SCENARIOS,
+  ...Object.values(estimatePacks).map((m) => m.estimate ?? {}),
+);
