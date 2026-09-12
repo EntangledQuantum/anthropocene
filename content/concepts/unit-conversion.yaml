@@ -1,0 +1,18 @@
+title: 'Unit conversion'
+blurb: 'A conversion is a multiplication by 1 written as an identity between two names for the same amount, applied until the unit symbols cancel into the ones you were asked for.'
+notation: '1\ \text{mi} = 1609.344\ \text{m}'
+tags:
+  - 'up-ch1'
+misconceptions:
+  - id: 'multiply-or-divide'
+    name: 'Converting is remembering whether to multiply or divide.'
+    signal: 'Guesses the direction, then sanity-checks the size of the answer. Gets it backwards under time pressure, especially for compound units like km/h.'
+    correction: 'Nothing has to be remembered. Write the conversion as a fraction whose top and bottom are the same amount — 1609.344 m over 1 mi — and choose the orientation that cancels the symbol you want gone. The bookkeeping decides the direction for you, and the unit that survives tells you whether it worked.'
+  - id: 'same-dimension-same-unit'
+    name: 'Two quantities of the same kind can be compared as numbers.'
+    signal: 'Adds a length in feet to a length in metres, or feeds a number in pound-force seconds into software expecting newton seconds, because both are the right kind of quantity.'
+    correction: 'Same dimension means the two can appear in one equation; it does not mean the two numbers mean the same thing. A number is only meaningful paired with its unit, and the pairing is what a conversion makes explicit before any arithmetic happens.'
+  - id: 'conversion-changes-the-quantity'
+    name: 'Converting changes the quantity.'
+    signal: 'Believes 24.6 m/s is a different speed from 55 mi/h, or expects the physics to come out differently in other units.'
+    correction: 'Every identity you apply is a factor of 1, so the quantity is untouched — only its description changes. The dimension readout does not move, however long the chain of conversions gets. That invariance is the reason you are allowed to convert at all.'

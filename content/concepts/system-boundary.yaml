@@ -1,0 +1,18 @@
+title: 'The system boundary'
+blurb: 'You choose what counts as the object. That choice decides which forces are external and therefore which ones are allowed into the sum — and it is the cheapest trick in mechanics.'
+notation: '\vec F_{\text{ext}} = M_{\text{tot}}\,\vec a_{\text{cm}}'
+tags:
+  - 'up-ch4'
+misconceptions:
+  - id: 'boundary-is-given'
+    name: 'The problem tells you what the object is.'
+    signal: 'Always draws one diagram per physical item and never considers treating two things as one, or one thing as two.'
+    correction: 'Drawing the boundary is your move, and different boundaries answer different questions cheaply. Want the acceleration of two blocks pushed together? Enclose both and the contact force between them disappears. Want that contact force? Enclose one and it is the only unknown left. Same physics, two boundaries, two easy problems instead of one hard one.'
+  - id: 'internal-forces-accelerate-system'
+    name: 'Forces inside the system still push the system along.'
+    signal: 'Adds the internal contact force to the external push when computing the pair''s acceleration, or expects to move a car by pushing on its dashboard.'
+    correction: 'Every internal force appears in the system''s sum twice — once as itself and once as its third-law partner — so it contributes exactly zero. Only forces from outside the boundary can change the system''s motion. This is why pushing the dashboard does nothing and pushing the ground does everything.'
+  - id: 'push-passes-through-unchanged'
+    name: 'Push the front block with 16 N and the block behind it feels 16 N.'
+    signal: 'Reports the contact force between two pushed blocks as equal to the applied push.'
+    correction: 'Part of your push is spent accelerating the block you are touching. Only the remainder is passed on, and the split is by mass: the contact force is the applied force times the fraction of the total mass that lies beyond the contact. A 16 N push on a 2 kg block in front of a 6 kg block passes on 12 N, because three quarters of the mass being accelerated is on the far side.'

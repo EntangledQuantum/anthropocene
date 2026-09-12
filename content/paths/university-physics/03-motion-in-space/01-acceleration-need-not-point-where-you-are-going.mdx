@@ -1,0 +1,169 @@
+---
+title: 'Acceleration does not point where you are going'
+blurb: 'Split any acceleration into the part that changes your speed and the part that steers, and circles, bends and orbits stop being separate topics.'
+order: 1
+tier: 'foundation'
+minutes: 13
+teaches:
+  - 'tangential-normal-acceleration'
+  - 'uniform-circular-motion'
+  - 'centripetal-acceleration'
+requires:
+  - 'instantaneous-rate'
+status: 'live'
+updated: 2026-09-12
+---
+
+A dot is moving. A magenta arrow is attached to it, and that arrow is the acceleration —
+the thing dragging the tip of the velocity around. You can point it anywhere.
+
+Before you touch it: the object below is heading up and to the left, and the arrow points
+due **left**. Nothing else.
+
+<Predict
+  id="up-ch3-left-arrow"
+  question="The object is travelling up and to the left. Its acceleration points due left, horizontally. Is it speeding up, slowing down, or holding its speed?"
+  options={[
+    { key: 'a', misconception: 'acceleration-means-speeding-up', label: 'Slowing down — a leftward arrow fights the motion', why: 'It would fight the motion if the object were heading rightward. This one is already going left, so the arrow is partly helping. Which way the arrow points is not the question; how it lines up with the velocity is.' },
+    { key: 'b', label: 'Speeding up', why: 'Correct. The velocity points up-and-left, the arrow points left, and the angle between them is under 90° — so part of the arrow lies along the motion and adds to the speed. The rest of it steers.' },
+    { key: 'c', misconception: 'acceleration-along-motion', label: 'Neither — the arrow is not along the motion, so it cannot change the speed at all', why: 'Close to the right instinct, and it is exactly true for a perpendicular arrow. But this arrow is not perpendicular: it is 45° off the velocity, so it has a component along the motion and the speed does move.' },
+    { key: 'd', misconception: 'acceleration-means-speeding-up', label: 'It must be moving leftward faster and faster, so it will end up travelling due left', why: 'The horizontal part of the velocity does grow, but the vertical part is untouched and stays exactly what it was. The object never turns to due left; it swings toward it and never arrives.' },
+  ]}
+  correct="b"
+>
+
+<SteeringLab
+  mode="world"
+  heading0={135}
+  angle={180}
+  magnitude={4}
+  speed0={6}
+  allowModeSwitch={false}
+  showCircle={false}
+  caption="The green dashed arrow is the part of the acceleration lying along the velocity — that is the part changing the speed, and it is positive here. The orchid one is the part across it, which only steers. Watch the speed readout climb while the magenta arrow never moves."
+/>
+
+</Predict>
+
+## Two jobs, one arrow
+
+Every acceleration does two things at once, and they are cleanly separable:
+
+- the part **along** the velocity, $a_t$, changes the **speed** — nothing else can
+- the part **across** it, $a_n$, changes the **direction** — nothing else can
+
+That is the whole of this chapter. The angle between the two arrows decides the split, and
+$a_t = |\vec a|\cos\theta$ falls straight out of it.
+
+So there should be an angle at which the speed stops changing altogether. Find it.
+
+<Tune
+  id="up-ch3-steady-angle"
+  scenario="up-ch3-steady-speed-angle"
+  prompt="Turn the acceleration arrow away from the velocity and watch what a second of it does to the speed. Find the angle at which the speed stops changing."
+  hint="You are not looking for the biggest effect. You are looking for where the effect vanishes."
+  explanation="Exactly perpendicular — 90°. The cosine of the angle between the arrows is what scales the speed change, and cos 90° is zero. Past 90° the same arrow starts braking instead. Note the turn radius readout: perpendicular is not the angle where the steering is weakest, it is the angle where the steering is everything."
+/>
+
+Now hold the arrow perpendicular yourself, and keep it there. In this world the arrow is
+**glued to the velocity**, so it turns as you turn — which is what steering is. A car's
+wheels point relative to the car, not relative to north.
+
+<SteeringLab
+  mode="velocity"
+  angle={90}
+  magnitude={4}
+  speed0={6}
+  goal="constant-speed"
+  caption="Drag the magenta tip until the angle readout says 90° and the green arrow dies to nothing. The path closes. The pale iris circle is the circle the path is currently riding, radius v²/aₙ."
+/>
+
+You have just built **uniform circular motion**, and you built it by *removing* something.
+Constant speed on a circle is not a special law. It is the case where the acceleration is
+pure steering — always perpendicular, so never changing the speed, and always pointing at
+the one place a perpendicular can point: the centre.
+
+The words are worth separating. The **speed** is constant. The **velocity** is not — it is
+turning through a full circle every lap, and that turning is the acceleration.
+
+## Which way does it have to point?
+
+Try to break it. Switch the arrow to the other side.
+
+<Predict
+  id="up-ch3-which-way-circle"
+  question="You are holding a circle with the arrow perpendicular to the velocity. Flip it to point perpendicular the other way — outward, away from the centre. What happens to the path?"
+  options={[
+    { key: 'a', misconception: 'circular-motion-outward-force', label: 'Nothing much — outward is what holds an object on a circular path anyway', why: 'Try it. The path opens out into a spiral and leaves. An outward arrow steers you away from the centre, which is the opposite of going round it. The outward feeling in a cornering car is your body continuing straight while the seat pushes you inward — a sensation, not the acceleration.' },
+    { key: 'b', label: 'It still circles, but the other way round', why: 'Correct. Perpendicular is perpendicular: the speed still does not change, and the path still curves at the same rate — it just curves to the other side, and the centre is now on the other side of you too. There is no outward-pointing acceleration in either version; the arrow always ends up aimed at whichever centre you are circling.' },
+    { key: 'c', misconception: 'uniform-means-constant-velocity', label: 'The speed changes, because reversing the arrow reverses its effect on the speed', why: 'Reversing a perpendicular arrow gives you another perpendicular arrow, and both have zero component along the velocity. The speed readout does not move either way — cos 90° and cos(−90°) are both zero.' },
+  ]}
+  correct="b"
+>
+
+<SteeringLab
+  mode="velocity"
+  angle={-90}
+  magnitude={4}
+  speed0={6}
+  caption="Both perpendicular choices circle. Now drag the arrow a few degrees outward from perpendicular — past 90° in the steering sense — and watch the path stop closing. That is the honest version of the misconception: any outward lean opens the path out."
+/>
+
+</Predict>
+
+<Recall id="up-ch3-recall-split" concept="tangential-normal-acceleration">
+  <div slot="front">A car goes round a bend at a perfectly steady 50 km/h. Is it accelerating, and if so, in which direction?</div>
+
+  Yes, and toward the inside of the bend. The speedometer never moves, so $a_t = 0$ — but
+  the velocity's *direction* is changing continuously, which is the perpendicular part
+  $a_n$. An acceleration perpendicular to the velocity is exactly the one that changes
+  direction while leaving the speed alone.
+</Recall>
+
+## How much steering does a bend demand?
+
+The circle you were riding had a radius, and it was not a free parameter: hold a speed $v$
+with a perpendicular acceleration $a_n$ and the path has to bend on a circle of radius
+$R = v^2/a_n$. Read it the other way and you have the formula that shows up everywhere from
+a motorway curve to an electron in a magnetic field:
+
+$$a_n = \frac{v^2}{R}$$
+
+The $v^2$ is the part that catches people out.
+
+<RankOrder
+  id="up-ch3-rank-bends"
+  prompt="Four things going round four corners. Rank them by the acceleration the corner demands."
+  lowLabel="least acceleration"
+  highLabel="most acceleration"
+  items={[
+    { key: 'track', label: 'A runner at 5 m/s round a 20 m bend on a track', why: '25 / 20 = 1.25 m/s². Slow and fairly open — the gentlest of the four by a wide margin.' },
+    { key: 'motorway', label: 'A car at 30 m/s on a 200 m motorway curve', why: '900 / 200 = 4.5 m/s². This is the interesting one: it is the fastest vehicle here and it is not the most demanding, because the radius is five times the town bend while the speed is only twice.' },
+    { key: 'town', label: 'A car at 15 m/s round a 40 m town bend', why: '225 / 40 = 5.6 m/s² — more than the motorway curve at half the speed. The squared speed loses to the much larger radius.' },
+    { key: 'ride', label: 'A fairground ride at 8 m/s on a 5 m radius', why: '64 / 5 = 12.8 m/s², more than g. Modest speed, tiny radius — which is why small radii are what actually throw you about.' },
+  ]}
+  correct={['track', 'motorway', 'town', 'ride']}
+  explanation="Both halves of v²/R matter and the square means they are not interchangeable. Doubling your speed on the same corner asks for four times the acceleration; halving the radius at the same speed asks for only twice. That is why a tight slow bend can be more punishing than a fast open one."
+/>
+
+<Recall id="up-ch3-recall-centripetal" concept="centripetal-acceleration">
+  <div slot="front">You take the same bend at twice the speed. By what factor does the acceleration the road must supply go up — and why is "centripetal force" not an extra arrow on the free-body diagram?</div>
+
+  Four times, because $a_n = v^2/R$ and only $v$ is squared. And "centripetal" names a
+  *direction*, not a source: the inward pull is supplied by something real — friction from
+  the road, tension in a string, gravity for an orbit. Drawing it as an additional arrow
+  beside those counts the same force twice.
+</Recall>
+
+## What to carry forward
+
+- **One arrow, two jobs.** Project the acceleration onto the velocity and you get the speed
+  change; what is left over is the steering. Every question in this chapter is one of those
+  two components.
+- **Perpendicular means pure turning.** Uniform circular motion is the case with the
+  tangential part deleted, and $a_n = v^2/R$ is what "how hard" looks like as a number.
+- The picture to keep: **a velocity arrow whose tip is being dragged sideways.** It is the
+  same picture for a planet, a proton in a cyclotron and a car on a roundabout.
+
+Next: pin the arrow to the world instead of to the velocity, point it straight down, and the
+same machinery gives you a projectile — two one-dimensional motions reading one clock.

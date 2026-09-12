@@ -1,0 +1,18 @@
+title: 'Independence of horizontal and vertical motion'
+blurb: 'A projectile is two one-dimensional motions reading the same clock: a constant-velocity sideways story and a free-fall vertical story that do not know about each other.'
+notation: 'x = v_{0x} t, \qquad y = v_{0y} t - \tfrac{1}{2} g t^2'
+tags:
+  - 'up-ch3'
+misconceptions:
+  - id: 'horizontal-velocity-dies'
+    name: 'The sideways motion gradually runs out and the object then drops.'
+    signal: 'Draws a trajectory that goes out flat, bends, and finishes as a vertical drop — the three-stage impetus path.'
+    correction: 'Nothing pushes horizontally, so nothing changes the horizontal velocity: x(t) is dead straight for the whole flight and the last sideways step is the same length as the first. The path bends only because the vertical story is accelerating.'
+  - id: 'projectile-force-runs-out'
+    name: 'At the top of the arc the projectile has used up its force, so acceleration is zero there.'
+    signal: 'Marks the apex as the point where the acceleration vanishes, because the vertical velocity does.'
+    correction: 'The vertical *velocity* passes through zero at the apex; the acceleration is the same 9.8 m/s² downward there as everywhere else. That is precisely why the object does not hang at the top — the velocity keeps changing at the same rate straight through the crossing.'
+  - id: 'heavier-falls-faster-sideways'
+    name: 'A ball thrown sideways takes longer to land than one simply dropped beside it.'
+    signal: 'Predicts the dropped ball hits first because the thrown one "has further to travel".'
+    correction: 'Both land together. The time in the air is set by the vertical story alone, and giving the ball a sideways velocity adds nothing to it — which is why the two balls stay level the whole way down.'

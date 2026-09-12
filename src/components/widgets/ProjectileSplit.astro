@@ -1,0 +1,5 @@
+---
+import Island, { type ProjectileSplitProps } from '../viz/ProjectileSplit.tsx';
+const props = Astro.props as ProjectileSplitProps;
+---
+<Island client:visible {...props} />

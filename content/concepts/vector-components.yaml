@@ -1,0 +1,18 @@
+title: 'Vector components'
+blurb: 'Components are what an arrow measures against one particular grid: rotate the grid and every component changes while the arrow, its length and its relationships to other arrows stay exactly where they were.'
+notation: 'A_{x''} = \vec A\cdot\hat e_{1''}'
+tags:
+  - 'up-ch1'
+misconceptions:
+  - id: 'vector-is-its-components'
+    name: 'A vector IS its pair of numbers.'
+    signal: 'Says two arrows are different because their components differ, or cannot answer what happens to a vector when the axes are rotated. Treats (4, 3) as the arrow itself rather than as one reading of it.'
+    correction: 'The numbers are a measurement of the arrow against a grid you chose. Turn the grid and the numbers all change without anything physical moving, so the numbers cannot be the object. What the arrow is, is its length and its direction relative to everything else in the problem — and those survive the change of grid.'
+  - id: 'negative-component-means-less'
+    name: 'A negative component means the quantity is smaller.'
+    signal: 'Reads a velocity component of -8 m/s as slower than +3 m/s, or expects a negative component to shorten the arrow.'
+    correction: 'The sign is a direction relative to the axis, not a size. A component of -8 is eight units along the axis pointing the other way, and it makes the arrow longer than +3 would. Turn the grid halfway round and every sign in the problem flips while nothing has happened.'
+  - id: 'magnitude-is-sum-of-components'
+    name: 'The length of an arrow is its components added up.'
+    signal: 'Reports the magnitude of (4, 3) as 7. Expects the two components to account for the length additively.'
+    correction: 'The components are perpendicular, so they combine by Pythagoras, not by addition: the length of (4, 3) is 5. The tell is that the sum of components changes when you turn the grid — it is 7 on one grid and 5 on another — while the length does not change at all.'

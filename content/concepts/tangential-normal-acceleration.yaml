@@ -1,0 +1,18 @@
+title: 'Tangential and normal acceleration'
+blurb: 'The one decomposition that makes acceleration legible: the part along the velocity changes the speed, the part across it steers, and nothing else is happening.'
+notation: 'a_t = \vec a \cdot \hat v, \qquad a_n = |\vec a - a_t \hat v| = v^2/R'
+tags:
+  - 'up-ch3'
+misconceptions:
+  - id: 'acceleration-along-motion'
+    name: 'Acceleration points in the direction you are going.'
+    signal: 'Draws the acceleration arrow on top of the velocity arrow every time, and cannot say what a car going round a bend at a steady speed is doing.'
+    correction: 'The two arrows are independent. Only the component of the acceleration along the velocity changes the speed; the perpendicular component leaves the speed untouched and bends the path instead. A car at a constant 30 km/h round a bend has an acceleration pointing sideways, straight at the centre of the bend.'
+  - id: 'acceleration-means-speeding-up'
+    name: 'Having an acceleration means going faster; a leftward acceleration means moving left.'
+    signal: 'Says an object with an acceleration pointing left must be slowing down, or must be travelling leftward.'
+    correction: 'Whether the speed rises or falls is the sign of the acceleration''s component along the velocity, so the same leftward arrow speeds you up when you are heading left-ish and slows you down when you are heading right-ish. The arrow alone answers nothing until you say where the object is going.'
+  - id: 'curved-path-needs-curved-acceleration'
+    name: 'A curved path needs an acceleration that curves with it, so a constant acceleration gives a straight line.'
+    signal: 'Expects a projectile under a constant downward acceleration to travel in a straight line, or expects a circle to need an acceleration that changes magnitude.'
+    correction: 'A constant acceleration bends a path for as long as it is not parallel to the velocity — a projectile''s downward arrow never changes and the path is a parabola throughout. Uniform circular motion needs a constant *magnitude* acceleration that constantly changes direction, which is a different statement.'

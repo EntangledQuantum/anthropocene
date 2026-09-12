@@ -1,0 +1,14 @@
+title: 'Uniform circular motion'
+blurb: 'Constant speed on a circle is the special case where the acceleration is purely steering — perpendicular to the velocity at every instant, and therefore never changing the speed at all.'
+notation: 'a_t = 0, \qquad |\vec a| = v^2/R = \text{constant}'
+tags:
+  - 'up-ch3'
+misconceptions:
+  - id: 'circular-motion-outward-force'
+    name: 'Something must push outward to keep an object on a circular path.'
+    signal: 'Draws the acceleration arrow pointing away from the centre, or names a real outward force on a ball swung on a string.'
+    correction: 'An outward arrow steers the path away from the centre — the circle opens out into a spiral, which you can watch happen. Holding a circle needs the arrow aimed inward, at the centre. The outward feeling belongs to the passenger, not to the acceleration: your body is trying to continue straight while the seat pushes you inward.'
+  - id: 'uniform-means-constant-velocity'
+    name: 'Constant speed on a circle means the velocity is constant, so the acceleration is zero.'
+    signal: 'Reports zero acceleration for a satellite in a circular orbit because "it is not speeding up".'
+    correction: 'Velocity is a vector, and its direction is changing the whole way round. That change is an acceleration even though the speedometer never moves — which is exactly why the direction-changing part of acceleration needs its own name.'

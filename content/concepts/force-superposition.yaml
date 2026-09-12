@@ -1,0 +1,18 @@
+title: 'Superposition of forces'
+blurb: 'Forces add as vectors and nothing else happens — no interference, no precedence, no winner. Several pushes are exactly one push you could have applied instead.'
+notation: '\vec F_{\text{net}} = \vec F_1 + \vec F_2 + \cdots'
+tags:
+  - 'up-ch4'
+misconceptions:
+  - id: 'biggest-force-wins'
+    name: 'The largest force decides what happens; the smaller ones are overruled.'
+    signal: 'Says the object moves in the direction of the biggest arrow, and ignores the others rather than adding them.'
+    correction: 'Every force contributes its whole self to the sum. Two modest forces at an angle can beat a large one, and three forces can add to exactly nothing while every one of them is still fully present and doing its job.'
+  - id: 'equilibrium-means-no-forces'
+    name: 'Nothing is accelerating, so there are no forces on it.'
+    signal: 'Leaves the diagram of a resting or steadily-moving body empty.'
+    correction: 'Equilibrium is a statement about the *sum*, not about the terms. The arrows are all there and they close a loop. This matters because the individual forces are what break things: the cable that snaps was in equilibrium right up until it was not.'
+  - id: 'forces-add-as-numbers'
+    name: 'Add the magnitudes and you have the net force.'
+    signal: 'Reports the net force of a 30 N east push and a 40 N north push as 70 N.'
+    correction: '50 N, at 53° north of east. Forces are arrows and the sum is the closing side of a triangle, exactly as in the chapter on vectors. The magnitudes add only in the special case where the arrows are parallel.'

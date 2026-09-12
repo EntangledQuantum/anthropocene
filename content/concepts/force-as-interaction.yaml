@@ -1,0 +1,18 @@
+title: 'Force as an interaction'
+blurb: 'A force is a relationship between two bodies, never a substance one of them carries — so every force you draw has to name who is doing it.'
+notation: '\vec F_{\text{A on B}}'
+tags:
+  - 'up-ch4'
+misconceptions:
+  - id: 'force-is-a-possession'
+    name: 'A moving object has force in it, the way it has mass in it.'
+    signal: 'Says a thrown ball "has a lot of force", or uses force, energy and momentum interchangeably when asked what keeps something going.'
+    correction: 'Force is not stored anywhere. It is what two bodies do to each other while they are interacting, and it stops existing the instant the interaction does. The ball leaving your hand has momentum and kinetic energy — both of which it does keep — but the force ended when your hand lost contact with it.'
+  - id: 'only-agents-exert-forces'
+    name: 'Only things that can act — people, engines, animals — exert forces. A table just sits there.'
+    signal: 'Draws the weight on a resting book and stops, or says the table "supports" the book without calling that a force.'
+    correction: 'A table pushes. It is a stack of compressed atomic bonds and it pushes as hard as it needs to, with no intention required. If the table exerted nothing, the book''s only force would be its weight and it would be falling. It is not falling, so something is pushing.'
+  - id: 'force-needs-contact'
+    name: 'Nothing can push or pull unless it is touching.'
+    signal: 'Omits the weight from the diagram of a body in mid-air, or asks what is holding a satellite up.'
+    correction: 'Gravity is an interaction across a gap, and so are the electric and magnetic interactions later in this path. Contact is one way for two bodies to interact, not the only way. What every force does share is the two ends: name both, or you have not named a force.'

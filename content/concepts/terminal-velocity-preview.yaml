@@ -1,0 +1,18 @@
+title: 'When air wrecks the parabola'
+blurb: 'Quadratic drag sets a speed scale, and once a projectile is moving anywhere near it the parabola stops being an approximation and starts being the wrong shape.'
+notation: 'a_\text{drag} = -k\,|\vec v|\,\vec v, \qquad v_\infty = \sqrt{g/k}'
+tags:
+  - 'up-ch3'
+misconceptions:
+  - id: 'drag-is-a-small-correction'
+    name: 'Air resistance is a tidy-up at the end — a few percent off the range.'
+    signal: 'Applies the range formula to a hard-thrown ball and expects to be within ten percent.'
+    correction: 'A baseball thrown at 40 m/s carries about 95 m, against 163 m from the formula: the parabola is too long by nearly two thirds. Drag is small only while the speed is well under the terminal speed, and a thrown ball is not.'
+  - id: 'drag-keeps-the-symmetry'
+    name: 'Drag shortens the flight but keeps the shape symmetric.'
+    signal: 'Draws a lower, narrower parabola rather than an asymmetric curve, and keeps expecting 45° to be the best angle.'
+    correction: 'The climb is fast and the descent is slow, so the descending half is steeper and the curve is lopsided. The ball lands slower than it left, steeper than it left, and the best launch angle drops below 45°.'
+  - id: 'drag-preserves-independence'
+    name: 'With drag the horizontal and vertical stories still run independently.'
+    signal: 'Tries to solve a drag problem by treating x and y separately, as in the drag-free case.'
+    correction: 'Drag depends on the *speed*, which mixes both components, so the sideways motion now changes how fast the object falls and vice versa. Independence was a property of the drag-free case, not a law of projectiles — which is why the two stories can only be separated when they really are separate.'

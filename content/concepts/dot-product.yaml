@@ -1,0 +1,18 @@
+title: 'Dot product'
+blurb: 'The dot product asks how much of one arrow lies along another: it returns a single number, it is the same number in every frame, and it vanishes exactly when the two arrows are perpendicular.'
+notation: '\vec A\cdot\vec B = |\vec A||\vec B|\cos\theta'
+tags:
+  - 'up-ch1'
+misconceptions:
+  - id: 'dot-is-multiplication'
+    name: 'The dot product is how you multiply two vectors.'
+    signal: 'Expects the result to be a vector, or expects it to behave like ordinary multiplication — looks for a reciprocal, tries to divide by a vector, or cancels one from both sides.'
+    correction: 'It is not a multiplication and it does not return a vector; it returns a number, and it throws away everything about the two arrows except how aligned they are. Because information is discarded, there is no dividing back out: many different arrows give the same dot product with the same partner.'
+  - id: 'dot-depends-on-axes'
+    name: 'The dot product depends on which axes you use, since you compute it from components.'
+    signal: 'Recomputes a dot product after rotating the axes and expects a new answer, or worries that a badly chosen frame has changed the work done by a force.'
+    correction: 'Every component in the sum changes when the grid turns and the sum does not change at all — recompute it from the new numbers and you get the old answer to the last digit. That is why the work done by a force is a physical fact rather than a property of your sketch.'
+  - id: 'perpendicular-forces-do-work'
+    name: 'A force that is acting must be doing work.'
+    signal: 'Says the string does work on a ball in circular motion, or that the normal force does work on a sliding block.'
+    correction: 'Work is the dot product of force with displacement, so only the part of the force lying along the motion counts. A force exactly perpendicular to the motion contributes zero however large it is — the reason a satellite in a circular orbit needs no energy input to stay there.'

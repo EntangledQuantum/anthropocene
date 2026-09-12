@@ -1,0 +1,14 @@
+title: 'Unit vectors as a basis'
+blurb: 'A basis is two perpendicular arrows of length one that you are free to place; writing a vector in components is writing it as a sum of those two arrows, and you may swap the basis whenever a different one makes the problem easier.'
+notation: '\vec A = A_{1}\hat e_{1} + A_{2}\hat e_{2}'
+tags:
+  - 'up-ch1'
+misconceptions:
+  - id: 'axes-are-given'
+    name: 'The axes come with the problem.'
+    signal: 'Always uses horizontal and vertical, even on an inclined plane where it triples the work. Asks which axes are "the right ones" rather than which are convenient.'
+    correction: 'Nothing in nature is holding the axes. You place them, and you may place them along the slope, along a force, along the motion — whichever makes a component vanish. The answer to a physical question cannot depend on that choice, which is precisely why you are free to make the choice well.'
+  - id: 'basis-must-be-axis-aligned'
+    name: 'Components only make sense along horizontal and vertical.'
+    signal: 'Can decompose a vector into x and y but not into along-the-ramp and across-the-ramp, and does not see the two as the same operation.'
+    correction: 'Any two perpendicular unit arrows work identically. Decomposing along a ramp is the same act with a turned basis, and it is the one that makes the normal force a single component instead of two.'

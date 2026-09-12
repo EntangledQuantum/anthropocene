@@ -1,0 +1,14 @@
+title: 'Centripetal acceleration'
+blurb: 'The size of the steering, written as a formula: hold a speed v on a circle of radius R and the acceleration has to be v²/R, pointed at the centre.'
+notation: 'a_n = \dfrac{v^2}{R} = \omega^2 R'
+tags:
+  - 'up-ch3'
+misconceptions:
+  - id: 'centripetal-is-an-extra-force'
+    name: 'Centripetal force is a force in its own right, added to the others.'
+    signal: 'Lists tension, gravity, the normal force and "the centripetal force" on the same free-body diagram.'
+    correction: '"Centripetal" names a direction, not a source. Some real interaction — a string, a rail, friction, gravity — supplies the inward pull, and calling it centripetal is describing where it points. Adding it as a separate arrow counts the same force twice.'
+  - id: 'centripetal-linear-in-speed'
+    name: 'Going twice as fast round the same bend needs twice the acceleration.'
+    signal: 'Scales v²/R as though it were v/R, and is surprised that a bend taken at double speed is four times as demanding.'
+    correction: 'It is v², so doubling the speed quadruples the acceleration the road has to supply. That square is why a corner comfortable at 40 km/h throws you off the road at 80.'
