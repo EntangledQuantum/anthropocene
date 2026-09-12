@@ -20,6 +20,12 @@ export interface ShaderSurface {
   program: WebGLProgram;
   /** Sets a uniform by name; silently ignores names the shader dropped. */
   set(name: string, value: number | number[]): void;
+  /** Sets an integer uniform — counts and mode switches, where a float would
+   *  fail to link against an `int` declaration. */
+  setInt(name: string, value: number): void;
+  /** Sets an array uniform, e.g. `vec3 u_src[8]`. `components` is the width of
+   *  each element (1, 2, 3 or 4) and `values` is the flattened data. */
+  setArray(name: string, values: ArrayLike<number>, components: 1 | 2 | 3 | 4): void;
   draw(): void;
   resize(cssWidth: number, cssHeight: number, dpr?: number): void;
   destroy(): void;
@@ -93,6 +99,24 @@ export function createShaderSurface(
       else if (value.length === 2) gl.uniform2fv(u, value);
       else if (value.length === 3) gl.uniform3fv(u, value);
       else if (value.length === 4) gl.uniform4fv(u, value);
+    },
+    setInt(name, value) {
+      const u = locate(name);
+      if (!u) return;
+      gl.useProgram(program);
+      gl.uniform1i(u, value);
+    },
+    setArray(name, values, components) {
+      // GLSL names an array uniform's first element "name[0]", and some
+      // drivers only expose it under that spelling — try both.
+      const u = locate(name) ?? locate(`${name}[0]`);
+      if (!u) return;
+      gl.useProgram(program);
+      const data = values instanceof Float32Array ? values : new Float32Array(values as number[]);
+      if (components === 1) gl.uniform1fv(u, data);
+      else if (components === 2) gl.uniform2fv(u, data);
+      else if (components === 3) gl.uniform3fv(u, data);
+      else gl.uniform4fv(u, data);
     },
     draw() {
       gl.useProgram(program);
