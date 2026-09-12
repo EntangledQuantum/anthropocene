@@ -17,6 +17,12 @@ Two companion queues:
 - **[`LEARNING-PLAN.md`](LEARNING-PLAN.md)** — content to write, ordered basic → advanced.
 - **[`PLATFORM-GAPS.md`](PLATFORM-GAPS.md)** — where we currently fall short of the thesis.
 
+Per-path briefs, which add house rules on top of this file:
+
+- **[`docs/university-physics-brief.md`](docs/university-physics-brief.md)** — required
+  before writing anything under `content/paths/university-physics/`. Its companion map is
+  [`docs/university-physics-curriculum.md`](docs/university-physics-curriculum.md).
+
 Both are queues. Ship the thing, delete the entry, same commit.
 
 ---
@@ -289,10 +295,16 @@ Widgets are Astro islands and props are serialised.
 - ❌ `<Tune compute={(v) => …} />` → ✅ `<Tune scenario="euler-stability" />`, registered in
   `src/components/learn/tune-scenarios.ts`
 - ❌ `<SketchCurve truth={[…]} />` → ✅ `scenario="…"`, registered in `sketch-scenarios.ts`
-- ❌ `<Estimate answer={84000} />` → ✅ `scenario="…"`, registered in `estimate-scenarios.ts`,
+- ❌ `<Estimate answer={84000} />` → ✅ `scenario="…"`, registered in a scenarios pack,
   where the answer is **computed** from `src/lib/numerics` rather than typed. An estimation
   question with a hand-entered "true" value is a trivia question wearing a slider.
 - ❌ `<Recall front={<>…</>}>` → ✅ `<Recall><div slot="front">…</div>…</Recall>`
+
+**Where to put a scenario.** Add a file to `src/components/learn/scenarios/` exporting any
+of `tune`, `sketch`, `estimate` as `Record<string, …Scenario>`. Those packs are globbed
+into the three shared registries automatically, so a lesson brings its own scenarios
+without editing a file another author is also editing. The large `*-scenarios.ts` files
+hold the original computational-physics set and are not the place to add to.
 
 ### MDX treats `<` as a tag
 
@@ -310,7 +322,9 @@ history and resets the card.** Globally unique; `content:check` enforces it.
 1. React component in `src/components/viz/` or `src/components/learn/`.
 2. `.astro` wrapper in `src/components/widgets/` carrying `client:visible` — MDX-provided
    components cannot carry client directives themselves.
-3. Register it in `lessonComponents` in `src/pages/learn/[path]/[chapter]/[lesson].astro`.
+3. **That is the registration.** Every `.astro` file in `src/components/widgets/` is
+   globbed into the authoring vocabulary under its own filename, so there is no import
+   list to edit and no merge conflict when two authors add widgets at once.
 4. If graded, add its name to `GRADED_WIDGETS` in `src/lib/graph/graph.ts` **and** `GRADED`
    in `scripts/check-content.ts`.
 5. Document it in §6 and add it to the design rules in §2 if it teaches something new.
