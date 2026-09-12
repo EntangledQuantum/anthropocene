@@ -20,7 +20,7 @@ them rather than duplicating.
 |---|---|---|---|
 | Linked x/v/a graphs | `LinkedGraphs` | 2, 3, 14 | **built** |
 | Free-body diagram builder | `FbdBuilder` | 4, 5, 11 | to build |
-| Potential track + total-E line | `PotentialTrack` | 7, 14, 30, 40 | to build |
+| Potential track + total-E line | `PotentialTrack` | 7, 14, 30, 40 | **built** |
 | Field arrows + equipotentials | `FieldCanvas` | 13, 21, 22, 23, 27, 28 | **built** |
 | Two-source ripple tank | `RippleTank` | 15, 16, 35, 36 | to build |
 | Phasor stage | `PhasorStage` | 31, 35 | to build |
