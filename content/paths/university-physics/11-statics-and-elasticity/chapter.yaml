@@ -1,0 +1,6 @@
+title: 'Equilibrium and Elasticity'
+question: 'Move the pivot. Which torque numbers change, and which balance stays?'
+blurb: >-
+  Statics is Newton with both accelerations set to zero. Elasticity is what happens when rigid turns out to have been a lie.
+order: 11
+status: 'draft'

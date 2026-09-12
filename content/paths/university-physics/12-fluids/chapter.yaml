@@ -1,0 +1,6 @@
+title: 'Fluid Mechanics'
+question: 'Narrow the pipe: what rises, what falls, and which conservation law said so?'
+blurb: >-
+  A fluid is a continuum that cannot hold shear at rest. Buoyancy is a pressure difference, not a new substance, and Bernoulli is energy accounting along one streamline — not a slogan.
+order: 12
+status: 'draft'

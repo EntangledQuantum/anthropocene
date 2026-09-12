@@ -1,0 +1,18 @@
+title: 'Instantaneous rate'
+blurb: 'The slope of a curve at one instant — a local question about the curve, not an average over an interval that has been made small.'
+notation: 'v = \lim_{\Delta t \to 0} \frac{\Delta x}{\Delta t}'
+tags:
+  - 'up-ch2'
+misconceptions:
+  - id: 'chord-is-tangent'
+    name: 'Average velocity over a short interval is the same as instantaneous velocity.'
+    signal: 'Uses total displacement over total time and calls the result "the velocity" on a curve that bends.'
+    correction: 'A chord and a tangent agree only when the curve is straight between the endpoints. On a bending curve the chord is an average of everything that happened in between, and the tangent is the value at one instant.'
+  - id: 'velocity-is-position-over-time'
+    name: 'Velocity is position divided by time.'
+    signal: 'Computes x/t at an instant instead of dx/dt, giving a nonzero "velocity" for a stationary object sitting at x = 5.'
+    correction: 'Velocity is the rate that position CHANGES, so it is a difference divided by a difference. An object parked at x = 5 has a position and no velocity at all.'
+  - id: 'zero-velocity-zero-acceleration'
+    name: 'If the velocity is zero at an instant, the acceleration must be zero too.'
+    signal: 'Says a ball at the top of its flight has no acceleration because it is momentarily at rest.'
+    correction: 'Velocity being zero says nothing about how fast it is changing. At the top of a throw the velocity is passing through zero at full speed of change — the acceleration there is the same g as everywhere else.'

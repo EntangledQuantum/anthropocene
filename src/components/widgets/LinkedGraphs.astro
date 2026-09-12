@@ -1,0 +1,5 @@
+---
+import Island, { type LinkedGraphsProps } from '../viz/LinkedGraphs.tsx';
+const props = Astro.props as LinkedGraphsProps;
+---
+<Island client:visible {...props} />

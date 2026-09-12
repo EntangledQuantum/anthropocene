@@ -1,0 +1,14 @@
+title: 'Worldline'
+blurb: 'The single curve of position against time, from which velocity and acceleration are read rather than separately stored.'
+notation: 'x(t)'
+tags:
+  - 'up-ch2'
+misconceptions:
+  - id: 'three-independent-graphs'
+    name: 'Position, velocity and acceleration are three separate facts about the object.'
+    signal: 'Sketches an x(t) and a v(t) that contradict each other and sees no problem, or looks for a separate rule to get each one.'
+    correction: 'There is one curve. Velocity is its slope and acceleration is the slope of that slope, so the three plots are three readings of the same object. Change one and the other two are already changed — they cannot disagree.'
+  - id: 'graph-is-the-path'
+    name: 'The x(t) graph is a picture of the route the object took through space.'
+    signal: 'Reads a rising straight line on an x(t) graph as an object moving diagonally uphill.'
+    correction: 'The horizontal axis is time, not a second direction in space. A straight diagonal on x(t) is an object moving in a straight line at constant speed — possibly along a perfectly flat road.'

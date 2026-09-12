@@ -1,0 +1,14 @@
+title: 'Accumulation'
+blurb: 'The integral as what piled up: signed area under a rate curve is the total change in the quantity that rate belongs to.'
+notation: '\Delta x = \int_{t_1}^{t_2} v\,dt'
+tags:
+  - 'up-ch2'
+misconceptions:
+  - id: 'area-is-always-positive'
+    name: 'Area under a graph is area, so it adds up no matter which side of the axis it is on.'
+    signal: 'Adds the area below the axis to the area above it and reports a displacement that is too large.'
+    correction: 'The area carries the sign of the rate. Time under the axis is motion in the other direction, and it subtracts. Adding the magnitudes instead gives distance travelled, which is a different and equally real quantity.'
+  - id: 'integral-knows-where-you-started'
+    name: 'Knowing v(t) tells you the position.'
+    signal: 'Asked to recover x(t) from v(t), produces a definite curve with no mention of an unknown offset.'
+    correction: 'The area tells you the CHANGE in position. Every curve shifted vertically has exactly the same slope everywhere, so v(t) is consistent with infinitely many x(t) that differ by a constant. Somebody has to tell you where it started.'

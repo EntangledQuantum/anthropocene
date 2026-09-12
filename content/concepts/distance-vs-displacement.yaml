@@ -1,0 +1,14 @@
+title: 'Distance and displacement'
+blurb: 'Two different answers to "how far": the odometer reading, and the directed gap between start and finish.'
+notation: 's = \int |v|\,dt \quad\text{vs}\quad \Delta x = \int v\,dt'
+tags:
+  - 'up-ch2'
+misconceptions:
+  - id: 'distance-equals-displacement'
+    name: 'How far it went and how far it ended up are the same number.'
+    signal: 'Reports a round trip as having covered zero distance, or a there-and-back as a nonzero displacement.'
+    correction: 'They agree only when the motion never reverses. A runner doing a full lap has a lap of distance and zero displacement, and both statements are true about the same run.'
+  - id: 'negative-means-less'
+    name: 'A negative displacement is a smaller displacement.'
+    signal: 'Ranks a displacement of minus eight metres as smaller than plus three.'
+    correction: 'The sign is a direction, not a size. Minus eight metres is a larger move than plus three, in the opposite direction.'

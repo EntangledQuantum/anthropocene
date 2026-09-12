@@ -1,0 +1,6 @@
+title: 'Motion Along a Line'
+question: 'Given only v(t), can you recover x(t) — and what is missing?'
+blurb: >-
+  Kinematics is the geometry of a worldline. Velocity and acceleration are questions you ask about that curve, not extra substances the object carries. Three linked plots that must agree with one another is the whole chapter.
+order: 2
+status: 'draft'

@@ -1,0 +1,6 @@
+title: 'Motion in Two and Three Dimensions'
+question: 'Can this object be speeding up while its acceleration arrow points left?'
+blurb: >-
+  Velocity is tangent to the path. Acceleration does not have to be. Splitting it into the part that changes speed and the part that steers is what turns projectiles, circles and orbits into one idea.
+order: 3
+status: 'draft'
