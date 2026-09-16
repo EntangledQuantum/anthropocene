@@ -95,6 +95,10 @@ export interface FbdForceSpec {
   /** Direction is pinned; only the magnitude moves. */
   lockAngle?: boolean;
   maxMag?: number;
+  /** Put the third-law partner into the world too, on the body named by `by`,
+   *  kept at exactly minus this force. Drag one end and the other follows,
+   *  because they are one interaction and not two decisions. */
+  pair?: boolean;
   /** Application point relative to the body centre, metres. Torque only. */
   atX?: number;
   atY?: number;
@@ -150,6 +154,10 @@ export interface FbdBuilderProps {
   target?: FbdTarget;
   /** Seconds of simulated time before the run stops itself. */
   duration?: number;
+  /** Simulated seconds per wall-clock second. Below 1 is slow motion, which is
+   *  the only way to watch a collision; the factor is printed on the pane so
+   *  the clock is never quietly lying. */
+  timeScale?: number;
   /** Metres across the world strip at rest. */
   worldSpan?: number;
   autoPlay?: boolean;
@@ -184,7 +192,9 @@ const KIND_LABEL: Record<ForceKind, string> = {
   spring: 'spring',
 };
 
-const NICE = [0.5, 1, 2, 5, 10, 20, 50, 100, 200, 500, 1e3, 2e3, 5e3, 1e4, 2e4, 5e4, 1e5, 2e5, 5e5, 1e6];
+const NICE = [-1, 0, 1, 2, 3, 4, 5, 6].flatMap((d) =>
+  [1, 1.5, 2, 3, 5, 7.5].map((m) => m * 10 ** d),
+);
 const niceAbove = (v: number) => NICE.find((n) => n >= v) ?? v;
 
 const fmt = (v: number, dp = 1) => (Math.abs(v) < 10 ** -dp / 2 ? 0 : v).toFixed(dp);
@@ -220,6 +230,19 @@ const toForce = (s: FbdForceSpec): Force => ({
   vec: [s.fx, s.fy],
   at: s.atX !== undefined || s.atY !== undefined ? [s.atX ?? 0, s.atY ?? 0] : undefined,
 });
+
+/** Declared forces, plus the other end of any interaction marked `pair`.
+ *
+ *  The partner is DERIVED, never stored, and never editable — so the two ends
+ *  of one interaction cannot be given different magnitudes here, any more than
+ *  they can in the world. The third law is enforced by the data flow. */
+const worldForces = (specs: FbdForceSpec[]): Force[] =>
+  specs.flatMap((s) => {
+    const f = toForce(s);
+    if (!s.pair) return [f];
+    const p = thirdLawPartner(f);
+    return [f, { ...p, label: `${s.on} on ${s.by}` }];
+  });
 
 /* ── arrow drawing ──────────────────────────────────────────────────────── */
 
@@ -497,6 +520,7 @@ export default function FbdBuilder({
   massSlider = false,
   target,
   duration = 6,
+  timeScale = 1,
   worldSpan = 16,
   autoPlay = false,
   title,
@@ -571,6 +595,12 @@ export default function FbdBuilder({
   const worldRef = useRef<World | null>(null);
   const trailRef = useRef<Record<string, Vec2[]>>({});
   const lastReadout = useRef(0);
+  /** Unspent simulated time, carried between frames. */
+  const clockRef = useRef(0);
+  /** Where the world strip is looking. Fixed until a body nears the edge, then
+   *  it pans — a camera that tracks from the first frame makes a body moving at
+   *  constant velocity look stationary, which is the opposite of the lesson. */
+  const camRef = useRef<number | null>(null);
   const runningRef = useRef(false);
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const wrapRef = useRef<HTMLDivElement>(null);
@@ -601,13 +631,15 @@ export default function FbdBuilder({
   const seed = useCallback(() => {
     const w = createWorld({
       bodies: bodies.map((b) => ({ ...b, pos: [...b.pos] as Vec2, vel: [...b.vel] as Vec2 })),
-      forces: liveSpecs.map(toForce),
+      forces: worldForces(liveSpecs),
       surface,
       touching: surface ? contactIds : [],
     });
     worldRef.current = w;
     trailRef.current = Object.fromEntries(w.bodies.map((b) => [b.id, [[...b.pos] as Vec2]]));
     lastReadout.current = 0;
+    clockRef.current = 0;
+    camRef.current = null;
     return w;
   }, [bodies, liveSpecs, surface, contactIds]);
 
@@ -623,7 +655,7 @@ export default function FbdBuilder({
   useEffect(() => {
     const w = worldRef.current;
     if (runningRef.current && w) {
-      w.forces = liveSpecs.map(toForce);
+      w.forces = worldForces(liveSpecs);
       for (const b of w.bodies) b.mass = masses[b.id] ?? b.mass;
       resolve(w);
       setSnap(snapshotOf(w));
@@ -654,8 +686,12 @@ export default function FbdBuilder({
     const centre = (Math.min(...xs) + Math.max(...xs)) / 2;
     const extent = Math.max(...xs) - Math.min(...xs);
     const span = Math.max(worldSpan, extent * 1.7 + 4);
+    if (camRef.current === null) camRef.current = centre;
+    const lead = span * 0.33;
+    if (centre > camRef.current + lead) camRef.current = centre - lead;
+    else if (centre < camRef.current - lead) camRef.current = centre + lead;
     const s = cw / span;
-    const x0 = centre - span / 2;
+    const x0 = camRef.current - span / 2;
     const groundY = ch * 0.72;
     const wx = (m: number) => (m - x0) * s;
     const wy = (m: number) => groundY - m * s;
@@ -786,8 +822,11 @@ export default function FbdBuilder({
     (wallDt: number) => {
       const w = worldRef.current;
       if (!w) return;
-      const n = Math.max(1, Math.min(24, Math.round(wallDt / DT)));
-      for (let i = 0; i < n; i++) {
+      // A fractional accumulator rather than a step count, so a timeScale below
+      // one does not round up to a whole step and quietly run at full speed.
+      clockRef.current = Math.min(clockRef.current + wallDt * timeScale, 40 * DT);
+      while (clockRef.current >= DT) {
+        clockRef.current -= DT;
         step(w, DT);
         if (w.steps % TRAIL_EVERY === 0) {
           for (const b of w.bodies) {
@@ -811,7 +850,7 @@ export default function FbdBuilder({
         setSnap(snapshotOf(w));
       }
     },
-    [duration, snapshotOf],
+    [duration, snapshotOf, timeScale],
   );
 
   useAnimationFrame(running && !reduced, advance);
@@ -842,7 +881,10 @@ export default function FbdBuilder({
     const w = worldRef.current;
     if (!w) return;
     setRunning(false);
-    for (let i = 0; i < 60; i++) step(w, DT);
+    // A readable nudge on any clock: a quarter second, or an eighth of the run
+    // when the whole run is shorter than that.
+    const n = Math.max(1, Math.round(Math.min(0.25, duration / 8) / DT));
+    for (let i = 0; i < n && w.t < duration; i++) step(w, DT);
     for (const b of w.bodies) trailRef.current[b.id]?.push([...b.pos] as Vec2);
     paintRef.current();
     setSnap(snapshotOf(w));
@@ -972,7 +1014,13 @@ export default function FbdBuilder({
 
   const editableIds = liveSpecs.filter((s) => s.editable).map((s) => s.id);
   const editable = liveSpecs.filter((s) => s.editable);
-  const partners = showPartners ? snap.forces.map((f) => thirdLawPartner(f)) : [];
+  /* Only the partners that have nowhere to go. A body-to-body pair is already
+     drawn on the other panel; these are the ones whose other end lives on the
+     Earth, on the table, on you — things this picture deliberately left out. */
+  const bodyIds = new Set(bodies.map((b) => b.id));
+  const partners = showPartners
+    ? snap.forces.filter((f) => !bodyIds.has(f.by)).map((f) => thirdLawPartner(f))
+    : [];
   const systemIds = system ?? bodies.map((b) => b.id);
   const axisAngle = rotateAxes && surface ? surface.angleRad : 0;
 
@@ -982,6 +1030,9 @@ export default function FbdBuilder({
         title={title ?? 'free-body diagram'}
         right={
           <span className="hud-label" style={{ color: 'var(--color-ink-faint)' }}>
+            {timeScale !== 1 && !hideMotion && (
+              <span style={{ color: 'var(--color-orchid)' }}>slow motion ×{timeScale} · </span>
+            )}
             F<sub>net</sub> = m a
           </span>
         }
@@ -1069,7 +1120,8 @@ export default function FbdBuilder({
                   <span style={{ fontFamily: 'var(--font-mono, monospace)', color: 'var(--color-ink-soft)' }}>
                     {fmt(mag2(p.vec), mag2(p.vec) < 100 ? 1 : 0)} N
                   </span>{' '}
-                  on <strong style={{ color: 'var(--color-ink)' }}>{p.on}</strong>, exerted by {p.by}
+                  on <strong style={{ color: 'var(--color-ink)' }}>{p.on}</strong>, exerted by{' '}
+                  {bodies.find((b) => b.id === p.by)?.label ?? p.by}
                 </li>
               ))}
             </ul>

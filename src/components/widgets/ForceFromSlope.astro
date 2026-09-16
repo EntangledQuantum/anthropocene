@@ -1,0 +1,5 @@
+---
+import Island, { type ForceFromSlopeProps } from '../viz/ForceFromSlope.tsx';
+const props = Astro.props as ForceFromSlopeProps;
+---
+<Island client:visible {...props} />

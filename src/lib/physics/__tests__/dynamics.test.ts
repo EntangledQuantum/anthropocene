@@ -1,4 +1,5 @@
 import { describe, expect, it } from 'vitest';
+import { estimate, sketch } from '../../../components/learn/scenarios/up-interaction.ts';
 import { mag2, type Vec2 } from '../vectors.ts';
 import {
   G_EARTH,
@@ -360,6 +361,108 @@ describe('torque, for the chapters that will need it', () => {
     ];
     expect(netTorqueAbout([0, 0], [beam], fs)).toBeCloseTo(0, 10);
     expect(netTorqueAbout([0.5, 0], [beam], fs)).not.toBeCloseTo(0, 6);
+  });
+});
+
+describe('the numbers the two Chapter 4 lessons print', () => {
+  it('lesson 1 hook: 6 N on the 2 kg puck is 3 m/s², reaching 22 m/s after six seconds', () => {
+    const puck = body('puck', 2, { vel: [4, 0] });
+    const w = createWorld({
+      bodies: [puck],
+      forces: [gravityOn(puck), force('push', 'puck', 'you', [6, 0])],
+      surface: { angleRad: 0, muS: 0, muK: 0 },
+    });
+    expect(w.accel.puck[0]).toBeCloseTo(3, 12);
+    run(w, 6);
+    expect(w.bodies[0].vel[0]).toBeCloseTo(22, 6);
+  });
+
+  it('lesson 1 hidden-motion crate: 14 N rope less 6 N friction on 4 kg is 2 m/s², N is mg', () => {
+    const crate = body('crate', 4);
+    const w = createWorld({
+      bodies: [crate],
+      forces: [
+        gravityOn(crate),
+        { ...force('rope', 'crate', 'a rope', [14, 0]), kind: 'tension' },
+        { ...force('fr', 'crate', 'the floor', [-6, 0]), kind: 'friction' },
+      ],
+      surface: { angleRad: 0, muS: 0, muK: 0 },
+    });
+    expect(netForceOn('crate', allForces(w))[0]).toBeCloseTo(8, 10);
+    expect(w.accel.crate[0]).toBeCloseTo(2, 10);
+    expect(w.solved.find((f) => f.kind === 'normal')!.vec[1]).toBeCloseTo(weight(4), 10);
+    // And the diagram genuinely does not pin the velocity: the same forces are
+    // consistent with moving right, moving left, or being at rest.
+    for (const v0 of [6, -3, 0]) {
+      const alt = createWorld({
+        bodies: [body('crate', 4, { vel: [v0, 0] })],
+        forces: w.forces,
+        surface: { angleRad: 0, muS: 0, muK: 0 },
+      });
+      expect(alt.accel.crate[0]).toBeCloseTo(2, 10);
+    }
+  });
+
+  it('lesson 1 thrusters: 20 N east and 20 N north are cancelled by 28.3 N at 225°', () => {
+    const deg = 225;
+    const m = 28.5; // what the widget's half-newton snap actually offers
+    const third: Vec2 = [
+      m * Math.cos((deg * Math.PI) / 180),
+      m * Math.sin((deg * Math.PI) / 180),
+    ];
+    const fs = [
+      force('a', 'crate', 'thruster A', [20, 0]),
+      force('b', 'crate', 'thruster B', [0, 20]),
+      force('c', 'crate', 'thruster C', third),
+    ];
+    expect(Math.hypot(20, 20)).toBeCloseTo(28.284, 3);
+    // Inside the widget's 0.12 m/s² tolerance on an 8 kg crate.
+    expect(mag2(accelerationOn('crate', 8, fs))).toBeLessThan(0.12);
+  });
+
+  it('lesson 2 collision: 600 kN both ways, 500 and 42.86 m/s², ratio 11.67', () => {
+    const car = body('car', 1200, { vel: [20, 0] });
+    const truck = body('truck', 14_000, { vel: [-14, 0] });
+    const onCar: Force = { id: 'hit', on: 'car', by: 'truck', kind: 'contact', vec: [-600_000, 0] };
+    const w = createWorld({ bodies: [car, truck], forces: [onCar, thirdLawPartner(onCar)] });
+
+    expect(mag2(netForceOn('car', w.forces))).toBeCloseTo(600_000, 6);
+    expect(mag2(netForceOn('truck', w.forces))).toBeCloseTo(600_000, 6);
+    expect(mag2(w.accel.car)).toBeCloseTo(500, 6);
+    expect(mag2(w.accel.truck)).toBeCloseTo(42.857, 3);
+    expect(mag2(w.accel.car) / mag2(w.accel.truck)).toBeCloseTo(11.667, 3);
+
+    // Ten steps — the 42 ms a learner actually sees, since the widget stops on
+    // the first frame past its 40 ms duration. The car is brought to rest and
+    // barely started back; the truck has lost 1.8 of its 14 m/s.
+    for (let i = 0; i < 10; i++) step(w, RUN_DT);
+    expect(w.bodies[0].vel[0]).toBeCloseTo(-0.833, 3);
+    expect(w.bodies[1].vel[0]).toBeCloseTo(-12.214, 3);
+    expect(Math.abs(w.bodies[0].vel[0])).toBeLessThan(1);
+  });
+});
+
+describe('the scenario pack the graded widgets measure against', () => {
+  it('the sketch curve climbs at 3 m/s² to 13 m/s, then stays flat forever', () => {
+    const curve = sketch['up-ch4-push-then-release'].truth();
+    const at = (t: number) => curve.reduce((best, p) => (Math.abs(p.x - t) < Math.abs(best.x - t) ? p : best)).y;
+
+    expect(at(0)).toBeCloseTo(4, 6);
+    expect(at(1.5)).toBeCloseTo(8.5, 2);
+    expect(at(3)).toBeCloseTo(13, 2);
+    // The whole point: nothing happens after the hand lets go.
+    expect(at(4)).toBeCloseTo(at(6), 6);
+    expect(at(6)).toBeCloseTo(13, 2);
+    // And it is a straight climb, not a curve flattening toward an asymptote.
+    expect(at(2) - at(1)).toBeCloseTo(at(3) - at(2), 4);
+  });
+
+  it('the estimate is the honest closed form, not a typed-in number', () => {
+    expect(estimate['up-ch4-car-to-walking-pace'].truth()).toBeCloseTo(
+      timeToReachSpeed(1400, 300, 1.4),
+      12,
+    );
+    expect(estimate['up-ch4-car-to-walking-pace'].truth()).toBeCloseTo(6.533, 3);
   });
 });
 

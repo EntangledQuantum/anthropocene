@@ -1,0 +1,184 @@
+---
+title: 'Two motions, one clock'
+blurb: 'Read a projectile as a sideways story and a falling story that share a stopwatch and ignore each other — then watch air resistance make them talk.'
+order: 2
+tier: 'foundation'
+minutes: 14
+teaches:
+  - 'projectile-independence'
+  - 'terminal-velocity-preview'
+requires:
+  - 'tangential-normal-acceleration'
+  - 'accumulation'
+status: 'live'
+updated: 2026-09-12
+---
+
+Take the arrow from the last lesson and stop steering with it. Pin it to the world, point it
+straight down, and never touch it again. That is gravity, and everything a projectile does
+follows from an arrow that never moves.
+
+Here is the oldest trap in the subject. Two identical balls leave the edge of a table at the
+same instant. One is flicked sideways. One is simply let go.
+
+<Predict
+  id="up-ch3-drop-vs-push"
+  question="One ball is pushed horizontally off a 1.5 m table, the other is released from rest beside it at the same instant. Which hits the floor first?"
+  options={[
+    { key: 'a', misconception: 'heavier-falls-faster-sideways', label: 'The dropped one — it goes straight down, while the other has further to travel', why: 'It does travel further, along a longer path. But length of path is not time in the air: the clock is run by the vertical story alone, and both balls have identical vertical stories. They land together, and you can watch the level rule between them stay level the whole way.' },
+    { key: 'b', misconception: 'horizontal-velocity-dies', label: 'The pushed one — its sideways motion runs out and then it drops the rest of the way', why: 'Nothing pushes it sideways and nothing stops it either, so the horizontal velocity is the same at the floor as it was at the table edge. Look at the strobe marks: the sideways gaps between them never shrink. The path bends because the falling is accelerating, not because the sideways motion is dying.' },
+    { key: 'c', label: 'They land together', why: 'Correct, and it is worth being surprised by. Giving a ball a sideways velocity adds nothing at all to its vertical story, so both fall the same 1.5 m in the same time.' },
+    { key: 'd', misconception: 'projectile-force-runs-out', label: 'They land together only if you push gently — a hard push keeps the ball up longer', why: 'Drag the speed slider as hard as you like. The landing time does not move by a millisecond, because the horizontal launch contributes nothing to the vertical equation. In real air a very fast ball does stay up a little longer, and that is the last section of this lesson — but it is not what is happening here.' },
+  ]}
+  correct="c"
+>
+
+<ProjectileSplit
+  speed={6}
+  angle={0}
+  launchHeight={1.5}
+  ball=""
+  strobe={0.06}
+  allowAngle={false}
+  allowDrag={false}
+  height={260}
+  caption="The orchid rule between the two balls stays perfectly level at every instant. Push harder with the speed slider and it is still level. Below, the same flight as two graphs: x(t) is a straight line — constant sideways speed — and y(t) is the fall, identical for both balls."
+/>
+
+</Predict>
+
+## One clock, two independent stories
+
+The two panels under the flight are the whole idea. The horizontal story is
+$x = v_{0x}t$: nothing accelerates it, so the graph is straight and the strobe marks are
+evenly spaced sideways forever. The vertical story is $y = v_{0y}t - \tfrac12 g t^2$: the
+free fall you already know, unaffected by anything happening sideways.
+
+They share exactly one thing, and it is $t$.
+
+Launch at an angle and the companion ball becomes a ball thrown **straight up** with the
+same vertical speed. Its height matches the launched ball's at every instant — that is the
+thick band lying underneath the $y(t)$ curve.
+
+<ProjectileSplit
+  speed={24}
+  angle={50}
+  ball=""
+  allowDrag={false}
+  caption="Move the angle slider. The two curves in the vertical panel stay locked together however far the ball flies sideways. Then move the angle to 0° and the companion becomes the dropped ball from the first screen — same picture, different costume."
+/>
+
+<Predict
+  id="up-ch3-at-the-apex"
+  question="At the very top of the arc, what is true of the ball?"
+  options={[
+    { key: 'a', misconception: 'projectile-force-runs-out', label: 'The acceleration is zero — it has run out of upward push and is about to start falling', why: 'The acceleration is the same 9.8 m/s² downward at the apex as it is everywhere else; the magenta arrow never changed. If the acceleration really were zero there the ball would carry on horizontally forever, because zero acceleration means unchanging velocity.' },
+    { key: 'b', misconception: 'projectile-force-runs-out', label: 'Both velocity and acceleration are momentarily zero, and the ball hangs there', why: 'The whole velocity is not zero — only its vertical component is. The ball is still moving sideways at the apex at exactly its launch speed, and it never hangs: the vertical velocity passes through zero without stopping there, the way a thrown-up ball does.' },
+    { key: 'c', label: 'The velocity is horizontal, and the acceleration is unchanged and still straight down', why: 'Correct. The apex is where the vertical velocity crosses zero, so the velocity arrow lies flat — and the acceleration arrow does not care, because it has pointed the same way since launch. Speeding up or slowing down is the acceleration lined up against the velocity, and here they are exactly perpendicular, so at that instant the speed is neither.' },
+    { key: 'd', misconception: 'horizontal-velocity-dies', label: 'The sideways speed peaks at the apex and falls away afterwards', why: 'The sideways speed is flat for the entire flight — read the vₓ readout as the ball goes over the top. Nothing acts horizontally, so nothing changes it.' },
+  ]}
+  correct="c"
+/>
+
+That last option pair is lesson one in new clothes. At the apex the acceleration is
+perpendicular to the velocity, so $a_t = 0$: for one instant the projectile is doing exactly
+what the ball on the circle was doing — pure steering.
+
+## The same vertical story, as a stack of graphs
+
+Strip the sideways motion away and what is left is a constant-acceleration worldline. Drag
+the acceleration handles and watch the other two panels have no choice.
+
+<LinkedGraphs
+  edit="a"
+  knots={[[0, -9.81], [1.25, -9.81], [2.5, -9.81], [3.75, -9.81]]}
+  duration={3.75}
+  v0={18.4}
+  x0={0}
+  showArea={false}
+  caption="The vertical story of a 24 m/s launch at 50°, on its own. Flat acceleration, straight-line velocity through zero at the apex, parabolic height. Flatten the acceleration to zero in the middle and the ball coasts — which is what the apex would look like if the force really did run out."
+/>
+
+<Recall id="up-ch3-recall-independence" concept="projectile-independence">
+  <div slot="front">A projectile is launched at 30° and another at 60° with the same speed. What is the single question you need to answer to compare their times in the air — and what is irrelevant?</div>
+
+  Only the vertical launch velocity $v_0\sin\theta$ matters, because the time in the air is
+  set entirely by the vertical story. The 60° launch has the larger $v_{0y}$ and so stays up
+  longer. The horizontal velocity is irrelevant to the timing — it decides only how far the
+  ball gets during the time the falling already decided.
+</Recall>
+
+## Now put the air back
+
+Everything above assumed nothing but gravity. Real air pushes back, and how hard depends on
+how fast — for a ball at everyday speeds, on the *square* of how fast. That gives every
+object a speed at which the push balances its weight.
+
+Commit to a number before you see it.
+
+<Estimate
+  id="up-ch3-terminal"
+  scenario="up-ch3-terminal-speed"
+  prompt="Drop a baseball from a great height. It stops accelerating and settles at a steady speed. How fast?"
+  explanation="About 40 m/s — roughly 90 mph, which is a fastball. That is the coincidence worth keeping: at the speeds a person can actually throw a baseball, the air pushes on it about as hard as gravity does. Anything moving at a decent fraction of its terminal speed is not following a parabola in any useful sense."
+/>
+
+So a hard-thrown ball is not a small correction away from the textbook curve. Draw where it
+really goes.
+
+<SketchCurve
+  id="up-ch3-sketch-drag"
+  scenario="up-ch3-dragged-arc"
+  prompt="A baseball leaves the hand at 40 m/s at 45°. The drag-free formula puts it 163 m away with a 41 m peak — the full frame below. Sketch where the air actually puts it."
+  hint="The terminal speed you just estimated is 40 m/s. The ball leaves the hand at exactly that speed, so the air is pushing on it as hard as gravity is."
+  explanation="It carries about 96 m, not 163 — the formula is too long by nearly two thirds — and peaks at 30 m rather than 41. Look closely at the shape as well: the peak sits at 55% of the range rather than halfway. The ball climbs for 2.31 s and takes 2.60 s to come down, so the descending half is steeper. It lands at 25 m/s having left at 40, and arrives at 57° after leaving at 45°."
+/>
+
+<ProjectileSplit
+  speed={40}
+  angle={45}
+  ball="baseball"
+  drag={true}
+  strobe={0.3}
+  caption="The dashed magenta curve is the parabola that never happens. Watch the horizontal panel: x(t) was a straight line and is now visibly bending over — the ball keeps only about half its sideways speed. Then find the angle that maximises the range: it is not 45° any more, it is about 41°."
+/>
+
+## The thing that quietly broke
+
+Drag does not just shorten the flight. Turn it on in the panel above and look at the level
+rule between the launched ball and the companion.
+
+<Predict
+  id="up-ch3-drag-independence"
+  question="With the air switched on, does the companion ball — same vertical launch, no sideways motion — still stay level with the launched ball?"
+  options={[
+    { key: 'a', misconception: 'drag-preserves-independence', label: 'Yes. Gravity still acts only vertically, so the vertical stories still match', why: 'Gravity does, but drag does not. Drag points backwards along the velocity and its size depends on the total speed, so a ball that is also moving sideways feels a bigger drag force, and part of that bigger force is vertical. The two vertical stories come apart.' },
+    { key: 'b', label: 'No — and that is because drag depends on the total speed, which mixes the two stories together', why: "Correct. The moment the vertical acceleration depends on how fast the ball is going sideways, the two motions are no longer separate problems. Independence was a property of the drag-free case, not a law of projectiles — and it is exactly why the parabola has a closed-form range and the real flight has to be integrated step by step." },
+    { key: 'c', misconception: 'horizontal-velocity-dies', label: 'No, because the sideways motion dies away and the ball drops vertically at the end', why: 'The sideways speed does decay with drag — it ends at about half its launch value. But it never dies: the ball is still moving 12 m/s sideways when it lands, and the flight ends at 57° below horizontal, not at 90°.' },
+  ]}
+  correct="b"
+/>
+
+<Recall id="up-ch3-recall-drag" concept="terminal-velocity-preview">
+  <div slot="front">Name two things that are true of a drag-free projectile and false once air resistance is switched on.</div>
+
+  Any two of: the climb and the descent take the same time; it lands at the speed and angle
+  it left at; the horizontal velocity is constant; 45° gives the greatest range; the
+  horizontal and vertical motions are independent. All five come from the same source — a
+  drag force that points along the velocity and scales with the total speed, which breaks
+  both the symmetry in time and the separation of the two stories.
+</Recall>
+
+## What to carry forward
+
+- A projectile is **two one-dimensional problems sharing a stopwatch**. Solve the vertical
+  one for the timing, then hand that time to the horizontal one for the distance.
+- **Nothing horizontal ever happens** without air: constant sideways velocity, straight
+  $x(t)$, evenly spaced strobes, and a landing time that does not care how hard you threw.
+- The picture to keep: **two balls falling level with each other**, one of them also
+  travelling sideways at a steady rate.
+- And the honest edge: the parabola is a model with a speed limit. Compare the flight to
+  the object's terminal speed before you trust it.
+
+Next: what makes the arrow point where it points. Chapter 4 stops describing motion and
+starts asking what changes it.

@@ -21,7 +21,9 @@ Per-path briefs, which add house rules on top of this file:
 
 - **[`docs/university-physics-brief.md`](docs/university-physics-brief.md)** — required
   before writing anything under `content/paths/university-physics/`. Its companion map is
-  [`docs/university-physics-curriculum.md`](docs/university-physics-curriculum.md).
+  [`docs/university-physics-curriculum.md`](docs/university-physics-curriculum.md), and
+  [`docs/orchestrator-university/CONTINUE-HERE.md`](docs/orchestrator-university/CONTINUE-HERE.md)
+  is the handoff note: current state, unfinished work already on disk, and open bugs.
 
 Both are queues. Ship the thing, delete the entry, same commit.
 

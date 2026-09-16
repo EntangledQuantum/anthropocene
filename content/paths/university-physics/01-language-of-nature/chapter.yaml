@@ -3,4 +3,4 @@ question: 'If I change the units, which drawings stay the same?'
 blurb: >-
   Physics is a language before it is a set of formulas. Quantities have dimension, some of them have direction, and combining them is not decoration. An arrow that does not move when the grid under it rotates is the picture this chapter is for.
 order: 1
-status: 'draft'
+status: 'live'

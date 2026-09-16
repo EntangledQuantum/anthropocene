@@ -19,7 +19,7 @@ them rather than duplicating.
 | World | Component | Chapters | Status |
 |---|---|---|---|
 | Linked x/v/a graphs | `LinkedGraphs` | 2, 3, 14 | **built** |
-| Free-body diagram builder | `FbdBuilder` | 4, 5, 11 | to build |
+| Free-body diagram builder | `FbdBuilder` | 4, 5, 11 | **built** |
 | Potential track + total-E line | `PotentialTrack` | 7, 14, 30, 40 | **built** |
 | Field arrows + equipotentials | `FieldCanvas` | 13, 21, 22, 23, 27, 28 | **built** |
 | Two-source ripple tank | `RippleTank` | 15, 16, 35, 36 | to build |
@@ -33,7 +33,7 @@ Tick when the chapter has its two flagship lessons live.
 - [ ] 01 Language of Nature — dimension, vectorhood
 - [~] 02 Motion Along a Line — *"Three graphs that must agree" live*
 - [ ] 03 Motion in Two and Three Dimensions
-- [ ] 04 Newton's Laws
+- [x] 04 Newton's Laws — *"Nothing has to keep it going" and "Two bodies, two forces, one interaction" live*
 - [ ] 05 Applying Newton's Laws
 - [ ] 06 Work and Kinetic Energy
 - [ ] 07 Potential Energy and Conservation

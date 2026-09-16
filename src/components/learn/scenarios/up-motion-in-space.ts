@@ -156,8 +156,11 @@ const steadySpeedAngle: TuneScenario = {
         { label: 'aₜ', value: `${r.tangential.toFixed(3)} m/s²` },
         { label: 'aₙ', value: `${Math.abs(r.normal).toFixed(3)} m/s²` },
         {
+          // sin(180°) is 1e-16 rather than 0 in floating point, so "no steering
+          // at all" arrives as an astronomically large radius rather than as
+          // Infinity. Anything past a kilometre is a straight line here.
           label: 'turn radius',
-          value: Number.isFinite(r.turnRadius) ? `${r.turnRadius.toFixed(1)} m` : 'straight',
+          value: r.turnRadius < 1e3 ? `${r.turnRadius.toFixed(1)} m` : 'straight',
         },
       ],
     };

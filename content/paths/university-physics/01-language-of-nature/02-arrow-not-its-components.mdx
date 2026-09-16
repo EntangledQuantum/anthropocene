@@ -1,0 +1,203 @@
+---
+title: 'A vector is not its components'
+blurb: 'Turn the grid under a fixed arrow and watch every number you wrote down change while nothing physical moves — then find the quantities that refuse to.'
+order: 2
+tier: 'foundation'
+minutes: 14
+teaches:
+  - 'vector-components'
+  - 'unit-vector-basis'
+  - 'dot-product'
+requires: []
+status: 'live'
+updated: 2026-09-12
+---
+
+Two people measure the same gust of wind.
+
+One lays her axes along the road, because that is the direction her car is going. The other
+uses north and east, because that is what the weather station reports. They write down four
+numbers between them and not one of the four agrees. Neither of them has made a mistake.
+
+So: what did the wind do, and which of their numbers is a fact about it?
+
+<Predict
+  id="up-ch1-turn-the-grid"
+  question="An arrow is pinned in place. You turn the grid underneath it — the arrow itself does not move a pixel. What happens?"
+  options={[
+    { key: 'a', misconception: 'vector-is-its-components', label: "Nothing happens. The components are the arrow, so they cannot change unless it does", why: "This is the assumption worth killing early. The two numbers are a measurement of the arrow against a grid you chose, and you are about to watch every one of them change while the arrow sits still. If the numbers can change without the arrow moving, the numbers are not the arrow." },
+    { key: 'b', misconception: 'magnitude-is-sum-of-components', label: "The components change, and the arrow gets longer or shorter with them", why: "The components do change. The length does not — turn the grid to any angle and it reads the same to the last digit. The tell is that the SUM of the components changes while the length does not, which is a hint that they combine by Pythagoras rather than by addition." },
+    { key: 'c', label: "The components change; the length and the angle to the other arrow do not", why: "Correct, and it is the whole chapter. Turning the grid changes the DESCRIPTION and nothing else. What is physically true about the arrow — how long it is, how it sits relative to everything else — cannot possibly depend on how you drew your axes." },
+    { key: 'd', misconception: 'dot-depends-on-axes', label: "The components change, and so does the dot product with the other arrow — it is built out of components, after all", why: "A genuinely reasonable inference, and false. Every term in that sum changes when the grid turns, and the sum does not: recompute it from the new numbers and you get the old answer to the last digit. Watch the drift column — it never leaves the sixteenth decimal place." },
+  ]}
+  correct="c"
+>
+
+<VectorFrame
+  vectors={[
+    { key: 'a', label: 'A', x: 4, y: 3, accent: 'cyan' },
+    { key: 'b', label: 'B', x: 1, y: 4, accent: 'magenta' },
+  ]}
+  showComponents={true}
+  showInvariants={true}
+  caption="Drag the angle slider. The left column is what depends on your grid; the right column is what does not, recomputed each frame from the components you can see. Then press turn arrow and do it again — now the same slider moves A itself, and the right column stops holding still."
+/>
+
+</Predict>
+
+Do the two modes back to back. It is the most important minute in this chapter.
+
+**Turn grid**: the components of A swing through their whole range, from 5 down through zero
+and out to −5. The length stays 5. The angle between A and B stays 39.1°. The dot product
+stays 16, and the little drift readout sits at around $10^{-16}$ — that is floating-point
+roundoff, not physics, which is the honest way of saying *exactly unchanged*.
+
+**Turn arrow**: the components do exactly the same thing. But now the dot product moves, the
+angle moves, the signed area moves. Something real happened this time.
+
+The left column looks identical in the two modes. Only the right column can tell you which
+one was a change of the world and which was a change of your handwriting. That is why the
+components are the weakest description of a vector you can carry around.
+
+## Components are two arrows that add up
+
+There is nothing mysterious about where the numbers come from. Pick two perpendicular
+arrows of length one — call them $\hat e_1$ and $\hat e_2$ — and every arrow in the plane
+is some amount of the first plus some amount of the second. Those two amounts are the
+components.
+
+<VectorFrame
+  vectors={[{ key: 'a', label: 'A', x: 4, y: 3, accent: 'cyan' }]}
+  showBasis={true}
+  showComponents={false}
+  allowTurnToggle={false}
+  caption="The two dashed arrows are the components as arrows: go this far along the first basis direction, then this far along the second, and you arrive at the tip of A. Turn the grid and watch the pair of them swing wildly around a tip that never moves."
+/>
+
+Watch the chain, not the numbers. Two arrows that thrash about, and a sum that is nailed to
+the spot. The pair is a *route* to the tip of A, and there are infinitely many routes — one
+for every angle of the grid. A is the destination, not the route.
+
+This is also why there is no such thing as the right axes. You place them. On an inclined
+plane you will place one along the slope, because it makes a component of gravity vanish and
+the algebra collapses. On a circular orbit you will place one along the velocity. Nothing in
+nature is holding a set of axes for you.
+
+<Classify
+  id="up-ch1-survives-the-turn"
+  prompt="Turn the grid under a pair of fixed arrows. Sort each quantity by whether its numerical value changes."
+  buckets={[
+    { key: 'changes', label: 'changes with the grid', accent: 'magenta' },
+    { key: 'survives', label: 'survives the turn', accent: 'ok' },
+  ]}
+  items={[
+    { key: 'ax', label: 'The first component of A', bucket: 'changes', why: 'It is a measurement against one axis, and you just moved that axis.' },
+    { key: 'sign', label: 'The sign of the second component of A', bucket: 'changes', why: 'Turn far enough and it flips, with nothing physical happening. A negative component means the other way along that axis — it never means smaller.' },
+    { key: 'len', label: 'The length of A', bucket: 'survives', why: 'The distance from tail to tip is a property of the arrow. Pythagoras on any pair of perpendicular components returns the same 5.' },
+    { key: 'angle', label: 'The angle between A and B', bucket: 'survives', why: 'Both arrows are held fixed, so how they sit relative to each other cannot depend on the grid you drew underneath them.' },
+    { key: 'dot', label: 'The dot product of A and B', bucket: 'survives', why: 'Every term in the sum changes and the total does not. This is the reason the work done by a force is a physical fact rather than a fact about your sketch.' },
+    { key: 'sum', label: 'The two components of A added together', bucket: 'changes', why: 'It reads 7 on the square grid and 5 on the grid aligned with A. That it moves at all is proof it is not measuring anything about the arrow.' },
+    { key: 'area', label: 'The area of the parallelogram A and B span', bucket: 'survives', why: 'An area between two fixed arrows is as physical as a length. It is the number the cross product reports when you meet it, and it survives for the same reason.' },
+  ]}
+  explanation="The pattern to carry: anything built only from the arrows survives; anything that mentions a particular axis does not. Length, angle, dot product and spanned area are statements about the arrows. Components, their signs and their sum are statements about your choice."
+/>
+
+## What the component does as you turn
+
+You have felt it. Now commit to the shape.
+
+<SketchCurve
+  id="up-ch1-component-sketch"
+  scenario="up-ch1-component-vs-angle"
+  prompt="Take the arrow A from above and turn the grid all the way round, from 0° to 360°. Sketch its first component the whole way. On the square grid it starts at 4."
+  hint="There is an angle where the first axis lies exactly along A. What does the component read there — and what does the other component read?"
+  explanation="A cosine of amplitude 5, not 4. The curve rises ABOVE its starting value, peaking at exactly the length of A when the first axis lies along it — and at that angle the second component is zero, because the whole arrow has been loaded onto one axis. Ninety degrees later the component passes through zero, and the arrow lies entirely on the other axis. The amplitude is the one thing about this curve that is a fact about A: every grid you could choose gives a component somewhere between −5 and 5."
+/>
+
+The peak of that curve is worth naming. There is always an angle at which one component
+carries the entire arrow and the other reads zero. A component can be as large as the arrow
+— when the axis is lined up with it — and it can never be larger. Both facts are the
+amplitude of your cosine.
+
+<Recall id="up-ch1-recall-components" concept="vector-components">
+  <div slot="front">A velocity has components $(4, 3)$ on one grid and $(5, 0)$ on another. How many velocities are being described, and how would you tell?</div>
+
+  One. Both readings have magnitude 5, and the second grid is simply the first turned by
+  36.87° so that one axis lies along the motion. The components are two different
+  *measurements* of a single arrow against two different grids.
+
+  The way to tell is to compute something that does not mention an axis — the magnitude
+  here, or the dot product with some other fixed arrow. If those agree, the descriptions
+  are of the same object.
+</Recall>
+
+## The dot product is a component in a well-chosen frame
+
+Here is the payoff of everything above.
+
+$\vec A\cdot\vec B$ is usually introduced as $A_xB_x + A_yB_y$, which makes it look like a
+piece of grid-dependent bookkeeping. It is the opposite of that. Turn the grid so that the
+first axis lies along B, and the sum collapses: B has no second component at all, so only
+one term survives, and it reads
+
+$$\vec A\cdot\vec B = |\vec B| \times (\text{how much of } \vec A \text{ lies along } \vec B)$$
+
+The dot product is asking one question — *how much of this one points along that one* — and
+the component sum is just the answer written in a frame that has not been chosen well.
+
+<VectorFrame
+  vectors={[
+    { key: 'a', label: 'A', x: 4, y: 3, accent: 'cyan' },
+    { key: 'b', label: 'B', x: 1, y: 4, accent: 'magenta' },
+  ]}
+  showComponents={false}
+  showProjection={true}
+  allowTurnToggle={false}
+  caption="The thick green segment is the part of A that lies along B, with the dashed line showing what was thrown away. Turn the grid as far as you like: the green segment does not move either, because it was never about the grid. Press align to B and read the first component of A."
+/>
+
+<Tune
+  id="up-ch1-align-tune"
+  scenario="up-ch1-align-with-b"
+  prompt="Turn the grid until the first component of A equals how much of A lies along B — the dashed magenta line. Nothing about either arrow is changing; you are only choosing where to measure from."
+  hint="You want the first axis pointing the same way as B. B is one across and four up."
+  explanation="At 75.96° the first axis lies along B, and the component curve touches the line. In that frame the dot product is nothing but this component multiplied by the length of B — 3.881 × 4.123, which is 16 to the digits shown, and is exactly the 16 the ordinary component sum gives on the square grid and on every other grid. The curve is a cosine, so it touches the line at exactly one angle in the range and then falls away — there is one frame in which the dot product is a single component, and it is the frame aligned with B."
+/>
+
+Two consequences, both of which you will use for the rest of physics.
+
+If A is perpendicular to B, that green segment has zero length and the dot product is zero.
+A force at right angles to the motion does **no work**, however hard it pulls — which is why
+a satellite in a circular orbit needs no engine, and why the normal force never appears in
+an energy budget.
+
+And because the dot product survives every turn of the grid, the work done by a force is a
+physical quantity rather than an artefact of how somebody drew the axes. If it were not
+invariant, energy conservation would depend on your sketch.
+
+<Recall id="up-ch1-recall-dot" concept="dot-product">
+  <div slot="front">Why can a dot product not be undone — that is, why can you not recover $\vec B$ from $\vec A$ and the number $\vec A\cdot\vec B$?</div>
+
+  Because it throws information away. It returns a single number where two arrows went in,
+  keeping only how much of one lies along the other and discarding everything perpendicular.
+
+  Every arrow whose tip sits anywhere on a particular line perpendicular to $\vec A$ gives
+  the same dot product with $\vec A$. There are infinitely many of them, so there is nothing
+  to divide back out — which is also why "the dot product is how you multiply vectors" is a
+  misleading thing to carry around.
+</Recall>
+
+## What to carry forward
+
+- An arrow is **what it is**; its components are what one grid says about it. Turn the grid
+  and every number changes while nothing moves.
+- **Nothing in nature holds the axes.** Choosing them along a slope, along a force, or along
+  the motion is free, and a good choice makes a component vanish.
+- The things that **survive a turn** — length, angle, dot product, spanned area — are the
+  physical statements. When you want to know whether two descriptions are of the same
+  situation, compute one of those.
+- The dot product is **how much of this lies along that**, and it is a single component in
+  the frame you would have chosen anyway.
+
+Next: the same arrow turns up as a displacement, a velocity, a force and a field, and
+turning the grid becomes the quietest tool you own for making a hard problem easy.
