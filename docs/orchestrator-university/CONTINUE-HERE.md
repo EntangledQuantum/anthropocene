@@ -123,7 +123,21 @@ doubled. **MDX:** write `≤`/`≥` in prose, never `<=`/`>=`.
 
 ## 5. Open bugs
 
-### 5.1 One lesson has zero interactivity — highest priority
+### 5.1 Hydration failure — repaired locally, 2026-09-16
+
+**Verified repair:** `Predict.tsx` now renders its payoff inside a `hidden` container
+before commitment rather than omitting the children. Astro had placed its first
+`client:visible` bootstrap script in the unused-slot `<template>`, where browsers never
+execute it. No visibility observer was registered anywhere on the page. This was not an
+IntersectionObserver or hidden-browser failure.
+
+Static-build Chromium verification passes: payoff hidden before commitment, visible and
+hydrated afterward, speed rises under leftward acceleration, Tune accepts 90°, and the
+below-fold RankOrder hydrates after scrolling. No browser page errors; 919 tests and
+build pass. Regression: `npx tsx scripts/check-lesson-hydration.ts` against a static preview
+at `http://127.0.0.1:4322/anthropocene` (or pass an alternate base URL).
+
+The original incident notes follow for provenance; the diagnosis below is superseded.
 
 `content/paths/university-physics/03-motion-in-space/01-acceleration-need-not-point-where-you-are-going.mdx`
 

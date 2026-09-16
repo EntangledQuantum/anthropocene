@@ -159,8 +159,10 @@ export default function Predict({
         )}
       </Panel>
 
-      {revealed && children && (
-        <div style={{ marginTop: 4 }}>
+      {/* Keep slot content in the DOM: Astro may put its first hydration
+          directive script here. An unused-slot template would make it inert. */}
+      {children && (
+        <div hidden={!revealed} style={{ marginTop: 4 }}>
           <div className="hud-label" style={{ margin: '14px 0 2px', color: 'var(--color-magenta)' }}>
             ── now watch what actually happens
           </div>
