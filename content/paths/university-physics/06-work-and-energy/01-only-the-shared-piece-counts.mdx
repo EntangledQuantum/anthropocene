@@ -1,0 +1,154 @@
+---
+title: 'Only the shared piece counts'
+blurb: 'Make a strong force do no work, then decide why positive work by a pull need not increase speed.'
+order: 1
+tier: 'foundation'
+minutes: 12
+teaches: ['mechanical-work', 'work-energy-theorem']
+requires: ['vector-components', 'newtons-second-law']
+runtime: 'none'
+status: 'live'
+updated: 2026-09-16
+---
+
+A pull stays strong while a block travels four metres to the right. Can you turn the
+pull so that **none of it contributes to that journey** — without making it weaker?
+
+Keep the magnitude at 60 N. Drag the force tip until the thick horizontal piece disappears.
+Watch the work readout, not the length of the pull.
+
+<WorkArrows
+  distance={4}
+  force={60}
+  angleDeg={35}
+  maxForce={120}
+  agent="the pull"
+  caption="Find zero work with a nonzero force. Then double its magnitude without leaving that direction. Does the zero survive?"
+/>
+
+<Predict
+  id="up-ch6-shared-piece-sign"
+  question="Keep the displacement pointing right. You found the zero-work direction. If you turn the same force farther, toward the left, what happens to its work?"
+  options={[
+    { key: 'positive', misconception: 'up-work-uses-whole-force', label: 'It grows positive again: the force is still large', why: 'Its length stays large, but its horizontal piece now points against the displacement. In the diagram, move the angle past 90°: the signed area falls below zero.' },
+    { key: 'negative', label: 'It becomes negative: the shared piece points backward', why: 'The force has a component against the rightward displacement. Try 180°: the 60 N force contributes −240 J over 4 m, not +240 J.' },
+    { key: 'impossible', misconception: 'up-negative-work-is-invalid', label: 'The work formula stops applying beyond a right angle', why: 'Nothing breaks at 90°. The parallel piece passes continuously through zero and changes direction. Its minus sign records opposition.' },
+  ]}
+  correct="negative"
+/>
+
+Test your answer above. Inspect half the journey, then the whole journey. The area doubles;
+the force does not.
+
+## Name the piece you moved
+
+The **work** of a constant force is its signed parallel component times displacement:
+
+$$W = F_{\parallel}d = Fd\cos\theta = \vec F\cdot\Delta\vec r.$$
+
+One newton acting along one metre contributes one **joule**, $1\,\mathrm J=1\,\mathrm{N\,m}$.
+The rectangle's height is $F_{\parallel}$, its width is $d$, and its signed area is $W$.
+A perpendicular force has zero height, however long its arrow.
+
+<Recall id="up-ch6-recall-shared-piece" concept="mechanical-work">
+  <div slot="front">A force is large but its work is zero. What two pictures could explain that?</div>
+
+  No displacement at all, or a force perpendicular to the displacement. In either picture
+  there is no shared piece to accumulate. Mechanical work is not a measurement of how tired
+  the person applying the force feels.
+</Recall>
+
+## A positive entry is not the total
+
+Now the block is already moving right. Keep the 60 N pull horizontal and add a backward
+brake. The fixed track prevents vertical motion; its transverse reaction and gravity do
+zero work.
+
+<Predict
+  id="up-ch6-pull-is-not-net"
+  question="The pull does positive work over the next four metres. Must the block finish faster?"
+  options={[
+    { key: 'yes', misconception: 'up-individual-work-is-net-work', label: 'Yes — positive work means a speed increase', why: 'That conclusion needs positive net work. You have counted the pull but not the brake. A stronger brake can remove more than the pull supplies.' },
+    { key: 'depends', label: 'Not necessarily — compare the brake’s negative work with the pull’s positive work', why: 'Equal and opposite contributions leave the motion-energy unchanged. A stronger brake reduces it; a weaker brake allows it to increase.' },
+    { key: 'none', misconception: 'up-zero-net-work-means-no-work', label: 'Only if the brake does no work at all', why: 'The brake can do negative work while the total remains positive. The question is which contribution is larger, not whether one disappears.' },
+  ]}
+  correct="depends"
+/>
+
+**Make the final speed equal the starting speed.** Change only the brake. Then try a
+slightly stronger brake and inspect the same displacement. Can the pull's work stay
+positive while the motion-energy falls?
+
+<WorkArrows
+  distance={4}
+  force={60}
+  angleDeg={0}
+  maxForce={120}
+  agent="the pull"
+  showLedger={true}
+  brake={30}
+  mass={10}
+  speed0={6}
+  caption="Compare the sum of the two work entries with the measured change in kinetic energy. The speed comes from integrating Newton’s law; the work comes from force × actual displacement."
+/>
+
+The motion-energy is **kinetic energy**, $K=\tfrac12mv^2$. It depends on speed, not direction.
+For this particle, adding every force's signed work gives the change in that energy:
+
+$$W_{\mathrm{net}} = \sum_i W_i = K_f-K_i.$$
+
+That is the **work–energy theorem**: another accounting of Newton's law, not an extra force.
+At a 60 N brake, the two entries are +240 J and −240 J. Their sum is zero while neither
+entry is zero.
+
+## Read the same motion another way
+
+Change the numbers: a 10 kg cart starts at 6 m/s, with a **20 N forward pull and a 40 N
+backward brake**, both constant. It still travels four metres forward.
+
+<SketchCurve
+  id="up-ch6-sketch-kinetic-account"
+  scenario="up-ch6-kinetic-energy-with-brake"
+  prompt="Sketch kinetic energy against distance, starting at the marked 180 J. Does the positive-work pull make the curve rise, stay level, or fall?"
+  hint="For every extra metre, add the pull’s work and the brake’s work with their signs. The same amount is added each metre."
+  explanation="A straight decline from 180 J to 100 J. Each metre adds +20 J and −40 J: a net loss of 20 J. The cart keeps moving forward while slowing. Negative work is a decrease in kinetic energy, not negative kinetic energy."
+/>
+
+Back in the two-force diagram, try a brake strong enough to stop the block before four
+metres. The reachable path ends at the stop. You cannot keep subtracting energy along a
+stretch the block never reaches.
+
+## Same arrows, different clothes
+
+<Classify
+  id="up-ch6-classify-hand-work"
+  prompt="You support a box with an upward hand force. Sort the work done by your hand on the box — not your bodily effort, and not the net work."
+  buckets={[
+    { key: 'positive', label: 'Positive work' },
+    { key: 'zero', label: 'Zero work', accent: 'iris' },
+    { key: 'negative', label: 'Negative work', accent: 'magenta' },
+  ]}
+  items={[
+    { key: 'lower', label: 'Lower the box steadily', bucket: 'negative', why: 'Your hand points up while displacement points down. Opposite arrows give negative work by the hand.' },
+    { key: 'carry', label: 'Carry the box horizontally at fixed height', bucket: 'zero', why: 'The upward hand force is perpendicular to the horizontal displacement. Its shared piece is zero.' },
+    { key: 'lift', label: 'Lift the box steadily', bucket: 'positive', why: 'The hand force and displacement both point up. Gravity contributes negative work, so steady speed does not make the hand’s work zero.' },
+    { key: 'hold', label: 'Hold the box motionless', bucket: 'zero', why: 'There is force but no displacement. Your muscles can expend energy without doing mechanical work on the stationary box.' },
+  ]}
+  explanation="During a steady lift or lowering, the hand and gravity do opposite signed work. Net work is zero because the speed stays constant. During horizontal carriage, each vertical force separately does zero work."
+/>
+
+<Recall id="up-ch6-recall-net-account" concept="work-energy-theorem">
+  <div slot="front">A pull does +100 J of work, but the particle finishes at its original speed. What can you infer about the other forces?</div>
+
+  Together they do −100 J. Equal starting and ending speed means $\Delta K=0$, so the
+  signed work contributions must sum to zero. You cannot infer that each force does no work.
+</Recall>
+
+## What to carry forward
+
+Keep the two arrows: **only their shared piece counts, with its sign**.
+Keep the whole account: **net** work changes kinetic energy; one force's work is only one entry.
+Next, let the force change along the path — the rectangle becomes a signed area under a curve.
+
+Physics references: [OpenStax §7.1, Work](https://openstax.org/books/university-physics-volume-1/pages/7-1-work)
+and [§7.3, Work–Energy Theorem](https://openstax.org/books/university-physics-volume-1/pages/7-3-work-energy-theorem).

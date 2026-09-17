@@ -1,396 +1,211 @@
-import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
-import { splitForWork } from '../../lib/physics/work.ts';
-import { mag2, type Vec2 } from '../../lib/physics/vectors.ts';
-import { Button, Panel, Readout, ReadoutRow, useAnimationFrame } from './controls.tsx';
+import { useEffect, useId, useMemo, useRef, useState } from 'react';
+import { constantForceTrial, splitForWork, workOfConstantForce } from '../../lib/physics/work.ts';
+import type { Vec2 } from '../../lib/physics/vectors.ts';
+import { Button, Panel } from './controls.tsx';
 
-/* ── the two arrows ────────────────────────────────────────────────────────
-   Chapter 6's reusable picture: a force arrow and a displacement arrow, with
-   only the shared piece counting.
-
-   The learner drags the tip of the force. The projection onto the displacement
-   is drawn as a solid bar on the ground and *simultaneously* as the height of a
-   rectangle on the F-vs-x panel below, on a fixed axis, so the bar and the
-   rectangle are literally the same length. Two views of one number — rotate the
-   force toward the vertical and watch both collapse together while the arrow
-   itself stays enormous.
-
-   Running the block sweeps the rectangle in from the left, so the work is not a
-   printed number but an area that fills. The sweep is driven by writing
-   attributes onto refs inside the frame loop; React state changes at ~8 Hz for
-   the readouts only. Driving it through setState would re-run the effect every
-   frame and reset the sweep. That has happened in this repo before.
-
-   Reusable wherever a lesson needs "which part of this force is paying":
-   gravity on a ramp (Ch. 7), the electric force along a path (Ch. 23), the
-   magnetic force that famously never pays at all (Ch. 27).
-   ──────────────────────────────────────────────────────────────────────── */
-
+/** One editable force; its projection, signed area, and work cannot disagree.
+ *  The distance control is a path inspector, NOT a time animation. In ledger
+ *  mode the speed/K account is integrated independently with Newton's law.
+ *  Reusable for any constant-force / straight-path projection question. */
 export interface WorkArrowsProps {
-  /** Length of the displacement, in metres. */
   distance?: number;
-  /** Initial force magnitude, in newtons. */
   force?: number;
-  /** Initial angle of the force above the displacement, in degrees. */
   angleDeg?: number;
-  /** Largest force the learner can drag out, and the full scale of the F axis. */
   maxForce?: number;
-  /** Figure mode: the arrow is fixed and the block cannot be run. */
   locked?: boolean;
-  /** Show the F-vs-x panel where the work is an area. */
   showArea?: boolean;
-  /** Words for the story, e.g. "rope" — used in the readout labels. */
   agent?: string;
   caption?: string;
+  /** Add a backward force and an independently measured kinetic-energy account. */
+  showLedger?: boolean;
+  brake?: number;
+  mass?: number;
+  speed0?: number;
 }
 
-const PAD = { l: 56, r: 18, t: 14 };
-const STAGE_H = 250;
-const AREA_H = 150;
-const SWEEP_SECONDS = 2.2;
+const fmt = (v: number, dp = 1) => Math.abs(v) < 0.0005 ? '0' : v.toFixed(dp);
+const INK = 'var(--color-ink)';
+const SOFT = 'var(--color-ink-soft)';
+// Token-derived orchid step: sRGB 85% orchid + 15% surface = #b36cca.
+// The dataviz validator passes this step on the project's dark surface.
+const FORCE = 'color-mix(in srgb, var(--color-orchid) 85%, var(--color-surface))';
 
-const fmt = (v: number, dp = 1) => (Math.abs(v) < 0.05 ? '0' : v.toFixed(dp));
-
-/** An arrow as a path plus a head, in screen pixels. */
-function Arrow({
-  x1, y1, x2, y2, color, width = 3, dash, opacity = 1, head = 9,
-}: {
-  x1: number; y1: number; x2: number; y2: number;
-  color: string; width?: number; dash?: string; opacity?: number; head?: number;
+function Arrow({ x1, y1, x2, y2, color = INK, width = 2, dash }: {
+  x1: number; y1: number; x2: number; y2: number; color?: string; width?: number; dash?: string;
 }) {
-  const dx = x2 - x1;
-  const dy = y2 - y1;
-  const len = Math.hypot(dx, dy);
-  if (len < 1) return null;
-  const ux = dx / len;
-  const uy = dy / len;
-  const bx = x2 - ux * head;
-  const by = y2 - uy * head;
-  const px = -uy * head * 0.52;
-  const py = ux * head * 0.52;
-  return (
-    <g opacity={opacity}>
-      <line x1={x1} y1={y1} x2={bx} y2={by} stroke={color} strokeWidth={width} strokeDasharray={dash} strokeLinecap="round" />
-      <path d={`M${x2},${y2}L${bx + px},${by + py}L${bx - px},${by - py}Z`} fill={color} />
-    </g>
-  );
+  const length = Math.hypot(x2 - x1, y2 - y1);
+  if (length < 0.5) return null;
+  const ux = (x2 - x1) / length;
+  const uy = (y2 - y1) / length;
+  const h = Math.min(9, length * 0.45);
+  const bx = x2 - ux * h;
+  const by = y2 - uy * h;
+  return <g>
+    <line x1={x1} y1={y1} x2={bx} y2={by} stroke={color} strokeWidth={width} strokeDasharray={dash} />
+    <path d={`M${x2},${y2}L${bx - uy * h / 2},${by + ux * h / 2}L${bx + uy * h / 2},${by - ux * h / 2}Z`} fill={color} />
+  </g>;
 }
 
 export default function WorkArrows({
-  distance = 4,
-  force = 60,
-  angleDeg = 35,
-  maxForce = 120,
-  locked = false,
-  showArea = true,
-  agent = 'the force',
-  caption,
+  distance = 4, force = 60, angleDeg = 35, maxForce = 120,
+  locked = false, showArea = true, agent = 'the pull', caption,
+  showLedger = false, brake = 30, mass = 10, speed0 = 6,
 }: WorkArrowsProps) {
-  const initial = useMemo<Vec2>(() => {
-    const th = (angleDeg * Math.PI) / 180;
-    return [force * Math.cos(th), force * Math.sin(th)];
-  }, [force, angleDeg]);
-
-  const [F, setF] = useState<Vec2>(initial);
-  const [width, setWidth] = useState(760);
-  const [running, setRunning] = useState(false);
-  const [swept, setSwept] = useState(0); // metres covered, at ~8 Hz
-
-  useEffect(() => setF(initial), [initial]);
-
+  const uid = useId();
+  const [magnitude, setMagnitude] = useState(force);
+  const [angle, setAngle] = useState(angleDeg);
+  const [brakeForce, setBrakeForce] = useState(brake);
+  const [fraction, setFraction] = useState(1);
+  const [hoverX, setHoverX] = useState<number | null>(null);
+  const [texture, setTexture] = useState(false);
+  const [width, setWidth] = useState(680);
   const wrapRef = useRef<HTMLDivElement>(null);
   const svgRef = useRef<SVGSVGElement>(null);
-  const blockRef = useRef<SVGGElement>(null);
-  const fillRef = useRef<SVGRectElement>(null);
-  const sim = useRef({ s: 0, lastReadout: 0 });
-
+  const dragging = useRef(false);
   useEffect(() => {
     const el = wrapRef.current;
     if (!el) return;
-    const ro = new ResizeObserver(([e]) => setWidth(e.contentRect.width));
-    ro.observe(el);
-    setWidth(el.getBoundingClientRect().width);
-    return () => ro.disconnect();
+    const observer = new ResizeObserver(([entry]) => setWidth(Math.max(260, entry.contentRect.width)));
+    observer.observe(el);
+    return () => observer.disconnect();
   }, []);
 
-  /* ── geometry ─────────────────────────────────────────────────────────── */
-  const plotW = Math.max(180, width - PAD.l - PAD.r);
-  const mToPx = plotW / distance;
-  const nToPx = (STAGE_H * 0.62) / maxForce;
-  const groundY = PAD.t + STAGE_H - 56;
-  const sx = useCallback((m: number) => PAD.l + m * mToPx, [mToPx]);
+  const F = useMemo<Vec2>(() => [
+    magnitude * Math.cos(angle * Math.PI / 180),
+    magnitude * Math.sin(angle * Math.PI / 180),
+  ], [angle, magnitude]);
+  const split = useMemo(() => splitForWork(F, [distance, 0]), [F, distance]);
+  const trial = useMemo(() => showLedger ? constantForceTrial({
+    applied: F, brake: brakeForce, distance, mass, speed0,
+  }) : null, [showLedger, F, brakeForce, distance, mass, speed0]);
+  const reachable = trial?.samples.at(-1)?.x ?? distance;
+  const requestedX = fraction * reachable;
+  const sample = trial?.samples.find(s => s.x >= requestedX) ?? trial?.samples.at(-1);
+  const inspected = sample?.x ?? requestedX;
+  const inspectedSplit = splitForWork(F, [inspected, 0]);
+  const work = inspectedSplit.work;
+  const stopped = trial?.run.outcome === 'turned-back';
+  const workColor = split.sign === 'zero' ? 'var(--color-ink-faint)'
+    : split.sign === 'positive' ? 'var(--color-cyan)' : 'var(--color-magenta)';
 
-  const d: Vec2 = useMemo(() => [distance, 0], [distance]);
-  const split = useMemo(() => splitForWork(F, d), [F, d]);
-  const magnitude = mag2(F);
-  const angle = (split.angle * 180) / Math.PI;
+  // Force geometry has its own labelled N scale, never shares the metre scale.
+  // Centre the origin so backward arrows have as much room as forward arrows.
+  const ax = width / 2;
+  const ay = 145;
+  const radius = Math.min(95, (width - 70) / 2);
+  const scale = radius / maxForce;
+  const tip = { x: ax + F[0] * scale, y: ay - F[1] * scale };
+  const left = 54;
+  const right = width - 26;
+  const sx = (x: number) => left + (right - left) * x / distance;
+  const zero = 413;
+  const sy = (f: number) => zero - 64 * f / maxForce;
+  const areaH = Math.abs(sy(split.fParallel) - zero);
+  const areaY = Math.min(sy(split.fParallel), zero);
 
-  /* ── the sweep ────────────────────────────────────────────────────────── */
-  const reset = useCallback(() => {
-    sim.current.s = 0;
-    setSwept(0);
-    setRunning(false);
-    blockRef.current?.setAttribute('transform', `translate(${sx(0)},${groundY})`);
-    fillRef.current?.setAttribute('width', '0');
-  }, [sx, groundY]);
-
-  useEffect(() => {
-    reset();
-  }, [reset]);
-
-  useAnimationFrame(running, (dt) => {
-    const s = sim.current;
-    s.s = Math.min(distance, s.s + (dt * distance) / SWEEP_SECONDS);
-    blockRef.current?.setAttribute('transform', `translate(${sx(s.s)},${groundY})`);
-    fillRef.current?.setAttribute('width', String(Math.max(0, s.s * mToPx)));
-
-    const now = performance.now();
-    if (now - s.lastReadout > 120 || s.s >= distance) {
-      s.lastReadout = now;
-      setSwept(s.s);
-      if (s.s >= distance) setRunning(false);
-    }
-  });
-
-  /* ── dragging the force ───────────────────────────────────────────────── */
-  const [dragging, setDragging] = useState(false);
-  const tipFrom = useCallback(
-    (e: { clientX: number; clientY: number }): Vec2 => {
-      const rect = svgRef.current!.getBoundingClientRect();
-      const ax = sx(sim.current.s);
-      const fx = (e.clientX - rect.left - ax) / nToPx;
-      const fy = -(e.clientY - rect.top - groundY) / nToPx;
-      const m = Math.hypot(fx, fy);
-      // Clamp to the axis the F panel is drawn on, so the arrow and the
-      // rectangle can never disagree about scale.
-      const k = m > maxForce ? maxForce / m : 1;
-      return [fx * k, fy * k];
-    },
-    [sx, nToPx, groundY, maxForce],
-  );
-
-  useEffect(() => {
-    if (!dragging) return;
-    const move = (e: PointerEvent) => setF(tipFrom(e));
-    const up = () => setDragging(false);
-    window.addEventListener('pointermove', move);
-    window.addEventListener('pointerup', up);
-    return () => {
-      window.removeEventListener('pointermove', move);
-      window.removeEventListener('pointerup', up);
-    };
-  }, [dragging, tipFrom]);
-
-  const nudge = (dTheta: number, dMag: number) => {
-    const th = Math.atan2(F[1], F[0]) + dTheta;
-    const m = Math.max(0, Math.min(maxForce, mag2(F) + dMag));
-    setF([m * Math.cos(th), m * Math.sin(th)]);
+  const reset = () => { setMagnitude(force); setAngle(angleDeg); setBrakeForce(brake); setFraction(1); setHoverX(null); };
+  const drag = (e: React.PointerEvent<SVGCircleElement>) => {
+    if (!dragging.current || !svgRef.current) return;
+    const rect = svgRef.current.getBoundingClientRect();
+    const x = (e.clientX - rect.left) * width / rect.width - ax;
+    const y = ay - (e.clientY - rect.top);
+    setAngle(Math.max(0, Math.min(180, Math.atan2(Math.max(0, y), x) * 180 / Math.PI)));
+    // Preserve magnitude: angle is the experimental variable. Size has its own control.
   };
 
-  /* ── screen positions ─────────────────────────────────────────────────── */
-  const anchorX = sx(0);
-  const tipX = anchorX + F[0] * nToPx;
-  const tipY = groundY - F[1] * nToPx;
-  const parX = anchorX + split.parallel[0] * nToPx;
+  const range = (name: string, value: number, min: number, max: number, step: number, unit: string, change: (v: number) => void) => <label style={{ display: 'grid', gap: 6, color: INK }}>
+    <span>{name} <strong>{fmt(value)} {unit}</strong></span>
+    <input type="range" min={min} max={max} step={step} value={value} disabled={locked} aria-label={name}
+      onChange={e => change(Number(e.target.value))} style={{ width: '100%', accentColor: FORCE }} />
+  </label>;
+  const rows: [string, string][] = [
+    [`${agent}: force along displacement`, `${fmt(split.fParallel)} N`],
+    [`${agent}: work over inspected displacement`, `${fmt(work)} J (${inspectedSplit.sign})`],
+    ...(sample && trial ? [
+      ['Brake work', `${fmt(sample.brakeWork)} J`],
+      ['Net work (sum)', `${fmt(sample.netWork)} J`],
+      ['Measured change in kinetic energy', `${fmt(sample.deltaK)} J`],
+      ['Kinetic energy: start → inspected point', `${fmt(trial.initialK)} → ${fmt(sample.K)} J`],
+      ['Speed: start → inspected point', `${fmt(speed0, 2)} → ${fmt(sample.v, 2)} m/s`],
+    ] as [string, string][] : []),
+  ];
+  const probe = Math.min(hoverX ?? inspected, reachable);
 
-  const positive = split.work > 0;
-  const workColor = split.sign === 'zero'
-    ? 'var(--color-ink-faint)'
-    : positive ? 'var(--color-cyan)' : 'var(--color-magenta)';
-
-  const areaTop = PAD.t + STAGE_H + 8;
-  const areaZero = areaTop + AREA_H / 2;
-  const rectH = Math.abs(split.fParallel) * ((AREA_H / 2) / maxForce);
-  const rectY = positive ? areaZero - rectH : areaZero;
-
-  const totalH = PAD.t + STAGE_H + (showArea ? AREA_H + 30 : 0);
-  const workSoFar = split.fParallel * swept;
-
-  const story =
-    split.sign === 'zero'
-      ? 'no energy changes hands'
-      : positive
-        ? 'energy goes into the block'
-        : 'energy comes back out of it';
-
-  return (
-    <Panel
-      title="one force, one displacement"
-      right={
-        !locked && (
-          <span style={{ display: 'flex', gap: 8 }}>
-            <Button onClick={() => (swept >= distance ? reset() : setRunning((p) => !p))} accent={running ? 'warn' : 'ok'}>
-              {running ? 'pause' : swept >= distance ? 'again' : 'run it'}
-            </Button>
-            <Button onClick={reset} accent="iris">reset</Button>
-          </span>
-        )
-      }
-    >
-      <div ref={wrapRef} style={{ width: '100%' }}>
-        <svg
-          ref={svgRef}
-          width={width}
-          height={totalH}
-          style={{ display: 'block', touchAction: 'none' }}
-          role="img"
-          aria-label={`A block pushed along a ${distance} metre displacement by a ${fmt(magnitude)} newton force at ${fmt(angle)} degrees. The work is ${fmt(split.work)} joules.`}
-        >
-          {/* ground and the displacement arrow */}
-          <line x1={PAD.l - 12} x2={PAD.l + plotW + 12} y1={groundY + 16} y2={groundY + 16} stroke="var(--color-rule-bright)" strokeWidth={1.5} />
-          <Arrow x1={sx(0)} y1={groundY + 34} x2={sx(distance)} y2={groundY + 34} color="var(--color-aqua)" width={3} />
-          <text x={sx(distance / 2)} y={groundY + 54} textAnchor="middle" fill="var(--color-aqua)" style={{ fontSize: 12.5 }}>
-            displacement — {fmt(distance, 1)} m
-          </text>
-
-          {/* where it started and where it ends */}
-          {[0, distance].map((m) => (
-            <line key={m} x1={sx(m)} x2={sx(m)} y1={groundY - 14} y2={groundY + 22} stroke="var(--color-rule-bright)" strokeDasharray="3 4" />
-          ))}
-
-          {/* the block, moved by the frame loop */}
-          <g ref={blockRef} transform={`translate(${sx(0)},${groundY})`}>
-            <rect x={-19} y={-19} width={38} height={35} rx={5} fill="var(--color-raised)" stroke="var(--color-ink-faint)" strokeWidth={1.5} />
-          </g>
-
-          {/* the parallel piece, drawn on the ground where the motion is */}
-          {split.sign !== 'zero' && (
-            <Arrow x1={anchorX} y1={groundY - 1} x2={parX} y2={groundY - 1} color={workColor} width={9} opacity={0.5} head={12} />
-          )}
-          {/* the piece the displacement never sees */}
-          <Arrow
-            x1={parX}
-            y1={groundY}
-            x2={parX}
-            y2={tipY}
-            color="var(--color-ink-ghost)"
-            width={2}
-            dash="5 5"
-          />
-
-          {/* the force itself */}
-          <Arrow x1={anchorX} y1={groundY} x2={tipX} y2={tipY} color="var(--color-orchid)" width={3.5} head={12} />
-          <text x={tipX + 12} y={tipY - 6} fill="var(--color-orchid)" style={{ fontSize: 13 }}>
-            {fmt(magnitude)} N
-          </text>
-
-          {/* the angle between them */}
-          <path
-            d={`M${anchorX + 40},${groundY}A40,40 0 ${split.angle > Math.PI ? 1 : 0},${F[1] >= 0 ? 0 : 1} ${anchorX + 40 * Math.cos(split.angle * (F[1] >= 0 ? 1 : -1))},${groundY - 40 * Math.sin(split.angle * (F[1] >= 0 ? 1 : -1))}`}
-            fill="none"
-            stroke="var(--color-ink-faint)"
-            strokeWidth={1.5}
-          />
-          <text x={anchorX + 52} y={groundY - 46} fill="var(--color-ink-soft)" style={{ fontSize: 13 }}>
-            θ = {fmt(angle, 0)}°
-          </text>
-
-          {/* the draggable tip */}
-          {!locked && (
-            <g>
-              <circle
-                cx={tipX}
-                cy={tipY}
-                r={dragging ? 13 : 11}
-                fill="var(--color-void)"
-                stroke="var(--color-orchid)"
-                strokeWidth={2.5}
-                style={{ cursor: 'grab' }}
-                onPointerDown={(e) => {
-                  e.preventDefault();
-                  setRunning(false);
-                  reset();
-                  setDragging(true);
-                }}
-              />
-              <circle cx={tipX} cy={tipY} r={3} fill="var(--color-orchid)" pointerEvents="none" />
-              <rect
-                x={tipX - 14}
-                y={tipY - 14}
-                width={28}
-                height={28}
-                fill="transparent"
-                tabIndex={0}
-                role="slider"
-                aria-label="force direction and size"
-                aria-valuenow={Math.round(angle)}
-                onKeyDown={(e) => {
-                  const step = e.shiftKey ? 0.25 : 0.06;
-                  if (e.key === 'ArrowLeft') { e.preventDefault(); nudge(step, 0); }
-                  else if (e.key === 'ArrowRight') { e.preventDefault(); nudge(-step, 0); }
-                  else if (e.key === 'ArrowUp') { e.preventDefault(); nudge(0, 6); }
-                  else if (e.key === 'ArrowDown') { e.preventDefault(); nudge(0, -6); }
-                }}
-                style={{ cursor: 'grab', outlineOffset: 2 }}
-              />
-              <text x={tipX + 12} y={tipY + 14} fill="var(--color-ink-faint)" style={{ fontSize: 11.5 }}>
-                drag me
-              </text>
-            </g>
-          )}
-
-          {/* ── the same number as an area ──────────────────────────────── */}
-          {showArea && (
-            <g>
-              <line x1={PAD.l} x2={PAD.l + plotW} y1={areaZero} y2={areaZero} stroke="var(--color-rule-bright)" />
-              {[maxForce / 2, -maxForce / 2].map((tk) => (
-                <g key={tk}>
-                  <line
-                    x1={PAD.l}
-                    x2={PAD.l + plotW}
-                    y1={areaZero - tk * ((AREA_H / 2) / maxForce)}
-                    y2={areaZero - tk * ((AREA_H / 2) / maxForce)}
-                    stroke="var(--color-rule)"
-                  />
-                  <text
-                    x={PAD.l - 8}
-                    y={areaZero - tk * ((AREA_H / 2) / maxForce) + 4}
-                    textAnchor="end"
-                    fill="var(--color-ink-faint)"
-                    style={{ fontSize: 10.5, fontFamily: 'var(--font-mono, monospace)' }}
-                  >
-                    {tk}
-                  </text>
-                </g>
-              ))}
-              <text x={PAD.l - 8} y={areaZero + 4} textAnchor="end" fill="var(--color-ink-faint)" style={{ fontSize: 10.5, fontFamily: 'var(--font-mono, monospace)' }}>0</text>
-
-              {/* what the work WILL be: the outline */}
-              <rect
-                x={sx(0)}
-                y={rectY}
-                width={plotW}
-                height={rectH}
-                fill="none"
-                stroke={workColor}
-                strokeWidth={1.5}
-                strokeDasharray="5 5"
-              />
-              {/* what it is SO FAR: filled by the frame loop */}
-              <rect ref={fillRef} x={sx(0)} y={rectY} width={0} height={rectH} fill={workColor} opacity={0.32} />
-
-              <text x={PAD.l + 6} y={areaTop + 14} fill="var(--color-ink-soft)" style={{ fontSize: 11.5, letterSpacing: '0.06em', textTransform: 'uppercase' }}>
-                force along the motion (N) <tspan fill="var(--color-ink-ghost)">— the shaded area is the work</tspan>
-              </text>
-              <text x={PAD.l + plotW} y={totalH - 6} textAnchor="end" fill="var(--color-ink-ghost)" style={{ fontSize: 10.5, letterSpacing: '0.06em' }}>
-                position (m)
-              </text>
-            </g>
-          )}
-        </svg>
-      </div>
-
-      <ReadoutRow>
-        <Readout label="force" value={`${fmt(magnitude)} N`} accent="orchid" />
-        <Readout label="angle" value={`${fmt(angle, 0)}°`} accent="ink" />
-        <Readout label="along the motion" value={`${fmt(split.fParallel)} N`} accent={positive ? 'cyan' : 'magenta'} />
-        <Readout label={`work by ${agent}`} value={`${fmt(split.work)} J`} accent={split.sign === 'zero' ? 'warn' : positive ? 'cyan' : 'magenta'} />
-        <Readout label="work so far" value={`${fmt(workSoFar)} J`} accent="aqua" />
-        <Readout label="story" value={story} mono={false} accent={split.sign === 'zero' ? 'warn' : 'ink'} />
-      </ReadoutRow>
-
-      {caption && (
-        <p style={{ marginTop: 10, color: 'var(--color-ink-soft)', fontSize: '0.95rem', lineHeight: 1.6 }}>{caption}</p>
-      )}
-    </Panel>
-  );
+  return <Panel title={showLedger ? 'Two forces, one motion' : 'Only the shared piece'} right={!locked && <Button onClick={reset}>Reset</Button>}>
+    {!locked && <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit,minmax(200px,1fr))', gap: 16, marginBottom: 12 }}>
+      {range('Force angle', angle, 0, 180, 1, '°', setAngle)}
+      {range('Force magnitude', magnitude, 10, maxForce, 1, 'N', setMagnitude)}
+      {showLedger && range('Backward brake force', brakeForce, 0, maxForce, 1, 'N', setBrakeForce)}
+    </div>}
+    <div ref={wrapRef} style={{ width: '100%' }}>
+      <svg ref={svgRef} width="100%" height={showArea ? 522 : 307} style={{ display: 'block' }}
+        role="group" aria-label={`Force and displacement. ${fmt(magnitude)} N at ${fmt(angle)} degrees; parallel component ${fmt(split.fParallel)} N.`}>
+        <defs><pattern id={`${uid}-hatch`} width="9" height="9" patternUnits="userSpaceOnUse" patternTransform={`rotate(${split.sign === 'negative' ? -45 : 45})`}>
+          <line x1="0" y1="0" x2="0" y2="9" stroke={workColor} strokeWidth="2" />
+        </pattern></defs>
+        <text x={16} y={22} fill={INK} fontSize={15}>Force direction — drag the tip</text>
+        <line x1={ax - radius} x2={ax + radius} y1={ay} y2={ay} stroke="var(--color-rule-bright)" />
+        <Arrow x1={ax} y1={ay + 16} x2={ax + radius} y2={ay + 16} dash="5 4" />
+        <text x={ax} y={ay + 43} textAnchor="middle" fill={SOFT} fontSize={14}>displacement points right</text>
+        <Arrow x1={ax} y1={ay} x2={tip.x} y2={ay} width={6} />
+        <line x1={tip.x} x2={tip.x} y1={ay} y2={tip.y} stroke={SOFT} strokeDasharray="4 4" />
+        <Arrow x1={ax} y1={ay} x2={tip.x} y2={tip.y} color={FORCE} />
+        <circle cx={ax} cy={ay} r={4} fill={INK} />
+        {!locked && <circle cx={tip.x} cy={tip.y} r={13} fill="var(--color-surface)" stroke={FORCE} strokeWidth={2}
+          tabIndex={0} role="slider" aria-label="Force angle handle" aria-valuemin={0} aria-valuemax={180} aria-valuenow={Math.round(angle)}
+          aria-valuetext={`${fmt(angle, 0)} degrees; ${fmt(magnitude)} newtons`}
+          style={{ cursor: 'grab', touchAction: 'none' }}
+          onPointerDown={e => { dragging.current = true; e.currentTarget.setPointerCapture(e.pointerId); drag(e); }}
+          onPointerMove={drag} onPointerUp={e => { dragging.current = false; e.currentTarget.releasePointerCapture(e.pointerId); }}
+          onPointerCancel={() => { dragging.current = false; }}
+          onKeyDown={e => { if (e.key === 'ArrowLeft' || e.key === 'ArrowRight') { e.preventDefault(); setAngle(a => Math.max(0, Math.min(180, a + (e.key === 'ArrowLeft' ? 1 : -1) * (e.shiftKey ? 10 : 1)))); } }} />}
+        <text x={ax} y={211} textAnchor="middle" fill={INK} fontSize={15}>Parallel piece {fmt(split.fParallel)} N · angle {fmt(angle, 0)}°</text>
+        <text x={ax} y={233} textAnchor="middle" fill={SOFT} fontSize={13}>Force scale: centre to full reach = {maxForce} N</text>
+        <line x1={left} x2={right} y1={272} y2={272} stroke="var(--color-rule-bright)" />
+        <rect x={sx(inspected) - 9} y={253} width={18} height={18} rx={3} fill="var(--color-raised)" stroke={INK} />
+        {[0, distance / 2, distance].map(x => <g key={x}>
+          <line x1={sx(x)} x2={sx(x)} y1={272} y2={279} stroke={SOFT} />
+          <text x={sx(x)} y={298} textAnchor="middle" fill={SOFT} fontSize={14}>{fmt(x)} m</text>
+        </g>)}
+        {showArea && <g>
+          <text x={16} y={329} fill={INK} fontSize={15}>Parallel force × distance: signed work</text>
+          {[-maxForce, 0, maxForce].map(f => <g key={f}>
+            <line x1={left} x2={right} y1={sy(f)} y2={sy(f)} stroke="var(--color-rule)" />
+            <text x={left - 8} y={sy(f) + 5} textAnchor="end" fill={SOFT} fontSize={13}>{f}</text>
+          </g>)}
+          <text x={16} y={350} fill={SOFT} fontSize={13}>N</text>
+          <rect x={left} y={areaY} width={Math.max(0, sx(inspected) - left)} height={areaH}
+            fill={texture ? `url(#${uid}-hatch)` : workColor} opacity={texture ? 0.6 : 0.14} />
+          <line x1={left} x2={right} y1={sy(split.fParallel)} y2={sy(split.fParallel)} stroke={workColor} strokeWidth={2} />
+          <line x1={sx(probe)} x2={sx(probe)} y1={sy(maxForce)} y2={sy(-maxForce)} stroke={SOFT} />
+          <rect x={left} y={sy(maxForce)} width={right - left} height={128} fill="transparent"
+            onPointerMove={e => { const rect = svgRef.current!.getBoundingClientRect(); setHoverX(Math.max(0, Math.min(distance, ((e.clientX - rect.left) - left) / (right - left) * distance))); }}
+            onPointerLeave={() => setHoverX(null)} />
+          {[0, distance / 2, distance].map(x => <text key={x} x={sx(x)} y={499} textAnchor="middle" fill={SOFT} fontSize={14}>{fmt(x)} m</text>)}
+          <text x={width / 2} y={520} textAnchor="middle" fill={SOFT} fontSize={13}>displacement along track (m)</text>
+        </g>}
+      </svg>
+    </div>
+    <div style={{ display: 'flex', flexWrap: 'wrap', gap: 16, color: SOFT, fontSize: 14, margin: '10px 0' }} aria-label="Diagram key">
+      <span><span style={{ color: FORCE }}>━</span> applied force</span>
+      <span>━ thick: parallel piece</span><span>┄ displacement direction</span>
+      {showArea && <label><input type="checkbox" checked={texture} onChange={e => setTexture(e.target.checked)} /> Texture for signed area</label>}
+    </div>
+    {!locked && range('Inspect displacement (not time)', inspected, 0, reachable, 0.01, 'm', x => setFraction(reachable > 0 ? x / reachable : 0))}
+    {showArea && <p style={{ color: SOFT, fontSize: 14 }} aria-live="off">Inspect x = {fmt(probe)} m: F∥ = {fmt(split.fParallel)} N; work by {agent} = {fmt(workOfConstantForce(F, [probe, 0]))} J.</p>}
+    {showLedger && <p style={{ color: SOFT, lineHeight: 1.6 }}>
+      {mass} kg particle on a fixed horizontal track; starts at {speed0} m/s. Pull and brake stay constant.
+      Weight and the track’s transverse reaction each do zero work.
+      {stopped && <> <strong style={{ color: INK }}>Stops at {fmt(trial!.samples.at(-1)!.x, 2)} m, before the {distance} m endpoint.</strong> The trial ends at the first stop; it does not assign negative kinetic energy.</>}
+    </p>}
+    <table style={{ width: '100%', borderCollapse: 'collapse', color: INK, fontSize: 15, marginTop: 12 }}>
+      <caption style={{ textAlign: 'left', color: SOFT, marginBottom: 8 }}>At {fmt(inspected)} m along the path</caption>
+      <tbody>{rows.map(([label, value]) => <tr key={label}>
+        <th scope="row" style={{ textAlign: 'left', fontWeight: 400, padding: '8px 8px 8px 0', borderTop: '1px solid var(--color-rule)' }}>{label}</th>
+        <td style={{ textAlign: 'right', padding: '8px 0', borderTop: '1px solid var(--color-rule)', fontVariantNumeric: 'tabular-nums' }}>{value}</td>
+      </tr>)}</tbody>
+    </table>
+    {!showLedger && <p style={{ color: SOFT, fontSize: 14 }}>This measures one force’s work over a given displacement. It does not by itself predict the speed.</p>}
+    {caption && <p style={{ color: SOFT, lineHeight: 1.6 }}>{caption}</p>}
+  </Panel>;
 }

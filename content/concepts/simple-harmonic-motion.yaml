@@ -1,0 +1,13 @@
+title: 'Simple harmonic motion'
+blurb: 'A restoring acceleration proportional to displacement makes a sinusoidal clock whose period does not depend on amplitude.'
+notation: 'a = -\omega^2 x,\qquad T = 2\pi\sqrt{m/k}'
+tags: ['up-ch14']
+misconceptions:
+  - id: 'up-ch14-bigger-spring-slower'
+    name: 'A larger spring swing takes longer because it travels farther.'
+    signal: 'Predicts a longer period when only the release distance increases.'
+    correction: 'For an ideal Hookean spring, doubling the displacement also doubles the restoring acceleration and the whole velocity history. Twice the distance is covered at twice the speed, with the same period.'
+  - id: 'up-ch14-fastest-means-most-accelerated'
+    name: 'The spring accelerates most where it is moving fastest.'
+    signal: 'Places maximum acceleration at the equilibrium crossing.'
+    correction: 'The spring force is zero at equilibrium, where speed is greatest. Acceleration is greatest in magnitude at the turning points, where speed is zero.'

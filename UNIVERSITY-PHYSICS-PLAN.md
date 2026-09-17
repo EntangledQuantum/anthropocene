@@ -35,15 +35,15 @@ Tick when the chapter has its two flagship lessons live.
 - [ ] 03 Motion in Two and Three Dimensions
 - [x] 04 Newton's Laws — *"Nothing has to keep it going" and "Two bodies, two forces, one interaction" live*
 - [ ] 05 Applying Newton's Laws
-- [ ] 06 Work and Kinetic Energy
-- [ ] 07 Potential Energy and Conservation
+- [~] 06 Work and Kinetic Energy — *"Only the shared piece counts" integrated and browser-tested locally; second flagship still needed*
+- [~] 07 Potential Energy and Conservation — *"Height is not force" integrated and browser-tested locally; second flagship still needed*
 - [ ] 08 Momentum, Impulse, and Collisions
 - [ ] 09 Rotation of Rigid Bodies
 - [ ] 10 Dynamics of Rotational Motion
 - [ ] 11 Equilibrium and Elasticity
 - [ ] 12 Fluid Mechanics
 - [ ] 13 Gravitation
-- [ ] 14 Periodic Motion
+- [~] 14 Periodic Motion — *"A bigger swing, the same clock" integrated and browser-tested locally; second flagship still needed*
 
 ### Waves and acoustics
 - [ ] 15 Mechanical Waves

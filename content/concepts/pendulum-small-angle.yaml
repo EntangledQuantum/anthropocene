@@ -1,0 +1,13 @@
+title: 'The small-angle pendulum'
+blurb: 'Replacing sin θ by θ gives a harmonic clock; increasing the release angle reveals where that approximation fails.'
+notation: '\ddot\theta = -(g/L)\sin\theta \approx -(g/L)\theta,\qquad T_0 = 2\pi\sqrt{L/g}'
+tags: ['up-ch14']
+misconceptions:
+  - id: 'up-ch14-every-periodic-motion-is-shm'
+    name: 'Any repeating swing is simple harmonic motion.'
+    signal: 'Applies amplitude-independent period to a pendulum released at a large angle.'
+    correction: 'Periodic only means the motion repeats. A pendulum repeats at large angles, but its sine restoring force is no longer proportional to angle. Its period grows with release angle even without friction.'
+  - id: 'up-ch14-small-angle-exact'
+    name: 'Small-angle means the pendulum period is exactly independent of amplitude.'
+    signal: 'Treats the approximate pendulum clock as exact at every sufficiently small nonzero angle.'
+    correction: 'There is a continuous approximation error, not a magic angle where it switches on. Choose how small the angle must be from the accuracy the clock needs.'

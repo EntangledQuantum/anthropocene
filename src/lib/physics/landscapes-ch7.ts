@@ -54,11 +54,10 @@ const STAIR_X1 = -1.6;
 const STAIR_X2 = 0.4;
 
 export const CH7_LANDSCAPES: Record<string, Landscape> = {
-  /** Two steps: a low plateau, a middle landing and a high plateau, joined by
-   *  steep risers.
+  /** Two smooth steps: nearly flat shelves joined by steep risers.
    *
-   *  The highest ground is dead flat, so a marble sitting there feels no force
-   *  at all, while the largest force in the picture is halfway down a riser at
+   *  The tanh tails have a tiny but nonzero slope at every finite x. The high
+   *  shelf therefore has a tiny force, while the largest force is on a riser at
    *  a middling height. "High" and "steep" are visibly independent here, which
    *  is exactly the confusion the chapter has to break. */
   staircase: {

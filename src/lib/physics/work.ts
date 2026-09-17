@@ -225,6 +225,44 @@ export function pushThroughField(o: PushOptions): PushRun {
   return { states, outcome, turnedAt, deltaK: last.K - first.K, workDone: last.W };
 }
 
+/** A constrained particle on a horizontal track, with a constant applied
+ *  force and a constant backward brake. The ideal track's transverse reaction
+ *  (including the support against gravity) does no work. The brake is only
+ *  specified while the particle moves forward; the trial ends at its first stop.
+ *
+ *  Individual work is measured from each force and the actual displacement.
+ *  K is independently measured from the velocity integrated by pushThroughField.
+ *  Never assign K = K₀ + W here: comparing the two accounts is the experiment. */
+export interface ConstantForceTrialOptions {
+  applied: Vec2;
+  brake: number;
+  distance: number;
+  mass: number;
+  speed0: number;
+}
+
+export function constantForceTrial(o: ConstantForceTrialOptions) {
+  const net = add2(o.applied, [-o.brake, 0]);
+  const run = pushThroughField({
+    mass: o.mass, v0: o.speed0, xEnd: o.distance,
+    force: () => net[0], dt: 0.001, record: 10,
+  });
+  const initialK = kineticEnergy(o.mass, o.speed0);
+  const samples = run.states.map((state) => {
+    const displacement: Vec2 = [state.x, 0];
+    const appliedWork = workOfConstantForce(o.applied, displacement);
+    const brakeWork = workOfConstantForce([-o.brake, 0], displacement);
+    return {
+      ...state,
+      appliedWork,
+      brakeWork,
+      netWork: appliedWork + brakeWork,
+      deltaK: state.K - initialK,
+    };
+  });
+  return { run, samples, initialK };
+}
+
 /* ── a bead on a circular track ──────────────────────────────────────────── */
 
 /** A bead threaded on a frictionless circular wire, pushed by one applied

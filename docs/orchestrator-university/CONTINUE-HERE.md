@@ -24,15 +24,26 @@ The reference lesson to copy for voice and shape is
 
 ## 2. Where the work stands
 
-**Shipped: 7 lessons across 4 chapters. 919 tests, 110 pages, 0 content errors.**
+**Latest verified local state (2026-09-17): 10 university lessons across 7 chapters;
+940 tests in 51 files, 113 indexed pages, 0 content errors/warnings/gaps. Chapters 6, 7
+and 14 each have a first lesson integrated and browser-tested locally, included in the
+verified-lessons checkpoint on `university-physics/verified-lessons`; not deployed. Full TypeScript checking still fails only on the out-of-scope §5.2 error.**
+
+Chapter 7 and 14 author worktrees are preserved; their scoped reviewed files and fixes
+are integrated. One author per lesson remains the workflow. Resume the same author
+after transient failures; do not abandon existing files. No commits or pushes without
+the user's request.
 
 | Chapter | State |
 |---|---|
 | 01 Language of Nature | 2 lessons live |
 | 02 Motion Along a Line | 1 lesson live (the reference lesson); a second is still wanted |
-| 03 Motion in Two/Three Dimensions | 2 lessons live — **lesson 1 has a live bug, see §5** |
-| 04 Newton's Laws | 2 lessons live |
-| 05–44 | chapter.yaml stubs only, all `status: 'draft'` |
+| 03 Motion in Two/Three Dimensions | 2 lessons live; lesson 1 hydration repaired and regression-tested |
+| 04 Newton's Laws | 2 lessons live; FbdBuilder browser-tested; hidden-motion speed leak repaired locally |
+| 06 Work & Kinetic Energy | First lesson integrated locally; second flagship still needed |
+| 07 Potential Energy | First lesson integrated and browser-tested locally; second flagship still needed |
+| 14 Periodic Motion | First lesson integrated and browser-tested locally; second flagship still needed |
+| Remaining chapters 05–44 | chapter.yaml stubs |
 
 ### Shared visual worlds — build once, reuse
 
@@ -43,7 +54,7 @@ and a pile.
 | World | Component | Chapters | Status |
 |---|---|---|---|
 | Linked x/v/a graphs | `LinkedGraphs` | 2, 3, 14 | built, verified in browser |
-| Free-body diagram builder | `FbdBuilder` | 4, 5, 11 | built, **not browser-verified** |
+| Free-body diagram builder | `FbdBuilder` | 4, 5, 11 | chapter 4 lesson 1 browser-verified; ramp/multi-body modes still need coverage |
 | Potential track + total-E line | `PotentialTrack` | 7, 14, 30, 40 | built, verified in browser |
 | Field arrows + equipotentials | `FieldCanvas` | 13, 21, 22, 23, 27, 28 | built, verified in browser |
 | Two-source ripple tank | `RippleTank` | 15, 16, 35, 36 | **to build** |
@@ -73,8 +84,8 @@ tests; their **lessons were never written**. Do not rewrite these from scratch �
 
 | File | For | State |
 |---|---|---|
-| `src/lib/physics/work.ts` + tests | Ch 6 Work & Kinetic Energy | library done, no lessons |
-| `src/components/viz/WorkArrows.tsx` | Ch 6 | component exists, **no `.astro` wrapper**, so it is not registered — add `src/components/widgets/WorkArrows.astro` |
+| `src/lib/physics/work.ts` + tests | Ch 6 Work & Kinetic Energy | first lesson integrated locally; independently integrated constant-force ledger tested |
+| `src/components/viz/WorkArrows.tsx` | Ch 6 | wrapper registered; signs, drag/keyboard, work ledger and stopping boundary browser-tested |
 | `src/lib/physics/landscapes-ch7.ts` + tests | Ch 7 Potential Energy | extra landscapes done, no lessons |
 | `src/components/viz/ForceFromSlope.tsx` + `.astro` | Ch 7 | built, unverified |
 | `src/lib/physics/oscillator.ts` + tests | Ch 14 Periodic Motion | library done (driven damped oscillator, exact pendulum period via AGM), no lessons |
@@ -184,10 +195,37 @@ to the computational-physics orchestrator.
 
 ### 5.3 Not browser-verified
 
-`FbdBuilder`, `WorkArrows`, `ForceFromSlope`, `VectorFrame`, `DimensionBalance`,
-`UnitChain`, `ProjectileSplit` were written by agents that were told not to start a dev
-server. They typecheck and their libraries are tested, but nobody has watched them run.
-Drive them before trusting them — §6 says how.
+`VectorFrame`, `DimensionBalance`, `UnitChain`, `ProjectileSplit` still need recorded
+browser acceptance. Chapter 7 and 14 reviews, corrections and scoped integration are
+complete. All five regression scripts pass against the combined main static build on
+port 4322 (pass `http://127.0.0.1:4322/anthropocene` to the chapter 7/14 scripts).
+
+- Chapter 7 (`agent-a4ebb16279d758d0d`): corrected force-axis directions to coordinate-neutral
+  positive/negative x and removed the pre-prediction gravity answer from the caption.
+  Rebuilt static preview on port 4325; `npx tsx scripts/check-landscape-lesson.ts` passes,
+  including assertions against both review defects and the existing graded interactions.
+- Chapter 14 (`agent-a5ee80fb9a17a95a5`): reproduced disappearing pendulum bobs at 120°
+  (centres y = −25 outside the SVG). Changed only the pendulum viewport in
+  `OscillatorClock.tsx` to `0 -55 660 310`; spring viewport and physics are unchanged.
+  Rebuilt static preview on port 4326; `npx tsx scripts/check-oscillator-clock.ts` passes:
+  spring amplitude independence, quarter-cycle x/v/a, mass scaling, reset, keyboard time,
+  sampled table, and bob bounds at 5°, 10°, 90°, 120° over the displayed time range.
+  Before/after screenshot inspected; 45 oscillator physics tests pass. Integrated-main
+  browser acceptance also verifies the 10°/90° period excess, full-cycle return, all three
+  predictions, wrong-then-correct velocity sketch, and both Recalls with no page errors.
+
+Verified locally on 2026-09-17:
+- `npx tsx scripts/check-work-lesson.ts`: signs, keyboard/drag, independent work/K ledger,
+  stop-boundary clamp, childless Predict, sketch rejection/retry, classification and Recalls.
+- `npx tsx scripts/check-fbd-lesson.ts`: both chapter 4 lessons, F/m, mass scaling,
+  coasting after removing force, hidden-motion speed suppression, three-force equilibrium,
+  equal 600 kN interaction forces, normal-force release and 12 N block-contact matching.
+- `Predict.astro` now omits the slot for childless Predict instances. Otherwise the server
+  emitted an empty hidden payoff while the client omitted it, producing React #418.
+
+Outstanding visual polish: SketchCurve's y-axis title overlaps its top tick; FbdBuilder's
+south-west arrow label can crowd the force scale. These are not physics or hydration
+failures. Track them without misreporting untested configurations as verified.
 
 ---
 

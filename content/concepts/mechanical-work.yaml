@@ -1,0 +1,17 @@
+title: 'Mechanical work'
+blurb: 'Only the force component along a displacement contributes to work; direction decides its sign, not effort.'
+notation: 'W = \vec F\cdot\Delta\vec r = F_{\parallel}d'
+tags: ['up-ch6']
+misconceptions:
+  - id: 'up-work-is-effort'
+    name: 'A large effort must mean a large mechanical work.'
+    signal: 'Assigns positive work to holding a stationary load or supporting it during horizontal carriage.'
+    correction: 'Mechanical work refers to a specified force acting through a displacement. No displacement, or a displacement perpendicular to the force, gives zero work even if maintaining the force costs the person energy.'
+  - id: 'up-work-uses-whole-force'
+    name: 'The whole force magnitude counts regardless of direction.'
+    signal: 'Multiplies force magnitude by distance even when the arrows are perpendicular.'
+    correction: 'Project the force onto the displacement first. The perpendicular piece contributes zero; the parallel piece can point with or against the displacement.'
+  - id: 'up-negative-work-is-invalid'
+    name: 'Negative work means something went wrong.'
+    signal: 'Drops the minus sign for a backward force or says work cannot be negative.'
+    correction: 'The minus sign records a force component opposing the displacement. Keep it when adding contributions from different forces.'

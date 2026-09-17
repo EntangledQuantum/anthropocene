@@ -1,0 +1,13 @@
+title: 'Force from a potential slope'
+blurb: 'Read the direction and magnitude of a one-dimensional conservative force from the negative local slope of its potential energy.'
+notation: 'F_x = -\frac{dU}{dx}'
+tags: ['up-ch7']
+misconceptions:
+  - id: 'up-ch7-higher-means-stronger'
+    name: 'Higher potential energy means a stronger force.'
+    signal: 'Chooses a high, almost flat shelf over a lower steep slope.'
+    correction: 'Force reads local slope, not height. A high flat region can have zero force; a lower steep region can have a large force.'
+  - id: 'up-ch7-force-points-uphill'
+    name: 'Force follows the positive slope of U.'
+    signal: 'Draws force toward increasing potential energy.'
+    correction: 'The conservative force points toward decreasing U. Positive slope means negative force, and negative slope means positive force.'

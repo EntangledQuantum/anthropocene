@@ -1,0 +1,141 @@
+---
+title: 'A bigger swing, the same clock'
+blurb: 'Predict which changes alter a spring clock, read its motion three ways, and catch the pendulum where the same rule fails.'
+order: 1
+tier: 'foundation'
+minutes: 12
+teaches: ['simple-harmonic-motion', 'pendulum-small-angle']
+requires: ['newtons-second-law', 'instantaneous-rate']
+runtime: 'none'
+status: 'live'
+updated: 2026-09-17
+---
+
+You release two identical spring-mounted masses from rest. One starts twice as far from
+the middle. It must travel twice as far to complete a swing. Does it arrive late?
+
+You are going to build a clock, then find the change that breaks it. Here a **cycle**
+means returning to the same position **and** the same direction of motion.
+
+<Predict
+  id="up-ch14-double-release"
+  question="Keep both masses at 1 kg and both springs at 4 N/m. Double only one release distance. Which clock completes a cycle first?"
+  options={[
+    { key: 'small', misconception: 'up-ch14-bigger-spring-slower', label: 'The smaller swing — it travels less far', why: 'That would follow if speed stayed the same. Scrub the two swings together: the larger one covers a larger distance in every equal time interval, not just over the whole cycle.' },
+    { key: 'large', label: 'The larger swing — the spring pulls harder', why: 'The stronger pull really does give more speed. But the path is longer too. Compare their first crossing of the middle, then their return to the release point.' },
+    { key: 'same', label: 'They stay in step', why: 'Both effects scale together. Twice the release distance produces twice the velocity at every matching instant, so neither clock wins.' },
+  ]}
+  correct="same"
+/>
+
+<OscillatorClock amplitude={1} />
+
+Leave **Moving mass** at 1 kg. Move **Release distance** between 0.5 m and 1 m, then scrub
+the clock through one cycle. The peaks grow taller without sliding sideways. Use
+**One full cycle** to check the return, not just an accidental crossing.
+
+## The circle explains the bargain
+
+Watch the rotating point and its shadow. The point covers equal angles in equal times;
+the shadow does not cover equal distances. Near an end, most of the point's motion is
+up or down. At the middle, its motion is entirely sideways.
+
+Set the release distance to 1 m. Compare **Reset experiment** with **Quarter cycle**.
+At release, the mass is stopped but its acceleration is large. At the middle, it is
+fastest but its acceleration is zero.
+
+<Predict
+  id="up-ch14-middle-acceleration"
+  question="The shadow is crossing the middle toward the left. Which reading belongs there?"
+  options={[
+    { key: 'both', misconception: 'up-ch14-fastest-means-most-accelerated', label: 'Largest speed and largest acceleration magnitude', why: 'Speed is largest, but acceleration measures how velocity changes. The spring is neither stretched nor compressed at the middle, so its force is zero at that instant.' },
+    { key: 'speed', label: 'Largest speed and zero acceleration', why: 'Yes. The negative velocity is most negative here: its graph has a flat bottom. Zero slope of velocity means zero acceleration, not zero velocity.' },
+    { key: 'rest', label: 'Zero speed and largest acceleration magnitude', why: 'That is a turning point. At the middle the mass has not turned around: it is racing through.' },
+  ]}
+  correct="speed"
+/>
+
+This is **simple harmonic motion**: acceleration points toward the middle and grows in
+proportion to displacement. For an ideal spring, Newton's law gives
+
+$$a=-\frac{k}{m}x=-\omega^2x,\qquad \omega=\sqrt{\frac{k}{m}}.$$
+
+The circle's horizontal coordinate names the curve you just moved:
+
+$$x(t)=A\cos(\omega t),\qquad T=\frac{2\pi}{\omega}=2\pi\sqrt{\frac{m}{k}}.$$
+
+$A$ is the release distance, $T$ the time for one cycle, and $\omega$ the angle swept per
+second. This cosine starts at the right-hand turning point. Starting somewhere else
+shifts the curve in time. We assume an ideal Hookean spring and no friction or driving.
+
+## Make one clock lose
+
+Now keep the release distance fixed and change **Moving mass** from 1 kg to 4 kg.
+Scrub to the reference spring's first return. Your spring is at the opposite end.
+More inertia slows the circle: four times the mass makes the period twice as long.
+
+<Recall id="up-ch14-recall-spring-clock" concept="simple-harmonic-motion">
+  <div slot="front">An ideal spring swings twice as far but keeps the same period. What else must double, and why?</div>
+
+  The whole velocity history doubles. The restoring acceleration also doubles at each
+  matching instant because $a=-(k/m)x$. Twice the travel at twice the speed takes the
+  same time. The clock is set by $m/k$, not the release distance.
+</Recall>
+
+## Change the starting side
+
+A different 1 kg mass is attached to a 9 N/m spring. You pull it **0.4 m left** of the
+middle and release it from rest. Its cycle takes about 2.09 s. Positive means right.
+
+<SketchCurve
+  id="up-ch14-sketch-left-release"
+  scenario="up-ch14-left-release-velocity"
+  prompt="Sketch velocity through one complete cycle. Start at zero; decide which way the mass moves first, and where it next stops."
+  hint="The first pull is toward the middle, to the right. Velocity is largest in magnitude at each middle crossing, not at the turning points."
+  explanation="The first lobe is positive: the mass starts left and moves right. At half a cycle it stops at the right-hand end; the second lobe is negative as it returns. The peaks are ±1.2 m/s. Copying the position cosine would put the largest speed at release, when the mass is actually at rest."
+/>
+
+## Does every repeating swing share the clock?
+
+Replace the spring with a pendulum. At small angles, its restoring acceleration is
+almost proportional to angle. Try 10°, then 90° below. Use **One full cycle** and look
+at where the hollow model bob is when the solid bob returns.
+
+<OscillatorClock mode="pendulum" angle={10} />
+
+At 10°, the period excess is about 0.19%. At 90°, it is about 18%. The real pendulum
+still repeats; it is not simple harmonic motion at large angles.
+
+The actual angular acceleration is $\ddot\theta=-(g/L)\sin\theta$. Replacing
+$\sin\theta$ by $\theta$ makes a harmonic oscillator, with
+
+$$T_0=2\pi\sqrt{L/g}.$$
+
+That replacement is the **small-angle approximation**, not a law that all pendulums
+keep perfect time. The error grows continuously; how small is “small” depends on the
+accuracy you need. The solid trace integrates the sine force, not a slower cosine.
+
+<Predict
+  id="up-ch14-transfer-playground-clock"
+  question="A frictionless playground swing repeats, but its large swings take longer than its small swings. What failed?"
+  options={[
+    { key: 'friction', label: 'The observation proves friction is present', why: 'The sine-force pendulum produces this difference with no friction. A changing period does not by itself diagnose energy loss.' },
+    { key: 'periodic', misconception: 'up-ch14-every-periodic-motion-is-shm', label: 'It cannot be periodic if period depends on amplitude', why: 'For each fixed release angle the motion repeats. Periodic does not mean every possible release shares one period.' },
+    { key: 'linear', label: 'The restoring acceleration is no longer proportional to displacement', why: 'Exactly. The sine of a large angle is not the angle. The special scaling bargain of the ideal spring breaks, even though the swing still repeats.' },
+  ]}
+  correct="linear"
+/>
+
+<Recall id="up-ch14-recall-pendulum-limit" concept="pendulum-small-angle">
+  <div slot="front">What turns a pendulum into a harmonic clock, and what experiment exposes the approximation?</div>
+
+  Replace $\sin\theta$ by $\theta$, so acceleration is proportional to angle toward the
+  bottom. Compare periods at increasing release angles: the actual pendulum falls behind
+  the amplitude-independent small-angle clock. Even a small nonzero swing has some error.
+</Recall>
+
+## What to carry forward
+
+A bigger circle casts a bigger shadow, not a slower clock: that is the picture of ideal
+spring motion. A pendulum borrows the picture only near the bottom. Next, follow where
+the energy goes during a tick, before letting damping take some of it away.

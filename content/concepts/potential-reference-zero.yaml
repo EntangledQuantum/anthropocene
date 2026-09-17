@@ -1,0 +1,9 @@
+title: 'Choosing the zero of potential energy'
+blurb: 'Adding the same constant to a potential everywhere changes its values but not energy differences, force, or motion.'
+notation: 'U_{\mathrm{new}}(x) = U(x) + C'
+tags: ['up-ch7']
+misconceptions:
+  - id: 'up-ch7-negative-energy-reverses-force'
+    name: 'Changing the sign of potential energy reverses force.'
+    signal: 'Predicts a force reversal when an offset moves U across zero.'
+    correction: 'The sign of U depends on the chosen reference. The sign of its slope does not change when a constant is added, so neither does force.'

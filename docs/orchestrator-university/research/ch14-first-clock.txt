@@ -1,0 +1,35 @@
+Chapter 14 first lesson — source and design record
+Research performed 2026-09-17. Scope: one 12-minute lesson, simple-harmonic-motion and pendulum-small-angle only.
+
+Authoritative physics consulted before implementation
+1. OpenStax, University Physics Volume 1, 15.1 Simple Harmonic Motion
+https://openstax.org/books/university-physics-volume-1/pages/15-1-simple-harmonic-motion
+Retrieved readable page via WebFetch. Supports a=−ω²x, ideal-spring T=2π√(m/k), amplitude-independent T, vmax=Aω at equilibrium and maximum acceleration at turning points. Assumptions are Hooke's law and no damping. These are the spring prediction, linked readings and transfer sketch claims.
+2. OpenStax, University Physics Volume 1, 15.4 Pendulums
+https://openstax.org/books/university-physics-volume-1/pages/15-4-pendulums
+Retrieved readable page. Supports sine restoring force, small-angle substitution and T0=2π√(L/g). The text's roughly 15-degree illustration concerns error in replacing sin θ, NOT a universal period-error threshold. Lesson therefore reports exact computed period excess, and does not turn that angle into a magic cutoff.
+
+Visualization precedents consulted before implementation
+3. myPhysicsLab, Pendulum
+https://www.myphysicslab.com/pendulum/pendulum-en.html
+Retrieved readable documentation; did not operate simulation. Documents draggable initial conditions, gravity/mass/friction controls and simulation/phase/time graph tabs. Design borrowed: one underlying nonlinear trajectory linked to a physical bob and a time trace. Our lesson constrains knobs to release angle and time to keep the failure test focused.
+4. PhET, Masses and Springs
+https://phet.colorado.edu/en/simulations/masses-and-springs
+Fetch exposed only title/topics, not useful controls or learning objectives. NOT evidence that I inspected or ran the simulation. No detailed design claim relies on it.
+
+Local work recovered
+oscillator.ts and its 38-test suite already existed. Imported its projection, spring frequency, sampling and exact AGM pendulum period; did not rewrite or modify them. Imported landscape.ts rollMarble for a real sine-force trajectory. Existing oscillator.test.ts independently compares exact pendulum period with Verlet-measured period. clock-ch14.test.ts adds lesson-specific numerical assertions.
+Read doctrine, path brief, chapter14 curriculum, handoff, reference lesson, LinkedGraphs, StabilityExplorer, PhaseFlow and PotentialTrack. No pre-existing chapter14 lesson or requested concept file was present.
+
+Design decisions and scope
+- First commitment precedes the widget, which sits outside Predict so no nested island relies on hidden-slot hydration.
+- Learner-paced time scrub rather than autoplay. Changing release distance preserves time: peaks change height while their times stay fixed. Moving mass breaks that invariance.
+- Physical spring + circling projection + displacement history + numerical x/v/a are linked to one analytic state. New left-release velocity sketch changes representation, sign, stiffness and numbers.
+- Pendulum solid trajectory integrates the sine force. It is NOT a cosine with an exact period substituted. Dashed approximation has the same release angle, ω=2; g/L=4 is explicitly disclosed.
+- PotentialTrack not used: the first lesson does not need energy, and existing source has unrelated limitations (zero start velocity for arbitrary startX, artificial reflection at domain edges, invisible zero-width energy bars, and no numeric axis ticks). Not modified; parent notified.
+- Dark-only project tokens; iris and magenta at 80% sRGB mixed with black. Palette validator passes all checks (#727dc4,#cc3e7e against #14111f). Initial unmodified cyan/orchid pair failed the skill lightness band; it was not shipped. Solid/dashed and filled/hollow secondary encodings, labels, hover cursor, keyboard sliders, and sampled-value table.
+- No new graded widget: established Predict/SketchCurve supply progress, new visualization is ungraded and automatically registered by its own wrapper.
+
+Verification actually done
+Existing targeted oscillator suite passed 38 tests before editing. New targeted oscillator + clock suites passed 45 tests. Full npm test passed 926 tests in 50 files. TypeScript invocation found no errors in owned files, but fails repo-wide on missing generated Astro/Vite declarations plus the known duplicate key in numerics/sph.ts. Content check recorded separately in final report.
+No app build, dev server or browser run was performed by this agent: parent owns these acceptance steps. Thus layout, hydration and pointer behavior remain unverified in a browser. Research sources above were text-fetch observations, not visual testing.

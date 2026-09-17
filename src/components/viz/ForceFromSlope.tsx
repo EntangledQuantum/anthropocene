@@ -1,486 +1,117 @@
-import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
-import { turningPointsOf, type Landscape } from '../../lib/physics/landscape.ts';
-import {
-  ALL_LANDSCAPES,
-  forceAt,
-  landscapeOf,
-  shiftLandscape,
-  slopeProfile,
-} from '../../lib/physics/landscapes-ch7.ts';
-import { Panel, Readout, ReadoutRow, Slider, Toggle } from './controls.tsx';
-
-/* ── force is the slope ────────────────────────────────────────────────────
-   Two panels over one x axis. The top is U(x) with a probe you drag and the
-   tangent at that probe; the bottom is F(x) = −dU/dx with the same probe. The
-   link between them is the whole lesson, so neither panel is editable: you
-   move one point and both panels report what is already true.
-
-   The floor slider is the second half. It slides the entire U curve — and the
-   total-energy line with it, because E = K + U moves when U's zero moves — up
-   and down a FIXED ruler, so the numbers visibly change. The force panel does
-   not twitch, and the turning-point verticals stay nailed to the same x. That
-   is "U is defined only up to a constant" as something you watch rather than
-   something you are told.
-
-   No animation: the probe is pointer-driven, so plain state at event rate is
-   correct here and the refs-and-rAF discipline of PotentialTrack is not
-   needed.
-   ──────────────────────────────────────────────────────────────────────── */
+import { useId, useMemo, useRef, useState } from 'react';
+import { turningPointsOf } from '../../lib/physics/landscape.ts';
+import { ALL_LANDSCAPES, forceAt, landscapeOf, shiftLandscape, slopeProfile } from '../../lib/physics/landscapes-ch7.ts';
+import { Button, Panel, Readout, ReadoutRow, Slider, Toggle } from './controls.tsx';
 
 export interface ForceFromSlopeProps {
-  /** Key into the chapter-7 landscape table (the shared five plus `staircase`). */
   landscape?: string;
-  /** Offer a picker. Same reasoning in several costumes, as a control. */
   landscapes?: string[];
-  /** Where the probe starts. Defaults to the middle of the domain. */
   probeX?: number;
-  /** Show a dashed total-energy line, measured on the UNSHIFTED U. */
   showEnergy?: boolean;
   energy?: number;
-  /** Let the learner slide the zero of U. Off makes this a force-vs-slope figure. */
   floorShift?: boolean;
   floorRange?: [number, number];
+  hideForce?: boolean;
   height?: number;
   caption?: string;
 }
 
-const PAD = { l: 60, r: 20, t: 16, b: 36 };
-const GAP = 30;
+const fmt = (v: number) => Math.abs(v) > 0 && Math.abs(v) < 0.005
+  ? v.toExponential(1)
+  : String(Math.round(v * 100) / 100);
 
-const fmt = (v: number, d = 2) => {
-  const r = Math.round(v * 10 ** d) / 10 ** d;
-  return Object.is(r, -0) ? '0' : String(r);
-};
-
+/** Two linked plots, one physics model. The energy ruler stays fixed when its
+ * reference shifts. No animation; pointer events and keyboard sliders own state. */
 export default function ForceFromSlope({
-  landscape = 'staircase',
-  landscapes,
-  probeX,
-  showEnergy = false,
-  energy,
-  floorShift = false,
-  floorRange = [-3, 3],
-  height = 430,
-  caption,
+  landscape = 'staircase', landscapes, probeX, showEnergy = false, energy,
+  floorShift = false, floorRange = [-3, 3], hideForce = false, height = 470, caption,
 }: ForceFromSlopeProps) {
-  const [landKey, setLandKey] = useState(landscape);
-  const base: Landscape = landscapeOf(landKey);
-  const [x0, x1] = base.domain;
-
+  const id = useId().replace(/:/g, '');
+  const [key, setKey] = useState(landscape);
+  const base = landscapeOf(key);
+  const [a, b] = base.domain;
+  const [probe, setProbe] = useState(probeX ?? (a + b) / 2);
+  const x = Math.max(a, Math.min(b, probe));
   const [offset, setOffset] = useState(0);
-  const [xp, setXp] = useState(probeX ?? (x0 + x1) / 2);
-  const [width, setWidth] = useState(760);
-  const wrapRef = useRef<HTMLDivElement>(null);
-  const svgRef = useRef<SVGSVGElement>(null);
-
-  // Switching costume must not leave the probe outside the new domain.
-  useEffect(() => {
-    setXp((p) => Math.min(x1, Math.max(x0, p)));
-  }, [x0, x1]);
-
-  useEffect(() => {
-    const el = wrapRef.current;
-    if (!el) return;
-    const ro = new ResizeObserver(([e]) => setWidth(e.contentRect.width));
-    ro.observe(el);
-    setWidth(el.getBoundingClientRect().width);
-    return () => ro.disconnect();
-  }, []);
-
-  /** The landscape the learner is looking at: same physics, chosen floor. */
-  const land = useMemo(() => (offset === 0 ? base : shiftLandscape(base, offset)), [base, offset]);
-
-  const prof = useMemo(() => slopeProfile(base, 420), [base]);
-
-  /* ── geometry ─────────────────────────────────────────────────────────── */
-  const plotW = Math.max(160, width - PAD.l - PAD.r);
-  const bodyH = height - PAD.t - PAD.b - GAP;
-  const hU = bodyH * 0.6;
-  const hF = bodyH - hU;
-  const topY = PAD.t;
-  const botY = PAD.t + hU + GAP;
-
-  const [floorLo, floorHi] = floorRange;
-
-  /** A ruler that does not move. The curve travels across it as the floor
-   *  changes, which is the point — an auto-fitting axis would hide the whole
-   *  demonstration by silently following the curve. */
-  const [uLo, uHi] = useMemo(() => {
-    const us = prof.map((s) => s.U);
-    const lo = Math.min(...us) + (floorShift ? floorLo : 0);
-    const hi = Math.max(...us) + (floorShift ? floorHi : 0);
-    const pad = (hi - lo) * 0.08 || 1;
-    return [lo - pad, hi + pad];
-  }, [prof, floorShift, floorLo, floorHi]);
-
-  const fMax = useMemo(
-    () => Math.max(...prof.map((s) => Math.abs(s.F))) * 1.15 || 1,
-    [prof],
-  );
-
-  const sx = useCallback((x: number) => PAD.l + ((x - x0) / (x1 - x0)) * plotW, [x0, x1, plotW]);
-  const syU = useCallback(
-    (u: number) => topY + hU - ((u - uLo) / (uHi - uLo)) * hU,
-    [topY, hU, uLo, uHi],
-  );
-  const syF = useCallback((f: number) => botY + hF / 2 - (f / fMax) * (hF / 2), [botY, hF, fMax]);
-  const invX = useCallback(
-    (px: number) => Math.min(x1, Math.max(x0, x0 + ((px - PAD.l) / plotW) * (x1 - x0))),
-    [x0, x1, plotW],
-  );
-
-  /* ── dragging the probe ───────────────────────────────────────────────── */
-  const [dragging, setDragging] = useState(false);
-  useEffect(() => {
-    if (!dragging) return;
-    const move = (ev: PointerEvent) => {
-      const rect = svgRef.current?.getBoundingClientRect();
-      if (rect) setXp(invX(ev.clientX - rect.left));
-    };
-    const up = () => setDragging(false);
-    window.addEventListener('pointermove', move);
-    window.addEventListener('pointerup', up);
-    return () => {
-      window.removeEventListener('pointermove', move);
-      window.removeEventListener('pointerup', up);
-    };
-  }, [dragging, invX]);
-
-  /* ── what the probe reports ───────────────────────────────────────────── */
-  const slope = base.dU(xp);
-  const F = forceAt(base, xp);
-  const Up = land.U(xp);
-
-  const E0 = energy ?? base.suggestedE ?? 0;
-  const Eshifted = E0 + offset;
-  /** Computed on the UNSHIFTED landscape at the UNSHIFTED energy. Identical to
-   *  the shifted pair by construction — which is exactly the claim, so it is
-   *  drawn from the invariant side rather than recomputed and hoped for. */
-  const turns = useMemo(
-    () => (showEnergy ? turningPointsOf(base, E0) : []),
-    [showEnergy, base, E0],
-  );
-
-  const path = (pts: { x: number; y: number }[]) =>
-    pts.map((p, i) => `${i === 0 ? 'M' : 'L'}${p.x.toFixed(1)},${p.y.toFixed(1)}`).join('');
-
-  const uPath = path(prof.map((s) => ({ x: sx(s.x), y: syU(s.U + offset) })));
-  const fPath = path(prof.map((s) => ({ x: sx(s.x), y: syF(s.F) })));
-
-  // Tangent: a short straight segment through the probe with the measured
-  // slope, so "the slope" is a line you can compare to the curve.
-  const dTan = (x1 - x0) * 0.13;
-  const tanX0 = Math.max(x0, xp - dTan);
-  const tanX1 = Math.min(x1, xp + dTan);
-
-  const ticksU = useMemo(() => {
-    const n = 4;
-    return Array.from({ length: n + 1 }, (_, i) => uLo + ((uHi - uLo) * i) / n);
-  }, [uLo, uHi]);
-
-  const arrowLen = (F / fMax) * plotW * 0.16;
-
-  return (
-    <Panel
-      title={base.label}
-      right={
-        landscapes && landscapes.length > 1 ? (
-          <Toggle
-            options={landscapes.map((k) => ({
-              key: k,
-              label: ALL_LANDSCAPES[k]?.label.split('—')[0].trim() ?? k,
-            }))}
-            value={[landKey]}
-            onChange={(next) => next[0] && setLandKey(next[0])}
-          />
-        ) : undefined
-      }
-    >
-      <div ref={wrapRef} style={{ width: '100%' }}>
-        <svg
-          ref={svgRef}
-          width={width}
-          height={height}
-          style={{ display: 'block', touchAction: 'none', cursor: 'ew-resize' }}
-          role="img"
-          aria-label={`Potential energy and force for ${base.label}. At position ${fmt(xp)}, the slope of U is ${fmt(slope)} and the force is ${fmt(F)} newtons.`}
-          onPointerDown={(ev) => {
-            const rect = svgRef.current!.getBoundingClientRect();
-            setXp(invX(ev.clientX - rect.left));
-            setDragging(true);
-          }}
-        >
-          <defs>
-            <clipPath id={`ffs-top-${landKey}`}>
-              <rect x={PAD.l} y={topY} width={plotW} height={hU} />
-            </clipPath>
-            <clipPath id={`ffs-bot-${landKey}`}>
-              <rect x={PAD.l} y={botY} width={plotW} height={hF} />
-            </clipPath>
-          </defs>
-
-          {/* ── the ruler the curve slides across ── */}
-          {ticksU.map((u) => (
-            <g key={`ty-${u}`}>
-              <line
-                x1={PAD.l}
-                x2={PAD.l + plotW}
-                y1={syU(u)}
-                y2={syU(u)}
-                stroke="var(--color-rule)"
-                strokeWidth={1}
-              />
-              <text
-                x={PAD.l - 8}
-                y={syU(u) + 4}
-                textAnchor="end"
-                fill="var(--color-ink-faint)"
-                style={{ fontSize: 11 }}
-              >
-                {fmt(u, 1)}
-              </text>
-            </g>
-          ))}
-
-          {/* turning points: verticals through BOTH panels. They do not move
-              when the floor moves, and that is the demonstration. */}
-          {turns.map((t, i) => (
-            <line
-              key={`turn-${i}`}
-              x1={sx(t)}
-              x2={sx(t)}
-              y1={topY}
-              y2={botY + hF}
-              stroke="var(--color-magenta)"
-              strokeWidth={1}
-              strokeDasharray="3 5"
-              opacity={0.55}
-            />
-          ))}
-
-          <g clipPath={`url(#ffs-top-${landKey})`}>
-            {showEnergy && (
-              <>
-                <line
-                  x1={PAD.l}
-                  x2={PAD.l + plotW}
-                  y1={syU(Eshifted)}
-                  y2={syU(Eshifted)}
-                  stroke="var(--color-magenta)"
-                  strokeWidth={2}
-                  strokeDasharray="7 5"
-                />
-                <text
-                  x={PAD.l + plotW - 4}
-                  y={syU(Eshifted) - 7}
-                  textAnchor="end"
-                  fill="var(--color-magenta)"
-                  style={{ fontSize: 11.5, letterSpacing: '0.05em' }}
-                >
-                  E = {fmt(Eshifted)} J
-                </text>
-              </>
-            )}
-
-            <path d={uPath} fill="none" stroke="var(--color-orchid)" strokeWidth={2.4} />
-
-            {/* the tangent — the slope, drawn as a line */}
-            <line
-              x1={sx(tanX0)}
-              x2={sx(tanX1)}
-              y1={syU(Up + slope * (tanX0 - xp))}
-              y2={syU(Up + slope * (tanX1 - xp))}
-              stroke="var(--color-aqua)"
-              strokeWidth={2}
-            />
-            {/* rise over run, so the number in the readout has a picture */}
-            <line
-              x1={sx(xp)}
-              x2={sx(tanX1)}
-              y1={syU(Up)}
-              y2={syU(Up)}
-              stroke="var(--color-aqua)"
-              strokeWidth={1}
-              strokeDasharray="3 3"
-              opacity={0.8}
-            />
-            <line
-              x1={sx(tanX1)}
-              x2={sx(tanX1)}
-              y1={syU(Up)}
-              y2={syU(Up + slope * (tanX1 - xp))}
-              stroke="var(--color-aqua)"
-              strokeWidth={1}
-              strokeDasharray="3 3"
-              opacity={0.8}
-            />
-
-            {/* the force, as an arrow on the curve: downhill, always */}
-            <line
-              x1={sx(xp)}
-              x2={sx(xp) + arrowLen}
-              y1={syU(Up) - 16}
-              y2={syU(Up) - 16}
-              stroke="var(--color-cyan)"
-              strokeWidth={3}
-            />
-            {Math.abs(arrowLen) > 3 && (
-              <polygon
-                points={`${sx(xp) + arrowLen},${syU(Up) - 16} ${sx(xp) + arrowLen - Math.sign(arrowLen) * 9},${syU(Up) - 21} ${sx(xp) + arrowLen - Math.sign(arrowLen) * 9},${syU(Up) - 11}`}
-                fill="var(--color-cyan)"
-              />
-            )}
-            <circle cx={sx(xp)} cy={syU(Up)} r={6} fill="var(--color-cyan)" />
-          </g>
-
-          <text
-            x={PAD.l - 8}
-            y={topY + 11}
-            textAnchor="end"
-            fill="var(--color-orchid)"
-            style={{ fontSize: 11, letterSpacing: '0.05em' }}
-          >
-            U (J)
-          </text>
-
-          {/* ── the force panel ── */}
-          <g clipPath={`url(#ffs-bot-${landKey})`}>
-            <rect
-              x={PAD.l}
-              y={botY}
-              width={plotW}
-              height={hF}
-              fill="var(--color-iris)"
-              opacity={0.04}
-            />
-            <line
-              x1={PAD.l}
-              x2={PAD.l + plotW}
-              y1={syF(0)}
-              y2={syF(0)}
-              stroke="var(--color-rule-bright)"
-              strokeWidth={1}
-            />
-            <path d={fPath} fill="none" stroke="var(--color-iris)" strokeWidth={2.4} />
-            <line
-              x1={sx(xp)}
-              x2={sx(xp)}
-              y1={syF(0)}
-              y2={syF(F)}
-              stroke="var(--color-cyan)"
-              strokeWidth={2}
-            />
-            <circle cx={sx(xp)} cy={syF(F)} r={5.5} fill="var(--color-cyan)" />
-          </g>
-
-          <text
-            x={PAD.l - 8}
-            y={botY + 11}
-            textAnchor="end"
-            fill="var(--color-iris)"
-            style={{ fontSize: 11, letterSpacing: '0.05em' }}
-          >
-            F (N)
-          </text>
-          <text
-            x={PAD.l - 8}
-            y={syF(0) + 4}
-            textAnchor="end"
-            fill="var(--color-ink-faint)"
-            style={{ fontSize: 11 }}
-          >
-            0
-          </text>
-          <text
-            x={PAD.l - 8}
-            y={syF(fMax / 1.15) + 4}
-            textAnchor="end"
-            fill="var(--color-ink-faint)"
-            style={{ fontSize: 11 }}
-          >
-            {fmt(fMax / 1.15, 1)}
-          </text>
-
-          <line
-            x1={PAD.l}
-            x2={PAD.l + plotW}
-            y1={botY + hF}
-            y2={botY + hF}
-            stroke="var(--color-rule-bright)"
-          />
-          <text
-            x={PAD.l + plotW}
-            y={height - 10}
-            textAnchor="end"
-            fill="var(--color-ink-ghost)"
-            style={{ fontSize: 10.5, letterSpacing: '0.06em' }}
-          >
-            {base.xLabel ?? 'position'}
-          </text>
-        </svg>
-      </div>
-
-      <div
-        style={{
-          marginTop: 8,
-          display: 'grid',
-          gridTemplateColumns: floorShift ? '1fr 1fr' : '1fr',
-          gap: 16,
-        }}
-      >
-        <Slider
-          spec={{
-            key: 'xp',
-            label: 'probe position',
-            min: x0,
-            max: x1,
-            step: (x1 - x0) / 400,
-            value: xp,
-            symbol: 'x',
-          }}
-          value={xp}
-          onChange={setXp}
-        />
-        {floorShift && (
-          <Slider
-            spec={{
-              key: 'floor',
-              label: 'where you put U = 0',
-              min: floorLo,
-              max: floorHi,
-              step: (floorHi - floorLo) / 200,
-              value: offset,
-              symbol: 'c',
-              unit: 'J',
-            }}
-            value={offset}
-            onChange={setOffset}
-          />
-        )}
-      </div>
-
-      <ReadoutRow>
-        <Readout label="position" value={fmt(xp)} accent="cyan" />
-        <Readout label="U here" value={`${fmt(Up)} J`} accent="orchid" />
-        <Readout label="slope dU/dx" value={`${fmt(slope)} J/m`} accent="ink" />
-        <Readout label="force −dU/dx" value={`${fmt(F)} N`} accent="cyan" />
-        {showEnergy && (
-          <Readout label="K = E − U" value={`${fmt(Math.max(0, Eshifted - Up))} J`} accent="ok" />
-        )}
-      </ReadoutRow>
-
-      {caption && (
-        <p
-          style={{
-            marginTop: 10,
-            color: 'var(--color-ink-soft)',
-            fontSize: '0.95rem',
-            lineHeight: 1.6,
-          }}
-        >
-          {caption}
-        </p>
-      )}
-    </Panel>
-  );
+  const [visible, setVisible] = useState(!hideForce);
+  const svg = useRef<SVGSVGElement>(null);
+  const land = useMemo(() => shiftLandscape(base, offset), [base, offset]);
+  const profile = useMemo(() => slopeProfile(base, 420), [base]);
+  const lo = Math.min(...profile.map(p => p.U)) + (floorShift ? floorRange[0] : 0) - 0.8;
+  const hi = Math.max(...profile.map(p => p.U)) + (floorShift ? floorRange[1] : 0) + 0.8;
+  const fmax = Math.max(1, ...profile.map(p => Math.abs(p.F))) * 1.15;
+  const W = 760, L = 70, R = 735, top = 24, uh = 215, ft = 290, fh = 105;
+  const sx = (v: number) => L + (v - a) / (b - a) * (R - L);
+  const yu = (v: number) => top + uh - (v - lo) / (hi - lo) * uh;
+  const yf = (v: number) => ft + fh / 2 - v / fmax * fh / 2;
+  const path = (points: { x: number; y: number }[]) => points.map((p, i) => `${i ? 'L' : 'M'}${p.x},${p.y}`).join('');
+  const E = (energy ?? base.suggestedE ?? 0) + offset;
+  const turns = showEnergy ? turningPointsOf(land, E) : [];
+  const ticks = Array.from({ length: 5 }, (_, i) => a + (b - a) * i / 4);
+  const U = land.U(x), F = forceAt(land, x), slope = base.dU(x);
+  const dx = (b - a) * 0.09;
+  const move = (clientX: number) => {
+    const rect = svg.current?.getBoundingClientRect();
+    if (rect) setProbe(Math.max(a, Math.min(b, a + ((clientX - rect.left) / rect.width * W - L) / (R - L) * (b - a))));
+  };
+  const reset = () => { setKey(landscape); setProbe(probeX ?? (landscapeOf(landscape).domain[0] + landscapeOf(landscape).domain[1]) / 2); setOffset(0); setVisible(!hideForce); };
+  return <Panel title={base.label}>
+    <div style={{ display: 'flex', gap: 10, flexWrap: 'wrap', marginBottom: 12 }}>
+      {landscapes && <Toggle options={landscapes.map(k => ({ key: k, label: ALL_LANDSCAPES[k]?.label.split('—')[0].trim() ?? k }))} value={[key]} onChange={next => next[0] && setKey(next[0])} />}
+      {hideForce && <Button onClick={() => setVisible(v => !v)}>{visible ? 'hide force' : 'reveal force'}</Button>}
+      <Button onClick={reset}>reset probe and floor</Button>
+    </div>
+    <p style={{ color: 'var(--color-ink-soft)', fontSize: '0.95rem' }}>Solid curve: potential U. Dashed tangent: local slope. {visible ? 'Lower panel and arrow: force F.' : 'Predict first, then reveal force.'}</p>
+    <svg ref={svg} viewBox={`0 0 ${W} 470`} width="100%" style={{ display: 'block', maxHeight: height, touchAction: 'none' }} role="img"
+      aria-label={`At x ${fmt(x)}, U is ${fmt(U)} joules.${visible ? ` Force is ${fmt(F)} newtons.` : ' Force hidden.'}`}
+      onPointerDown={ev => { ev.currentTarget.setPointerCapture(ev.pointerId); move(ev.clientX); }}
+      onPointerMove={ev => { if (ev.buttons) move(ev.clientX); }}>
+      <defs><clipPath id={`u-${id}`}><rect x={L} y={top} width={R - L} height={uh} /></clipPath></defs>
+      {Array.from({ length: 5 }, (_, i) => lo + (hi - lo) * i / 4).map(u => <g key={u}>
+        <line x1={L} x2={R} y1={yu(u)} y2={yu(u)} stroke="var(--color-rule)" />
+        <text x={L - 9} y={yu(u) + 5} textAnchor="end" fill="var(--color-ink-soft)" fontSize={14}>{fmt(u)}</text>
+      </g>)}
+      <text x={L} y={17} fill="var(--color-ink)" fontSize={15}>U (J)</text>
+      <g clipPath={`url(#u-${id})`}>
+        <path d={path(profile.map(p => ({ x: sx(p.x), y: yu(p.U + offset) })))} fill="none" stroke="var(--color-orchid)" strokeWidth={2.5} />
+        <line x1={sx(x - dx)} x2={sx(x + dx)} y1={yu(U - slope * dx)} y2={yu(U + slope * dx)} stroke="var(--color-cyan)" strokeWidth={2} strokeDasharray="6 4" />
+        {showEnergy && <line x1={L} x2={R} y1={yu(E)} y2={yu(E)} stroke="var(--color-magenta)" strokeWidth={2} strokeDasharray="8 5" />}
+        <circle cx={sx(x)} cy={yu(U)} r={6} fill="var(--color-cyan)" />
+        {visible && Math.abs(F) > 0.015 && <g stroke="var(--color-cyan)" strokeWidth={3} fill="none">
+          <path d={`M${sx(x)},${yu(U) - 16}h${F / fmax * 90}`} />
+          <path d={`M${sx(x) + F / fmax * 90 - Math.sign(F) * 7},${yu(U) - 21}l${Math.sign(F) * 7},5l${-Math.sign(F) * 7},5`} />
+        </g>}
+      </g>
+      {turns.map(t => <line key={t} x1={sx(t)} x2={sx(t)} y1={top} y2={ft + fh} stroke="var(--color-magenta)" strokeDasharray="3 5" />)}
+      <line x1={sx(x)} x2={sx(x)} y1={top} y2={ft + fh} stroke="var(--color-ink-soft)" opacity={0.35} />
+      {visible ? <g>
+        <text x={L} y={ft - 14} fill="var(--color-ink)" fontSize={15}>F (N) — positive/negative x</text>
+        {[-fmax / 1.15, 0, fmax / 1.15].map(f => <g key={f}>
+          <line x1={L} x2={R} y1={yf(f)} y2={yf(f)} stroke="var(--color-rule)" />
+          <text x={L - 9} y={yf(f) + 5} textAnchor="end" fill="var(--color-ink-soft)" fontSize={14}>{fmt(f)}</text>
+        </g>)}
+        <path d={path(profile.map(p => ({ x: sx(p.x), y: yf(p.F) })))} fill="none" stroke="var(--color-cyan)" strokeWidth={2.5} />
+        <circle cx={sx(x)} cy={yf(F)} r={6} fill="var(--color-cyan)" />
+      </g> : <text x={(L + R) / 2} y={ft + fh / 2} textAnchor="middle" fill="var(--color-ink-soft)" fontSize={16}>Where would the force be strongest?</text>}
+      {ticks.map(t => <g key={t}>
+        <line x1={sx(t)} x2={sx(t)} y1={ft + fh} y2={ft + fh + 6} stroke="var(--color-ink-soft)" />
+        <text x={sx(t)} y={ft + fh + 25} textAnchor="middle" fill="var(--color-ink-soft)" fontSize={14}>{fmt(t)}</text>
+      </g>)}
+      <text x={R} y={455} textAnchor="end" fill="var(--color-ink)" fontSize={15}>{base.xLabel ?? 'position (m)'}</text>
+    </svg>
+    <Slider spec={{ key: 'x', label: 'probe position', min: a, max: b, step: 0.01, value: x, unit: 'm' }} value={x} onChange={setProbe} />
+    {floorShift && <Slider spec={{ key: 'floor', label: 'add a constant to U', min: floorRange[0], max: floorRange[1], step: 0.01, value: offset, unit: 'J' }} value={offset} onChange={setOffset} />}
+    <ReadoutRow>
+      <Readout label="position" value={`${fmt(x)} m`} />
+      <Readout label="U here" value={`${fmt(U)} J`} />
+      {visible && <Readout label="slope dU/dx" value={`${fmt(slope)} J/m`} />}
+      {visible && <Readout label="force −dU/dx" value={`${fmt(F)} N`} />}
+      {showEnergy && <Readout label="K = E − U" value={E < U ? 'forbidden: E < U' : `${fmt(E - U)} J`} />}
+    </ReadoutRow>
+    {visible && <details style={{ marginTop: 12 }}><summary>Table of the same landscape</summary>
+      <table style={{ width: '100%', textAlign: 'right' }}><thead><tr><th>x (m)</th><th>U (J)</th><th>F (N)</th></tr></thead>
+        <tbody>{ticks.map(t => <tr key={t}><td>{fmt(t)}</td><td>{fmt(land.U(t))}</td><td>{fmt(forceAt(land, t))}</td></tr>)}</tbody></table>
+    </details>}
+    {caption && <p style={{ color: 'var(--color-ink-soft)', lineHeight: 1.6 }}>{caption}</p>}
+  </Panel>;
 }

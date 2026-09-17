@@ -7,6 +7,7 @@ import {
   beadTrackForce,
   beadVelocity,
   cumulativeWork,
+  constantForceTrial,
   instantaneousPower,
   kineticEnergy,
   pushThroughField,
@@ -21,6 +22,7 @@ import {
   workOfConstantForce,
 } from '../work.ts';
 import { add2, dot2, mag2, rotate2, scale2, type Vec2 } from '../vectors.ts';
+import { sketch as workSketch } from '../../../components/learn/scenarios/up-ch6-work.ts';
 
 /* Every claim Chapter 6 makes out loud, pinned as an assertion. A wrong
    simulation is a wrong lesson, which is worse than no lesson. */
@@ -208,6 +210,85 @@ describe('a bead on a circular wire', () => {
     expect(Math.abs(dot2(beadForce(s, { ...o, tiltDeg: 0 }), beadVelocity(s)))).toBeLessThan(1e-12);
     const tilted = beadForce(s, { ...o, tiltDeg: 30 });
     expect(Math.abs(dot2(tilted, beadVelocity(s)))).toBeGreaterThan(1);
+  });
+});
+
+describe('only the shared piece counts: lesson claims', () => {
+  it('gives +240, zero, and −240 J without weakening the 60 N force', () => {
+    for (const [deg, expected] of [[0, 240], [90, 0], [180, -240]]) {
+      const F = rotate2([60, 0], deg * Math.PI / 180);
+      expect(mag2(F)).toBeCloseTo(60, 12);
+      expect(workOfConstantForce(F, [4, 0])).toBeCloseTo(expected, 10);
+      expect(workOfConstantForce(F, [2, 0])).toBeCloseTo(expected / 2, 10);
+    }
+    expect(splitForWork([0, 120], [4, 0]).sign).toBe('zero');
+  });
+
+  it('distinguishes the upward hand force during lift, lower, hold, and carry', () => {
+    const hand: Vec2 = [0, 100];
+    const gravity: Vec2 = [0, -100];
+    for (const [displacement, expected] of [
+      [[0, 2], 200], [[0, -2], -200], [[0, 0], 0], [[2, 0], 0],
+    ] as [Vec2, number][]) {
+      expect(workOfConstantForce(hand, displacement)).toBe(expected);
+      expect(workOfConstantForce(gravity, displacement)).toBeCloseTo(-expected, 12);
+      expect(workOfConstantForce(add2(hand, gravity), displacement)).toBe(0);
+    }
+  });
+
+  it('keeps positive individual work while net work may be positive, zero, or negative', () => {
+    for (const brake of [30, 60, 80]) {
+      const trial = constantForceTrial({ applied: [60, 0], brake, mass: 10, speed0: 6, distance: 4 });
+      const last = trial.samples.at(-1)!;
+      expect(trial.run.outcome).toBe('reached');
+      expect(last.appliedWork).toBeCloseTo(240, 9);
+      expect(last.brakeWork).toBeCloseTo(-4 * brake, 9);
+      expect(last.netWork).toBeCloseTo(240 - 4 * brake, 9);
+      // K is measured from the independently integrated velocity, not assigned from work.
+      expect(last.deltaK).toBeCloseTo(last.netWork, 4);
+      expect(last.K).toBeCloseTo(kineticEnergy(10, last.v), 10);
+      if (brake === 60) {
+        for (const state of trial.samples) expect(state.v).toBeCloseTo(6, 10);
+        expect(last.K).toBeCloseTo(180, 10);
+      }
+    }
+  });
+
+  it('does not let a huge perpendicular force alter work or kinetic energy on the fixed track', () => {
+    const run = (vertical: number) => constantForceTrial({
+      applied: [20, vertical], brake: 40, mass: 10, speed0: 6, distance: 4,
+    });
+    const a = run(0).samples.at(-1)!;
+    const b = run(1e6).samples.at(-1)!;
+    expect(b.netWork).toBeCloseTo(a.netWork, 9);
+    expect(b.K).toBeCloseTo(a.K, 9);
+  });
+
+  it('grades the changed force pair against a measured straight decline from 180 J to 100 J', () => {
+    const scenario = workSketch['up-ch6-kinetic-energy-with-brake'];
+    const points = scenario.truth();
+    expect(points[0]).toEqual({ x: 0, y: 180 });
+    expect(points.at(-1)!.x).toBe(4);
+    expect(points.at(-1)!.y).toBeCloseTo(100, 4);
+    for (const p of points) expect(p.y).toBeCloseTo(180 - 20 * p.x, 4);
+    // Neither the flat "zero net work" answer nor counting only the pull is
+    // near the target; both misconception curves fit on the drawing surface.
+    const flatError = points.reduce((sum, p) => sum + Math.abs(p.y - 180), 0) / points.length;
+    const pullOnlyError = points.reduce((sum, p) => sum + Math.abs(p.y - (180 + 20 * p.x)), 0) / points.length;
+    expect(flatError).toBeGreaterThan(scenario.tolerance);
+    expect(pullOnlyError).toBeGreaterThan(scenario.tolerance);
+    expect(scenario.yRange[1]).toBeGreaterThan(260);
+  });
+
+  it('ends the trial at its first stop instead of inventing a negative kinetic energy', () => {
+    const trial = constantForceTrial({ applied: [60, 0], brake: 120, mass: 10, speed0: 6, distance: 4 });
+    const last = trial.samples.at(-1)!;
+    expect(trial.run.outcome).toBe('turned-back');
+    expect(last.x).toBeCloseTo(3, 4);
+    expect(last.K).toBe(0);
+    expect(last.v).toBe(0);
+    expect(last.netWork).toBeCloseTo(-180, 4);
+    expect(trial.samples.every(s => s.K >= 0 && s.x <= last.x)).toBe(true);
   });
 });
 

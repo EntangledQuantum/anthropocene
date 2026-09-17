@@ -1,0 +1,17 @@
+title: 'The work–energy theorem'
+blurb: 'Add the signed work of every force on a particle: that net work equals its change in kinetic energy.'
+notation: 'W_{\mathrm{net}} = \sum_i W_i = \Delta K,\qquad K=\tfrac12 mv^2'
+tags: ['up-ch6']
+misconceptions:
+  - id: 'up-individual-work-is-net-work'
+    name: 'One positive-work force guarantees an increase in speed.'
+    signal: 'Uses the pull alone to predict a speed increase while ignoring an opposing brake or friction.'
+    correction: 'The theorem uses the signed sum over all forces on the chosen particle. A pull can do positive work while a brake does equal negative work, leaving speed unchanged.'
+  - id: 'up-zero-net-work-means-no-work'
+    name: 'If kinetic energy does not change, no force has done work.'
+    signal: 'Assigns zero work to both a hand and friction when a box moves at constant speed.'
+    correction: 'A zero sum need not have zero terms. Equal positive and negative contributions cancel in the kinetic-energy account.'
+  - id: 'up-kinetic-energy-has-direction'
+    name: 'Kinetic energy points in the direction of motion.'
+    signal: 'Gives kinetic energy a negative sign because velocity points left.'
+    correction: 'Kinetic energy uses speed squared and is a nonnegative scalar for positive mass. The change in it, and net work, can be negative.'

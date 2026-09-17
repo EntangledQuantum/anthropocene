@@ -1,0 +1,5 @@
+---
+import Island, { type WorkArrowsProps } from '../viz/WorkArrows.tsx';
+const props = Astro.props as WorkArrowsProps;
+---
+<Island client:visible {...props} />

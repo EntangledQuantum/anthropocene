@@ -35,6 +35,10 @@ const options = props.options.map((o) => {
   return { ...o, resolved: found };
 });
 ---
-<Island client:visible {...props} options={options}>
-  <slot />
-</Island>
+{Astro.slots.has('default') ? (
+  <Island client:visible {...props} options={options}>
+    <slot />
+  </Island>
+) : (
+  <Island client:visible {...props} options={options} />
+)}
