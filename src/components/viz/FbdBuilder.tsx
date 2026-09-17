@@ -1253,7 +1253,7 @@ export default function FbdBuilder({
                 value={`${fmt(mag2(acc), 2)} m/s²`}
                 accent="magenta"
               />,
-              <Readout
+              !hideMotion && <Readout
                 key={`${b.id}-v`}
                 label={one ? 'speed' : `speed · ${b.label}`}
                 value={`${fmt(snap.speed[b.id] ?? 0, 2)} m/s`}
