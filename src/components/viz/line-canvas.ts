@@ -53,9 +53,12 @@ export function arrow(g: CanvasRenderingContext2D, x1: number, y1: number, x2: n
   if (label) text(g, label, x2 + (Math.abs(ux) > 0.5 ? ux * 8 : 10), y2 + (Math.abs(uy) > 0.5 ? uy * 14 : -8), color, Math.abs(ux) > 0.5 && ux < 0 ? 'right' : 'left', 13, 600);
 }
 
-export function text(g: CanvasRenderingContext2D, s: string, x: number, y: number, color: string, align: CanvasTextAlign = 'left', size = 13, weight = 400, mono = false) {
+export function text(g: CanvasRenderingContext2D, s: string, x: number, y: number, color: string, align: CanvasTextAlign = 'left', size = 13, weight = 400, mono = false, halo?: string) {
   g.font = `${weight} ${size}px ${mono ? 'ui-monospace, monospace' : 'Inter, sans-serif'}`;
-  g.textAlign = align; g.fillStyle = color;
+  g.textAlign = align;
+  // a halo in the surface colour keeps a label legible where it crosses a line
+  if (halo) { g.strokeStyle = halo; g.lineWidth = 5; g.lineJoin = 'round'; g.strokeText(s, x, y); }
+  g.fillStyle = color;
   g.fillText(s, x, y);
 }
 

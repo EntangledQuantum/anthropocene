@@ -130,7 +130,7 @@ export default function BrakeToTheLine({
       g.setLineDash([5, 5]); g.strokeStyle = c.soft; g.lineWidth = 1.5;
       g.beginPath(); g.moveTo(tx(r.tBrake), vy(0)); g.lineTo(tx(r.tBrake), vy(reference)); g.lineTo(tx(r.tBrake + tr), vy(0)); g.closePath(); g.stroke();
       g.setLineDash([]);
-      text(g, `${reference} m/s stops in ${stoppingDistance(reference, decel).toFixed(0)} m`, tx(r.tBrake) + 6, vy(reference) - 6, c.soft, 'left', 12);
+      text(g, `${reference} m/s stops in ${stoppingDistance(reference, decel).toFixed(0)} m`, tx(r.tBrake) + 6, vy(reference) - 6, c.soft, 'left', 12, 400, false, c.surf);
     }
     if (d.t > 0) {
       const n = 120, pts: [number, number][] = [];
@@ -142,7 +142,7 @@ export default function BrakeToTheLine({
       }
       g.strokeStyle = c.v; g.lineWidth = 2.5;
       g.beginPath(); pts.forEach(([t, v], i) => (i ? g.lineTo(tx(t), vy(v)) : g.moveTo(tx(t), vy(v)))); g.stroke();
-      if (!d.on && d.t >= r.tStop - 1e-6) text(g, `braked over ${stoppingDistance(speed, decel).toFixed(1)} m`, tx(r.tBrake) + 8, vy(speed * 0.18), c.x, 'left', 12, 600);
+      if (!d.on && d.t >= r.tStop - 1e-6) text(g, `braked over ${stoppingDistance(speed, decel).toFixed(1)} m`, tx(r.tBrake + 0.5 * (speed / decel)), vy(speed * 0.3), c.ink, 'center', 13, 600, false, c.surf);
     }
   };
 

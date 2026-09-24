@@ -69,7 +69,7 @@ export default function OffTheTableEdge({
     const t0 = performance.now();
     let nextStrobe = 0, lastShown = 0;
     const frame = (now: number) => {
-      const t = Math.min(end, ((now - t0) / 1000) * rate);
+      const t = Math.max(0, Math.min(end, ((now - t0) / 1000) * rate)); // a frame's timestamp can precede t0
       const pa = at(a, Math.min(t, a.landTime)), pb = at(b, Math.min(t, b.landTime));
       put(A.current, pa.x, pa.y); put(B.current, pb.x, pb.y);
       rule.current?.setAttribute('x1', `${s.sx(pb.x)}`); rule.current?.setAttribute('y1', `${s.sy(pb.y)}`);
@@ -102,6 +102,8 @@ export default function OffTheTableEdge({
   };
 
   const a = runs?.a, b = runs?.b;
+  // Fit the view to the table and the reach at true scale, with room under the floor for its labels.
+  const ppm = 616 / (reach + 0.9), lo = -28 / ppm, hi = height * 1.25;
   const off = a && bucket !== undefined ? a.landX - bucket : 0;
   const idle = !runs || landed;
   const fmt = (f: TableFlight | undefined) => (f && landed ? f.landTime.toFixed(3) : clock.toFixed(2));
@@ -120,7 +122,7 @@ export default function OffTheTableEdge({
           miss={a ? `Landed at ${a.landX.toFixed(2)} m, ${Math.abs(off).toFixed(2)} m ${off > 0 ? 'past' : 'short of'} the bucket. It was in the air ${a.landTime.toFixed(3)} s, the same as the dropped ball.` : undefined}
           hit={explanation} />}
       </div>}>
-      <Stage x={[-0.9, reach]} y={[-0.05, Math.max(height * 1.22, (reach + 0.9) * (296 / 616) - 0.05)]} height={320} equal ground
+      <Stage x={[-0.9, reach]} y={[lo, hi]} height={Math.round((hi - lo) * ppm + 24)} equal ground
         label={`Two balls at the edge of a ${height} metre table. One is pushed at ${v0.toFixed(1)} metres per second, the other dropped.`}>
         {(s) => { sRef.current = s; return <>
           <rect x={s.sx(-0.9)} y={s.sy(height)} width={s.len(0.9)} height={s.len(0.06)} fill={C.grid} stroke={C.soft} />

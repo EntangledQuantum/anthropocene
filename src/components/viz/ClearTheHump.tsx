@@ -100,7 +100,7 @@ export default function ClearTheHump({ id, prompt, explanation, spare = 0.2 }: C
             <Flag s={s} track={track} x={6.7} label="finish" color={C.soft} />
             {task.done && <EnergyLine s={s} height={out.startHeight} label="E: the start height" from={0} to={7.2} />}
             <Cart refs={cart} pose={cartPose(s, track, st.current.s)} />
-            <Handle s={s} at={[x, track.h(x) + 0.3]} step={0.01} label="Start position on the left hill: drag along the track"
+            <Handle s={s} at={[x, track.h(x) + 0.5]} step={0.01} label="Start position on the left hill: drag along the track"
               onChange={(p) => place(p[0])} color={C.position} />
           </>;
         }}

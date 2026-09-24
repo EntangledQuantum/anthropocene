@@ -52,7 +52,7 @@ export default function LetGoOfTheString({
     state.current.last = performance.now();
     const frame = (now: number) => {
       const st = state.current, s = sRef.current;
-      const dt = Math.min((now - st.last) / 1000, 0.05);
+      const dt = Math.max(0, Math.min((now - st.last) / 1000, 0.05));
       st.last = now;
       if (s) {
         let x: number, y: number, vx: number, vy: number;
@@ -63,7 +63,7 @@ export default function LetGoOfTheString({
           aArr.current?.setAttribute('x2', `${s.sx(x + w.ax * KA)}`);
           aArr.current?.setAttribute('y2', `${s.sy(y + w.ay * KA)}`);
         } else {
-          const t = (now - st.released.t0) / 1000;
+          const t = Math.max(0, (now - st.released.t0) / 1000);
           [x, y] = afterRelease(r, speed, st.released.angle, t);
           const w = whirl(r, speed, st.released.angle);
           vx = w.vx; vy = w.vy;

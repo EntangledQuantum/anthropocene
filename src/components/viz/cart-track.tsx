@@ -107,8 +107,11 @@ export function drawTrack(el: HTMLCanvasElement, s: Track, c: CartSetup, col: Re
     const top = stackTop(k.m) - 12;
     arrow(g, x, x + k.v * V_SCALE * m2px, top, col.vel);
     if (Math.abs(k.v) > 0.05) {
-      g.font = '600 12px Inter, sans-serif'; g.fillStyle = col.vel; g.textAlign = k.v > 0 ? 'left' : 'right';
-      g.fillText(`${k.v.toFixed(1)} m/s`, x + k.v * V_SCALE * m2px + Math.sign(k.v) * 6, top + 4);
+      g.font = '600 12px Inter, sans-serif'; g.fillStyle = col.vel;
+      const label = `${k.v.toFixed(1)} m/s`, tw = g.measureText(label).width;
+      const lx = Math.min(W - 4 - tw, Math.max(4, k.v > 0 ? x + k.v * V_SCALE * m2px + 6 : x + k.v * V_SCALE * m2px - 6 - tw));
+      g.textAlign = 'left';
+      g.fillText(label, lx, top + 4);
     }
     if (handleOn === 'vB' && name === 'B') ring(g, x + k.v * V_SCALE * m2px, top, col.ink, col.surf);
     if (handleOn === 'mB' && name === 'B') ring(g, x, RAIL - 16 - n * 9 - 2, col.ink, col.surf);
@@ -206,7 +209,9 @@ export function useCartRun(canvas: RefObject<HTMLCanvasElement | null>, setup: C
             setShown({ P: totalMomentum(s), KE: totalKE(s), running: false, ran: true });
           }
         }
-        drawTrack(el, s, cfg.current, col, running.current ? undefined : handleOn);
+        // The handle belongs to the starting line-up; after a run it is hidden
+        // until the scene goes back to the start.
+        drawTrack(el, s, cfg.current, col, running.current || s.t > 0 ? undefined : handleOn);
         if (running.current && now - lastShown > 120) {
           lastShown = now;
           setShown({ P: totalMomentum(s), KE: totalKE(s), running: true, ran: false });
@@ -223,6 +228,8 @@ export function useCartRun(canvas: RefObject<HTMLCanvasElement | null>, setup: C
     shown,
     /** True once the current setup has been run to the end. */
     ranThis: shown.ran && same(ranWith.current, setup),
+    /** Is the picture showing the starting line-up (where the handle lives)? */
+    atStart: () => !running.current && state.current.t === 0,
     run: () => { state.current = buildTrack(cfg.current); ranWith.current = { ...cfg.current }; running.current = true; setShown((x) => ({ ...x, running: true, ran: false })); },
     reset: () => { running.current = false; state.current = buildTrack(cfg.current); setShown({ P: state.current.P0, KE: state.current.E0, running: false, ran: false }); },
   };

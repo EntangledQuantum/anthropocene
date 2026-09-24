@@ -71,7 +71,10 @@ export default function FreezeAtTheTop({ id, prompt, speed = 12, slow = 0.5, tol
       arrow(g, bx - 16, by, bx - 16, by - st.v * PX_PER_MS, c.v, s.phase === 'frozen' ? `v = ${Math.abs(st.v).toFixed(1)} m/s` : undefined);
       arrow(g, bx + 16, by, bx + 16, by + G * PX_PER_MS, c.a, s.phase === 'frozen' ? `a = ${G.toFixed(2)} m/s² down` : 'a');
     }
-    if (s.phase === 'frozen') text(g, `frozen at ${st.y.toFixed(1)} m`, bx + 30, by - 14, c.ink, 'left', 12, 600);
+    if (s.phase === 'frozen') {
+      text(g, `frozen at ${st.y.toFixed(1)} m`, bx + 30, by - 14, c.ink, 'left', 12, 600);
+      if (Math.abs(st.v) * PX_PER_MS < 12) text(g, `v = ${Math.abs(st.v).toFixed(1)} m/s`, bx - 22, by + 4, c.v, 'right', 13, 600);
+    }
 
     // v(t): one straight line
     const left = 290, right = W - 14, vTop = speed * 1.15;
@@ -116,7 +119,7 @@ export default function FreezeAtTheTop({ id, prompt, speed = 12, slow = 0.5, tol
           <button type="button" className="anth-btn" onClick={press} style={{ minWidth: 120 }}>{label}</button>
           <span className="hud-label">half speed</span>
           <span style={{ marginLeft: 'auto', display: 'flex', gap: 22 }}>
-            <Meter label="Velocity" value={airborne ? st.v.toFixed(1) : '0.0'} unit="m/s" color={C.velocity} />
+            <Meter label="Velocity" value={airborne ? (Math.abs(st.v) < 0.05 ? '0.0' : st.v.toFixed(1)) : '0.0'} unit="m/s" color={C.velocity} />
             <Meter label="Acceleration" value={airborne ? (-G).toFixed(2) : '0.00'} unit="m/s²" color={C.accel} />
           </span>
         </div>

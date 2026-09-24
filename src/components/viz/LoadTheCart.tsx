@@ -73,6 +73,7 @@ export default function LoadTheCart({
         aria-label={`Cart A, ${mA} kilograms at ${vA} metres per second, rolls toward cart B, loaded to ${mB} kilograms. Drag the top of B's stack, or use the up and down arrow keys.`}
         onPointerDown={(ev) => {
           if (cart.shown.running) return;
+          if (!cart.atStart()) { cart.reset(); return; }
           const el = canvas.current!, r = el.getBoundingClientRect(), sx = px(el.clientWidth);
           const half = (sx(1) - sx(0)) * 0.6;
           if (Math.abs(ev.clientX - r.left - sx(START.b)) < half && ev.clientY - r.top < RAIL - 4 && ev.clientY - r.top > stackTop(maxLoad) - 30) {

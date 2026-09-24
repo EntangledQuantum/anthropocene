@@ -50,8 +50,10 @@ export default function ScrubTheLift({ id, prompt, explanation }: ScrubTheLiftPr
       g.beginPath(); g.moveTo(sh.x1 + 4, sh.yOf(y)); g.lineTo(tx(t), sh.yOf(y)); g.moveTo(tx(t), sh.yOf(y)); g.lineTo(tx(t), sh.bot); g.stroke();
       // the tangent
       const ta = Math.max(0, t - 1.4), tb = Math.min(T, t + 1.4);
+      g.save(); g.beginPath(); g.rect(LEFT, sh.top - 4, right - LEFT, sh.bot - sh.top + 4); g.clip();
       g.strokeStyle = c.v; g.lineWidth = 3; g.lineCap = 'round';
       g.beginPath(); g.moveTo(tx(ta), sh.yOf(y + v * (ta - t))); g.lineTo(tx(tb), sh.yOf(y + v * (tb - t))); g.stroke();
+      g.restore();
       if (task.done) text(g, `v = ${v.toFixed(1)} m/s`, tx(tb) + 8, sh.yOf(y + v * (tb - t)) + 4, c.v, 'left', 13, 600);
       g.fillStyle = c.surf; g.strokeStyle = c.ink; g.lineWidth = 2.5;
       g.beginPath(); g.arc(tx(t), sh.yOf(y), 9, 0, Math.PI * 2); g.fill(); g.stroke();

@@ -105,7 +105,7 @@ export default function SteerTheBend({
     let lastShown = 0;
     const pts: string[] = [], hpts: string[] = [];
     const frame = (now: number) => {
-      const t = (now - t0) / 1000;
+      const t = Math.max(0, (now - t0) / 1000); // a frame's timestamp can precede t0
       const i = Math.min(run.path.length - 1, Math.floor(t / 0.002));
       const p = run.path[i];
       place(p.x, p.y, p.vx, p.vy);

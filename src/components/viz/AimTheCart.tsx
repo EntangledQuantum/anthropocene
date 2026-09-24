@@ -86,6 +86,7 @@ export default function AimTheCart({
         aria-label={`Cart A, ${mA} kilograms at ${vA} metres per second, and cart B, ${mB} kilograms at ${vB} metres per second. Drag B's velocity arrow, or use the arrow keys.`}
         onPointerDown={(ev) => {
           if (cart.shown.running) return;
+          if (!cart.atStart()) { cart.reset(); return; }
           const el = canvas.current!, r = el.getBoundingClientRect(), g = tip(el.clientWidth);
           const dx = ev.clientX - r.left - g.x, dy = ev.clientY - r.top - g.y;
           const reach = vMax * V_SCALE * g.m2px + 20;

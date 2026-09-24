@@ -146,7 +146,7 @@ export default function TiltUntilSlip({
             </g>
             <line x1={s.sx(base[0])} y1={s.sy(base[1])} x2={s.sx(base[0] + 1.6)} y2={s.sy(base[1])} stroke={C.faint} strokeDasharray="5 4" />
             <path d={`M${s.sx(base[0] + arc)},${s.sy(base[1])} A${s.len(arc)},${s.len(arc)} 0 0 0 ${P(add2(base, scale2(t, arc)))}`} fill="none" stroke={C.soft} strokeWidth={1.5} />
-            <text x={s.sx(base[0] + arc + 0.1)} y={s.sy(base[1] - 0.26)} fontSize={14} fill={C.soft}>{deg.toFixed(1)}°</text>
+            <text x={s.sx(base[0] + 0.05)} y={s.sy(base[1] - 0.28)} fontSize={14} fill={C.soft}>{deg.toFixed(1)}°</text>
             {/* arrows that start inside a block are drawn first, so they emerge from it */}
             {blocks.map(({ m, foot, c, r }, i) => <g key={`in${i}`}>
               <Arrow s={s} from={c} to={add2(c, [0, -m * G_EARTH * kF])} color={C.force} label={one ? `weight ${(m * G_EARTH).toFixed(1)} N` : undefined} labelSide={-1} />

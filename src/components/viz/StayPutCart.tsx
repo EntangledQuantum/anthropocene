@@ -90,7 +90,7 @@ export default function StayPutCart({ id, prompt, explanation }: StayPutCartProp
             <Rail s={s} track={track} />
             <HeightRuler s={s} ticks={[0, 0.5, 1, 1.5, 2]} />
             <Cart refs={cart} pose={cartPose(s, track, st.current.s)} />
-            <Handle s={s} at={[x, track.h(x) + 0.32]} step={0.05} label="Cart position: drag along the track"
+            <Handle s={s} at={[x, track.h(x) + 0.5]} step={0.05} label="Cart position: drag along the track"
               onChange={(p) => place(p[0])} color={C.position} />
           </>;
         }}

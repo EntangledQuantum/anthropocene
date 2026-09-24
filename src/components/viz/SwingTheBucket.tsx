@@ -30,9 +30,9 @@ export interface SwingTheBucketProps {
 
 const MASS = 1; // kg of water
 const SLOW = 0.5; // shown at half speed
-const KF = 0.03; // metres of arrow per newton
+const KF = 0.045; // metres of arrow per newton
 const VMIN = 1, VMAX = 5;
-const GROUND = -1.6;
+const GROUND = -1.45;
 
 type Water = { kind: 'in' } | { kind: 'free'; p0: readonly [number, number]; v0: readonly [number, number]; t: number; before: number } | { kind: 'landed'; x: number; before: number };
 
@@ -97,9 +97,14 @@ export default function SwingTheBucket({ id, prompt, radius = 1, start = 4.5, to
     const g = el.getContext('2d')!;
     g.setTransform(dpr, 0, 0, dpr, 0, 0);
     g.clearRect(0, 0, Wd, Ht);
-    const ppm = (Ht - 30) / (R + 0.35 - GROUND);
-    const X = (x: number) => Wd / 2 + x * ppm, Y = (y: number) => 14 + (R + 0.35 - y) * ppm;
+    const TOP = R + 0.4;
+    const ppm = (Ht - 44) / (TOP - GROUND);
+    const X = (x: number) => Wd / 2 + x * ppm, Y = (y: number) => 36 + (TOP - y) * ppm;
+    const poly = (pts: number[][]) => { g.beginPath(); pts.forEach(([x, y], i) => (i ? g.lineTo(x, y) : g.moveTo(x, y))); };
 
+    g.font = '13px Inter, sans-serif'; g.fillStyle = c.faint; g.textAlign = 'left';
+    g.fillText('on the water, amber: weight, then the bucket\'s push · magenta: m·a', 10, 18);
+    g.textAlign = 'right'; g.fillText('shown at half speed', Wd - 10, 18);
     g.strokeStyle = c.rule; g.lineWidth = 2;
     g.beginPath(); g.moveTo(0, Y(GROUND)); g.lineTo(Wd, Y(GROUND)); g.stroke();
     g.setLineDash([4, 5]); g.strokeStyle = c.grid; g.lineWidth = 1.5;
@@ -107,24 +112,16 @@ export default function SwingTheBucket({ id, prompt, radius = 1, start = 4.5, to
 
     const p = psi.current, ur = [Math.cos(p), Math.sin(p)], ut = [-Math.sin(p), Math.cos(p)];
     const at = (rr: number, tt: number) => [X(ur[0] * rr + ut[0] * tt), Y(ur[1] * rr + ut[1] * tt)];
-    // arm
+    // the arm, from the hand to the bucket's rim
     g.strokeStyle = c.soft; g.lineWidth = 2;
-    g.beginPath(); g.moveTo(X(0), Y(0)); g.lineTo(...(at(R - 0.2, 0) as [number, number])); g.stroke();
+    g.beginPath(); g.moveTo(X(0), Y(0)); g.lineTo(...(at(R - 0.24, 0) as [number, number])); g.stroke();
     g.fillStyle = c.soft; g.beginPath(); g.arc(X(0), Y(0), 5, 0, Math.PI * 2); g.fill();
-    // bucket: bottom outward, open toward the hand
-    const bucket = [at(R + 0.05, -0.1), at(R + 0.05, 0.1), at(R - 0.2, 0.13), at(R - 0.2, -0.13)];
+
     const w = water.current;
     if (w.kind === 'in') {
-      g.fillStyle = c.soft; g.globalAlpha = 0.35;
-      g.beginPath(); [at(R + 0.05, -0.1), at(R + 0.05, 0.1), at(R - 0.09, 0.115), at(R - 0.09, -0.115)].forEach(([x, y], i) => (i ? g.lineTo(x, y) : g.moveTo(x, y)));
-      g.fill(); g.globalAlpha = 1;
-    }
-    g.strokeStyle = c.ink; g.lineWidth = 2.5;
-    g.beginPath(); bucket.forEach(([x, y], i) => (i ? g.lineTo(x, y) : g.moveTo(x, y))); g.stroke();
-
-    if (w.kind === 'in') {
       // Tip to tail: weight, then the bucket's whole push (bottom and walls),
-      // lands exactly on m·a. The dashed magenta arrow is that sum.
+      // lands exactly on m·a. The dashed magenta arrow is that sum. Drawn
+      // before the bucket so the arrows emerge from it.
       const wc = [ur[0] * (R - 0.02), ur[1] * (R - 0.02)];
       const tip1 = [wc[0], wc[1] - MASS * G_EARTH * KF];
       const b = bucketForce(MASS, speed, R, p);
@@ -132,17 +129,20 @@ export default function SwingTheBucket({ id, prompt, radius = 1, start = 4.5, to
       arrowTo(g, X(wc[0]), Y(wc[1]), X(tip2[0]), Y(tip2[1]), c.a, true, -7);
       arrowTo(g, X(wc[0]), Y(wc[1]), X(tip1[0]), Y(tip1[1]), c.f, false, 4);
       arrowTo(g, X(tip1[0]), Y(tip1[1]), X(tip2[0]), Y(tip2[1]), c.f, false, 4);
+      g.fillStyle = c.soft; g.globalAlpha = 0.3;
+      poly([at(R + 0.07, -0.13), at(R + 0.07, 0.13), at(R - 0.1, 0.145), at(R - 0.1, -0.145)]); g.fill();
+      g.globalAlpha = 1;
     } else {
       const q = w.kind === 'free' ? ballistic(w.p0, w.v0, w.t) : [w.x, GROUND] as const;
       g.fillStyle = c.soft; g.globalAlpha = 0.6;
       g.beginPath();
-      if (w.kind === 'free') g.arc(X(q[0]), Y(q[1]), 7, 0, Math.PI * 2);
-      else g.ellipse(X(q[0]), Y(GROUND) - 2, 26, 4, 0, 0, Math.PI * 2);
+      if (w.kind === 'free') g.arc(X(q[0]), Y(q[1]), 9, 0, Math.PI * 2);
+      else g.ellipse(X(q[0]), Y(GROUND) - 2, 30, 4, 0, 0, Math.PI * 2);
       g.fill(); g.globalAlpha = 1;
     }
-    g.font = '13px Inter, sans-serif'; g.fillStyle = c.faint; g.textAlign = 'left';
-    g.fillText('amber, tip to tail: weight, then the bucket\'s push · dashed magenta: m·a', 10, Ht - 10);
-    g.textAlign = 'right'; g.fillText('half speed', Wd - 10, Ht - 10);
+    // the bucket: bottom outward, open toward the hand
+    g.strokeStyle = c.ink; g.lineWidth = 2.5;
+    poly([at(R - 0.24, -0.17), at(R + 0.07, -0.13), at(R + 0.07, 0.13), at(R - 0.24, 0.17)]); g.stroke();
   };
 
   const nTop = bucketPush(MASS, v, R, 0);
@@ -166,7 +166,7 @@ export default function SwingTheBucket({ id, prompt, radius = 1, start = 4.5, to
         </div>
         {id && <CheckBar verdict={task.verdict} done={task.done} onCheck={() => task.check(hitNow, { v })} miss={miss} hit={explanation} />}
       </div>}>
-      <canvas ref={canvas} style={{ width: '100%', height: 340, display: 'block' }}
+      <canvas ref={canvas} style={{ width: '100%', height: 390, display: 'block' }}
         aria-label={`A bucket of water swung in a vertical circle of radius ${R} metres at ${v.toFixed(2)} metres per second. ${spilled ? 'The water has fallen out.' : 'The water is in the bucket.'}`} />
       <Stage x={[VMIN, VMAX]} y={[-1, 1]} height={78} axes={{ x: 'steady speed (m/s)', xTicks: [1, 2, 3, 4, 5], yTicks: [] }} label="Speed control">
         {(s) => <Handle s={s} at={[v, 0]} step={0.05} color={C.velocity} label="Speed: drag left or right"
