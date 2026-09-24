@@ -237,6 +237,7 @@ export default function SketchCurve({
   };
 
   const submit = () => {
+    if (coverage() <= (spec.minCoverage ?? 0.55)) return;
     const dev = score();
     setDeviation(dev);
     setSubmitted(true);
@@ -252,7 +253,7 @@ export default function SketchCurve({
     paint();
   };
 
-  const enough = coverage() > 0.55;
+  const enough = coverage() > (spec.minCoverage ?? 0.55);
   const correct = deviation !== null && deviation <= spec.tolerance;
   const done = submitted || solved;
 

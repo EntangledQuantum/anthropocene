@@ -1,0 +1,17 @@
+title: 'Variable-force work'
+blurb: 'Accumulate the signed area under force versus position, and distinguish proposed area from work on a reachable path.'
+notation: 'W_{a\to b}=\int_a^b F_x(x)\,dx'
+tags: ['up-ch6']
+misconceptions:
+  - id: 'up-area-endpoint-force'
+    name: 'The final force or tallest peak decides the work.'
+    signal: 'Uses the force at the endpoint times the whole displacement, or ranks only the peak heights.'
+    correction: 'Each stretch contributes its own force times displacement. A broader smaller force can accumulate more work; zero force at the endpoint does not erase earlier contributions.'
+  - id: 'up-area-unsigned'
+    name: 'All area counts positively.'
+    signal: 'Adds the magnitudes of lobes above and below the force axis.'
+    correction: 'For a forward passage, regions below the force axis contribute negative work. Add signed contributions, not their magnitudes.'
+  - id: 'up-area-endpoint-access'
+    name: 'A favorable final area guarantees the endpoint can be reached.'
+    signal: 'Lets a cart cross an interval with negative calculated kinetic energy because a later push restores the total.'
+    correction: 'Check the running work, not only the final sum. The first forward passage ends when kinetic energy reaches zero; a force farther along cannot help before it is reached.'

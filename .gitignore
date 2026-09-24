@@ -25,3 +25,6 @@ pnpm-debug.log*
 
 # pagefind index (generated into dist at build time)
 public/pagefind/
+
+# agent worktrees
+.claude/worktrees/

@@ -1,0 +1,141 @@
+---
+title: 'The area keeps the score'
+blurb: 'Reshape a force history, count its signed area, and catch a journey that its final total cannot justify.'
+order: 2
+tier: 'foundation'
+minutes: 12
+teaches: ['variable-force-work']
+requires: ['mechanical-work', 'work-energy-theorem']
+runtime: 'none'
+status: 'live'
+updated: 2026-09-17
+---
+
+Two carts meet no force at the finish. One passed through a tall, narrow push; the other
+through a lower, broader push. Does the identical final force make their journeys equivalent?
+
+Choose **A · narrow peak**, then **B · broad push** below. Compare the force histories
+before checking the account. Your task is to predict the energy transfer from the whole
+picture — not from its tallest point or its rightmost point.
+
+<WorkArea initial="narrow" hideAccount={true} caption="First compare A and B. Then check the area and energy. Can you reshape A so it transfers more without increasing its peak?" />
+
+<Predict
+  id="up-ch6-area-peak-or-width"
+  question="Compare the unedited A and B presets above. Which transfers more kinetic energy across the track?"
+  options={[
+    { key: 'a', misconception: 'up-area-endpoint-force', label: 'A: its peak force is larger', why: 'A has the larger peak, but that peak acts over less distance. Reset and check A, then B: the lower broad shape collects more area.' },
+    { key: 'b', label: 'B: its lower push persists across more of the track', why: 'The two small end triangles plus B’s middle rectangle outweigh A’s single triangle. Check their signed work and measured kinetic-energy changes; both comparisons agree.' },
+    { key: 'same', misconception: 'up-area-endpoint-force', label: 'Neither: both finish at zero force, so both transfer zero energy', why: 'Zero force at one position says nothing about the area already collected. Slide the inspector toward the finish: the accumulated work survives after the force falls to zero.' },
+  ]}
+  correct="b"
+/>
+
+**Check the area and energy**, then inspect the journey from left to right. Stop where the
+force is zero. Does the work curve return to zero, or only stop changing there?
+
+## Give each stretch its own rectangle
+
+In [Only the shared piece counts](/anthropocene/learn/university-physics/work-and-energy/only-the-shared-piece-counts/),
+you multiplied one constant parallel force by a displacement. Now the height changes:
+each short stretch contributes its own $F_x\,\Delta x$. Accumulate those pieces.
+
+$$W_{0\to x}=\int_0^x F_x(s)\,ds.$$
+
+The integral is the **signed area under force versus position**. Its units are newton-metres,
+or joules — not square metres. For the straight segments here, triangles and trapezoids give
+the area exactly. The dashed energy trace is a separate check: it comes from integrating
+Newton's law and measuring the resulting velocity.
+
+The graph gives **net** force along a fixed horizontal track. That makes its work the
+change in kinetic energy. If you plotted only one force, its area would be only one entry
+in the account.
+
+## Can a journey erase its own score?
+
+Choose **Push, then oppose**. The cart continues right while the force's second lobe
+points left. Before checking the account, decide what to do with that region below zero.
+
+<WorkArea initial="cancel" hideAccount={true} caption="Inspect just the first lobe, then the whole track. Now drag the negative handle until the final kinetic energy matches its starting value. Try making the negative lobe shallower and wider instead." />
+
+<Predict
+  id="up-ch6-area-cancel-not-vanish"
+  question="In the unedited Push, then oppose profile, what does the second lobe do to the score collected by the first?"
+  options={[
+    { key: 'add', misconception: 'up-area-unsigned', label: 'Adds to it: the cart still moves forward through more area', why: 'The displacement is forward, but the force in that region points backward. Forward motion does not turn a negative force into positive work. The running account descends while the cart still moves right.' },
+    { key: 'cancel', label: 'Subtracts it: equal opposite signed areas return the score to zero', why: 'The two lobes are equally wide and equally tall on opposite sides of zero. Their signed contributions cancel. The cart first gains kinetic energy and then gives back the same amount; it has not stood still.' },
+    { key: 'reset', misconception: 'up-area-endpoint-force', label: 'The score resets where the force first crosses zero', why: 'At zero force, the next tiny contribution is zero. Earlier work is not deleted. At the crossing between these lobes the accumulated work is largest, not zero.' },
+  ]}
+  correct="cancel"
+/>
+
+Check the account above. Its two nonzero entries cancel; neither entry vanishes.
+Then change one handle. The cancellation should break immediately — it is a geometric
+balance you can destroy, not a rule attached to the preset's name.
+
+<Recall id="up-ch6-area-recall-sign" concept="variable-force-work">
+  <div slot="front">A cart moves right through a force curve that crosses zero. What does the crossing tell you about accumulated work?</div>
+
+  The work curve has a horizontal tangent there, not necessarily zero height.
+  Positive force adds work during the forward passage; negative force subtracts it.
+  The score at the crossing includes every earlier signed contribution.
+</Recall>
+
+## Draw the account, not the force
+
+Press **Reset** in the figure above to restore **Push, then oppose** and hide its account.
+Its force rises from zero, falls through zero, dips below, and returns. Sketch the cart's
+kinetic energy against position. Keep the force picture nearby without revealing its
+account until you have committed to a shape.
+
+<SketchCurve
+  id="up-ch6-area-sketch-kinetic"
+  scenario="up-ch6-area-kinetic-shape"
+  prompt="The cart starts at the marked kinetic energy. Draw K against position for the unedited Push, then oppose profile. Where is it steepest, and where is it flat?"
+  hint="The height of the force graph controls how much K changes over the next small distance. It does not give the height of K. The force is zero at the start, between the lobes, and at the finish."
+  explanation="K rises smoothly, is flat at its maximum between the lobes, and falls back to its initial value. It is steepest where the force is strongest, not where K is largest. The negative lobe removes the earlier gain; it does not make K negative."
+/>
+
+A force graph and an energy graph cannot have arbitrary shapes independently. One gives
+the change collected by the other over the next bit of distance. The solid work and dashed
+measured energy-change traces should lie almost on top of each other; a tiny residual
+reflects numerical integration, not a new kind of energy.
+
+## A later push cannot reach backward
+
+Now give the cart less starting kinetic energy. Keep the same two lobes, but try them in
+both orders. The full-track geometric area stays unchanged. Does the forward journey?
+
+<WorkArea initial="cancel" lowEnergy={true} hideAccount={true} editable={false} caption="Compare Push, then oppose with Oppose, then push. Check each account and move the inspector as far as it will go. The dimmed part is a proposed force field, not completed work." />
+
+<Predict
+  id="up-ch6-area-reachability"
+  question="For this lower-energy cart, which explanation fits the two orders of the same lobes?"
+  options={[
+    { key: 'same', misconception: 'up-area-endpoint-access', label: 'Both finish alike: the full signed areas are equal', why: 'That compares endpoints before checking whether both endpoints can be reached. In Oppose, then push, the cart runs out of kinetic energy inside the first lobe. The later positive region is beyond its first stop.' },
+    { key: 'blocked', label: 'Push first reaches the finish; opposition first ends the forward passage early', why: 'The early push supplies energy before the opposing region removes it. In the reverse order, the available kinetic energy is exhausted before the cart reaches any positive force. The inspector stops there instead of inventing motion through the missing interval.' },
+    { key: 'negative', misconception: 'up-area-endpoint-access', label: 'Opposition first crosses with negative kinetic energy, then recovers', why: 'Kinetic energy is one-half mass times speed squared and cannot be negative. A negative value from extending the account would mark an inaccessible interval, not a physical state that can be crossed.' },
+  ]}
+  correct="blocked"
+/>
+
+The area beyond the stop is still valid **geometry**. It is not work done on this cart's
+forward passage. At the stop, a continuing backward net force would start a return trip;
+this distance inspector ends there rather than pretending that moving its slider is a clock.
+
+<Recall id="up-ch6-area-recall-first-stop" concept="variable-force-work">
+  <div slot="front">Two force profiles have equal total signed area. What must you check before predicting equal final kinetic energy?</div>
+
+  Check that both forward paths are reachable. Follow the running work from the initial
+  kinetic energy and locate the first zero of K. A later positive lobe cannot finance an
+  earlier interval the cart cannot cross. Equal endpoint accounts apply only to actual journeys.
+</Recall>
+
+## What to carry forward
+
+Keep the force curve and the running score together: **height contributes; signed area accumulates**.
+Keep the first stop visible: an attractive final sum does not make every intervening point reachable.
+Next, reuse that account to read an energy landscape rather than a prescribed force curve.
+
+Physics references: [OpenStax §7.1, Work](https://openstax.org/books/university-physics-volume-1/pages/7-1-work)
+and [§7.3, Work–Energy Theorem](https://openstax.org/books/university-physics-volume-1/pages/7-3-work-energy-theorem).

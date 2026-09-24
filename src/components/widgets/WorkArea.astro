@@ -1,0 +1,5 @@
+---
+import Island, { type WorkAreaProps } from '../viz/WorkArea.tsx';
+const props = Astro.props as WorkAreaProps;
+---
+<Island client:visible {...props} />

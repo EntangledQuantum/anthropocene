@@ -56,6 +56,8 @@ export interface SketchScenario {
   truth: () => { x: number; y: number }[];
   /** Mean absolute deviation (in y-axis units) allowed before it counts wrong. */
   tolerance: number;
+  /** Fraction of the domain required before submission; defaults to 0.55. */
+  minCoverage?: number;
   /** Anchors drawn from the start, so the learner has a foothold. */
   anchors?: { x: number; y: number; label: string }[];
 }
