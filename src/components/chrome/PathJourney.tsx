@@ -3,13 +3,12 @@ import { db } from '../../lib/db/client.ts';
 import { lessonStates } from '../../lib/db/progress.ts';
 
 /* ─────────────────────────────────────────────────────────────────────────
-   A path rendered as a route you travel, not a table of contents.
+   A path rendered as a numbered table of contents with your place marked.
 
-   Thesis §4 Layer D: the map must answer "you are here" and "what next".
-   A flat list of links answers neither — every row looks identical, nothing
-   indicates position, and completing one changes nothing visible. The spine
-   makes progress a place: the thread lights up behind you, the next stop is
-   the only one ringed, and everything ahead stays quiet.
+   Thesis §4 Layer D: the map must answer "you are here" and "what next". So
+   the list stays plain and calm, and only three things carry signal: a check
+   on what you finished, a "continue" marker on the one lesson to do next, and
+   dimmed rows for chapters not yet written.
 
    Progress is read from the local database, so this is a client island. It
    degrades to "nothing completed yet" when storage is unavailable, which is
@@ -39,14 +38,7 @@ export interface PathJourneyProps {
   accent: string;
 }
 
-const TIER_LABEL: Record<string, string> = {
-  foundation: 'foundation',
-  core: 'core',
-  advanced: 'advanced',
-  frontier: 'frontier',
-};
-
-export default function PathJourney({ chapters, accent }: PathJourneyProps) {
+export default function PathJourney({ chapters }: PathJourneyProps) {
   const [done, setDone] = useState<Set<string>>(new Set());
   const [ready, setReady] = useState(false);
 
@@ -70,165 +62,102 @@ export default function PathJourney({ chapters, accent }: PathJourneyProps) {
   // question a returning learner actually has.
   const nextId = all.find((l) => !done.has(l.id))?.id ?? null;
   const completed = all.filter((l) => done.has(l.id)).length;
-
-  const tone = `var(--color-${accent})`;
+  const pct = all.length ? (completed / all.length) * 100 : 0;
 
   return (
-    <div style={{ position: 'relative' }}>
-      {/* progress summary */}
-      <div
-        style={{
-          display: 'flex', alignItems: 'baseline', gap: 16, flexWrap: 'wrap',
-          marginBottom: 40, paddingBottom: 18, borderBottom: '1px solid var(--color-rule)',
-        }}
-      >
-        <span className="readout" style={{ fontSize: '2rem', color: tone, lineHeight: 1 }}>
-          {completed}
-          <span style={{ color: 'var(--color-ink-ghost)', fontSize: '1.2rem' }}>/{all.length}</span>
+    <div>
+      <div style={{ display: 'flex', alignItems: 'center', gap: 16, marginBottom: 28 }}>
+        <span style={{ fontSize: 14.5, color: 'var(--color-ink-soft)', whiteSpace: 'nowrap' }}>
+          {completed} of {all.length} lessons complete
         </span>
-        <span className="hud-label">lessons complete</span>
-        <span style={{ flex: 1, minWidth: 120, height: 2, background: 'var(--color-rule-bright)', position: 'relative', overflow: 'hidden' }}>
+        <span style={{ flex: 1, height: 4, borderRadius: 2, background: 'var(--color-rule)', overflow: 'hidden' }}>
           <span style={{
-            position: 'absolute', inset: 0,
-            width: `${all.length ? (completed / all.length) * 100 : 0}%`,
-            background: 'var(--iridescent)',
-            boxShadow: `0 0 14px ${tone}`,
-            transition: 'width 500ms ease',
+            display: 'block', height: '100%', width: `${pct}%`,
+            background: 'var(--iridescent)', transition: 'width 500ms ease',
           }} />
         </span>
       </div>
 
-      {chapters.map((chapter, ci) => (
-        <section key={chapter.id} style={{ position: 'relative', marginBottom: 8 }}>
-          {/* chapter marker */}
-          <div style={{ display: 'flex', gap: 26, alignItems: 'flex-start', marginBottom: 26 }}>
-            <div style={{ position: 'relative', width: 22, flexShrink: 0, display: 'flex', justifyContent: 'center', paddingTop: 4 }}>
-              <span style={{
-                width: 11, height: 11, transform: 'rotate(45deg)',
-                background: tone, boxShadow: `0 0 18px ${tone}`, flexShrink: 0,
-              }} />
-              {/* thread continuing down through this chapter's stops */}
-              <span style={{
-                position: 'absolute', top: 20, bottom: -30, left: '50%', width: 1,
-                background: 'var(--color-rule-bright)', transform: 'translateX(-50%)',
-              }} />
-            </div>
-            <div style={{ flex: 1, minWidth: 0, paddingBottom: 4 }}>
-              <span className="hud-label" style={{ color: tone }}>
-                chapter {String(ci + 1).padStart(2, '0')}
-              </span>
-              <h2 style={{ margin: '7px 0 0', fontSize: '1.5rem' }}>
-                <a href={chapter.url} style={{ color: 'var(--color-ink)', textDecoration: 'none' }}>{chapter.title}</a>
-              </h2>
-              {chapter.question && (
-                <p style={{
-                  margin: '9px 0 0', fontFamily: 'var(--font-display)', fontSize: '1.05rem',
-                  color: 'var(--color-ink-soft)', lineHeight: 1.5, maxWidth: '54ch',
-                }}>
-                  {chapter.question}
-                </p>
-              )}
-            </div>
-          </div>
-
-          {/* stops */}
-          {chapter.lessons.length === 0 ? (
-            <div style={{ display: 'flex', gap: 26, alignItems: 'center', paddingBottom: 34 }}>
-              <div style={{ width: 22, display: 'flex', justifyContent: 'center', position: 'relative', flexShrink: 0 }}>
-                <span style={{ position: 'absolute', top: -30, bottom: -34, left: '50%', width: 1, background: 'var(--color-rule)', transform: 'translateX(-50%)' }} />
-                <span style={{ width: 7, height: 7, borderRadius: '50%', border: '1px dashed var(--color-ink-ghost)', background: 'var(--color-void)', zIndex: 1 }} />
-              </div>
-              <span className="hud-label" style={{ color: 'var(--color-ink-ghost)' }}>outlined — not yet written</span>
-            </div>
-          ) : chapter.lessons.map((lesson, li) => {
-            const isDone = done.has(lesson.id);
-            const isNext = lesson.id === nextId;
-            const last = ci === chapters.length - 1 && li === chapter.lessons.length - 1;
-
-            return (
-              <a
-                key={lesson.id}
-                href={lesson.url}
-                style={{
-                  display: 'flex', gap: 26, alignItems: 'stretch',
-                  textDecoration: 'none', position: 'relative',
-                }}
-              >
-                {/* the thread + this stop's node */}
-                <div style={{ width: 22, flexShrink: 0, display: 'flex', justifyContent: 'center', position: 'relative' }}>
-                  <span style={{
-                    position: 'absolute', top: 0, bottom: last ? '50%' : 0, left: '50%', width: 1,
-                    transform: 'translateX(-50%)',
-                    background: isDone ? tone : 'var(--color-rule-bright)',
-                    opacity: isDone ? 0.7 : 1,
-                  }} />
-                  <span style={{
-                    position: 'absolute', top: 28, width: isDone || isNext ? 13 : 9, height: isDone || isNext ? 13 : 9,
-                    borderRadius: '50%', zIndex: 1,
-                    background: isDone ? tone : 'var(--color-void)',
-                    border: isDone ? 'none' : `1px solid ${isNext ? tone : 'var(--color-rule-bright)'}`,
-                    boxShadow: isDone ? `0 0 16px ${tone}` : isNext ? `0 0 0 4px color-mix(in oklab, ${tone} 18%, transparent)` : 'none',
-                    transition: 'all 260ms ease',
-                  }} />
-                </div>
-
-                <div
-                  className="hud"
-                  style={{
-                    flex: 1, minWidth: 0, padding: '18px 22px', marginBottom: 18,
-                    borderColor: isNext ? tone : 'var(--color-rule)',
-                    background: isNext
-                      ? `color-mix(in oklab, ${tone} 6%, var(--glass))`
-                      : 'var(--glass)',
-                    opacity: isDone ? 0.78 : 1,
-                  }}
-                >
-                  <div style={{ display: 'flex', gap: 12, alignItems: 'baseline', flexWrap: 'wrap', marginBottom: 7 }}>
-                    {isNext && ready && (
-                      <span className="hud-label" style={{ color: tone }}>start here</span>
-                    )}
-                    {isDone && <span className="hud-label" style={{ color: 'var(--sig-ok)' }}>done</span>}
-                    <span style={{
-                      fontFamily: 'var(--font-display)', fontWeight: 600,
-                      fontSize: '1.18rem', color: 'var(--color-ink)',
-                    }}>
-                      {lesson.title}
+      <ol className="toc">
+        {chapters.map((chapter, ci) => {
+          const empty = chapter.lessons.length === 0;
+          return (
+            <li key={chapter.id} style={{ opacity: empty ? 0.5 : 1 }}>
+              <div className="toc-row" style={{ paddingBottom: empty ? 14 : 6 }}>
+                <span className="toc-num">{ci + 1}.</span>
+                <span>
+                  {empty ? (
+                    <span className="toc-title" style={{ fontFamily: 'var(--font-display)', fontSize: '1.3rem', color: 'var(--color-ink-soft)' }}>
+                      {chapter.title}
                     </span>
-                  </div>
+                  ) : (
+                    <a href={chapter.url} className="toc-title" style={{ fontFamily: 'var(--font-display)', fontSize: '1.4rem', textDecoration: 'none' }}>
+                      {chapter.title}
+                    </a>
+                  )}
+                  {chapter.question && !empty && (
+                    <span className="toc-sub" style={{ fontFamily: 'var(--font-display)', fontStyle: 'italic', fontSize: '1.06rem' }}>
+                      {chapter.question}
+                    </span>
+                  )}
+                </span>
+                <span className="toc-side">{empty ? 'Coming later' : ''}</span>
+              </div>
 
-                  <p style={{
-                    margin: '0 0 12px', color: 'var(--color-ink-soft)',
-                    fontSize: '1rem', lineHeight: 1.6, maxWidth: '58ch',
-                  }}>
-                    {lesson.blurb}
-                  </p>
-
-                  <div style={{ display: 'flex', gap: 16, flexWrap: 'wrap', alignItems: 'baseline' }}>
-                    <span className="hud-label">{TIER_LABEL[lesson.tier] ?? lesson.tier}</span>
-                    <span className="hud-label">{lesson.minutes} min</span>
-                    {lesson.status === 'draft' && (
-                      <span className="hud-label" style={{ color: 'var(--sig-warn)' }}>draft</span>
-                    )}
-                  </div>
-                </div>
-              </a>
-            );
-          })}
-        </section>
-      ))}
-
-      {/* the end of the road */}
-      <div style={{ display: 'flex', gap: 26, alignItems: 'center', marginTop: -8 }}>
-        <div style={{ width: 22, display: 'flex', justifyContent: 'center', flexShrink: 0 }}>
-          <span style={{
-            width: 9, height: 9, transform: 'rotate(45deg)',
-            border: `1px solid var(--color-ink-ghost)`, background: 'var(--color-void)',
-          }} />
-        </div>
-        <span className="hud-label" style={{ color: 'var(--color-ink-ghost)' }}>
-          end of the written path — more in LEARNING-PLAN.md
-        </span>
-      </div>
+              {!empty && (
+                <ul className="lesson-list" style={{ paddingLeft: 56, marginBottom: 12 }}>
+                  {chapter.lessons.map((lesson) => {
+                    const isDone = done.has(lesson.id);
+                    const isNext = ready && lesson.id === nextId;
+                    return (
+                      <li key={lesson.id}>
+                        <a
+                          href={lesson.url}
+                          style={{
+                            alignItems: 'center',
+                            color: isNext ? 'var(--color-ink)' : undefined,
+                          }}
+                        >
+                          <span
+                            aria-hidden="true"
+                            style={{
+                              width: 16, height: 16, flexShrink: 0, borderRadius: '50%',
+                              display: 'inline-flex', alignItems: 'center', justifyContent: 'center',
+                              fontSize: 10, lineHeight: 1,
+                              border: isDone ? 'none' : `1.5px solid ${isNext ? 'var(--color-accent)' : 'var(--color-rule-bright)'}`,
+                              background: isDone ? 'var(--color-accent)' : 'transparent',
+                              color: '#16121f',
+                            }}
+                          >
+                            {isDone ? '✓' : ''}
+                          </span>
+                          <span style={{ flex: 1, minWidth: 0 }}>
+                            {lesson.title}
+                            {lesson.status === 'draft' && (
+                              <span style={{ marginLeft: 10, fontSize: 12.5, color: 'var(--sig-warn)' }}>Draft</span>
+                            )}
+                          </span>
+                          {isNext && (
+                            <span style={{
+                              fontSize: 12.5, fontWeight: 600, color: '#16121f',
+                              background: 'var(--color-accent)', borderRadius: 999, padding: '1px 9px',
+                            }}>
+                              {completed > 0 ? 'Continue' : 'Start here'}
+                            </span>
+                          )}
+                          <span style={{ fontSize: 13.5, color: 'var(--color-ink-ghost)', whiteSpace: 'nowrap' }}>
+                            {lesson.minutes} min
+                          </span>
+                        </a>
+                      </li>
+                    );
+                  })}
+                </ul>
+              )}
+            </li>
+          );
+        })}
+      </ol>
     </div>
   );
 }

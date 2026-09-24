@@ -112,7 +112,7 @@ export default function Estimate({ id, prompt, scenario, explanation }: Estimate
         />
 
         <div style={{ display: 'flex', gap: 10, marginTop: 14, alignItems: 'center', flexWrap: 'wrap' }}>
-          {!revealed && <Button onClick={commit} accent="magenta">commit</Button>}
+          {!revealed && <Button onClick={commit} primary>commit</Button>}
           {revealed && !close && <Button onClick={() => setCommitted(false)}>try again</Button>}
         </div>
 

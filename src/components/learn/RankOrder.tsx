@@ -131,7 +131,7 @@ export default function RankOrder({
         <div className="hud-label" style={{ marginTop: 8, color: 'var(--color-cyan)' }}>↓ {highLabel}</div>
 
         <div style={{ display: 'flex', gap: 8, marginTop: 16 }}>
-          {!done && <Button onClick={check} accent="magenta">check</Button>}
+          {!done && <Button onClick={check} primary>check</Button>}
           {checked && !isRight && <Button onClick={() => setChecked(false)}>keep trying</Button>}
         </div>
 

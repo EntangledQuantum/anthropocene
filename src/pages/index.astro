@@ -1,88 +1,89 @@
 ---
 import Base from '../layouts/Base.astro';
 import { buildGraph } from '../lib/graph/graph.ts';
-import AttractorField from '../components/chrome/AttractorField.tsx';
 
 const graph = await buildGraph();
 const live = [...graph.lessons.values()].filter((l) => l.status === 'live');
-const gaps = graph.issues.filter((i) => i.kind === 'gap').length;
 const base = import.meta.env.BASE_URL.replace(/\/$/, '');
+const firstLesson = graph.paths[0]?.chapters.flatMap((c) => c.lessons)[0];
 ---
-<Base title="Learn by doing, at depth" description="A free, open-source, interactive learning platform for advanced technical material.">
-  <!-- WebGL only, so client:only. Purely decorative and aria-hidden. -->
-  <AttractorField client:only="react" />
-
-  <section style="padding:96px 0 64px;max-width:60ch;position:relative;z-index:1">
-    <div aria-hidden="true" style="position:absolute;inset:-40px -80px -20px -60px;z-index:-1;background:radial-gradient(85% 80% at 18% 45%, color-mix(in oklab, var(--color-void) 93%, transparent) 48%, transparent 88%);pointer-events:none"></div>
-    <span class="hud-label" style="color:var(--color-magenta)">◆ free · open source · no account · works offline</span>
-    <h1 style="font-size:clamp(2.4rem,6.5vw,4rem);line-height:1.05;margin:16px 0 22px">
-      Learn by doing,<br />
-      <span class="text-glow-magenta">without the ceiling.</span>
-    </h1>
-    <p style="font-size:1.2rem;line-height:1.65;color:var(--color-ink-soft);margin:0 0 18px">
-      Interactive lessons where the visualization <em>is</em> the explanation. Predict what a
-      simulation will do, sketch the curve you expect, and watch the real one land on top of
-      your guess.
-    </p>
-    <p style="font-size:1.05rem;line-height:1.65;color:var(--color-ink-faint);margin:0 0 32px">
-      Every topic runs from foundation to frontier on one page. Nothing is taught twice —
-      lessons link through a concept graph. Progress, XP and spaced repetition live in your
-      browser and never touch a server.
-    </p>
-    <div style="display:flex;gap:10px;flex-wrap:wrap">
-      <a href={`${base}/learn/computational-physics/`} class="anth-btn hud-label" style="text-decoration:none;padding:11px 20px;--btn-accent:var(--color-magenta)">
-        start with computational physics →
-      </a>
-      <a href={`${base}/graph/`} class="anth-btn hud-label" style="text-decoration:none;padding:11px 20px">
-        see the concept graph
-      </a>
-    </div>
-  </section>
-
-  <section style="display:grid;grid-template-columns:repeat(auto-fit,minmax(128px,1fr));gap:1px;background:var(--color-rule);border:1px solid var(--color-rule);margin-bottom:64px">
-    {[
-      { k: graph.paths.length, l: 'learning paths' },
-      { k: live.length, l: 'lessons written' },
-      { k: graph.concepts.size, l: 'concepts mapped' },
-      { k: gaps, l: 'known gaps' },
-    ].map((s) => (
-      <div style="background:var(--color-abyss);padding:18px 20px">
-        <div class="readout" style="font-size:1.9rem;color:var(--color-cyan);line-height:1">{s.k}</div>
-        <div class="hud-label" style="margin-top:6px">{s.l}</div>
-      </div>
-    ))}
-  </section>
-
-  <section style="margin-bottom:72px">
-    <h2 style="font-size:1.5rem;margin:0 0 24px">How it works</h2>
-    <div style="display:grid;gap:16px;grid-template-columns:repeat(auto-fit,minmax(260px,1fr))">
-      {[
-        { t: 'Predict, then confront', d: 'You commit to an answer before the simulation runs. Being wrong on purpose is the mechanism — reading that RK4 loses energy teaches nothing next to predicting it will not, and watching it.', a: 'magenta' },
-        { t: 'Draw it, don\'t type it', d: 'Nobody hand-writes a solver in 2026, so nothing here tests that. You sketch the curve you expect, rank methods by cost, sort a symptom into cause — the reasoning a model cannot do for you.', a: 'cyan' },
-        { t: 'Foundation to frontier', d: 'One page carries the first-pass explanation and the graduate treatment of the same idea. You choose the depth; the platform does not choose it for you.', a: 'iris' },
-        { t: 'Recall, scheduled', d: 'Cards are authored inline where the idea appears and scheduled with FSRS-6. A review item can be an interactive prediction, not just a front and a back.', a: 'ok' },
-        { t: 'One concept, one owner', d: 'A concept is taught by exactly one lesson, enforced at build time. Everything else links to it — so the graph stays a graph and the material never repeats itself.', a: 'warn' },
-        { t: 'Yours, locally', d: 'XP, streaks and review state live in SQLite in your browser. No account, no server, no subscription. Export the file whenever you want.', a: 'cyan' },
-      ].map((c) => (
-        <div class="hud hud-brackets" style="padding:18px 20px">
-          <h3 style={`margin:0 0 9px;font-size:1.06rem;color:var(--color-${c.a})`}>{c.t}</h3>
-          <p style="margin:0;color:var(--color-ink-faint);font-size:0.92rem;line-height:1.62">{c.d}</p>
+<Base title="Learn physics by doing it" description="Free, interactive lessons where the visualization is the explanation.">
+  <div class="page-grid" style="padding-top:72px">
+    <div>
+      <section style="max-width:40rem;margin-bottom:72px">
+        <h1 style="font-size:clamp(2.6rem,6vw,4rem);line-height:1.04;margin:0 0 22px">
+          Learn physics by <em style="font-style:italic">doing</em> it.
+        </h1>
+        <p style="font-size:1.22rem;line-height:1.65;color:var(--color-ink-soft);margin:0 0 30px">
+          Each lesson puts you inside the problem. Predict what a system will do, sketch the
+          curve you expect, then watch the real simulation land on your guess.
+        </p>
+        <div style="display:flex;gap:12px;flex-wrap:wrap">
+          {firstLesson && <a href={firstLesson.url} class="btn-primary">Start the first lesson →</a>}
+          <a href={`${base}/learn/`} class="btn-quiet">Browse all paths</a>
         </div>
-      ))}
-    </div>
-  </section>
+      </section>
 
-  <section style="margin-bottom:40px">
-    <h2 style="font-size:1.5rem;margin:0 0 20px">Paths</h2>
-    <div style="display:grid;gap:14px;grid-template-columns:repeat(auto-fit,minmax(300px,1fr))">
-      {graph.paths.map((p) => (
-        <a href={p.url} class="hud" style="padding:18px 20px;text-decoration:none;display:block">
-          <span class="hud-label" style={`color:var(--color-${p.accent})`}>◆ {p.subtitle}</span>
-          <h3 style="margin:9px 0 8px;font-size:1.3rem;color:var(--color-ink)">{p.title}</h3>
-          <p style="margin:0 0 14px;color:var(--color-ink-faint);font-size:0.92rem;line-height:1.6">{p.blurb}</p>
-          <span class="hud-label">{p.chapters.length} chapters · {p.lessons.length} lessons</span>
-        </a>
-      ))}
+      <section id="paths">
+        <h2 style="font-size:1.9rem;margin:0 0 6px">Paths</h2>
+        <p style="margin:0 0 22px;color:var(--color-ink-faint);font-size:15px">
+          {graph.paths.length} paths · {live.length} lessons · {graph.concepts.size} concepts
+        </p>
+
+        <ol class="toc">
+          {graph.paths.map((p, i) => {
+            const written = p.chapters.filter((c) => c.lessons.length > 0);
+            return (
+              <li>
+                <a href={p.url} class="toc-row">
+                  <span class="toc-num">{i + 1}.</span>
+                  <span>
+                    <span class="toc-title" style="font-family:var(--font-display);font-size:1.45rem">{p.title}</span>
+                    <span class="toc-sub">{p.subtitle.charAt(0).toUpperCase() + p.subtitle.slice(1)}</span>
+                  </span>
+                  <span class="toc-side">{p.lessons.length} lessons</span>
+                </a>
+                <ul class="lesson-list">
+                  {written.slice(0, 5).map((c) => (
+                    <li>
+                      <a href={c.lessons[0].url}>
+                        <span>{c.title}</span>
+                        <span style="margin-left:auto;font-size:13.5px;color:var(--color-ink-ghost)">
+                          {c.lessons.length} {c.lessons.length === 1 ? 'lesson' : 'lessons'}
+                        </span>
+                      </a>
+                    </li>
+                  ))}
+                  {written.length > 5 && (
+                    <li><a href={p.url} style="color:var(--color-ink-faint)">+ {written.length - 5} more chapters</a></li>
+                  )}
+                </ul>
+              </li>
+            );
+          })}
+        </ol>
+      </section>
     </div>
-  </section>
+
+    <aside class="page-aside" style="top:96px">
+      <div class="aside-block">
+        <span class="aside-title">How lessons work</span>
+        <ol class="side-list" style="color:var(--color-ink-faint)">
+          <li style="padding:5px 0"><strong style="color:var(--color-ink);font-weight:600">Predict first.</strong> You commit to an answer before the simulation runs.</li>
+          <li style="padding:5px 0"><strong style="color:var(--color-ink);font-weight:600">Draw, don't type.</strong> You sketch, rank and sort. You never write code.</li>
+          <li style="padding:5px 0"><strong style="color:var(--color-ink);font-weight:600">Remember it.</strong> Recall cards come back on a spaced schedule.</li>
+        </ol>
+      </div>
+      <div class="aside-block">
+        <ul class="side-list">
+          <li><a href={`${base}/review/`}><span class="n">↺</span><span>Review queue</span></a></li>
+          <li><a href={`${base}/graph/`}><span class="n">◌</span><span>Concept map</span></a></li>
+          <li><a href="https://github.com/EntangledQuantum/anthropocene"><span class="n">↗</span><span>Source on GitHub</span></a></li>
+        </ul>
+      </div>
+      <div class="aside-block" style="font-size:13.5px;color:var(--color-ink-faint);line-height:1.6">
+        No account. Progress, XP and review cards stay in your browser.
+      </div>
+    </aside>
+  </div>
 </Base>

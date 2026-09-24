@@ -387,22 +387,31 @@ A wrong simulation is a wrong lesson, which is worse than no lesson.
 
 ## 11. Design
 
-Dark only. No light theme, no toggle.
+Dark only. No light theme, no toggle. **It is a study, not a cockpit.**
 
-The reference is Claire Boucher's visual language: iridescent chrome, bloom, soft
-gradients bleeding into black, with sharp manga-clean edges cutting through. Ethereal and
-lush, then a hard line.
+The reference for structure is [algebrica.org](https://algebrica.org): one calm reading
+column, a sidebar that says where you are, numbered tables of contents, serif headings,
+plain sans for everything you click, hairline dividers and nothing else. The Grimes
+reference survives as **atmosphere only**: a faint pearl-lilac aurora at the top of the
+page and a pearl sheen on the mark and progress fills.
 
-What that is **not**: dense 10px uppercase mono in every corner, scanlines over body text,
-hairlines everywhere. That reads as a military dashboard and it fights the reading. An
-earlier pass made exactly this mistake.
+What that rules out, and what two earlier passes got wrong: uppercase mono micro-labels,
+neon borders, glows, HUD panels, stat tiles, and a WebGL field behind the hero. They read
+as a sci-fi dashboard and made the site about itself instead of about the physics.
 
-**The rule: atmosphere lives in the background and the chrome. The reading column and
-every number, axis and label stays large, calm and high contrast.** Legibility wins every
-conflict.
+- **Headings** are EB Garamond (`--font-display`). **UI and body** are Inter. Mono is for
+  numeric readouts only.
+- **Labels are sentence case.** `.hud-label` capitalises its first letter for you; never
+  add `text-transform: uppercase` or letter-spacing to a label.
+- **One chrome accent**, `--color-accent` (pearl lilac), for links, the current location
+  and the primary action. The series ramp (cyan → magenta) is for *data* in plots only.
+- **One primary button per exercise**: `<Button primary>` for the action that submits an
+  answer. Everything else is a neutral `<Button>`.
+- New pages use `.page-grid` (reading column + `.page-aside`) and `.toc` lists from
+  `global.css` rather than inventing a layout.
 
-Tokens are in `src/styles/global.css`. Use them; do not hardcode hex in a component
-except inside shader source, where CSS variables cannot reach.
+Legibility wins every conflict. Tokens are in `src/styles/global.css`. Use them; do not
+hardcode hex in a component except inside shader source, where CSS variables cannot reach.
 
 ---
 

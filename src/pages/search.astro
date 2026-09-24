@@ -3,7 +3,7 @@ import Base from '../layouts/Base.astro';
 import Search from 'astro-pagefind/components/Search.astro';
 ---
 <Base title="Search" description="Full-text search across every lesson." eyebrow="search">
-  <div style="padding:44px 0 0;max-width:74ch">
+  <div style="padding:56px 0 0;max-width:74ch">
     <h1 style="font-size:clamp(1.9rem,4.4vw,2.6rem);margin:0 0 12px">Search</h1>
     <p style="color:var(--color-ink-soft);font-size:1.04rem;line-height:1.65;margin:0 0 28px">
       Indexed at build time by Pagefind, which downloads only the fragments a query needs
@@ -21,23 +21,23 @@ import Search from 'astro-pagefind/components/Search.astro';
     --pf-font: var(--font-sans);
     --pf-background: color-mix(in oklab, var(--color-surface) 92%, transparent);
     --pf-border: var(--color-rule);
-    --pf-border-focus: var(--color-cyan);
-    --pf-border-radius: 2px;
-    --pf-hover: color-mix(in oklab, var(--color-cyan) 12%, transparent);
-    --pf-mark: color-mix(in oklab, var(--color-magenta) 30%, transparent);
+    --pf-border-focus: var(--color-accent);
+    --pf-border-radius: 8px;
+    --pf-hover: var(--color-raised);
+    --pf-mark: color-mix(in oklab, var(--color-accent) 30%, transparent);
     --pf-text: var(--color-ink);
     --pf-text-secondary: var(--color-ink-soft);
     --pf-text-muted: var(--color-ink-faint);
     --pf-skeleton: var(--color-raised);
     --pf-skeleton-shine: var(--color-rule-bright);
-    --pf-outline-focus: var(--color-cyan);
+    --pf-outline-focus: var(--color-accent);
     --pf-outline-width: 2px;
     --pf-shadow-sm: none;
     --pf-shadow-md: 0 8px 30px -10px rgba(0, 0, 0, 0.8);
     --pf-shadow-lg: 0 16px 50px -12px rgba(0, 0, 0, 0.85);
     --pf-modal-backdrop: rgba(7, 6, 11, 0.8);
     --pf-searchbox-max-width: 100%;
-    --pf-input-font-size: 0.95rem;
+    --pf-input-font-size: 1.05rem;
     display: block;
   }
 
@@ -45,7 +45,8 @@ import Search from 'astro-pagefind/components/Search.astro';
     background: var(--glass) !important;
     backdrop-filter: var(--glass-blur);
     color: var(--color-ink) !important;
-    font-family: var(--font-mono) !important;
+    font-family: var(--font-sans) !important;
+    padding-top: 12px !important; padding-bottom: 12px !important;
     border-color: var(--color-rule) !important;
   }
   .pf-searchbox-input::placeholder { color: var(--color-ink-ghost) !important; }
@@ -60,12 +61,12 @@ import Search from 'astro-pagefind/components/Search.astro';
   .pf-searchbox-result-excerpt { color: var(--color-ink-faint) !important; }
   .pf-searchbox-result[aria-selected='true'],
   .pf-searchbox-result:hover {
-    background: color-mix(in oklab, var(--color-cyan) 12%, transparent) !important;
-    border-color: var(--color-cyan) !important;
+    background: var(--color-raised) !important;
+    border-color: var(--color-accent) !important;
   }
   .pf-searchbox-result mark,
   .pf-searchbox-result-excerpt mark {
-    background: color-mix(in oklab, var(--color-magenta) 28%, transparent);
+    background: color-mix(in oklab, var(--color-accent) 28%, transparent);
     color: var(--color-ink);
   }
 

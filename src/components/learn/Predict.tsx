@@ -79,7 +79,7 @@ export default function Predict({
           </span>
         }
       >
-        <p style={{ margin: '0 0 14px', color: 'var(--color-ink)', fontSize: '1rem', lineHeight: 1.6 }}>
+        <p style={{ margin: '0 0 16px', color: 'var(--color-ink)', fontSize: '1.08rem', lineHeight: 1.6 }}>
           {question}
         </p>
 
@@ -88,7 +88,7 @@ export default function Predict({
             const chosen = picked.includes(o.key);
             const right = answers.includes(o.key);
             const tone = !revealed
-              ? chosen ? 'var(--color-cyan)' : 'var(--color-rule)'
+              ? chosen ? 'var(--color-accent)' : 'var(--color-rule-bright)'
               : right ? 'var(--sig-ok)'
               : chosen ? 'var(--color-magenta)'
               : 'var(--color-rule)';
@@ -102,15 +102,15 @@ export default function Predict({
                   style={{
                     width: '100%', textAlign: 'left', cursor: revealed ? 'default' : 'pointer',
                     display: 'flex', alignItems: 'flex-start', gap: 10,
-                    padding: '9px 12px',
+                    padding: '11px 14px',
                     background: chosen ? `color-mix(in oklab, ${tone} 14%, transparent)` : 'transparent',
                     border: `1px solid ${tone}`, borderRadius: 'var(--radius-hud)',
-                    color: 'var(--color-ink)', font: 'inherit', fontSize: '0.94rem', lineHeight: 1.5,
+                    color: 'var(--color-ink)', font: 'inherit', fontSize: '1rem', lineHeight: 1.5,
                     transition: 'border-color 120ms ease, background 120ms ease',
                   }}
                 >
                   <span className="readout" style={{ color: tone, fontSize: 11, paddingTop: 3, minWidth: 14 }}>
-                    {revealed ? (right ? '✓' : chosen ? '✕' : '·') : chosen ? '◆' : '◇'}
+                    {revealed ? (right ? '✓' : chosen ? '✕' : '·') : chosen ? '●' : '○'}
                   </span>
                   <span>{o.label}</span>
                 </button>
@@ -152,7 +152,7 @@ export default function Predict({
 
         {!revealed && (
           <div style={{ marginTop: 14 }}>
-            <Button onClick={commit} disabled={picked.length === 0} accent="magenta">
+            <Button onClick={commit} disabled={picked.length === 0} primary>
               commit prediction
             </Button>
           </div>
@@ -163,8 +163,8 @@ export default function Predict({
           directive script here. An unused-slot template would make it inert. */}
       {children && (
         <div hidden={!revealed} style={{ marginTop: 4 }}>
-          <div className="hud-label" style={{ margin: '14px 0 2px', color: 'var(--color-magenta)' }}>
-            ── now watch what actually happens
+          <div className="hud-label" style={{ margin: '16px 0 6px', color: 'var(--color-accent)', fontSize: 14 }}>
+            Now watch what actually happens
           </div>
           {children}
         </div>

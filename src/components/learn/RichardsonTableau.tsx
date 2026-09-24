@@ -176,7 +176,7 @@ export default function RichardsonTableau({
         </div>
 
         <div style={{ display: 'flex', gap: 8, marginTop: 16, flexWrap: 'wrap' }}>
-          <Button onClick={combine} accent="magenta" disabled={picked.length !== 2}>
+          <Button onClick={combine} primary disabled={picked.length !== 2}>
             combine
           </Button>
           {!solved && <Button onClick={reset}>reset</Button>}

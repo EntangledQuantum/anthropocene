@@ -400,7 +400,7 @@ export default function ConceptGraph() {
   return (
     <div>
       <div style={{ display: 'flex', gap: 12, alignItems: 'center', flexWrap: 'wrap', marginBottom: 14 }}>
-        <Button active={showUnwritten} onClick={() => setShowUnwritten(!showUnwritten)} accent="orchid">
+        <Button active={showUnwritten} onClick={() => setShowUnwritten(!showUnwritten)}>
           {showUnwritten ? 'hiding nothing' : 'written only'}
         </Button>
         <Button onClick={reheat}>re-centre</Button>

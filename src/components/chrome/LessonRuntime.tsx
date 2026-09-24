@@ -35,39 +35,38 @@ export default function LessonRuntime({ lessonId, tier, title, widgets, unlocks 
   const pct = total ? (done / total) * 100 : 0;
 
   return (
-    <section className="hud hud-brackets" style={{ padding: '16px 18px' }}>
+    <section className="hud" style={{ padding: '18px 20px' }}>
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'baseline', gap: 16, flexWrap: 'wrap' }}>
-        <span className="hud-label" style={{ color: complete ? 'var(--sig-ok)' : 'var(--color-magenta)' }}>
-          {complete ? '◆ lesson complete' : '◇ progress'}
+        <span style={{ fontSize: 15, fontWeight: 600, color: complete ? 'var(--sig-ok)' : 'var(--color-ink)' }}>
+          {complete ? 'Lesson complete' : 'Your progress'}
         </span>
-        <span className="readout hud-label" style={{ color: 'var(--color-ink-soft)' }}>
-          {done} / {total} interactions
+        <span style={{ fontSize: 14, color: 'var(--color-ink-faint)' }}>
+          {done} of {total} exercises done
         </span>
       </div>
 
-      <div style={{ height: 3, background: 'var(--color-rule-bright)', marginTop: 10, position: 'relative', overflow: 'hidden' }}>
+      <div style={{ height: 4, borderRadius: 2, background: 'var(--color-rule)', marginTop: 12, position: 'relative', overflow: 'hidden' }}>
         <div style={{
           position: 'absolute', inset: 0, width: `${pct}%`,
-          background: complete ? 'var(--sig-ok)' : 'var(--color-cyan)',
-          boxShadow: `0 0 10px ${complete ? 'var(--sig-ok)' : 'var(--color-cyan)'}`,
+          background: complete ? 'var(--sig-ok)' : 'var(--iridescent)',
           transition: 'width 400ms ease',
         }} />
       </div>
 
       {!db.available && (
-        <p className="hud-label" style={{ marginTop: 10, color: 'var(--color-ink-ghost)', textTransform: 'none', letterSpacing: '0.04em' }}>
+        <p className="hud-label" style={{ marginTop: 10, color: 'var(--color-ink-ghost)' }}>
           Progress isn't being saved in this context — the lesson still works in full.
         </p>
       )}
 
       {complete && unlocks.length > 0 && (
         <div style={{ marginTop: 16, paddingTop: 14, borderTop: '1px solid var(--color-rule)' }}>
-          <span className="hud-label" style={{ display: 'block', marginBottom: 9 }}>this unlocks</span>
+          <span className="hud-label" style={{ display: 'block', marginBottom: 9 }}>This unlocks</span>
           <div style={{ display: 'grid', gap: 8 }}>
             {unlocks.map((u) => (
               <a key={u.url} href={u.url} className="hud"
                  style={{ padding: '10px 13px', textDecoration: 'none', display: 'block' }}>
-                <span style={{ color: 'var(--color-cyan)', display: 'block' }}>{u.title}</span>
+                <span style={{ color: 'var(--color-accent)', display: 'block' }}>{u.title}</span>
                 <span style={{ color: 'var(--color-ink-faint)', fontSize: '0.85rem' }}>{u.blurb}</span>
               </a>
             ))}

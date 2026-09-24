@@ -32,10 +32,10 @@ const KIND_LABEL: Record<Kind, string> = {
   lesson: 'lesson', concept: 'concept', chapter: 'chapter', path: 'path',
 };
 const KIND_TONE: Record<Kind, string> = {
-  lesson: 'var(--color-cyan)',
-  concept: 'var(--color-orchid)',
-  chapter: 'var(--color-iris)',
-  path: 'var(--color-magenta)',
+  lesson: 'var(--color-ink-soft)',
+  concept: 'var(--color-ink-faint)',
+  chapter: 'var(--color-ink-faint)',
+  path: 'var(--color-ink-faint)',
 };
 
 export default function CommandPalette() {
@@ -184,7 +184,7 @@ export default function CommandPalette() {
       }}
     >
       <div
-        className="hud hud-brackets"
+        className="hud"
         style={{
           width: '100%', maxWidth: 680, height: 'fit-content', maxHeight: '72vh',
           display: 'flex', flexDirection: 'column', overflow: 'hidden',
@@ -192,7 +192,7 @@ export default function CommandPalette() {
         }}
       >
         <div style={{ display: 'flex', alignItems: 'center', gap: 12, padding: '16px 20px', borderBottom: '1px solid var(--color-rule)' }}>
-          <span style={{ color: 'var(--color-magenta)', fontSize: 17 }}>⌕</span>
+          <span style={{ color: 'var(--color-ink-faint)', fontSize: 17 }}>⌕</span>
           <input
             ref={inputRef}
             value={query}
@@ -222,8 +222,8 @@ export default function CommandPalette() {
               <p style={{ margin: '0 0 10px', color: 'var(--color-ink-soft)' }}>
                 Nothing matches “{query}”.
               </p>
-              <a href={`${base}/search/`} className="hud-label" style={{ color: 'var(--color-cyan)' }}>
-                search the full text instead →
+              <a href={`${base}/search/`} className="hud-label" style={{ color: 'var(--color-accent)' }}>
+                Search the full text instead →
               </a>
             </div>
           )}
@@ -239,8 +239,8 @@ export default function CommandPalette() {
               style={{
                 display: 'flex', width: '100%', gap: 14, alignItems: 'baseline',
                 padding: '11px 20px', textAlign: 'left', border: 0, cursor: row.url ? 'pointer' : 'not-allowed',
-                background: i === active ? 'color-mix(in oklab, var(--color-cyan) 10%, transparent)' : 'transparent',
-                borderLeft: `2px solid ${i === active ? KIND_TONE[row.kind] : 'transparent'}`,
+                background: i === active ? 'var(--color-raised)' : 'transparent',
+                borderLeft: `2px solid ${i === active ? 'var(--color-accent)' : 'transparent'}`,
                 font: 'inherit', opacity: row.url ? 1 : 0.5,
               }}
             >
@@ -266,10 +266,10 @@ export default function CommandPalette() {
         </div>
 
         <div style={{ display: 'flex', gap: 18, padding: '10px 20px', borderTop: '1px solid var(--color-rule)', flexWrap: 'wrap' }}>
-          <span className="hud-label">↑↓ move</span>
-          <span className="hud-label">⏎ open</span>
-          <a href={`${base}/graph/`} className="hud-label" style={{ marginLeft: 'auto', color: 'var(--color-orchid)', textDecoration: 'none' }}>
-            see the whole graph →
+          <span className="hud-label">↑↓ to move</span>
+          <span className="hud-label">⏎ to open</span>
+          <a href={`${base}/graph/`} className="hud-label" style={{ marginLeft: 'auto', color: 'var(--color-accent)', textDecoration: 'none' }}>
+            See the concept map →
           </a>
         </div>
       </div>

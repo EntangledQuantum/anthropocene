@@ -59,7 +59,7 @@ export default function ReviewQueue({ meta }: { meta: Record<string, CardMeta> }
         </p>
         {locked && (
           <div style={{ marginTop: 14 }}>
-            <Button accent="magenta" onClick={() => location.reload()}>reload</Button>
+            <Button onClick={() => location.reload()}>reload</Button>
           </div>
         )}
       </Panel>
@@ -105,7 +105,7 @@ export default function ReviewQueue({ meta }: { meta: Record<string, CardMeta> }
     <>
       <Panel
         title={`review — ${i + 1} of ${queue.length}`}
-        right={<span className="hud-label" style={{ color: 'var(--color-iris)' }}>{stateLabel.toLowerCase()}</span>}
+        right={<span className="hud-label">{stateLabel.toLowerCase()}</span>}
       >
         {m ? (
           <>
@@ -137,7 +137,7 @@ export default function ReviewQueue({ meta }: { meta: Record<string, CardMeta> }
 
         <div style={{ marginTop: 18, paddingTop: 14, borderTop: '1px solid var(--color-rule)' }}>
           {!revealed ? (
-            <Button accent="iris" onClick={() => setRevealed(true)}>reveal</Button>
+            <Button primary onClick={() => setRevealed(true)}>reveal</Button>
           ) : (
             <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap' }}>
               {options.map((o) => (
@@ -164,10 +164,10 @@ function Stats({ stats, total }: { stats: ProgressSummary; total: number }) {
     <div style={{ marginTop: 16 }}>
       <Panel title="you">
         <ReadoutRow>
-          <Readout label="streak" value={`${stats.streak} d`} accent="magenta" />
-          <Readout label="today" value={`${stats.todayXp} / ${stats.goal} xp`} accent={stats.todayXp >= stats.goal ? 'ok' : 'cyan'} />
+          <Readout label="streak" value={`${stats.streak} d`} />
+          <Readout label="today" value={`${stats.todayXp} / ${stats.goal} xp`} accent={stats.todayXp >= stats.goal ? 'ok' : undefined} />
           <Readout label="total xp" value={stats.totalXp.toLocaleString()} />
-          <Readout label="level" value={`${stats.level} · ${stats.levelXp}/${stats.nextLevelXp}`} accent="iris" />
+          <Readout label="level" value={`${stats.level} · ${stats.levelXp}/${stats.nextLevelXp}`} />
           <Readout label="lessons done" value={String(stats.lessonsComplete)} />
           <Readout label="cards" value={String(total)} />
           <Readout label="longest streak" value={`${stats.longestStreak} d`} />

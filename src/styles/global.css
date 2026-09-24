@@ -1,52 +1,56 @@
 @import "tailwindcss";
-@import "@fontsource-variable/space-grotesk";
+@import "@fontsource-variable/eb-garamond";
+@import "@fontsource-variable/eb-garamond/wght-italic.css";
 @import "@fontsource-variable/inter";
 @import "@fontsource-variable/jetbrains-mono";
 @import "katex/dist/katex.min.css";
 
 /* ── anthropocene design system ──────────────────────────────────────────────
-   Dark only. No light theme, no toggle.
+   Dark only. A study, not a cockpit.
 
-   The reference is Claire's actual visual language, not generic cyberpunk:
-   iridescent chrome, bloom, soft gradients bleeding into black, with sharp
-   manga-clean edges cutting through. Ethereal and lush, then a hard line.
+   The page is a quiet reading room: one column of text, one sidebar that
+   says where you are, serif headings, plain sans for everything you click.
+   The Grimes reference survives as ATMOSPHERE ONLY — a single pearl-lilac
+   aurora breathing at the top of the page and a soft sheen on the mark. It
+   never touches the reading column.
 
-   What that rules OUT, and what an earlier pass got wrong: dense 10px
-   uppercase mono crammed into every corner, scanlines over body text, and
-   hairline-thin dividers everywhere. That reads as a military dashboard, and
-   it fights the reading.
+   What this rules out, and what earlier passes got wrong: uppercase mono
+   micro-labels, neon borders, glows, HUD panels and a WebGL field behind the
+   hero. Those read as a sci-fi dashboard and made the site feel like it was
+   about itself instead of about the physics.
 
-   The rule: atmosphere lives in the BACKGROUND and the CHROME. The reading
-   column and every number, axis and label stays large, calm and high
-   contrast. Legibility wins every conflict, always.
+   Legibility wins every conflict, always.
    ───────────────────────────────────────────────────────────────────────── */
 
 @theme {
   /* ── ground ────────────────────────────────────────────────────────────
-     Neutrals carry a violet cast so the dark never goes flat or blue-grey.
+     Near-black with a faint plum cast so the dark reads warm, not blue.
      ─────────────────────────────────────────────────────────────────── */
-  --color-void:        #06050a;
-  --color-abyss:       #0c0a15;
-  --color-surface:     #14111f;
-  --color-raised:      #1d1830;
+  --color-void:        #0b0a0f;
+  --color-abyss:       #100e15;
+  --color-surface:     #15131b;
+  --color-raised:      #1c1924;
 
   /* ── ink ──────────────────────────────────────────────────────────── */
-  --color-ink:         #f6f2fb;
-  --color-ink-soft:    #c9c1dc;
-  --color-ink-faint:   #8d84a6;
-  --color-ink-ghost:   #5a5273;
+  --color-ink:         #efeaf4;
+  --color-ink-soft:    #c3bccd;
+  --color-ink-faint:   #8f889b;
+  --color-ink-ghost:   #5f5969;
 
-  --color-rule:        #2a2340;
-  --color-rule-bright: #443a63;
+  --color-rule:        #25222d;
+  --color-rule-bright: #37333f;
+
+  /* ── the accent ────────────────────────────────────────────────────────
+     One pearl-lilac for everything interactive in the chrome: links, the
+     current location, the primary action. A second colour in the chrome is
+     noise.
+     ─────────────────────────────────────────────────────────────────── */
+  --color-accent:      #c9b8ff;
+  --color-accent-deep: #9d88f2;
 
   /* ── the series ramp ───────────────────────────────────────────────────
-     ONE analogous arc: aqua → cyan → iris → orchid → magenta. Every hue is
-     a neighbour of the next, so several series on a chart read as one family
-     rather than as a rainbow.
-
-     An earlier palette cycled cyan / magenta / acid-green / amber / violet —
-     four unrelated hues, which is what made charts and the landing background
-     look cheap. Never add a hue outside this arc to a data series.
+     For DATA only — plots, traces, markers. One analogous arc so several
+     series read as a family. Mirrored in viz/chart-core.ts.
      ─────────────────────────────────────────────────────────────────── */
   --color-aqua:        #7ff0e4;
   --color-cyan:        #4fd8e8;
@@ -54,53 +58,43 @@
   --color-orchid:      #cf7ce8;
   --color-magenta:     #ff4d9e;
   --color-rose:        #ff8ac4;
+  --color-violet:      #8f9cf5;
+  --color-amber:       #ffc46b;
 
-  /* ── state, and ONLY state ─────────────────────────────────────────────
-     These two sit outside the ramp on purpose: that is what makes them read
-     as a verdict rather than as another series. Never use them decoratively
-     and never use them for a data series.
-     ─────────────────────────────────────────────────────────────────── */
+  /* ── state, and ONLY state ─────────────────────────────────────────── */
   --color-ok:          #9fe870;
   --color-warn:        #ffc46b;
 
-  --font-display: "Space Grotesk Variable", ui-sans-serif, system-ui, sans-serif;
+  --font-display: "EB Garamond Variable", "EB Garamond", Georgia, "Times New Roman", serif;
   --font-sans:    "Inter Variable", ui-sans-serif, system-ui, sans-serif;
   --font-mono:    "JetBrains Mono Variable", ui-monospace, SFMono-Regular, monospace;
 
-  --radius-hud: 3px;
+  --radius-hud: 10px;
 }
 
 :root {
   color-scheme: dark;
 
-  /* ── semantic roles ────────────────────────────────────────────────────
-     Charts and feedback address colour by MEANING, never by hue name, so the
-     learner picks up one dialect and it holds across every lesson.
-     Thesis §6.7: colour encodes meaning, not mood.
-     ─────────────────────────────────────────────────────────────────── */
-  --sig-you:    var(--color-cyan);      /* the learner's input, guess, selection */
-  --sig-truth:  var(--color-magenta);   /* the exact answer, the reference curve */
-  --sig-ok:     var(--color-ok);        /* verified correct */
-  --sig-warn:   var(--color-warn);      /* not yet, attention, excluded data */
-  --sig-mute:   var(--color-ink-faint); /* de-emphasised, out of scope */
+  /* Semantic roles for charts and feedback — colour by MEANING, never by
+     hue name. Thesis §6.7. */
+  --sig-you:    var(--color-cyan);
+  --sig-truth:  var(--color-magenta);
+  --sig-ok:     var(--color-ok);
+  --sig-warn:   var(--color-warn);
+  --sig-mute:   var(--color-ink-faint);
 
-  --glass:        color-mix(in oklab, var(--color-surface) 70%, transparent);
-  --glass-raised: color-mix(in oklab, var(--color-raised) 80%, transparent);
-  --glass-blur:   blur(18px) saturate(1.25);
+  --glass:        var(--color-surface);
+  --glass-raised: var(--color-raised);
+  --glass-blur:   none;
 
-  --bloom-magenta: 0 0 40px -10px color-mix(in oklab, var(--color-magenta) 70%, transparent);
-  --bloom-cyan:    0 0 40px -10px color-mix(in oklab, var(--color-cyan) 65%, transparent);
+  --bloom-magenta: none;
+  --bloom-cyan:    none;
 
-  /* A sweep WITHIN the ramp — no hue jumps. */
-  --iridescent: linear-gradient(
-    100deg,
-    var(--color-magenta) 0%,
-    var(--color-orchid) 38%,
-    var(--color-iris) 68%,
-    var(--color-cyan) 100%
-  );
+  /* The pearl sheen: used on the mark and on progress fills, nowhere else. */
+  --iridescent: linear-gradient(100deg, #f3d9ff 0%, #c9b8ff 45%, #a9d8f5 100%);
 
-  --measure: 72ch;
+  --measure: 68ch;
+  --shell: 1200px;
 }
 
 /* ── base ─────────────────────────────────────────────────────────────────── */
@@ -114,12 +108,8 @@ html {
 body {
   margin: 0;
   min-height: 100dvh;
-  background:
-    radial-gradient(70rem 50rem at 8% -12%,  color-mix(in oklab, var(--color-magenta) 13%, transparent), transparent 62%),
-    radial-gradient(64rem 44rem at 96% 2%,   color-mix(in oklab, var(--color-iris)    12%, transparent), transparent 60%),
-    radial-gradient(58rem 40rem at 50% 112%, color-mix(in oklab, var(--color-cyan)     8%, transparent), transparent 58%),
-    var(--color-void);
-  background-attachment: fixed;
+  position: relative;
+  background: var(--color-void);
   color: var(--color-ink);
   font-family: var(--font-sans);
   font-size: 17px;
@@ -128,81 +118,70 @@ body {
   text-rendering: optimizeLegibility;
 }
 
-/* A single soft grain layer. No scanlines: striping body text hurts reading
-   for a texture nobody consciously notices. */
-body::after {
+/* The one piece of atmosphere: a pearl aurora at the top of the page that
+   scrolls away with the header. It sits behind everything and fades out
+   well before the first paragraph ends. */
+body::before {
   content: "";
-  position: fixed;
-  inset: 0;
+  position: absolute;
+  inset: 0 0 auto 0;
+  height: 620px;
   z-index: 0;
   pointer-events: none;
-  opacity: 0.032;
-  mix-blend-mode: overlay;
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3'/%3E%3C/filter%3E%3Crect width='160' height='160' filter='url(%23n)'/%3E%3C/svg%3E");
-}
-
-@media (prefers-contrast: more) {
-  body::after { display: none; }
+  background:
+    radial-gradient(46rem 20rem at 18% -6rem, color-mix(in oklab, #e6c8ff 11%, transparent), transparent 70%),
+    radial-gradient(40rem 18rem at 82% -8rem, color-mix(in oklab, #a9d8f5 8%, transparent), transparent 70%);
 }
 
 /* ── typography ───────────────────────────────────────────────────────────── */
 
 h1, h2, h3, h4, h5, h6 {
   font-family: var(--font-display);
-  font-weight: 600;
-  letter-spacing: -0.022em;
-  line-height: 1.14;
+  font-weight: 500;
+  letter-spacing: -0.01em;
+  line-height: 1.15;
   text-wrap: balance;
   color: var(--color-ink);
 }
 
 code, kbd, samp, pre { font-family: var(--font-mono); font-variant-ligatures: none; }
 
-a { color: var(--color-cyan); text-underline-offset: 3px; text-decoration-thickness: 1px; }
-a:hover { color: var(--color-rose); }
+a { color: var(--color-accent); text-underline-offset: 3px; text-decoration-thickness: 1px; }
+a:hover { color: #e4dbff; }
 
-::selection { background: color-mix(in oklab, var(--color-magenta) 45%, transparent); color: #fff; }
+::selection { background: color-mix(in oklab, var(--color-accent) 35%, transparent); color: #fff; }
 
 :focus-visible {
-  outline: 2px solid var(--color-cyan);
+  outline: 2px solid var(--color-accent);
   outline-offset: 3px;
-  border-radius: 3px;
+  border-radius: 4px;
 }
 
 /* ── surfaces ─────────────────────────────────────────────────────────────── */
 
-/* Translucent panel. The workhorse surface for every widget. */
+/* A quiet card. The workhorse surface for every widget. */
 .hud {
   position: relative;
-  background: var(--glass);
-  backdrop-filter: var(--glass-blur);
-  -webkit-backdrop-filter: var(--glass-blur);
+  background: var(--color-surface);
   border: 1px solid var(--color-rule);
   border-radius: var(--radius-hud);
 }
 
-/* One iridescent hairline along the top edge — the sharp accent against the
-   soft panel. Replaces the corner-bracket motif, which was decoration. */
-.hud-brackets::before {
-  content: "";
-  position: absolute;
-  inset: -1px -1px auto -1px;
-  height: 1px;
-  background: var(--iridescent);
-  opacity: 0.85;
-  pointer-events: none;
-}
+/* Kept as a hook for older markup; it no longer draws anything. */
+.hud-brackets::before { content: none; }
 
-/* Micro-label. Larger and looser than before so it reads as a label rather
-   than as instrument noise. */
+/* Small label: sentence case, plain sans. Never uppercase mono. */
 .hud-label {
-  font-family: var(--font-mono);
-  font-size: 11.5px;
+  font-family: var(--font-sans);
+  font-size: 13px;
   font-weight: 500;
-  letter-spacing: 0.1em;
-  text-transform: uppercase;
+  letter-spacing: 0;
+  text-transform: none;
+  line-height: 1.45;
   color: var(--color-ink-faint);
 }
+.hud-label:where(span, div, p, a)::first-letter { text-transform: uppercase; }
+span.hud-label { display: inline-block; }
 
 /* Numeric readout that must not jitter as digits change. */
 .readout {
@@ -211,8 +190,9 @@ a:hover { color: var(--color-rose); }
   font-feature-settings: "tnum" 1;
 }
 
-.glow-magenta { box-shadow: var(--bloom-magenta); }
-.glow-cyan    { box-shadow: var(--bloom-cyan); }
+/* Neutralised: glow is not how this site draws emphasis. */
+.glow-magenta, .glow-cyan { box-shadow: none; }
+.text-glow-magenta, .text-glow-cyan { text-shadow: none; }
 
 .text-iridescent {
   background: var(--iridescent);
@@ -221,84 +201,70 @@ a:hover { color: var(--color-rose); }
   color: transparent;
 }
 
-.text-glow-magenta { text-shadow: 0 0 30px color-mix(in oklab, var(--color-magenta) 55%, transparent); }
-.text-glow-cyan    { text-shadow: 0 0 30px color-mix(in oklab, var(--color-cyan)    50%, transparent); }
-
 /* ── prose: the calm reading column ───────────────────────────────────────── */
 
 .prose-anth {
   max-width: var(--measure);
   color: var(--color-ink-soft);
   font-size: 1.125rem;
-  line-height: 1.75;
+  line-height: 1.78;
 }
-.prose-anth > * + * { margin-top: 1.25em; }
+.prose-anth > * + * { margin-top: 1.2em; }
 .prose-anth strong  { color: var(--color-ink); font-weight: 600; }
 .prose-anth em      { color: var(--color-ink); font-style: italic; }
 
 .prose-anth h2 {
-  margin-top: 2.9em;
-  font-size: 1.9rem;
-  padding-bottom: 0.45em;
-  position: relative;
+  margin-top: 2.6em;
+  padding-top: 1.1em;
+  border-top: 1px solid var(--color-rule);
+  font-size: 2rem;
 }
-.prose-anth h2::after {
-  content: "";
-  position: absolute;
-  left: 0; bottom: 0;
-  width: 4.5rem; height: 1px;
-  background: var(--iridescent);
-}
-.prose-anth h3 { margin-top: 2.2em; font-size: 1.35rem; color: var(--color-ink); }
+.prose-anth h3 { margin-top: 2em; font-size: 1.5rem; color: var(--color-ink); }
 
 .prose-anth :is(ul, ol) { padding-left: 1.4em; }
 .prose-anth ul { list-style: none; }
 .prose-anth ul > li { position: relative; }
 .prose-anth ul > li::before {
   content: "";
-  position: absolute; left: -1.1em; top: 0.72em;
-  width: 6px; height: 6px;
-  background: var(--color-magenta);
-  transform: rotate(45deg);
+  position: absolute; left: -1em; top: 0.78em;
+  width: 5px; height: 5px;
+  border-radius: 50%;
+  background: var(--color-ink-faint);
 }
 .prose-anth ol { list-style: decimal; }
-.prose-anth ol > li::marker { color: var(--color-magenta); font-family: var(--font-mono); font-size: 0.9em; }
-.prose-anth li + li { margin-top: 0.5em; }
+.prose-anth ol > li::marker { color: var(--color-ink-faint); font-size: 0.92em; }
+.prose-anth li + li { margin-top: 0.45em; }
 
 .prose-anth blockquote {
-  border-left: 2px solid transparent;
-  border-image: var(--iridescent) 1;
+  border-left: 2px solid var(--color-accent-deep);
   padding: 0.1em 0 0.1em 1.2em;
   color: var(--color-ink-soft);
   font-style: normal;
 }
 
 .prose-anth :not(pre) > code {
-  font-size: 0.9em;
-  padding: 0.18em 0.45em;
-  background: color-mix(in oklab, var(--color-cyan) 12%, transparent);
-  border: 1px solid color-mix(in oklab, var(--color-cyan) 22%, transparent);
-  border-radius: 3px;
-  color: var(--color-aqua);
+  font-size: 0.86em;
+  padding: 0.14em 0.4em;
+  background: var(--color-raised);
+  border: 1px solid var(--color-rule);
+  border-radius: 5px;
+  color: var(--color-ink);
   white-space: nowrap;
 }
 
 .prose-anth pre {
-  background: color-mix(in oklab, var(--color-abyss) 90%, transparent) !important;
+  background: var(--color-abyss) !important;
   border: 1px solid var(--color-rule);
   border-radius: var(--radius-hud);
   padding: 1.1rem 1.25rem;
   overflow-x: auto;
-  font-size: 0.95rem;
+  font-size: 0.92rem;
   line-height: 1.75;
 }
 
 .prose-anth table { width: 100%; border-collapse: collapse; font-size: 1rem; display: block; overflow-x: auto; }
 .prose-anth :is(th, td) { padding: 0.65em 0.9em; border-bottom: 1px solid var(--color-rule); text-align: left; }
-.prose-anth th {
-  font-family: var(--font-mono); font-size: 0.8rem; letter-spacing: 0.06em;
-  text-transform: uppercase; color: var(--color-ink-faint); font-weight: 500;
-}
+.prose-anth th { font-size: 0.9rem; color: var(--color-ink-faint); font-weight: 500; }
 
 .prose-anth hr { border: 0; height: 1px; background: var(--color-rule); margin: 2.8em 0; }
 
@@ -312,7 +278,7 @@ a:hover { color: var(--color-rose); }
   color: var(--color-ink);
 }
 /* Display math is the argument, not an aside — size it like one. */
-.katex { font-size: 1.16em; }
+.katex { font-size: 1.12em; }
 .katex-display { margin: 0; }
 .prose-anth .katex { color: var(--color-ink); }
 
@@ -328,33 +294,58 @@ a:hover { color: var(--color-rose); }
 }
 
 /* ── interactive controls ─────────────────────────────────────────────────
-   Styled globally so every widget shares one instrument language.
+   Styled globally so every widget shares one calm control language: neutral
+   at rest, the accent only when something is selected.
    ───────────────────────────────────────────────────────────────────────── */
 
 .anth-btn {
-  --btn-accent: var(--color-cyan);
+  --btn-accent: var(--color-accent);
   appearance: none;
   cursor: pointer;
   padding: 7px 14px;
-  font-size: 12px;
-  background: color-mix(in oklab, var(--btn-accent) 8%, transparent);
-  border: 1px solid color-mix(in oklab, var(--btn-accent) 30%, transparent);
-  border-radius: var(--radius-hud);
+  font-family: var(--font-sans);
+  font-size: 14px;
+  font-weight: 500;
+  line-height: 1.3;
+  background: var(--color-raised);
+  border: 1px solid var(--color-rule-bright);
+  border-radius: 8px;
   color: var(--color-ink-soft);
-  transition: background 140ms ease, border-color 140ms ease, color 140ms ease, box-shadow 140ms ease;
+  transition: background 140ms ease, border-color 140ms ease, color 140ms ease;
 }
 .anth-btn:hover:not(:disabled) {
-  background: color-mix(in oklab, var(--btn-accent) 16%, transparent);
-  border-color: color-mix(in oklab, var(--btn-accent) 58%, transparent);
+  border-color: color-mix(in oklab, var(--btn-accent) 55%, var(--color-rule-bright));
   color: var(--color-ink);
 }
 .anth-btn[data-active="true"] {
-  background: color-mix(in oklab, var(--btn-accent) 22%, transparent);
-  border-color: var(--btn-accent);
+  background: color-mix(in oklab, var(--btn-accent) 16%, var(--color-raised));
+  border-color: color-mix(in oklab, var(--btn-accent) 75%, transparent);
   color: #fff;
-  box-shadow: 0 0 22px -8px var(--btn-accent);
 }
-.anth-btn:disabled { opacity: 0.35; cursor: not-allowed; }
+.anth-btn:disabled { opacity: 0.4; cursor: not-allowed; }
+
+/* The one filled button: the primary action on a page. */
+.btn-primary {
+  display: inline-flex; align-items: center; gap: 8px;
+  padding: 10px 18px;
+  font-family: var(--font-sans); font-size: 15px; font-weight: 600;
+  color: #16121f; background: var(--color-accent);
+  border: 1px solid var(--color-accent); border-radius: 999px;
+  text-decoration: none;
+  transition: background 140ms ease;
+}
+.btn-primary:hover { background: #ddd2ff; color: #16121f; }
+
+.btn-quiet {
+  display: inline-flex; align-items: center; gap: 8px;
+  padding: 10px 18px;
+  font-family: var(--font-sans); font-size: 15px; font-weight: 500;
+  color: var(--color-ink-soft); background: transparent;
+  border: 1px solid var(--color-rule-bright); border-radius: 999px;
+  text-decoration: none;
+  transition: border-color 140ms ease, color 140ms ease;
+}
+.btn-quiet:hover { border-color: var(--color-ink-faint); color: var(--color-ink); }
 
 .anth-slider {
   appearance: none;
@@ -367,28 +358,26 @@ a:hover { color: var(--color-rose); }
 .anth-slider:active { cursor: grabbing; }
 
 .anth-slider::-webkit-slider-runnable-track {
-  height: 3px; border-radius: 2px;
-  background: linear-gradient(90deg, var(--color-magenta), var(--color-iris), var(--color-cyan));
-  opacity: 0.75;
+  height: 4px; border-radius: 2px;
+  background: var(--color-rule-bright);
 }
 .anth-slider::-moz-range-track {
-  height: 3px; border-radius: 2px;
-  background: linear-gradient(90deg, var(--color-magenta), var(--color-iris), var(--color-cyan));
-  opacity: 0.75;
+  height: 4px; border-radius: 2px;
+  background: var(--color-rule-bright);
 }
 .anth-slider::-webkit-slider-thumb {
   appearance: none;
-  width: 15px; height: 15px;
+  width: 16px; height: 16px;
   margin-top: -6px;
-  background: var(--color-ink);
-  border: 0; border-radius: 50%;
-  box-shadow: 0 0 14px -1px var(--color-cyan);
+  background: var(--color-accent);
+  border: 3px solid var(--color-void); border-radius: 50%;
+  box-shadow: 0 0 0 1px var(--color-accent);
 }
 .anth-slider::-moz-range-thumb {
-  width: 15px; height: 15px;
-  background: var(--color-ink);
-  border: 0; border-radius: 50%;
-  box-shadow: 0 0 14px -1px var(--color-cyan);
+  width: 12px; height: 12px;
+  background: var(--color-accent);
+  border: 3px solid var(--color-void); border-radius: 50%;
+  box-shadow: 0 0 0 1px var(--color-accent);
 }
 
 /* Widgets sit outside the prose measure — they get the full column. */
@@ -397,4 +386,149 @@ a:hover { color: var(--color-rose); }
 @keyframes anth-toast {
   from { opacity: 0; transform: translateY(10px) scale(0.96); }
   to   { opacity: 1; transform: none; }
+}
+
+/* ── shell ────────────────────────────────────────────────────────────────── */
+
+.shell { max-width: var(--shell); margin: 0 auto; padding: 0 28px; width: 100%; box-sizing: border-box; }
+
+.site-header {
+  position: sticky; top: 0; z-index: 40;
+  background: color-mix(in oklab, var(--color-void) 86%, transparent);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  border-bottom: 1px solid var(--color-rule);
+}
+.site-header .shell { display: flex; align-items: center; gap: 28px; height: 60px; }
+
+.brand { display: flex; align-items: center; gap: 10px; text-decoration: none; flex-shrink: 0; }
+.brand-mark {
+  width: 18px; height: 18px; border-radius: 50%;
+  background: var(--iridescent);
+  box-shadow: inset 0 0 0 1px rgb(255 255 255 / 0.25);
+}
+.brand-name {
+  font-family: var(--font-display); font-size: 22px; font-weight: 500;
+  letter-spacing: -0.01em; color: var(--color-ink);
+}
+
+.site-nav { display: flex; gap: 4px; flex: 1; min-width: 0; overflow-x: auto; }
+.site-nav a {
+  padding: 6px 12px; border-radius: 999px;
+  font-size: 14.5px; font-weight: 500; white-space: nowrap;
+  color: var(--color-ink-faint); text-decoration: none;
+}
+.site-nav a:hover { color: var(--color-ink); }
+.site-nav a[aria-current="page"] { color: var(--color-ink); background: var(--color-raised); }
+
+.search-trigger {
+  display: flex; align-items: center; gap: 10px; flex-shrink: 0;
+  width: 220px; padding: 7px 12px;
+  font: inherit; font-size: 14px; color: var(--color-ink-faint);
+  background: var(--color-surface);
+  border: 1px solid var(--color-rule-bright); border-radius: 8px;
+  cursor: pointer; text-align: left;
+}
+.search-trigger:hover { border-color: var(--color-ink-ghost); color: var(--color-ink-soft); }
+.search-trigger kbd {
+  margin-left: auto; font-family: var(--font-sans); font-size: 12px;
+  color: var(--color-ink-ghost); border: 1px solid var(--color-rule-bright);
+  border-radius: 5px; padding: 0 5px;
+}
+
+.crumbs { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; font-size: 14px; color: var(--color-ink-faint); }
+.crumbs a { color: var(--color-ink-faint); text-decoration: none; }
+.crumbs a:hover { color: var(--color-ink); }
+.crumbs .sep { color: var(--color-ink-ghost); }
+
+.eyebrow {
+  font-size: 13px; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase;
+  color: var(--color-ink-faint);
+}
+
+.meta { display: flex; flex-wrap: wrap; gap: 6px 18px; font-size: 14px; color: var(--color-ink-faint); }
+
+/* Two-column page: reading column + a sidebar that says where you are. */
+.page-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 264px;
+  gap: 64px;
+  align-items: start;
+}
+.page-aside {
+  position: sticky; top: 84px;
+  max-height: calc(100dvh - 104px); overflow-y: auto;
+  padding-left: 28px; border-left: 1px solid var(--color-rule);
+  font-size: 14.5px;
+}
+.aside-block + .aside-block { margin-top: 28px; padding-top: 24px; border-top: 1px solid var(--color-rule); }
+.aside-title { display: block; font-size: 13px; font-weight: 600; color: var(--color-ink-soft); margin-bottom: 10px; }
+
+@media (max-width: 960px) {
+  .page-grid { grid-template-columns: minmax(0, 1fr); gap: 40px; }
+  .page-aside { position: static; max-height: none; padding-left: 0; border-left: 0; border-top: 1px solid var(--color-rule); padding-top: 28px; }
+  .search-trigger { width: auto; }
+  .search-trigger .label { display: none; }
+}
+@media (max-width: 640px) {
+  .shell { padding: 0 16px; }
+  .site-header .shell { gap: 12px; }
+  .xp-slot { display: none; }
+}
+
+/* A numbered table of contents, algebrica-style. */
+.toc { list-style: none; margin: 0; padding: 0; }
+.toc > li { border-top: 1px solid var(--color-rule); }
+.toc > li:last-child { border-bottom: 1px solid var(--color-rule); }
+.toc-row {
+  display: grid; grid-template-columns: 44px minmax(0, 1fr) auto; gap: 12px; align-items: baseline;
+  padding: 14px 4px; text-decoration: none; color: var(--color-ink);
+}
+.toc-num { font-size: 14px; color: var(--color-ink-ghost); font-variant-numeric: tabular-nums; }
+.toc-title { font-size: 17px; font-weight: 500; color: var(--color-ink); }
+.toc-sub { display: block; margin-top: 2px; font-size: 15px; font-weight: 400; color: var(--color-ink-faint); line-height: 1.5; }
+.toc-side { font-size: 13.5px; color: var(--color-ink-faint); white-space: nowrap; }
+a.toc-row:hover .toc-title { color: var(--color-accent); }
+
+.lesson-list { list-style: none; margin: 0 0 16px; padding: 0 0 0 56px; }
+.lesson-list a {
+  display: flex; gap: 12px; align-items: baseline; padding: 7px 0;
+  color: var(--color-ink-soft); text-decoration: none; font-size: 15.5px;
+}
+.lesson-list a:hover { color: var(--color-accent); }
+
+.side-list { list-style: none; margin: 0; padding: 0; }
+.side-list a, .side-list span.muted {
+  display: flex; gap: 10px; align-items: baseline;
+  padding: 6px 0; line-height: 1.4;
+  color: var(--color-ink-faint); text-decoration: none;
+}
+.side-list a:hover { color: var(--color-ink); }
+.side-list a[aria-current="page"] { color: var(--color-ink); font-weight: 600; }
+.side-list .n { width: 18px; flex-shrink: 0; font-size: 13px; color: var(--color-ink-ghost); font-variant-numeric: tabular-nums; }
+
+.site-footer { border-top: 1px solid var(--color-rule); margin-top: 96px; }
+.site-footer .shell { display: flex; justify-content: space-between; gap: 16px; flex-wrap: wrap; padding-top: 24px; padding-bottom: 32px; font-size: 14px; color: var(--color-ink-faint); }
+.site-footer a { color: var(--color-ink-faint); }
+
+/* Sentence case for every control, whatever the widget author typed. */
+.anth-btn::first-letter { text-transform: uppercase; }
+
+.anth-btn-primary {
+  background: var(--color-accent);
+  border-color: var(--color-accent);
+  color: #16121f;
+  font-weight: 600;
+}
+.anth-btn-primary:hover:not(:disabled) { background: #ddd2ff; border-color: #ddd2ff; color: #16121f; }
+.anth-btn-primary:disabled {
+  opacity: 1;
+  background: transparent;
+  border-color: var(--color-rule-bright);
+  color: var(--color-ink-ghost);
+}
+
+@media (max-width: 520px) {
+  .brand-name { display: none; }
+  .site-nav a { padding: 6px 9px; }
 }

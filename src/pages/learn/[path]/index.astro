@@ -10,6 +10,7 @@ export async function getStaticPaths() {
 
 const { path } = Astro.props;
 const hours = (path.minutes / 60).toFixed(1);
+const base = import.meta.env.BASE_URL.replace(/\/$/, '');
 
 // Serialised for the client island; keep it to what the journey actually renders.
 const chapters = path.chapters.map((c) => ({
@@ -23,16 +24,15 @@ const chapters = path.chapters.map((c) => ({
   })),
 }));
 ---
-<Base title={path.title} description={path.blurb} eyebrow="learning path">
-  <div style="padding:56px 0 0">
-    <header style="max-width:64ch;margin-bottom:52px">
-      <span class="hud-label" style={`color:var(--color-${path.accent})`}>◆ {path.subtitle}</span>
-      <h1 style="font-size:clamp(2.2rem,5vw,3.2rem);margin:14px 0 20px" class="text-glow-magenta">{path.title}</h1>
-      <p style="color:var(--color-ink-soft);font-size:1.16rem;line-height:1.7;margin:0 0 24px">{path.blurb}</p>
-      <div style="display:flex;gap:26px;flex-wrap:wrap">
-        <span class="hud-label">{path.chapters.length} chapters</span>
-        <span class="hud-label">{path.lessons.length} lessons</span>
-        <span class="hud-label">≈ {hours} h</span>
+<Base title={path.title} description={path.blurb} crumbs={[{ label: 'Paths', href: `${base}/learn/` }, { label: path.title }]}>
+  <div style="padding-top:20px;max-width:52rem">
+    <header style="margin-bottom:44px">
+      <h1 style="font-size:clamp(2.4rem,5vw,3.4rem);margin:0 0 16px">{path.title}</h1>
+      <p style="color:var(--color-ink-soft);font-size:1.15rem;line-height:1.7;margin:0 0 18px;max-width:42rem">{path.blurb}</p>
+      <div class="meta">
+        <span>{path.chapters.length} chapters</span>
+        <span>{path.lessons.length} lessons written</span>
+        <span>≈ {hours} h</span>
       </div>
     </header>
 

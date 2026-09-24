@@ -14,78 +14,98 @@ interface Props {
 }
 
 const { lesson, path, chapter, prereqs, next, prev, unlocks } = Astro.props;
-const TIER_TONE: Record<string, string> = {
-  foundation: 'var(--color-cyan)',
-  core: 'var(--color-ink-soft)',
-  advanced: 'var(--color-violet)',
-  frontier: 'var(--color-magenta)',
+const TIER: Record<string, string> = {
+  foundation: 'Foundation', core: 'Core', advanced: 'Advanced', frontier: 'Frontier',
 };
+const chapterNo = path.chapters.findIndex((c) => c.id === chapter.id) + 1;
+
+// When the chapter runs out, point at the next written lesson in the path so
+// the reader is never left at a dead end.
+const inPath = path.chapters.flatMap((c) => c.lessons);
+const nextInPath = next ?? inPath[inPath.findIndex((l) => l.id === lesson.id) + 1] ?? null;
 ---
 <Base
   title={lesson.title}
   description={lesson.blurb}
-  eyebrow={`${path.title} / ${chapter.title}`}
+  crumbs={[
+    { label: path.title, href: path.url },
+    { label: `${chapterNo}. ${chapter.title}`, href: chapter.url },
+  ]}
 >
-  <article style="padding:36px 0 0">
-    <header style="margin-bottom:34px">
-      <div style="display:flex;align-items:center;gap:12px;flex-wrap:wrap;margin-bottom:12px">
-        <span class="hud-label" style={`color:${TIER_TONE[lesson.tier]}`}>◆ {lesson.tier}</span>
-        <span class="hud-label">{lesson.minutes} min</span>
-        {lesson.runtime === 'python' && (
-          <span class="hud-label" style="color:var(--color-amber)">python runtime</span>
-        )}
-        {lesson.status === 'draft' && (
-          <span class="hud-label" style="color:var(--color-amber)">draft</span>
-        )}
+  <div class="page-grid" style="padding-top:28px">
+    <article>
+      <header style="margin-bottom:40px;max-width:var(--measure)">
+        <h1 style="font-size:clamp(2.3rem,4.6vw,3.2rem);margin:0 0 14px">{lesson.title}</h1>
+        <p style="color:var(--color-ink-soft);font-size:1.2rem;line-height:1.6;margin:0 0 18px">
+          {lesson.blurb}
+        </p>
+        <div class="meta">
+          <span>{TIER[lesson.tier] ?? lesson.tier}</span>
+          <span>{lesson.minutes} min</span>
+          {lesson.runtime === 'python' && <span>Runs Python in the browser</span>}
+          {lesson.status === 'draft' && <span style="color:var(--sig-warn)">Draft</span>}
+        </div>
+      </header>
+
+      <div class="prose-anth" style="margin-bottom:56px">
+        <slot />
       </div>
 
-      <h1 style="font-size:clamp(1.9rem,4.4vw,2.7rem);margin:0 0 12px" class="text-glow-magenta">
-        {lesson.title}
-      </h1>
-      <p style="max-width:64ch;color:var(--color-ink-soft);font-size:1.08rem;line-height:1.6;margin:0">
-        {lesson.blurb}
-      </p>
+      <LessonRuntime
+        client:only="react"
+        lessonId={lesson.id}
+        tier={lesson.tier}
+        title={lesson.title}
+        widgets={lesson.widgets}
+        unlocks={unlocks.map((u) => ({ title: u.title, url: u.url, blurb: u.blurb }))}
+      />
+
+      <nav style="display:grid;grid-template-columns:1fr 1fr;gap:14px;margin:40px 0 0">
+        {prev ? (
+          <a href={prev.url} class="hud" style="padding:16px 18px;text-decoration:none;display:block">
+            <span style="display:block;font-size:13.5px;color:var(--color-ink-faint);margin-bottom:4px">← Previous</span>
+            <span style="color:var(--color-ink);font-weight:500">{prev.title}</span>
+          </a>
+        ) : <span />}
+        {nextInPath ? (
+          <a href={nextInPath.url} class="hud" style="padding:16px 18px;text-decoration:none;display:block;text-align:right">
+            <span style="display:block;font-size:13.5px;color:var(--color-accent);margin-bottom:4px">Next →</span>
+            <span style="color:var(--color-ink);font-weight:500">{nextInPath.title}</span>
+          </a>
+        ) : <span />}
+      </nav>
+    </article>
+
+    <aside class="page-aside" aria-label="Lesson navigation">
+      <div class="aside-block">
+        <span class="aside-title">Chapter {chapterNo} · {chapter.title}</span>
+        <ol class="side-list">
+          {chapter.lessons.map((l, i) => (
+            <li>
+              <a href={l.url} aria-current={l.id === lesson.id ? 'page' : undefined}>
+                <span class="n">{i + 1}</span><span>{l.title}</span>
+              </a>
+            </li>
+          ))}
+        </ol>
+      </div>
 
       {prereqs.length > 0 && (
-        <div class="hud" style="margin-top:22px;padding:11px 14px">
-          <span class="hud-label" style="display:block;margin-bottom:7px">assumes you already have</span>
-          <div style="display:flex;flex-wrap:wrap;gap:8px">
+        <div class="aside-block">
+          <span class="aside-title">Builds on</span>
+          <ul class="side-list">
             {prereqs.map((p) => (
-              <a href={p.url} class="hud-label anth-btn" style="text-decoration:none;--btn-accent:var(--color-cyan)">
-                {p.title}
-              </a>
+              <li><a href={p.url}><span class="n">↳</span><span>{p.title}</span></a></li>
             ))}
-          </div>
+          </ul>
         </div>
       )}
-    </header>
 
-    <div class="prose-anth" style="margin-bottom:56px">
-      <slot />
-    </div>
-
-    <LessonRuntime
-      client:only="react"
-      lessonId={lesson.id}
-      tier={lesson.tier}
-      title={lesson.title}
-      widgets={lesson.widgets}
-      unlocks={unlocks.map((u) => ({ title: u.title, url: u.url, blurb: u.blurb }))}
-    />
-
-    <nav style="display:grid;grid-template-columns:1fr 1fr;gap:14px;margin:44px 0 24px">
-      {prev ? (
-        <a href={prev.url} class="hud" style="padding:13px 16px;text-decoration:none;display:block">
-          <span class="hud-label" style="display:block;margin-bottom:4px">← previous</span>
-          <span style="color:var(--color-ink)">{prev.title}</span>
+      <div class="aside-block">
+        <a href={path.url} style="font-size:14px;color:var(--color-ink-faint);text-decoration:none">
+          ← All of {path.title}
         </a>
-      ) : <span />}
-      {next ? (
-        <a href={next.url} class="hud hud-brackets" style="padding:13px 16px;text-decoration:none;display:block;text-align:right">
-          <span class="hud-label" style="display:block;margin-bottom:4px;color:var(--color-magenta)">next →</span>
-          <span style="color:var(--color-ink)">{next.title}</span>
-        </a>
-      ) : <span />}
-    </nav>
-  </article>
+      </div>
+    </aside>
+  </div>
 </Base>

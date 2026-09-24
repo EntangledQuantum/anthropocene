@@ -121,7 +121,7 @@ export default function Classify({ id, prompt, buckets, items, explanation }: Cl
         </div>
 
         <div style={{ display: 'flex', gap: 8, marginTop: 16, alignItems: 'center' }}>
-          {!done && <Button onClick={check} accent="magenta" disabled={!allPlaced}>{allPlaced ? 'check' : 'place them all first'}</Button>}
+          {!done && <Button onClick={check} primary disabled={!allPlaced}>{allPlaced ? 'check' : 'place them all first'}</Button>}
           {held && <span className="hud-label">now click a bucket</span>}
         </div>
 

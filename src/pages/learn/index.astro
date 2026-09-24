@@ -3,29 +3,36 @@ import Base from '../../layouts/Base.astro';
 import { buildGraph } from '../../lib/graph/graph.ts';
 
 const graph = await buildGraph();
+const cap = (s: string) => s.charAt(0).toUpperCase() + s.slice(1);
 ---
-<Base title="Learning paths" description="Every path on anthropocene." eyebrow="all paths">
-  <div style="padding:44px 0 0">
-    <h1 style="font-size:clamp(2rem,4.6vw,2.9rem);margin:0 0 14px">Learning paths</h1>
-    <p style="max-width:64ch;color:var(--color-ink-soft);font-size:1.06rem;line-height:1.65;margin:0 0 40px">
-      Each path is a chapter-based sequence built on a concept graph. Nothing is taught twice —
-      a lesson that needs an idea links to the lesson that owns it.
+<Base title="Learning paths" description="Every path on anthropocene." crumbs={[{ label: 'Paths' }]}>
+  <div style="padding-top:20px;max-width:52rem">
+    <h1 style="font-size:clamp(2.3rem,5vw,3.2rem);margin:0 0 14px">Learning paths</h1>
+    <p style="color:var(--color-ink-soft);font-size:1.15rem;line-height:1.65;margin:0 0 40px;max-width:40rem">
+      Each path is a sequence of chapters. An idea is taught in exactly one place, and
+      every other lesson that needs it links back there.
     </p>
 
-    <div style="display:grid;gap:16px;grid-template-columns:repeat(auto-fit,minmax(320px,1fr))">
-      {graph.paths.map((path) => (
-        <a href={path.url} class="hud hud-brackets" style="padding:20px 22px;text-decoration:none;display:block">
-          <span class="hud-label" style={`color:var(--color-${path.accent})`}>◆ {path.subtitle}</span>
-          <h2 style="margin:10px 0 10px;font-size:1.45rem;color:var(--color-ink)">{path.title}</h2>
-          <p style="margin:0 0 16px;color:var(--color-ink-faint);font-size:0.94rem;line-height:1.6">{path.blurb}</p>
-          <div style="display:flex;gap:16px;flex-wrap:wrap;border-top:1px solid var(--color-rule);padding-top:11px">
-            <span class="hud-label">{path.chapters.length} ch</span>
-            <span class="hud-label">{path.lessons.length} lessons</span>
-            <span class="hud-label">≈ {(path.minutes / 60).toFixed(1)} h</span>
-            {path.status === 'draft' && <span class="hud-label" style="color:var(--sig-warn);margin-left:auto">draft</span>}
-          </div>
-        </a>
+    <ol class="toc">
+      {graph.paths.map((path, i) => (
+        <li>
+          <a href={path.url} class="toc-row" style="padding:22px 4px">
+            <span class="toc-num">{i + 1}.</span>
+            <span>
+              <span class="toc-title" style="font-family:var(--font-display);font-size:1.6rem">{path.title}</span>
+              <span class="toc-sub" style="margin-top:4px;color:var(--color-ink-soft)">{cap(path.subtitle)}</span>
+              <span class="toc-sub" style="margin-top:8px;max-width:40rem">{path.blurb}</span>
+              <span class="meta" style="margin-top:12px">
+                <span>{path.chapters.length} chapters</span>
+                <span>{path.lessons.length} lessons written</span>
+                <span>≈ {(path.minutes / 60).toFixed(1)} h</span>
+                {path.status === 'draft' && <span style="color:var(--sig-warn)">Draft</span>}
+              </span>
+            </span>
+            <span class="toc-side" style="color:var(--color-accent)">Open →</span>
+          </a>
+        </li>
       ))}
-    </div>
+    </ol>
   </div>
 </Base>

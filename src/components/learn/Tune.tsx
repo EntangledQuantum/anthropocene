@@ -75,7 +75,7 @@ export default function Tune({
             {hint && !done && (
               <Button onClick={() => setShowHint(true)} accent="warn">hint</Button>
             )}
-            <Button onClick={check} accent="magenta" disabled={done}>
+            <Button onClick={check} primary disabled={done}>
               {done ? 'solved' : 'check'}
             </Button>
           </div>

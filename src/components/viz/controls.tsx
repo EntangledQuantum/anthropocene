@@ -53,7 +53,7 @@ export function Slider({
     <label style={{ display: 'block' }}>
       <span style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'baseline', gap: 8 }}>
         <span className="hud-label" title={spec.hint}>{spec.label}</span>
-        <span className="readout" style={{ fontSize: 11, color: 'var(--color-cyan)' }}>
+        <span className="readout" style={{ fontSize: 13, color: 'var(--color-ink)' }}>
           {spec.symbol && <span style={{ color: 'var(--color-ink-faint)' }}>{spec.symbol} = </span>}
           {formatValue(value, 4)}
           {spec.unit && <span style={{ color: 'var(--color-ink-faint)' }}> {spec.unit}</span>}
@@ -76,17 +76,22 @@ export function Slider({
 /* ── buttons & toggles ─────────────────────────────────────────────────── */
 
 export function Button({
-  children, onClick, active, accent = 'cyan', disabled, title,
+  children, onClick, active, accent, disabled, title, primary,
 }: {
   children: ReactNode; onClick?: () => void; active?: boolean;
   accent?: ControlAccent; disabled?: boolean; title?: string;
+  /** The one action that submits a graded answer. Filled, so it is never
+   *  mistaken for a disabled control. */
+  primary?: boolean;
 }) {
   return (
     <button
       type="button" onClick={onClick} disabled={disabled} title={title}
-      className="hud-label anth-btn"
+      className={primary ? 'anth-btn anth-btn-primary' : 'anth-btn'}
       data-active={active ? 'true' : undefined}
-      style={{ '--btn-accent': `var(--color-${accent})` } as React.CSSProperties}
+      // No accent means the site accent; an explicit one lets a toggle match
+      // the colour of the series it selects.
+      style={accent ? ({ '--btn-accent': `var(--color-${accent})` } as React.CSSProperties) : undefined}
     >
       {children}
     </button>
@@ -108,7 +113,7 @@ export function Toggle({
         return (
           <Button
             key={o.key}
-            accent={o.accent ?? 'cyan'}
+            accent={o.accent}
             active={on}
             onClick={() =>
               onChange(
@@ -128,13 +133,13 @@ export function Toggle({
 
 /* ── layout ────────────────────────────────────────────────────────────── */
 
-/** The dense instrument panel that frames every simulation. */
+/** The quiet card that frames every simulation. */
 export function Panel({ title, children, right }: { title?: string; children: ReactNode; right?: ReactNode }) {
   return (
-    <div className="hud" style={{ padding: '10px 12px 12px' }}>
+    <div className="hud" style={{ padding: '14px 18px 18px' }}>
       {(title || right) && (
-        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: 12, marginBottom: 10, paddingBottom: 6, borderBottom: '1px solid var(--color-rule)' }}>
-          {title && <span className="hud-label" style={{ color: 'var(--color-magenta)' }}>{title}</span>}
+        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: 12, marginBottom: 14, paddingBottom: 10, borderBottom: '1px solid var(--color-rule)' }}>
+          {title && <span className="hud-label" style={{ color: 'var(--color-ink-soft)', fontSize: 14, fontWeight: 600 }}>{title}</span>}
           {right}
         </div>
       )}
@@ -148,8 +153,8 @@ export function Readout({ label, value, accent = 'ink', mono = true }: {
 }) {
   return (
     <div style={{ display: 'flex', flexDirection: 'column', gap: 1, minWidth: 0 }}>
-      <span className="hud-label" style={{ fontSize: 9 }}>{label}</span>
-      <span className={mono ? 'readout' : ''} style={{ fontSize: 13, color: `var(--color-${accent})`, overflow: 'hidden', textOverflow: 'ellipsis' }}>
+      <span className="hud-label" style={{ fontSize: 12 }}>{label}</span>
+      <span className={mono ? 'readout' : ''} style={{ fontSize: 14, color: `var(--color-${accent})`, overflow: 'hidden', textOverflow: 'ellipsis' }}>
         {value}
       </span>
     </div>

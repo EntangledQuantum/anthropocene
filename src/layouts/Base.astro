@@ -4,23 +4,26 @@ import XpRail from '../components/chrome/XpRail.tsx';
 import XpToasts from '../components/chrome/XpToasts.tsx';
 import CommandPalette from '../components/chrome/CommandPalette.tsx';
 
+export interface Crumb { label: string; href?: string }
+
 interface Props {
   title: string;
   description?: string;
-  /** Rendered in the header's left rail as breadcrumb-ish context. */
+  /** Breadcrumb trail rendered above the page content. */
+  crumbs?: Crumb[];
+  /** @deprecated kept so older pages still compile; ignored. */
   eyebrow?: string;
   wide?: boolean;
 }
 
-const { title, description, eyebrow, wide = false } = Astro.props;
+const { title, description, crumbs = [], wide = false } = Astro.props;
 const base = import.meta.env.BASE_URL.replace(/\/$/, '');
-const nav = [
-  { href: `${base}/`, label: 'index' },
-  { href: `${base}/learn/`, label: 'paths' },
-  { href: `${base}/review/`, label: 'review' },
-  { href: `${base}/graph/`, label: 'graph' },
-];
 const here = Astro.url.pathname.replace(/\/$/, '');
+const nav = [
+  { href: `${base}/learn/`, label: 'Paths', match: `${base}/learn` },
+  { href: `${base}/review/`, label: 'Review', match: `${base}/review` },
+  { href: `${base}/graph/`, label: 'Concept map', match: `${base}/graph` },
+];
 ---
 <html lang="en" data-theme="dark">
   <head>
@@ -33,60 +36,46 @@ const here = Astro.url.pathname.replace(/\/$/, '');
   </head>
   <body>
     <div style="position:relative;z-index:1;display:flex;flex-direction:column;min-height:100dvh">
-      <header
-        class="hud"
-        style="position:sticky;top:0;z-index:40;border-left:0;border-right:0;border-top:0;padding:0"
-      >
-        <div style={`max-width:${wide ? '1400px' : '1180px'};margin:0 auto;display:flex;align-items:center;gap:24px;padding:0 24px;height:52px`}>
-          <a href={`${base}/`} style="text-decoration:none;display:flex;align-items:baseline;gap:9px;flex-shrink:0">
-            <span style="font-family:var(--font-display);font-weight:700;font-size:15px;letter-spacing:-0.02em;color:var(--color-ink)" class="text-glow-magenta">
-              anthropocene
-            </span>
-            <span class="hud-label" style="color:var(--color-magenta)">◆</span>
+      <header class="site-header">
+        <div class="shell" style={wide ? 'max-width:1400px' : ''}>
+          <a href={`${base}/`} class="brand" aria-label="anthropocene — home">
+            <span class="brand-mark" aria-hidden="true"></span>
+            <span class="brand-name">anthropocene</span>
           </a>
 
-          <nav style="display:flex;gap:2px;flex:1;min-width:0;overflow-x:auto">
-            {nav.map((item) => {
-              const active = item.href.replace(/\/$/, '') === here;
-              return (
-                <a
-                  href={item.href}
-                  class="hud-label"
-                  style={`padding:6px 11px;text-decoration:none;border-radius:2px;white-space:nowrap;color:${active ? 'var(--color-cyan)' : 'var(--color-ink-faint)'};background:${active ? 'color-mix(in oklab,var(--color-cyan) 10%,transparent)' : 'transparent'}`}
-                >
-                  {item.label}
-                </a>
-              );
-            })}
+          <nav class="site-nav" aria-label="Main">
+            {nav.map((item) => (
+              <a href={item.href} aria-current={here.startsWith(item.match) ? 'page' : undefined}>{item.label}</a>
+            ))}
           </nav>
 
-          <button
-            type="button"
-            id="palette-trigger"
-            class="hud-label anth-btn"
-            style="display:flex;align-items:center;gap:9px;flex-shrink:0;--btn-accent:var(--color-orchid)"
-            aria-label="Search everything"
-          >
-            <span>⌕ search</span>
-            <span style="color:var(--color-ink-ghost)">⌘K</span>
+          <button type="button" id="palette-trigger" class="search-trigger" aria-label="Search lessons and concepts">
+            <svg width="15" height="15" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+              <circle cx="7" cy="7" r="5" stroke="currentColor" stroke-width="1.5" />
+              <path d="M11 11l3.5 3.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" />
+            </svg>
+            <span class="label">Search</span>
+            <kbd>⌘K</kbd>
           </button>
 
-          <div style="flex-shrink:0">
+          <div class="xp-slot" style="flex-shrink:0">
             <!-- client:only — this reads OPFS, which has no server equivalent. -->
             <XpRail client:only="react" />
           </div>
         </div>
       </header>
 
-      {eyebrow && (
-        <div style="border-bottom:1px solid var(--color-rule)">
-          <div style={`max-width:${wide ? '1400px' : '1180px'};margin:0 auto;padding:7px 24px`}>
-            <span class="hud-label">{eyebrow}</span>
-          </div>
-        </div>
-      )}
-
-      <main style={`flex:1;max-width:${wide ? '1400px' : '1180px'};margin:0 auto;padding:0 24px;width:100%`}>
+      <main class="shell" style={`flex:1;${wide ? 'max-width:1400px;' : ''}`}>
+        {crumbs.length > 0 && (
+          <nav class="crumbs" aria-label="Breadcrumb" style="padding-top:28px">
+            {crumbs.map((c, i) => (
+              <>
+                {i > 0 && <span class="sep" aria-hidden="true">/</span>}
+                {c.href ? <a href={c.href}>{c.label}</a> : <span aria-current="page">{c.label}</span>}
+              </>
+            ))}
+          </nav>
+        )}
         <slot />
       </main>
 
@@ -101,12 +90,10 @@ const here = Astro.url.pathname.replace(/\/$/, '');
         });
       </script>
 
-      <footer style="border-top:1px solid var(--color-rule);margin-top:80px">
-        <div style="max-width:1180px;margin:0 auto;padding:20px 24px;display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap">
-          <span class="hud-label">a free, open-source alternative to paying for curiosity</span>
-          <a class="hud-label" href="https://github.com/EntangledQuantum/anthropocene" style="color:var(--color-ink-faint);text-decoration:none">
-            github ↗
-          </a>
+      <footer class="site-footer">
+        <div class="shell">
+          <span>Free and open source. Your progress stays in your browser.</span>
+          <a href="https://github.com/EntangledQuantum/anthropocene">Source on GitHub</a>
         </div>
       </footer>
     </div>

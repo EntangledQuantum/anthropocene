@@ -271,8 +271,8 @@ export default function DimensionBalance({
             }}
           >
             <span />
-            <span className="hud-label" style={{ fontSize: 9 }}>exponent</span>
-            <span className="hud-label" style={{ fontSize: 9, textAlign: 'right' }}>
+            <span className="hud-label" style={{ fontSize: 12 }}>exponent</span>
+            <span className="hud-label" style={{ fontSize: 12, textAlign: 'right' }}>
               yours / {mode === 'balance' ? 'given' : 'target'}
             </span>
 

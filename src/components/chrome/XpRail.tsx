@@ -31,54 +31,47 @@ export default function XpRail() {
       : 'storage error';
     return (
       <span
-        className="hud-label"
-        style={{ color: 'var(--sig-warn)', whiteSpace: 'nowrap' }}
+        style={{ color: 'var(--sig-warn)', whiteSpace: 'nowrap', fontSize: 13.5 }}
         title={
           status === 'locked'
             ? 'The progress database allows one tab at a time. Close the other tab and reload to track XP here.'
             : 'Progress cannot be saved in this browser context. Lessons still work in full.'
         }
       >
-        ◇ {text}
+        {text.charAt(0).toUpperCase() + text.slice(1)}
       </span>
     );
   }
 
-  if (!stats) return <span className="hud-label" style={{ color: 'var(--color-ink-ghost)' }}>◇ ———</span>;
+  if (!stats) return <span style={{ display: 'inline-block', width: 120 }} />;
 
   const pct = Math.min(100, (stats.todayXp / Math.max(stats.goal, 1)) * 100);
   const hit = stats.todayXp >= stats.goal;
 
   return (
-    <div style={{ display: 'flex', alignItems: 'center', gap: 14, whiteSpace: 'nowrap' }}>
-      <span className="hud-label" title="current daily streak" style={{ color: stats.streak > 0 ? 'var(--color-magenta)' : 'var(--color-ink-ghost)' }}>
-        ▲ {stats.streak}d
-      </span>
+    <div style={{ display: 'flex', alignItems: 'center', gap: 16, whiteSpace: 'nowrap', fontSize: 13.5, color: 'var(--color-ink-faint)' }}>
+      {stats.dueCount > 0 && (
+        <a href={`${import.meta.env.BASE_URL.replace(/\/$/, '')}/review/`}
+           style={{ color: 'var(--sig-warn)', textDecoration: 'none' }} title={`${stats.dueCount} cards due`}>
+          {stats.dueCount} to review
+        </a>
+      )}
 
-      <span title={`${stats.todayXp} of ${stats.goal} XP today`} style={{ display: 'flex', alignItems: 'center', gap: 7 }}>
-        <span style={{ width: 56, height: 3, background: 'var(--color-rule-bright)', position: 'relative', overflow: 'hidden' }}>
+      <span title={`${stats.todayXp} of ${stats.goal} XP today · level ${stats.level} · ${stats.streak}-day streak`}
+            style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+        <span style={{ width: 48, height: 4, borderRadius: 2, background: 'var(--color-rule-bright)', position: 'relative', overflow: 'hidden' }}>
           <span style={{
             position: 'absolute', inset: 0, width: `${pct}%`,
-            background: hit ? 'var(--sig-ok)' : 'var(--color-cyan)',
-            boxShadow: `0 0 8px ${hit ? 'var(--sig-ok)' : 'var(--color-cyan)'}`,
+            background: hit ? 'var(--sig-ok)' : 'var(--iridescent)',
             transition: 'width 400ms ease',
           }} />
         </span>
-        <span className="readout hud-label" style={{ color: hit ? 'var(--sig-ok)' : 'var(--color-ink-soft)' }}>
-          {stats.todayXp}
+        <span className="readout" style={{ color: hit ? 'var(--sig-ok)' : 'var(--color-ink-soft)' }}>
+          {stats.todayXp} XP
         </span>
       </span>
 
-      <span className="hud-label" title={`Level ${stats.level}`} style={{ color: 'var(--color-iris)' }}>
-        L{stats.level}
-      </span>
-
-      {stats.dueCount > 0 && (
-        <a href={`${import.meta.env.BASE_URL.replace(/\/$/, '')}/review/`} className="hud-label"
-           style={{ color: 'var(--sig-warn)', textDecoration: 'none' }} title={`${stats.dueCount} cards due`}>
-          ↺ {stats.dueCount}
-        </a>
-      )}
+      {stats.streak > 0 && <span title="current daily streak">{stats.streak}-day streak</span>}
     </div>
   );
 }

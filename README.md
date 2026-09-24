@@ -40,7 +40,7 @@ on one page, and you choose the depth.
 | Framework | Astro 7 + React islands — 0 JS on prose, hydration per widget |
 | Math | KaTeX rendered at **build time** via Satteri's native math support |
 | Plots | Canvas data layer + SVG axes on `d3-scale` / `d3-shape` |
-| GPU visuals | Raw WebGL2 fragment shaders (`src/components/viz/gl/`) — stability regions, phase fields, the landing-page Lorenz attractor |
+| GPU visuals | Raw WebGL2 fragment shaders (`src/components/viz/gl/`) — stability regions, phase fields |
 | Storage | SQLite-WASM (`opfs-sahpool` VFS — no COOP/COEP, so it works on GitHub Pages) |
 | Recall | `ts-fsrs` (FSRS-6) |
 | Search | Pagefind — chunked index, downloads only what a query needs |

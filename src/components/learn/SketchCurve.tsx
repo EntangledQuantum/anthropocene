@@ -304,7 +304,7 @@ export default function SketchCurve({
 
         <div style={{ display: 'flex', gap: 8, marginTop: 14, flexWrap: 'wrap', alignItems: 'center' }}>
           {!submitted && (
-            <Button onClick={submit} accent="magenta" disabled={!enough}>
+            <Button onClick={submit} primary disabled={!enough}>
               {enough ? 'reveal the truth' : 'draw a bit more'}
             </Button>
           )}

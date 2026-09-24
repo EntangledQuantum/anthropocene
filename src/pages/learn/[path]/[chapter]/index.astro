@@ -13,34 +13,44 @@ export async function getStaticPaths() {
 }
 
 const { path, chapter } = Astro.props;
-const TIER_TONE: Record<string, string> = {
-  foundation: 'var(--color-cyan)', core: 'var(--color-ink-soft)',
-  advanced: 'var(--color-iris)', frontier: 'var(--color-magenta)',
+const base = import.meta.env.BASE_URL.replace(/\/$/, '');
+const chapterNo = path.chapters.findIndex((c) => c.id === chapter.id) + 1;
+const TIER: Record<string, string> = {
+  foundation: 'Foundation', core: 'Core', advanced: 'Advanced', frontier: 'Frontier',
 };
 ---
-<Base title={chapter.title} description={chapter.blurb} eyebrow={path.title}>
-  <div style="padding:40px 0 0;max-width:80ch">
-    <a href={path.url} class="hud-label" style="text-decoration:none;color:var(--color-ink-faint)">← {path.title}</a>
-    <h1 style="font-size:clamp(1.8rem,4vw,2.5rem);margin:14px 0 12px">{chapter.title}</h1>
+<Base
+  title={chapter.title}
+  description={chapter.blurb}
+  crumbs={[{ label: 'Paths', href: `${base}/learn/` }, { label: path.title, href: path.url }, { label: `Chapter ${chapterNo}` }]}
+>
+  <div style="padding-top:20px;max-width:52rem">
+    <span class="eyebrow">Chapter {chapterNo}</span>
+    <h1 style="font-size:clamp(2.2rem,4.6vw,3.1rem);margin:10px 0 14px">{chapter.title}</h1>
     {chapter.question && (
-      <p style="font-size:1.15rem;color:var(--color-magenta);line-height:1.55;margin:0 0 14px;font-family:var(--font-display)">
+      <p style="font-family:var(--font-display);font-style:italic;font-size:1.4rem;color:var(--color-ink-soft);line-height:1.45;margin:0 0 14px">
         {chapter.question}
       </p>
     )}
-    <p style="color:var(--color-ink-soft);font-size:1.05rem;line-height:1.65;margin:0 0 32px">{chapter.blurb}</p>
+    <p style="color:var(--color-ink-faint);font-size:1.05rem;line-height:1.65;margin:0 0 36px;max-width:42rem">{chapter.blurb}</p>
 
-    <div style="display:grid;gap:10px">
-      {chapter.lessons.map((l, i) => (
-        <a href={l.url} class="hud" style="padding:15px 17px;text-decoration:none;display:block">
-          <div style="display:flex;align-items:baseline;gap:12px;flex-wrap:wrap;margin-bottom:5px">
-            <span class="readout hud-label" style="color:var(--color-magenta)">{String(i + 1).padStart(2, '0')}</span>
-            <span style="color:var(--color-ink);font-size:1.06rem;font-family:var(--font-display);font-weight:600">{l.title}</span>
-            <span class="hud-label" style={`color:${TIER_TONE[l.tier]}`}>{l.tier}</span>
-            <span class="hud-label" style="margin-left:auto">{l.minutes} min</span>
-          </div>
-          <p style="margin:0;color:var(--color-ink-faint);font-size:0.92rem;line-height:1.55">{l.blurb}</p>
-        </a>
-      ))}
-    </div>
+    {chapter.lessons.length === 0 ? (
+      <p style="color:var(--color-ink-faint)">No lessons written for this chapter yet.</p>
+    ) : (
+      <ol class="toc">
+        {chapter.lessons.map((l, i) => (
+          <li>
+            <a href={l.url} class="toc-row" style="padding:18px 4px">
+              <span class="toc-num">{i + 1}.</span>
+              <span>
+                <span class="toc-title" style="font-family:var(--font-display);font-size:1.4rem">{l.title}</span>
+                <span class="toc-sub" style="margin-top:4px">{l.blurb}</span>
+              </span>
+              <span class="toc-side">{TIER[l.tier] ?? l.tier} · {l.minutes} min</span>
+            </a>
+          </li>
+        ))}
+      </ol>
+    )}
   </div>
 </Base>
