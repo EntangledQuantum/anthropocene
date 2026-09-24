@@ -132,7 +132,7 @@ export default function ElevatorScale({
     g.fillText('the lift', mx - 8, top - 8);
     if (r.paused) {
       g.fillStyle = c.ink; g.font = '600 14px Inter, sans-serif'; g.textAlign = 'center';
-      g.fillText(`Paused at ${V_STOP} m/s: start over`, cx, top - 14);
+      g.fillText(`Paused at ${V_STOP} m/s. Start over, or move the winch.`, cx, floor + 30);
     }
   };
 

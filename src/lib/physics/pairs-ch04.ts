@@ -66,7 +66,7 @@ export function bumperForce(overlap: number, closing: number, k: number, c: numb
 export function crashHistory(spec: CrashSpec): CrashSample[] {
   const { mCar, mTruck } = spec;
   const k = spec.k ?? 5e5, c = spec.c ?? 2e5;
-  const dt = spec.dt ?? 1e-4, T = spec.duration ?? 0.25;
+  const dt = spec.dt ?? 1e-4, T = spec.duration ?? 0.2;
   let xCar = -(spec.gap ?? 1.5) / 2, xTruck = (spec.gap ?? 1.5) / 2;
   let vCar = spec.vCar, vTruck = spec.vTruck;
   const out: CrashSample[] = [];

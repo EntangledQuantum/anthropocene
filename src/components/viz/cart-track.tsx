@@ -109,9 +109,11 @@ export function drawTrack(el: HTMLCanvasElement, s: Track, c: CartSetup, col: Re
     if (Math.abs(k.v) > 0.05) {
       g.font = '600 12px Inter, sans-serif'; g.fillStyle = col.vel;
       const label = `${k.v.toFixed(1)} m/s`, tw = g.measureText(label).width;
-      const lx = Math.min(W - 4 - tw, Math.max(4, k.v > 0 ? x + k.v * V_SCALE * m2px + 6 : x + k.v * V_SCALE * m2px - 6 - tw));
+      const tipX = x + k.v * V_SCALE * m2px, beside = k.v > 0 ? tipX + 6 : tipX - 6 - tw;
+      const fits = beside >= 4 && beside + tw <= W - 4;
       g.textAlign = 'left';
-      g.fillText(label, lx, top + 4);
+      // Beside the arrowhead when there is room; otherwise above the arrow.
+      g.fillText(label, fits ? beside : Math.min(W - 4 - tw, Math.max(4, (x + tipX) / 2 - tw / 2)), fits ? top + 4 : top - 10);
     }
     if (handleOn === 'vB' && name === 'B') ring(g, x + k.v * V_SCALE * m2px, top, col.ink, col.surf);
     if (handleOn === 'mB' && name === 'B') ring(g, x, RAIL - 16 - n * 9 - 2, col.ink, col.surf);

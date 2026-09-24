@@ -32,7 +32,7 @@ function cssVar(name: string): string {
 }
 
 export default function CrashPair({
-  prompt, mCar = 1200, mTruck: mTruck0 = 14000, vCar = 15, vTruck = 10, slow = 15,
+  prompt, mCar = 1200, mTruck: mTruck0 = 14000, vCar = 15, vTruck = 10, slow = 40,
 }: CrashPairProps) {
   const [mTruck, setMTruck] = useState(mTruck0);
   const hist = useMemo(() => crashHistory({ mCar, mTruck, vCar, vTruck: -vTruck }), [mCar, mTruck, vCar, vTruck]);
@@ -111,7 +111,7 @@ export default function CrashPair({
     arrowH(g, X(truckFront) + 4, yF, X(truckFront) + 4 + s.fOnTruck * F_PX, c.f, 'car on truck');
     arrowH(g, X(carFront) - 4, yA, X(carFront) - 4 + s.aCar * A_PX, c.a, 'car’s a', true);
     arrowH(g, X(truckFront) + 4, yA, X(truckFront) + 4 + s.aTruck * A_PX, c.a, 'truck’s a', true);
-    if (Math.abs(s.fOnCar) < 1) { // not touching: show where each is going
+    if (Math.abs(s.fOnCar) < 2000) { // not touching: show where each is going
       arrowH(g, X(s.xCar - Lc / 2), road - Hc * px - 16, X(s.xCar - Lc / 2) + s.vCar * 5, c.v, `${Math.abs(s.vCar).toFixed(0)} m/s`);
       arrowH(g, X(s.xTruck + Lt / 2), road - Ht2 * px - 16, X(s.xTruck + Lt / 2) + s.vTruck * 5, c.v, `${Math.abs(s.vTruck).toFixed(0)} m/s`);
     }

@@ -287,6 +287,9 @@ describe('the bat', () => {
     const need = m * (vOut - vIn);
     expect(need).toBeCloseTo(11.6, 10);
     expect(afterImpulse(m, vIn, need)).toBeCloseTo(vOut, 10);
+    // the ends of the equal-area line: 36 kN for 0.5 ms, 9 kN over 2 ms
+    expect(halfSinePeak(need, 0.0005) / 1000).toBeCloseTo(36.4, 1);
+    expect(halfSinePeak(need, 0.002) / 1000).toBeCloseTo(9.1, 1);
     // forget to cancel the incoming momentum and the ball dribbles off at 10 m/s
     expect(afterImpulse(m, vIn, m * vOut)).toBeCloseTo(10, 10);
   });

@@ -64,7 +64,7 @@ export default function BankTheCurve({
           const acc: Vec = [-mass * r.accel * kF, 0];
           const base = scale2(t, -2.4);
           const fFrom = add2(scale2(t, 0.3 * Math.sign(r.friction || 1)), scale2(n, -0.1));
-          const aFrom: Vec = [1.6, 2.05];
+          const aFrom: Vec = [2.2, 2.1];
           return <>
             <polygon points={[P(L), P(Rr), P([Rr[0], -1.6]), P([L[0], -1.6])].join(' ')} fill={C.surface} stroke={C.rule} strokeWidth={2} />
             <line x1={s.sx(base[0])} y1={s.sy(base[1])} x2={s.sx(base[0] + 1.3)} y2={s.sy(base[1])} stroke={C.faint} strokeDasharray="5 4" />
@@ -79,7 +79,8 @@ export default function BankTheCurve({
               {[-0.6, 0.6].map((dx) => <rect key={dx} x={s.sx(c[0] + dx) - s.len(0.14)} y={s.sy(c[1]) + s.len(0.2)} width={s.len(0.28)} height={s.len(0.35)} rx={3} fill={C.soft} />)}
             </g>
             <Arrow s={s} from={fFrom} to={add2(fFrom, scale2(t, r.friction * kF))} color={C.force} label={fk >= 0.005 ? 'friction' : undefined} />
-            <Arrow s={s} from={aFrom} to={add2(aFrom, acc)} color={C.accel} width={4} dash="7 5" label={`a = ${r.accel.toFixed(2)} m/s²`} labelSide={-1} />
+            <Arrow s={s} from={aFrom} to={add2(aFrom, acc)} color={C.accel} width={4} dash="7 5" />
+            <text x={s.sx(aFrom[0] + 0.12)} y={s.sy(aFrom[1]) + 5} fontSize={14} fontWeight={600} fill={C.accel}>a = {r.accel.toFixed(2)} m/s²</text>
             <Handle s={s} at={scale2(t, 2.1)} step={0.02} label="Outer edge of the road: drag up or down"
               onChange={(p) => {
                 const d = Math.max(0, Math.min(MAXDEG, toDeg(Math.atan2(p[1], Math.max(p[0], 0.01)))));

@@ -67,7 +67,7 @@ export default function SlideTheZero({ prompt }: SlideTheZeroProps) {
             <HeightRuler s={s} ticks={[0, 0.5, 1, 1.5]} joules={{ mass: CART_MASS, g: G, zero, ticks: jTicks }} />
             <EnergyLine s={s} height={hE} label="E" from={0} to={4} />
             <line x1={s.sx(X[0]) + 40} x2={s.sx(X[1]) - 44} y1={s.sy(zero)} y2={s.sy(zero)} stroke={C.ink} strokeWidth={1.5} strokeDasharray="3 5" />
-            <text x={s.sx(X[0] + 0.62) + 18} y={s.sy(zero) - 10} fontSize={13} fill={C.ink}
+            <text x={s.sx(X[0] + 0.62) + 30} y={s.sy(zero) + 20} fontSize={13} fill={C.ink}
               stroke="var(--color-surface)" strokeWidth={4} paintOrder="stroke">U = 0 here</text>
             <Cart refs={cart} pose={cartPose(s, base, st.current.s)} />
             <Handle s={s} at={[X[0] + 0.62, zero]} step={0.05} label="The level where U is zero: drag up or down"
