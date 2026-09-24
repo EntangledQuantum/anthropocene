@@ -1,0 +1,124 @@
+---
+title: 'The energy line'
+blurb: 'Treat energy as a budget: find how high a cart can climb and where it turns round, then watch friction lower the line.'
+order: 2
+tier: 'foundation'
+minutes: 10
+teaches: ['mechanical-energy-conservation', 'turning-points', 'nonconservative-work']
+requires: ['potential-force-slope', 'potential-reference-zero', 'work-energy-theorem']
+runtime: 'none'
+status: 'live'
+updated: 2026-09-24
+---
+
+<Step>
+
+Two carts start side by side at the same height and are let go together. Both tracks end at the same height, but one dips deep in the middle.
+
+<Predict
+  id="up-ch07-dip-race"
+  question="Which cart is moving faster when it crosses the finish line?"
+  options={[
+    { key: 'a', misconception: 'up-ch07-path-sets-final-speed', label: 'The one on the dipped track: it fell further', why: 'It is faster down in the dip. Then it climbs back out, and the climb takes back exactly what the extra drop gave. Both finish at 3.84 m/s.' },
+    { key: 'b', label: 'They finish at the same speed', why: 'Right. Speed at the finish depends only on how far each cart has dropped since it started, 0.75 m for both. The dip changes when it arrives, not how fast.' },
+    { key: 'c', misconception: 'up-ch07-climbing-costs-extra', label: 'The one on the gentle track: climbing out of the dip costs energy', why: 'Climbing out costs exactly what falling in paid, no more. With nothing to lose energy to, the account balances to the joule.' },
+  ]}
+  correct="b"
+>
+
+<TwinCoasterRelease
+  prompt="Let both go and compare the two speeds at the finish."
+  lanes={[{ track: 'gentle', startX: 1, label: 'Gentle' }, { track: 'dipped', startX: 1, label: 'Dipped' }]}
+  finishX={4.8}
+/>
+
+</Predict>
+
+</Step>
+
+<Step>
+
+## Just clear the hump
+
+Now you choose where the cart starts. Beyond a deep valley there is a 1.2 m hump.
+
+<ClearTheHump
+  id="up-ch07-clear-the-hump"
+  prompt="Drag the cart up the left hill and let go so that it only just gets over the hump."
+  explanation="Any start above 1.20 m gets over, with no extra height needed. The deep valley hands back on the way up exactly what it gave on the way down. The dashed line is the start height: the cart can reach every part of the rail below it and none above."
+/>
+
+</Step>
+
+<Step>
+
+## The line is the budget
+
+Kinetic plus potential energy stays fixed, and the dashed line marks the total:
+
+$$E = K + U = \text{constant}$$
+
+Between the line and the rail lies the kinetic energy. Where the rail meets the line, $K = 0$ and the cart turns round.
+
+<Recall id="up-ch07-recall-energy-line" concept="mechanical-energy-conservation">
+  <div slot="front">A cart is let go from rest on a frictionless track. Why can it never climb higher than its start?</div>
+
+  Its total energy is the U it started with. Higher up, U alone would exceed that total, which would
+  need negative kinetic energy. The start height is a ceiling.
+</Recall>
+
+</Step>
+
+<Step>
+
+## Plant the flag
+
+This cart is already moving when you meet it: 3 m/s, heading down a steep wall into a valley with a long gentle far side.
+
+<MarkTheTurn
+  id="up-ch07-mark-the-turn"
+  prompt="Plant the flag where the cart will stop and turn back."
+  explanation="It turns at 1.03 m, where U alone is the whole 20.2 J budget: its 11.2 J of U plus 9.0 J of K. The line meets the steep left wall at the same height, much closer in. A turning point is set by height, not by distance."
+/>
+
+</Step>
+
+<Step>
+
+## Friction lowers the line
+
+A real track has friction somewhere. This valley has a brake strip on its flat floor.
+
+<Predict
+  id="up-ch07-brake-strip"
+  question="The cart slides over the strip again and again until it stops. With a strip twice as long, how much heat does it make in total?"
+  options={[
+    { key: 'a', misconception: 'up-ch07-longer-strip-more-heat', label: 'Twice as much', why: 'Each crossing makes twice the heat, but the cart makes half as many crossings. It stops when the 17.5 J it had above the floor is gone, either way.' },
+    { key: 'b', label: 'The same', why: 'Right. The strip takes 5.9 J per metre slid, and the cart has 17.5 J above the floor to give, so it slides 3.0 m over the strip in total, whatever the length.' },
+    { key: 'c', misconception: 'up-ch07-friction-destroys-energy', label: 'Less: it stops sooner', why: 'It stops sooner, in fewer and costlier crossings. The strip cannot stop the cart until its mechanical energy above the floor is used up, and all of that becomes heat.' },
+  ]}
+  correct="b"
+>
+
+<BrakeStrip prompt="Let go, then switch strips and let go again." />
+
+</Predict>
+
+Friction's work is the drop in the line, $\Delta(K+U) = -f\,d$, and that energy is now heat in the strip.
+
+<Recall id="up-ch07-recall-friction" concept="nonconservative-work">
+  <div slot="front">A cart loses 6 J of mechanical energy crossing a brake strip. Where did the 6 J go?</div>
+
+  Into heat in the strip and the cart. Friction lowers the energy line by the work it does, and the
+  thermal energy rises by the same amount. The total never changes.
+</Recall>
+
+## What to carry forward
+
+- **The dashed line is the budget.** The cart reaches every point under it and turns where it meets the rail.
+- **Between two heights, the path sets the timing, never the speed.**
+- **Friction lowers the line by $f\,d$**, and exactly that much turns up as heat.
+
+Next: momentum, the quantity that survives a collision even when mechanical energy does not.
+
+</Step>

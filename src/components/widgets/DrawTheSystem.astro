@@ -1,0 +1,7 @@
+---
+// @graded — when given `id` and `target`, the scene checks itself.
+// Drag a boundary around bodies in a row; pairs inside it cancel.
+import Island, { type DrawTheSystemProps } from '../viz/DrawTheSystem.tsx';
+const props = Astro.props as DrawTheSystemProps;
+---
+<Island client:visible {...props} />

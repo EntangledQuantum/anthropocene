@@ -1,0 +1,6 @@
+---
+// @graded — when given an `id`, the scene checks itself.
+import Island, { type LoadTheCartProps } from '../viz/LoadTheCart.tsx';
+const props = Astro.props as LoadTheCartProps;
+---
+<Island client:visible {...props} />

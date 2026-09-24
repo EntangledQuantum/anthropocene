@@ -1,0 +1,119 @@
+---
+title: 'Spread the stop'
+blurb: 'Catch an egg without breaking it, bat a ball back, and see why a fixed change in momentum means a fixed area, so a longer push is a gentler one.'
+order: 1
+tier: 'foundation'
+minutes: 10
+teaches:
+  - 'momentum'
+  - 'impulse'
+requires:
+  - 'newtons-second-law'
+status: 'live'
+updated: 2026-09-24
+---
+
+<Step>
+
+A raw egg is tossed to you at 6 m/s. You can catch it with a stiff hand that stops it in
+1 cm, or let your hand give 8 cm.
+
+<Predict
+  id="up-ch08-egg-total-push"
+  question="Both hands take the egg from 6 m/s to rest. Which one pushes on it more in total, adding up force × time over the whole stop?"
+  options={[
+    { key: 'stiff', misconception: 'soft-stop-smaller-impulse', label: 'The stiff hand: it pushes far harder', why: 'It pushes about eight times harder, but for an eighth of the time. Throw both below and compare the shaded areas: they print the same number.' },
+    { key: 'soft', label: 'The soft hand: it pushes for longer', why: 'Longer, yes, and gentler by the same factor. A longer push has to be a lower one, and the areas come out identical.' },
+    { key: 'same', label: 'The same for both', why: 'Right. Both hands remove the same motion from the same egg, so the areas match at 0.36 N·s. The soft hand changes the shape of the push, not its size.' },
+    { key: 'none', misconception: 'momentum-is-a-force', label: 'Neither: the egg brings its own force and the hand only absorbs it', why: 'The egg brings momentum, not force. Force exists only while the hand and egg touch, and the trace below shows the hand making all of it.' },
+  ]}
+  correct="same"
+>
+
+<CatchTheEgg prompt="Drag how far your hand gives, then throw. Try 1 cm, then 8 cm." give={1} />
+
+</Predict>
+
+</Step>
+
+<Step>
+
+## Twice as fast
+
+Your partner steps back and throws at 12 m/s. The faint trace is your 6 m/s catch with
+7 cm of give, which the shell just survived.
+
+<CatchTheEgg
+  id="up-ch08-catch-fast"
+  prompt="Set your give for the 12 m/s throw, throw, then check."
+  v0={12}
+  give={7}
+  ghost={{ v0: 6, give: 7 }}
+  explanation="About 27 cm: four times the give for twice the speed. There is twice the motion to remove, so the area doubles. The egg crosses the give twice as fast, so four times the give only doubles the time. Twice the area over twice the time is the same height, and height is what cracks a shell."
+/>
+
+</Step>
+
+<Step>
+
+## Name it
+
+The shaded area is the **impulse**. It always equals the change in **momentum**, mass times
+velocity:
+
+$$\vec p = m\vec v, \qquad \vec J = \int \vec F\,dt = \Delta\vec p$$
+
+That is Newton's second law, $\vec F = d\vec p/dt$, added up over the whole push. The
+momentum fixes the area; the hand chooses the shape.
+
+<Recall id="up-ch08-recall-knees" concept="impulse">
+  <div slot="front">You land from a jump with the same momentum whether or not you bend your knees. Why does bending protect them?</div>
+
+  The ground has to remove the same momentum either way, so the area under force against
+  time is fixed. Bending stretches the time, and a fixed area over a longer time is a
+  lower peak. Joints fail on the peak.
+</Recall>
+
+</Step>
+
+<Step>
+
+## Send it back
+
+A 145 g baseball arrives at 35 m/s. The bat's push is yours to shape.
+
+<BatTheBall
+  id="up-ch08-bat-back"
+  prompt="Shape the push so the ball leaves at 45 m/s, swing, then check."
+  explanation="About 11.6 N·s: 5.1 to stop the ball and 6.5 more to send it back. Every peak on the dashed line gives that area, from 36 kN for half a millisecond to 9 kN over two. The ball only feels the area. The bat and your hands feel the peak."
+/>
+
+<Recall id="up-ch08-recall-reversal" concept="momentum">
+  <div slot="front">A 0.145 kg ball arrives at 35 m/s and leaves at 45 m/s the other way. Why is its change in momentum not 0.145 × 10?</div>
+
+  Momentum is an arrow. Going from 35 one way to 45 the other is a change of 80 m/s, so
+  $\Delta p = 0.145 \times 80 = 11.6$ kg·m/s. Reversing a motion costs the arrival and the
+  departure together.
+</Recall>
+
+</Step>
+
+<Step>
+
+## The same stop, in a car
+
+<Estimate
+  id="up-ch08-estimate-airbag"
+  scenario="up-ch08-airbag-force"
+  prompt="A 70 kg driver at 50 km/h. The belt and airbag bring them to rest in 0.12 s. Estimate the average force they exert."
+  explanation="About 8 kN, twelve times the driver's weight: 970 kg·m/s of momentum removed in 0.12 s. A head that meets the dashboard stops in about a hundredth of a second instead. The area is the same, so the force is ten times larger."
+/>
+
+## What to carry forward
+
+- **The momentum sets the area. You set the shape.** A longer stop is a lower one.
+- **Momentum is an arrow.** Turning a motion round costs the arrival and the departure together.
+
+Next: two carts push on each other, and their total momentum cannot change.
+
+</Step>

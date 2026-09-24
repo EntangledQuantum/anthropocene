@@ -1,0 +1,175 @@
+---
+title: 'Friction answers back'
+blurb: 'Tilt a plank until the block slips, and say the slip angle for any mass before you touch it.'
+order: 1
+tier: 'foundation'
+minutes: 11
+teaches:
+  - 'static-friction'
+  - 'kinetic-friction'
+  - 'inclined-plane'
+requires:
+  - 'newtons-second-law'
+  - 'free-body-diagram'
+  - 'normal-force'
+  - 'force-superposition'
+  - 'vector-components'
+status: 'live'
+updated: 2026-09-24
+---
+
+<Step>
+
+A 4 kg crate sits on a concrete floor. You pull it sideways with 5 N and it does not budge,
+though the floor could grip with up to 19.6 N before letting go.
+
+<Predict
+  id="up-ch05-friction-at-five"
+  question="How big is the friction force on the crate right now?"
+  options={[
+    { key: 'a', misconception: 'static-friction-single-value', label: "19.6 N, the floor's full grip", why: "That is the ceiling, not the value. If friction pulled back with 19.6 N against your 5 N, the crate would slide toward you. Drag the pull below and watch the amber arrow copy yours." },
+    { key: 'b', label: '5 N, exactly matching your pull', why: 'Right. The crate is not accelerating, so the sideways forces add to zero. Friction takes whatever value does that, and no more.' },
+    { key: 'c', misconception: 'no-motion-no-friction', label: 'Zero, because nothing is sliding', why: 'Then your 5 N would be the only sideways force, and the crate would accelerate at 1.25 m/s². It sits still, so something is pulling back.' },
+    { key: 'd', label: '14.6 N, the grip left over', why: 'The leftover is real: it is how much more you could add before the crate goes. But nobody is exerting it. The force that exists is the one cancelling you, 5 N.' },
+  ]}
+  correct="b"
+>
+
+<PullUntilSlip prompt="Drag the tip of your pull and watch friction answer." mass={4} muS={0.5} muK={0.35} start={5} />
+
+</Predict>
+
+</Step>
+
+<Step>
+
+## Find where it gives
+
+A 6 kg crate on a different floor. Nobody tells you how hard this one grips.
+
+<PullUntilSlip
+  id="up-ch05-hardest-pull"
+  prompt="Pull as hard as you can without the crate moving, then check."
+  mass={6}
+  muS={0.4}
+  muK={0.3}
+  start={4}
+  explanation="The limit is 23.5 N. Friction matched you all the way there, then dropped to 17.7 N the moment the crate moved. The strip is the whole story: a 45° line, a cliff, a lower floor. It takes two numbers to describe this floor, not one."
+/>
+
+</Step>
+
+<Step>
+
+## Raise the plank
+
+Now gravity does the pulling. Lift one end of the plank and part of the block's weight starts
+to pull it along the slope.
+
+<TiltUntilSlip
+  id="up-ch05-steepest-hold"
+  goal="hold"
+  prompt="Raise the plank as steep as it goes without the block moving, then check."
+  masses={[2]}
+  muS={0.6}
+  muK={0.4}
+  startDeg={10}
+  explanation="About 31°. Two things changed as you lifted. Friction grew to match gravity's pull along the slope, and its limit shrank, because the block presses less hard into a tilted plank. They meet where tan θ = 0.6."
+/>
+
+</Step>
+
+<Step>
+
+## A heavier block
+
+Put an 8 kg block beside the 2 kg one: same material, same plank.
+
+<Predict
+  id="up-ch05-heavy-slip-angle"
+  question="Raise the plank. Which block slips first?"
+  options={[
+    { key: 'a', misconception: 'heavier-slips-sooner', label: 'The 8 kg block: more weight pulls it down the slope', why: 'Its pull down the slope is four times bigger. So is its normal force, and so is its grip limit. Watch both friction arrows reach their limits together.' },
+    { key: 'b', label: 'The 2 kg block: less weight presses it into the plank', why: 'Less pressing means a lower grip limit, true, but it also has four times less pull along the slope. The shortfall scales on both sides.' },
+    { key: 'c', label: 'Both at the same angle', why: 'Right. Every force on each block scales with its mass, so the race between pull and grip is the same race. The 8 kg block is four 2 kg blocks glued together.' },
+  ]}
+  correct="c"
+>
+
+<TiltUntilSlip prompt="Raise the plank and watch both blocks." masses={[2, 8]} muS={0.6} muK={0.4} startDeg={20} />
+
+</Predict>
+
+</Step>
+
+<Step>
+
+## Name it
+
+Along the slope gravity pulls with $mg\sin\theta$. Into the slope the block presses with
+$mg\cos\theta$, so the grip limit is $\mu_s\,mg\cos\theta$. The block holds while
+
+$$mg\sin\theta \;\le\; \mu_s\,mg\cos\theta \quad\Longleftrightarrow\quad \tan\theta \;\le\; \mu_s$$
+
+<Recall id="up-ch05-recall-static" concept="static-friction">
+  <div slot="front">A crate is pushed with 8 N and does not move. The floor could grip with up to 30 N. What is the friction force?</div>
+
+  8 N. Static friction is whatever stops the slipping, up to 30 N. It reaches $\mu_s N$ only at
+  the instant before the crate goes.
+</Recall>
+
+</Step>
+
+<Step>
+
+## Friction can push forward
+
+A pickup pulls away from the lights with a crate loose in its bed. The crate does not slide;
+it speeds up along with the truck.
+
+<Predict
+  id="up-ch05-truck-bed"
+  question="Which way does the bed's friction push on the crate?"
+  options={[
+    { key: 'a', misconception: 'friction-opposes-motion', label: "Backward, against the crate's motion", why: 'Then the only sideways force on the crate points backward, and it would slow down while the truck sped up. It keeps pace, so its net force points forward.' },
+    { key: 'b', label: 'Forward, the way the crate is moving', why: 'Right. Friction opposes slipping, not motion. The bed would slide forward out from under the crate, so friction drags the crate forward with it. It is the only forward force the crate has.' },
+    { key: 'c', misconception: 'no-motion-no-friction', label: 'Neither way: the crate is not sliding in the bed', why: 'It is not sliding relative to the bed, but it is accelerating relative to the road. Something must supply m·a, and the bed is the only thing touching it.' },
+  ]}
+  correct="b"
+/>
+
+</Step>
+
+<Step>
+
+## Once it moves
+
+Start the 2 kg block sliding. Then look for an angle where it slides without speeding up.
+
+<TiltUntilSlip
+  id="up-ch05-glide"
+  goal="glide"
+  prompt="Get the block sliding, then lower the plank until the magenta arrow vanishes. Check while it slides."
+  masses={[2]}
+  muS={0.6}
+  muK={0.4}
+  startDeg={25}
+  explanation="About 22°, well below the 31° it needed to start. Sliding friction is a second, smaller model, and 0.4, the tangent of 22°, is its coefficient. Between 22° and 31°, a resting block stays put and a sliding one keeps going."
+/>
+
+<Recall id="up-ch05-recall-kinetic" concept="kinetic-friction">
+  <div slot="front">A block needs a 31° ramp to start sliding. Once it slides, you lower the ramp to 27°. What happens?</div>
+
+  It keeps sliding and keeps speeding up. Sliding friction, $\mu_k N$, is smaller than the static
+  limit, so the block glides steadily only where $\tan\theta = \mu_k$, and stops below that.
+</Recall>
+
+## What to carry forward
+
+- **Static friction is an answer, not a formula.** It matches whatever it must, up to $\mu_s N$.
+- **Slipping is a race between two forces that both scale with m**, so the block slips where $\tan\theta = \mu_s$, for any mass.
+- **Sliding is a different model**: $\mu_k N$, smaller, so a moving block is easier to keep moving.
+
+Next: the same budget bent into a circle, where no arrow is called centripetal.
+
+</Step>

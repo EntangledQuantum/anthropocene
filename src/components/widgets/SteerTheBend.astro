@@ -1,0 +1,6 @@
+---
+// @graded — with an `id`, the car must hold the bend.
+import Island, { type SteerTheBendProps } from '../viz/SteerTheBend.tsx';
+const props = Astro.props as SteerTheBendProps;
+---
+<Island client:visible {...props} />

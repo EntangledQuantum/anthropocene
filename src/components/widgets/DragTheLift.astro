@@ -1,0 +1,6 @@
+---
+// @graded — with `id` and `target`, act out a lift trip by holding the car.
+import Island, { type DragTheLiftProps } from '../viz/DragTheLift.tsx';
+const props = Astro.props as DragTheLiftProps;
+---
+<Island client:visible {...props} />

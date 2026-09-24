@@ -1,0 +1,18 @@
+title: 'Elastic and inelastic collisions'
+blurb: 'Momentum fixes the centre-of-mass motion; the coefficient of restitution e fixes how fast the carts separate compared with how fast they closed, and so how much kinetic energy survives.'
+notation: 'v_B'' - v_A'' = e\,(v_A - v_B),\qquad \Delta K = -\tfrac12 (1-e^2)\,\mu\,(v_A - v_B)^2'
+tags:
+  - 'up-ch08'
+misconceptions:
+  - id: 'heavier-target-stops-better'
+    name: 'The heavier the target, the better it stops the cart that hits it.'
+    signal: 'Loads the target cart to the maximum to make the incoming cart stop dead.'
+    correction: 'With a springy bumper a heavy target throws the incoming cart back, a light one lets it follow through, and only an equal mass stops it. With e = 1 both momentum and energy balance, which leaves the equal-mass exchange as the only way for A to end with nothing.'
+  - id: 'ke-constant-during-bounce'
+    name: 'In an elastic collision the kinetic energy stays constant the whole time.'
+    signal: 'Expects the kinetic-energy bar to stay full during a springy collision.'
+    correction: 'Elastic means the kinetic energy comes back, not that it never leaves. At the deepest squash, part of it (half, for equal carts with one at rest) sits in the bumper. Momentum is the quantity that is conserved at every instant.'
+  - id: 'restitution-is-a-law'
+    name: 'Every material has a fixed coefficient of restitution.'
+    signal: 'Treats e as a constant like g and uses one value for all impact speeds.'
+    correction: 'e is a model that summarises what the bumper does to the relative velocity. Real contacts give different e at different speeds and temperatures; a squash ball is famously dead until it is warm. Momentum conservation holds regardless; e is the part you measure.'

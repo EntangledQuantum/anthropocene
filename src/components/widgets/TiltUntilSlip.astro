@@ -1,0 +1,6 @@
+---
+// @graded — when given `id` and `goal`, the scene checks itself.
+import Island, { type TiltUntilSlipProps } from '../viz/TiltUntilSlip.tsx';
+const props = Astro.props as TiltUntilSlipProps;
+---
+<Island client:visible {...props} />

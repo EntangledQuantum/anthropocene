@@ -1,0 +1,14 @@
+title: 'Free fall'
+blurb: 'Once a thrown object leaves the hand and air can be ignored, its acceleration is the same g downward on the way up, at the top and on the way down.'
+notation: 'a = -g \approx -9.81\ \text{m/s}^2'
+tags:
+  - 'up-ch2'
+misconceptions:
+  - id: 'upward-motion-needs-upward-acceleration'
+    name: 'While a thrown ball is still rising, something must be pushing it up.'
+    signal: 'Draws an upward acceleration, or an upward "force of the throw", on a ball after it has left the hand.'
+    correction: 'The hand stopped pushing when the ball left it. The ball rises because it already has an upward velocity, and the only acceleration is g, downward, which is exactly why it slows.'
+  - id: 'turn-breaks-the-motion'
+    name: 'The top of a throw is a special event that splits the motion in two.'
+    signal: 'Treats the way up and the way down as separate problems with different rules, or expects a jump in the v(t) graph at the top.'
+    correction: 'Nothing happens at the top except that the velocity passes through zero. v(t) is one straight line with the same slope before and after, which is why the way down mirrors the way up.'

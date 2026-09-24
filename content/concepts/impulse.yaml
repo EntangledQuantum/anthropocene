@@ -1,0 +1,14 @@
+title: 'Impulse and the impulse–momentum theorem'
+blurb: 'The area under force against time. It equals the change in momentum, so a stop of fixed size has a fixed area: stretch the time and the peak must fall.'
+notation: '\vec J = \int \vec F\,dt = \Delta\vec p'
+tags:
+  - 'up-ch08'
+misconceptions:
+  - id: 'soft-stop-smaller-impulse'
+    name: 'A soft catch works because it gives the object a smaller total push.'
+    signal: 'Predicts that the hand which gives delivers less force-times-time than the stiff one.'
+    correction: 'Both hands take the egg from 6 m/s to rest, so both must remove the same momentum, and the area under each force trace is the same 0.36 N·s. The soft hand only reshapes that area: longer and lower. Eggs break on peak force, not on area.'
+  - id: 'rebound-costs-nothing-extra'
+    name: 'To send a ball back at 45 m/s you need the push that would give a resting ball 45 m/s.'
+    signal: 'Sizes the bat''s impulse as m times the exit speed and forgets the incoming velocity.'
+    correction: 'The impulse must equal the whole change in momentum, and reversing a velocity changes it by the arrival and the departure together: m(45 + 35), not m·45. The first part of every push only brings the ball to a stop. This is why a bounce hits a wall harder than a splat.'

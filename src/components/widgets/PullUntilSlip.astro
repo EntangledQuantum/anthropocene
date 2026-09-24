@@ -1,0 +1,6 @@
+---
+// @graded — when given `id`, the scene checks itself: the hardest pull that still holds.
+import Island, { type PullUntilSlipProps } from '../viz/PullUntilSlip.tsx';
+const props = Astro.props as PullUntilSlipProps;
+---
+<Island client:visible {...props} />

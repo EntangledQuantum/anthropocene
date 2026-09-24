@@ -1,0 +1,17 @@
+title: 'Conservation of mechanical energy'
+blurb: 'When only conservative forces do work, kinetic plus potential energy stays fixed, so speed at any point follows from height alone.'
+notation: 'E = K + U = \text{constant}'
+tags: ['up-ch7']
+misconceptions:
+  - id: 'up-ch07-path-sets-final-speed'
+    name: 'A deeper path gives a faster finish.'
+    signal: 'Predicts the cart on a dipped track finishes faster than one on a gentle track between the same two heights.'
+    correction: 'On a frictionless track, speed at a point depends only on how far the cart has dropped since it was at rest. A dip gives speed on the way down and takes exactly that back on the way up.'
+  - id: 'up-ch07-climbing-costs-extra'
+    name: 'Climbing out of a dip costs more than falling into it gave.'
+    signal: 'Predicts the dipped track finishes slower, or that a cart needs extra height to clear a hump beyond a valley.'
+    correction: 'With only gravity and a frictionless rail doing work, the trip down and the trip up are the same account read in opposite directions. Nothing is lost on the way.'
+  - id: 'up-ch07-conservative-means-thrifty'
+    name: 'A conservative force is one that does not use up much energy.'
+    signal: 'Uses "conservative" in its everyday sense of careful or economical.'
+    correction: 'Conservative means the work done depends only on the endpoints, so the energy it takes can be given back in full. Gravity takes energy on the way up and returns all of it on the way down.'

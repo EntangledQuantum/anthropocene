@@ -20,3 +20,7 @@ misconceptions:
     name: 'Any two equal and opposite forces in the picture are a pair.'
     signal: 'Calls the weight of a book and the table''s push on it an action-reaction pair.'
     correction: 'Three tests, and the third is the one that fails here: equal magnitude, opposite direction, and acting on *different* bodies. Both of those forces act on the book, and they come from two unrelated interactions — one with the Earth, one with the table. The real partner of the book''s weight is the book''s pull on the Earth.'
+  - id: 'reaction-arrives-late'
+    name: 'The reaction builds up a moment after the action, and that lag is what lets things get moving.'
+    signal: 'Explains how a horse starts a cart by saying it pulls harder for an instant before the cart pulls back.'
+    correction: 'There is no instant at which the two ends differ. They are one interaction, and a harness cannot pull harder on one end than the other. Things get moving because of a third body: the ground pushes the horse''s hooves forward, and that force is on the horse alone.'

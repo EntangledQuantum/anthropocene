@@ -1,0 +1,18 @@
+title: 'Constant acceleration'
+blurb: 'When the velocity changes at a steady rate, v(t) is a straight line and the distance is the area under it: a triangle whose area grows with the square of the speed.'
+notation: 'v^2 = v_0^2 + 2a\,\Delta x'
+tags:
+  - 'up-ch2'
+misconceptions:
+  - id: 'stopping-distance-proportional-to-speed'
+    name: 'Twice the speed needs twice the distance to stop.'
+    signal: 'Doubles a braking distance, or a throw height, when the speed doubles.'
+    correction: 'Twice the speed takes twice as long to lose at the same braking, and it covers ground twice as fast the whole time. Both factors multiply: the triangle under v(t) is twice as tall and twice as long, so four times the area.'
+  - id: 'kinematic-equations-always-apply'
+    name: 'The constant-acceleration equations work for any motion.'
+    signal: 'Reaches for v² = v₀² + 2aΔx for a skydiver, a lift ride or a bungee jump without asking whether a stays fixed.'
+    correction: 'Every one of those equations assumes a single, unchanging a. Where drag grows, a spring stretches or a driver changes the throttle, a changes and the equations give confident wrong numbers. Read the graph, or split the motion into pieces where a really is constant.'
+  - id: 'acceleration-is-speed'
+    name: 'Acceleration is how fast something is going.'
+    signal: 'Says a car cruising at 30 m/s has a large acceleration, or a braking car has none because it is slowing.'
+    correction: 'Acceleration is how fast the velocity is changing. A car cruising at a steady 30 m/s has none; a car braking from 30 m/s has 7.5 m/s² of it, pointing backwards.'

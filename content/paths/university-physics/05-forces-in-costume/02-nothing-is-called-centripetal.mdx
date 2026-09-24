@@ -1,0 +1,137 @@
+---
+title: 'Nothing is called centripetal'
+blurb: 'Find the slowest swing that keeps water in a bucket, and name the real forces that turn anything round a circle.'
+order: 2
+tier: 'core'
+minutes: 10
+teaches:
+  - 'circular-motion-dynamics'
+  - 'vertical-circle'
+  - 'banked-curve'
+requires:
+  - 'newtons-second-law'
+  - 'free-body-diagram'
+  - 'normal-force'
+  - 'centripetal-acceleration'
+  - 'uniform-circular-motion'
+  - 'static-friction'
+  - 'vector-components'
+status: 'live'
+updated: 2026-09-24
+---
+
+<Step>
+
+You swing a bucket of water in a vertical circle at a steady speed. At the top it is upside
+down, and the water stays in.
+
+<Predict
+  id="up-ch05-bucket-top"
+  question="At the top, what stops the water falling out?"
+  options={[
+    { key: 'a', misconception: 'centrifugal-is-real', label: 'An outward centrifugal force presses it into the bucket', why: 'Look for what would exert it. Nothing out there touches the water. The two forces on it at the top, its weight and the push of the bottom, both point down.' },
+    { key: 'd', label: 'Nothing holds it up: it falls, and the bucket turns down at least as fast', why: 'Right. Both forces point down, at the centre. The water is falling the whole time, but the bucket is swung down around the circle faster than free fall would take the water, so the bottom stays pressed against it.' },
+    { key: 'b', misconception: 'centripetal-is-an-extra-force', label: 'The centripetal force holds it up against gravity', why: 'Centripetal means toward the centre, which at the top is down. It cannot hold anything up. At the top, gravity is part of the centripetal pull.' },
+    { key: 'c', misconception: 'circle-forces-balance', label: 'The forces on it balance for an instant', why: 'Balanced forces would send the water straight on, sideways, off the circle. It turns, so the net force is not zero: it points down, at the centre.' },
+  ]}
+  correct="d"
+>
+
+<SwingTheBucket prompt="Drag the speed and watch the arrows on the water as it passes the top." start={4.5} />
+
+</Predict>
+
+</Step>
+
+<Step>
+
+## Slow it down
+
+The slower you swing, the less the bottom has to push. Somewhere it runs out.
+
+<SwingTheBucket
+  id="up-ch05-slowest-swing"
+  prompt="Find the slowest steady speed that keeps the water in, then check."
+  start={5}
+  explanation="3.13 m/s on a 1 m circle. There the bottom's push at the top is zero, and gravity alone does the turning. Any slower and the circle needs less than gravity gives, so the water falls inside the circle and out of the bucket."
+/>
+
+</Step>
+
+<Step>
+
+## Name it
+
+At the top both forces point at the centre, and together they supply the turn:
+
+$$mg + N = \frac{mv^2}{R}$$
+
+The bucket can push but never pull, so $N \ge 0$ and $v \ge \sqrt{gR}$ whatever the mass of
+water. No arrow was called centripetal: the word names the job, and here gravity and the
+bucket share it.
+
+<Recall id="up-ch05-recall-top" concept="vertical-circle">
+  <div slot="front">A roller-coaster car runs upside down over the top of a loop of radius 10 m. What is the slowest speed it can have there?</div>
+
+  About 9.9 m/s, from v² = gR. Gravity and the track both point at the centre, and the track
+  can only push, so gravity alone sets the floor.
+</Recall>
+
+</Step>
+
+<Step>
+
+## Bank the road
+
+A car takes a 50 m bend at 15 m/s. On a flat road friction does all the turning; tilt the
+road and the normal force leans in to help.
+
+<BankTheCurve
+  id="up-ch05-bank"
+  prompt="Bank the road until the tyres need no friction at all, then check."
+  speed={15}
+  radius={50}
+  mass={1200}
+  startDeg={0}
+  explanation="About 24.6°, where tan θ = v²/(gR). The normal force now leans toward the centre, and its sideways part is exactly mv²/R. The same car, the same Newton, a different force doing the turning."
+/>
+
+</Step>
+
+<Step>
+
+## Rush hour
+
+Traffic on your banked bend slows to a crawl, 5 m/s.
+
+<Predict
+  id="up-ch05-slow-on-bank"
+  question="Which way does the road's friction push on the tyres now?"
+  options={[
+    { key: 'a', misconception: 'bank-friction-always-inward', label: 'Down the slope, toward the centre, as on any bend', why: 'Toward the centre is what a flat road needs. This road leans in so far that at 5 m/s the normal force alone would turn the car too tightly, and the car would slide down.' },
+    { key: 'b', label: 'Up the slope, away from the centre', why: 'Right. At 5 m/s the turn needs only 0.5 m/s², and the tilted normal force gives more. Friction pushes up the slope to stop the car sliding in, just as it holds a parked car on the same bank.' },
+    { key: 'c', misconception: 'bank-works-at-any-speed', label: 'None: the bank was set so no friction is needed', why: 'It was set for 15 m/s. At any other speed the normal force overdoes or underdoes the turning, and friction takes up the difference.' },
+  ]}
+  correct="b"
+>
+
+<BankTheCurve prompt="Tilt the road and watch the friction arrow turn round." speed={5} radius={50} mass={1200} startDeg={24.6} />
+
+</Predict>
+
+<Recall id="up-ch05-recall-bank" concept="banked-curve">
+  <div slot="front">A road is banked for 20 m/s. A car takes it at 30 m/s. Which way does friction on its tyres point?</div>
+
+  Down the slope, toward the centre. The car is too fast for the bank, so the normal force
+  alone under-turns it, and friction adds the missing inward pull.
+</Recall>
+
+## What to carry forward
+
+- **No force is called centripetal.** List the real forces; the inward part of their sum is mv²/R.
+- **Contact forces push and never pull.** That one inequality sets the slowest speed at the top of a loop.
+- **Friction fills the gap**, in whichever direction the budget needs.
+
+Next: the same forces, added up along a path instead of at an instant. That sum is work.
+
+</Step>

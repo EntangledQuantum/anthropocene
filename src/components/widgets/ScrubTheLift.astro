@@ -1,0 +1,6 @@
+---
+// @graded — with `id`, find the fastest instant of a recorded lift trip.
+import Island, { type ScrubTheLiftProps } from '../viz/ScrubTheLift.tsx';
+const props = Astro.props as ScrubTheLiftProps;
+---
+<Island client:visible {...props} />

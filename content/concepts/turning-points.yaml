@@ -1,0 +1,13 @@
+title: 'Turning points and the energy line'
+blurb: 'Draw the total energy as a horizontal line over U: the particle can only be where the line is above the curve, and it turns round where they meet.'
+notation: 'K = E - U(x) \ge 0'
+tags: ['up-ch7']
+misconceptions:
+  - id: 'up-ch07-turns-at-start-height'
+    name: 'A moving object turns round at the height it started from.'
+    signal: 'Places the turning point of a cart that was already moving at its starting height, ignoring its kinetic energy.'
+    correction: 'The turning height is where U alone equals the whole budget E = K + U. A cart that starts with kinetic energy climbs higher than where it started, by K / m g.'
+  - id: 'up-ch07-turns-at-mirror-distance'
+    name: 'Motion in a valley is symmetric in distance.'
+    signal: 'Places the far turning point as far from the bottom as the start was, whatever the shape of the far wall.'
+    correction: 'Turning points sit at one height, the height of the energy line. On a gentle wall that height is far out; on a steep wall it is close in.'

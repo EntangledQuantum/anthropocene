@@ -1,0 +1,14 @@
+title: 'Newton on a circle'
+blurb: 'Circular motion needs no new force. The real forces on the body must have an inward total of m v²/R, and whichever of them point inward (gravity, a push, a tension, friction) do that job between them.'
+notation: '\sum F_{\text{inward}} = \dfrac{m v^2}{R}'
+tags:
+  - 'up-ch5'
+misconceptions:
+  - id: 'centrifugal-is-real'
+    name: 'A centrifugal force pushes the object outward.'
+    signal: 'Draws an outward arrow on the water in a swung bucket, or on a car in a bend, and has it balance the inward forces.'
+    correction: 'Nothing outside the body pushes it outward. The pressed-outward feeling is your body carrying on in a straight line while the seat or the bucket turns it. If the outward arrow were real it would cancel the inward ones, the net force would be zero, and the body would go straight.'
+  - id: 'circle-forces-balance'
+    name: 'At the top of the loop the forces balance, which is why it does not fall.'
+    signal: 'Writes N = mg or N − mg = 0 at the top of a vertical circle, treating the top as equilibrium.'
+    correction: 'Nothing on a circle is in equilibrium: its velocity is turning, so it is accelerating toward the centre. At the top both gravity and the push of the bucket point down, and their sum is m v²/R, not zero.'

@@ -1,0 +1,6 @@
+---
+// @graded — with `id`, freeze a thrown ball at the top of its flight.
+import Island, { type FreezeAtTheTopProps } from '../viz/FreezeAtTheTop.tsx';
+const props = Astro.props as FreezeAtTheTopProps;
+---
+<Island client:visible {...props} />

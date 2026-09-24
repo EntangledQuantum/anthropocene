@@ -1,0 +1,14 @@
+title: 'The banked curve'
+blurb: 'Tilt the road and the normal force leans toward the centre of the bend. At one bank, tan θ = v²/(gR), it does all the turning by itself and the tyres need no grip at all.'
+notation: '\tan\theta_{\text{ideal}} = \dfrac{v^2}{gR}'
+tags:
+  - 'up-ch5'
+misconceptions:
+  - id: 'bank-friction-always-inward'
+    name: 'On a bend, friction always points toward the centre.'
+    signal: 'Draws friction down the slope on a banked road whatever the speed.'
+    correction: 'Friction supplies whatever the normal force leaves undone. Too fast for the bank and the car would slide up and out, so friction points down the slope. Too slow and it would slide down and in, so friction points up the slope, away from the centre.'
+  - id: 'bank-works-at-any-speed'
+    name: 'A road banked for no friction needs no friction at any speed.'
+    signal: 'Assumes a slow car on a steeply banked bend needs no grip because the road was designed to need none.'
+    correction: 'The ideal bank is ideal for one speed. At any other speed the normal force either overdoes or underdoes the turning, and friction makes up the difference.'

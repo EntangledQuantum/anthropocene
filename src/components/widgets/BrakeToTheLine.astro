@@ -1,0 +1,6 @@
+---
+// @graded — with `id`, place the brake point so the car stops at the line.
+import Island, { type BrakeToTheLineProps } from '../viz/BrakeToTheLine.tsx';
+const props = Astro.props as BrakeToTheLineProps;
+---
+<Island client:visible {...props} />

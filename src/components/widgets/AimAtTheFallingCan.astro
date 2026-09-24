@@ -1,0 +1,6 @@
+---
+// @graded — hit the can, which starts falling the instant you fire.
+import Island, { type AimAtTheFallingCanProps } from '../viz/AimAtTheFallingCan.tsx';
+const props = Astro.props as AimAtTheFallingCanProps;
+---
+<Island client:visible {...props} />

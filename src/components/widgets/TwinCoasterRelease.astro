@@ -1,0 +1,6 @@
+---
+// Ungraded picture: the payoff under a <Predict>. Chapter 7.
+import Island, { type TwinCoasterReleaseProps } from '../viz/TwinCoasterRelease.tsx';
+const props = Astro.props as TwinCoasterReleaseProps;
+---
+<Island client:visible {...props} />

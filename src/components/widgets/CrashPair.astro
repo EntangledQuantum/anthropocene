@@ -1,0 +1,7 @@
+---
+// A car and a truck collide in slow motion; the two force curves are one curve.
+// Ungraded: a payoff to play with, not a task.
+import Island, { type CrashPairProps } from '../viz/CrashPair.tsx';
+const props = Astro.props as CrashPairProps;
+---
+<Island client:visible {...props} />

@@ -1,0 +1,6 @@
+---
+// @graded — when given `id`, the scene checks itself.
+import Island, { type StretchSpringProps } from '../viz/StretchSpring.tsx';
+const props = Astro.props as StretchSpringProps;
+---
+<Island client:visible {...props} />

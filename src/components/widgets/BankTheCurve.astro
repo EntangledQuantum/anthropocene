@@ -1,0 +1,6 @@
+---
+// @graded — when given `id`, the scene checks itself: the bank that needs no friction.
+import Island, { type BankTheCurveProps } from '../viz/BankTheCurve.tsx';
+const props = Astro.props as BankTheCurveProps;
+---
+<Island client:visible {...props} />

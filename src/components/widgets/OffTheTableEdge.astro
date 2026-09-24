@@ -1,0 +1,6 @@
+---
+// @graded — with an `id` and a `bucket`, the pushed ball must land in it.
+import Island, { type OffTheTableEdgeProps } from '../viz/OffTheTableEdge.tsx';
+const props = Astro.props as OffTheTableEdgeProps;
+---
+<Island client:visible {...props} />

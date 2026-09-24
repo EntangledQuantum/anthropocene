@@ -1,0 +1,6 @@
+---
+// @graded — when given an `id`, the scene checks itself.
+import Island, { type CatchTheEggProps } from '../viz/CatchTheEgg.tsx';
+const props = Astro.props as CatchTheEggProps;
+---
+<Island client:visible {...props} />

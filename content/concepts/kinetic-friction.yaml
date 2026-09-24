@@ -1,0 +1,14 @@
+title: 'Kinetic friction'
+blurb: 'Once two surfaces slide, friction is a different model: a fixed μ_k N against the sliding, usually smaller than the static limit, so what was hard to start is easier to keep going.'
+notation: 'f_k = \mu_k N, \quad \mu_k < \mu_s'
+tags:
+  - 'up-ch5'
+misconceptions:
+  - id: 'kinetic-equals-static'
+    name: 'Once it moves, friction is the same as the grip that held it.'
+    signal: 'Expects a block that started sliding at 31° to stop again as soon as the ramp is lowered to 30°.'
+    correction: 'Sliding friction is its own, smaller number. A block that needed 31° to start will keep sliding, and keep speeding up, all the way down to tan⁻¹ μ_k. Between the two angles it rests if it is resting and slides if it is sliding.'
+  - id: 'kinetic-friction-grows-with-speed'
+    name: 'The faster it slides, the harder friction pulls back.'
+    signal: 'Predicts that a block sliding down a ramp settles at a terminal speed, the way a falling ball does in air.'
+    correction: 'Dry sliding friction is close to independent of speed: μ_k N at 1 m/s and at 5 m/s. So on a ramp it either always wins, always loses, or balances at exactly one angle. A terminal speed needs a force that grows with speed, and that is drag, not friction.'

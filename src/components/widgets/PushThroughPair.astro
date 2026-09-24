@@ -1,0 +1,7 @@
+---
+// @graded — when given `id` and `target`, the scene checks itself.
+// Push one block into another; the two contact meters cannot disagree.
+import Island, { type PushThroughPairProps } from '../viz/PushThroughPair.tsx';
+const props = Astro.props as PushThroughPairProps;
+---
+<Island client:visible {...props} />

@@ -1,117 +1,119 @@
 ---
 title: 'Height is not force'
-blurb: 'Find a force on an energy landscape without confusing high ground with a steep slope.'
+blurb: 'Read the push on a cart, or on an atom, from the steepness of its energy landscape, and move the zero of energy without changing a thing.'
 order: 1
 tier: 'foundation'
-minutes: 12
+minutes: 9
 teaches: ['potential-force-slope', 'potential-reference-zero']
 requires: ['instantaneous-rate', 'newtons-second-law']
 runtime: 'none'
 status: 'live'
-updated: 2026-09-17
+updated: 2026-09-24
 ---
 
-The highest shelf looks powerful. The lower riser looks steep. **Which one gives a particle the stronger shove?**
+<Step>
 
-Move the probe between **x = 0.4 m** and **x = 2.6 m**. Keep force hidden for your first decision. You are learning to read a force from an energy picture, not from its height.
-
-<ForceFromSlope landscape="staircase" probeX={2.6} hideForce={true} caption="This is an energy graph, not the shape of a physical rail: horizontal position is measured in metres, vertical potential energy in joules. The particle has one horizontal coordinate. The high shelf is nearly flat, not exactly flat." />
+Two identical carts sit still on the same coaster track, on frictionless wheels. Cart A rests high up on a gentle shelf; cart B rests lower down, on the steep drop.
 
 <Predict
-  id="up-ch7-height-first-predict"
-  question="Compare the steep riser at x = 0.4 m with the high shelf at x = 2.6 m. Where is the force larger in magnitude? Commit, then reveal force above."
+  id="up-ch07-which-starts-faster"
+  question="You let both go at the same instant. Which one picks up speed faster in the first half-second?"
   options={[
-    { key: 'shelf', label: 'On the high shelf', misconception: 'up-ch7-higher-means-stronger', why: 'The shelf has more potential energy, but barely changes height as you move sideways. Reveal force and compare the almost-zero shelf readout with the riser.' },
-    { key: 'riser', label: 'On the steep riser', why: 'The riser has the larger local slope. The revealed force is about −3.30 N there, versus a tiny negative force on the high shelf. The minus sign means left.' },
-    { key: 'same', label: 'The same at both places', why: 'Equal force would require equal local slopes. Move the dashed tangent between the two places: its tilt changes dramatically.' },
+    { key: 'a', misconception: 'up-ch7-higher-means-stronger', label: 'A: it is higher, so it has more energy stored', why: "A does have more energy stored. But the push depends on how quickly that energy changes as the cart moves, and on a shelf it barely changes. Watch A's trace crawl while B's shoots up." },
+    { key: 'b', label: 'B: it sits where the track is steep', why: 'Right. The push along the rail is about fifteen times larger at B. After half a second B is doing 2.8 m/s and A only 0.3 m/s. Keep watching, though: A still arrives faster, because it drops further. That is the next lesson.' },
+    { key: 'c', misconception: 'up-ch07-same-weight-same-push', label: 'Neither: gravity pulls both with the same m g', why: 'Gravity is the same on both, but only its part along the rail moves a cart. On a shelf tilted 3° that part is tiny; on a 66° drop it is most of m g.' },
   ]}
-  correct="riser"
+  correct="b"
+>
+
+<TwinCoasterRelease
+  prompt="Let both go and watch the two speed traces."
+  lanes={[{ track: 'shelfAndDrop', startX: 0.5, label: 'A' }, { track: 'shelfAndDrop', startX: 2.5, label: 'B' }]}
+  finishX={4.8}
 />
 
-## Find the shove, not the height
+</Predict>
 
-Reveal force above. Sweep across both steps slowly. The upper tangent tilts most where the lower force curve reaches furthest from zero. On each nearly flat shelf, force nearly vanishes.
+</Step>
 
-Now hunt on just the **right-hand step**. The high shelf is a tempting starting point; it is not the target.
+<Step>
 
-<Tune
-  id="up-ch7-right-riser-tune"
-  scenario="up-ch7-strongest-right-step"
-  prompt="Place the probe where the force magnitude is largest on this step. Compare the live force readout as you move; then check."
-  hint="Find where the energy curve changes height most rapidly, not where it ends highest."
-  explanation="The largest shove is near x = 0.4 m, halfway up the right riser. Above that point U keeps increasing while the force magnitude decreases."
+## Flat, not low
+
+A cart at rest stays at rest only where nothing pushes it along the rail.
+
+<StayPutCart
+  id="up-ch07-stay-put"
+  prompt="Drag the cart to a spot where it will stay when you let go."
+  explanation="Only the high shelf holds it. It is exactly flat, so there is no push there, however high it is. The lowest point still tilts 5.7°, and 1.9 N along the rail is plenty for frictionless wheels."
 />
 
-For the smooth, one-dimensional **conservative forces** here, the landscape is a potential energy function $U(x)$. Its slope tells you the force:
+</Step>
 
-$$F_x = -\frac{dU}{dx}.$$
+<Step>
 
-The derivative is the [local rate of change](/anthropocene/learn/university-physics/motion-as-geometry/three-graphs/). The minus sign says **force points toward decreasing U**. It does not say a moving particle must travel downhill: force changes velocity; it does not replace it.
+## Steep pushes, high does not
 
-<Recall id="up-ch7-recall-height-slope" concept="potential-force-slope">
-  <div slot="front">A high shelf and a low steep slope: which determines the stronger force, height or slope?</div>
+Here gravity's potential energy is $U = mgh$, so the track *is* the energy landscape. Measure $x$ along the rail, and the push is the slope of that landscape, turned downhill:
 
-  Local slope. A flat shelf has zero force regardless of its energy value. A steep slope gives a large force toward decreasing U. Read the tangent, not the altitude.
+$$F = -\frac{dU}{dx}$$
+
+<Recall id="up-ch07-recall-slope" concept="potential-force-slope">
+  <div slot="front">A high flat shelf and a low steep slope: where is the push stronger, and why?</div>
+
+  On the steep slope. Force is minus the slope of U, so a flat stretch pushes with zero force at
+  any height. Read the tilt, not the altitude.
 </Recall>
 
-## Change the numbers without changing the shove
+</Step>
 
-Keep the probe at **x = 0.4 m**. The next control adds the same number to U everywhere. It does not reshape the curve.
+<Step>
+
+## Move the floor
+
+So far every height was measured from the floor. Measure from a tabletop 0.8 m up instead, and the cart's potential energy on the valley floor becomes −11.8 J.
 
 <Predict
-  id="up-ch7-floor-predict"
-  question="If you lower every energy value until U at the probe becomes negative, what happens to its force?"
+  id="up-ch07-move-the-zero"
+  question="What happens to the way the cart swings?"
   options={[
-    { key: 'reverse', label: 'It reverses when U crosses zero', misconception: 'up-ch7-negative-energy-reverses-force', why: 'Zero energy is not a special slope. Move the floor control below: U crosses zero while the tangent and the force keep their direction.' },
-    { key: 'same', label: 'It stays unchanged', why: 'A vertical shift changes every height by the same amount, leaving every local difference and slope unchanged. The force panel stays still while U slides.' },
-    { key: 'weaker', label: 'It becomes weaker as U falls', misconception: 'up-ch7-higher-means-stronger', why: 'Lowering U by a constant is not flattening it. Watch the upper curve move across the fixed ruler while the lower curve does not move.' },
+    { key: 'a', misconception: 'up-ch07-u-value-is-physical', label: 'It swings less high: it now has less energy', why: 'Every U dropped by the same 15.7 J, including at the top of the swing. The cart only ever uses differences in U, and those did not move. Slide the zero below and watch the speed readout ignore you.' },
+    { key: 'b', label: 'Nothing about the motion changes', why: 'Right. Adding a constant to U changes every value and no difference, so no slope and no push. The U = 0 line is bookkeeping you chose.' },
+    { key: 'c', misconception: 'up-ch7-negative-energy-reverses-force', label: 'Where U turns negative, the push flips', why: 'Zero is not a special slope. Drag the zero line up through the valley: U changes sign under the cart, and it keeps swinging exactly as before.' },
   ]}
-  correct="same"
-/>
+  correct="b"
+>
 
-<ForceFromSlope landscape="staircase" probeX={0.4} floorShift={true} floorRange={[-4, 4]} caption="Try both ends of the constant slider. Keep the probe fixed first; then move it to the high shelf and repeat. Different U values, identical forces at the same positions." />
+<SlideTheZero prompt="Drag the U = 0 line anywhere, even above the track." />
 
-You choose the energy reference. Writing $U_{\mathrm{new}}(x)=U(x)+C$ changes the ledger's zero, not the interaction. Potential energy describes a configuration of an interacting system; it is not a force stored inside the particle.
+</Predict>
 
-<Recall id="up-ch7-recall-reference" concept="potential-reference-zero">
-  <div slot="front">You add a constant to U everywhere. Which changes: energy values, energy differences, or force?</div>
+<Recall id="up-ch07-recall-zero" concept="potential-reference-zero">
+  <div slot="front">You move the zero of potential energy up by 1 m. Which changes: U values, differences in U, or the motion?</div>
 
-  Only the energy values. The constant cancels in differences and has zero derivative, so it cannot change force or the motion from the same initial position and velocity.
+  Only the U values. The constant cancels in every difference and has zero slope, so the forces and
+  the motion are untouched.
 </Recall>
 
-## Same rule, a different shape
+</Step>
 
-A spring has a valley instead of steps. **Before revealing force**, move the probe from the left wall to the right wall. The tangents tilt in opposite directions. The spring shown has stiffness **k = 4 N/m**.
+<Step>
 
-<ForceFromSlope landscape="spring" probeX={-1} hideForce={true} caption="Read the U graph first. Sketch below, then reveal this force panel to compare. The slider is a position probe, not a release control." />
+## No hill in the room
 
-<SketchCurve
-  id="up-ch7-spring-force-sketch"
-  scenario="up-ch7-spring-force"
-  prompt="Sketch the spring force versus displacement from −2 m to +2 m. At the flat bottom, F = 0. Use the tangents to choose each side's sign and how strongly it grows."
-  hint="On the left wall, U decreases as x increases: the force points right. On the right wall it points left."
-  explanation="The spring has U = ½kx² and F = −kx. For k = 4 N/m, your force line descends from +8 N at −2 m through zero to −8 N at +2 m. The potential is curved; its force is a straight line."
-/>
+Two argon atoms pull together when stretched a little and shove apart when squeezed. The curve is the energy of their bond: no rail and no gravity, but the same rule.
 
-## The edge of the height shortcut
-
-One last costume: uniform gravity. Move the probe between the bottom and the top of this straight energy slope. Decide before revealing force.
-
-<ForceFromSlope landscape="gravityRamp" probeX={0} hideForce={true} caption="Here x is upward height. A negative force points downward." />
-
-<Predict
-  id="up-ch7-gravity-transfer"
-  question="At x = 0 m and x = 4 m, the graph has different U values. What happens to the gravitational force?"
-  options={[
-    { key: 'larger', label: 'It is larger at 4 m', misconception: 'up-ch7-higher-means-stronger', why: 'The energy value is larger, but the straight graph has the same slope everywhere. Higher U is not a larger force.' },
-    { key: 'same', label: 'It is the same downward force', why: 'Reveal force: both positions give −2 N. A straight potential slope gives a constant force even though U changes with position.' },
-    { key: 'zero', label: 'It vanishes where U is zero', why: 'At x = 0, U = 0 but its slope is still 2 J/m. The force reads that slope, not the chosen zero.' },
-  ]}
-  correct="same"
+<StretchTheBond
+  id="up-ch07-stretch-the-bond"
+  prompt="Drag the right-hand atom to where the pull holding the pair together is strongest."
+  explanation="About 0.42 nm, where the outer wall is steepest: 11.6 pN. At the bottom of the well, 0.38 nm, the pull is zero because the curve is flat there. The deepest point is where the bond rests, not where it pulls hardest."
 />
 
 ## What to carry forward
 
-Read a potential landscape with a tangent: **steep means strong; downhill gives the force direction**. Moving the energy zero never moves that tangent.
+- **Force reads the slope of U, never its height.** $F = -dU/dx$: flat means no push, at any altitude.
+- **The zero of U is yours.** Only differences and slopes reach the world.
 
-Next, use the energy difference between two positions to account for work, then add a total-energy line to ask where motion can reach.
+Next: let a cart go from a height, and one horizontal line tells you everywhere it can reach.
+
+</Step>

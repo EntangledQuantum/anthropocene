@@ -1,0 +1,18 @@
+title: 'Conservation of momentum'
+blurb: 'Inside an isolated system every push comes with an equal and opposite partner, so the momenta can be traded but their total cannot change, however messy the collision.'
+notation: 'm_A\vec v_A + m_B\vec v_B = m_A\vec v_A{}'' + m_B\vec v_B{}'''
+tags:
+  - 'up-ch08'
+misconceptions:
+  - id: 'inelastic-loses-momentum'
+    name: 'Soft or sticky collisions lose momentum along with the energy.'
+    signal: 'Predicts the stuck pair of carts has less total momentum than the carts had before.'
+    correction: 'During the crunch the bumper pushes A back exactly as hard, and for exactly as long, as it pushes B forward, so the two impulses cancel in the total. Nothing about stickiness can break that. Kinetic energy does go missing, into heat, sound and a bent bumper, but energy and momentum keep separate books.'
+  - id: 'match-speeds-not-momenta'
+    name: 'Two carts that meet at equal speeds from opposite sides will stop dead.'
+    signal: 'Aims a 3 kg cart at a 1 kg cart at the same speed and expects the stuck pair to stop.'
+    correction: 'It is the momenta that have to cancel. The 3 kg cart at equal speed carries three times the momentum and wins; it needs only a third of the speed to cancel the light one.'
+  - id: 'momenta-cancel-after'
+    name: 'After a collision the two momenta are equal and opposite.'
+    signal: 'Borrows the third law for momenta and says the two carts must leave with p and −p.'
+    correction: 'The third law makes the two *changes* in momentum equal and opposite, not the momenta themselves. The momenta after the collision add to whatever they added to before, which is only zero if it was zero to begin with.'

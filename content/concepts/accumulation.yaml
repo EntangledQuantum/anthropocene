@@ -12,3 +12,7 @@ misconceptions:
     name: 'Knowing v(t) tells you the position.'
     signal: 'Asked to recover x(t) from v(t), produces a definite curve with no mention of an unknown offset.'
     correction: 'The area tells you the CHANGE in position. Every curve shifted vertically has exactly the same slope everywhere, so v(t) is consistent with infinitely many x(t) that differ by a constant. Somebody has to tell you where it started.'
+  - id: 'fastest-means-furthest'
+    name: 'An object is furthest along at the moment it is moving fastest.'
+    signal: 'Asked when a lift is highest, points to the moment the lever is at full up rather than the moment it passes through stop.'
+    correction: 'Moving fast means the height is growing quickly, not that it has finished growing. Height keeps piling up for as long as the velocity is upward, however small, so the highest point is where the velocity passes through zero.'

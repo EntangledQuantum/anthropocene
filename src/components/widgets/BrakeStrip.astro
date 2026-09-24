@@ -1,0 +1,6 @@
+---
+// Ungraded picture: the payoff under a <Predict>. Chapter 7.
+import Island, { type BrakeStripProps } from '../viz/BrakeStrip.tsx';
+const props = Astro.props as BrakeStripProps;
+---
+<Island client:visible {...props} />

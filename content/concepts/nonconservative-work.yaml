@@ -1,0 +1,13 @@
+title: 'Friction and the energy that leaves'
+blurb: 'Friction does negative work that no landscape can store: the energy line drops by that work, and the same amount appears as heat.'
+notation: '\Delta(K + U) = W_{\mathrm{nc}} = -f\,d'
+tags: ['up-ch7']
+misconceptions:
+  - id: 'up-ch07-longer-strip-more-heat'
+    name: 'More friction surface means more heat in the end.'
+    signal: 'Predicts a longer brake strip turns more energy into heat before a cart stops for good.'
+    correction: 'Friction can only take the mechanical energy the cart has above the floor where it stops. A longer strip takes it in fewer, bigger bites; the total is the same.'
+  - id: 'up-ch07-friction-destroys-energy'
+    name: 'Friction destroys energy.'
+    signal: 'Says the mechanical energy lost to friction is simply gone.'
+    correction: 'The mechanical energy leaves the cart and appears as thermal energy in the strip and the cart, joule for joule. The total never changes; only its form does.'

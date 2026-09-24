@@ -1,0 +1,14 @@
+title: 'Momentum'
+blurb: 'Mass times velocity: the amount of motion a force has to undo, and the quantity a push actually changes. An arrow, not a speed.'
+notation: '\vec p = m\vec v'
+tags:
+  - 'up-ch08'
+misconceptions:
+  - id: 'momentum-is-speed'
+    name: 'Whatever moves fastest carries the most momentum.'
+    signal: 'After a light cart bounces off a heavy one, says the light cart has more momentum because it is the one visibly flying back.'
+    correction: 'Momentum is mass times velocity, and a slow heavy cart can out-carry a fast light one. A 0.5 kg cart bouncing back at 3.5 m/s carries 1.8 kg·m/s; the 8 kg cart it hit, creeping forward at under half a metre per second, carries 3.8. Read the arrows in the ledger, not the speeds on the track.'
+  - id: 'momentum-is-a-force'
+    name: 'A moving object carries force with it, and hands it over on impact.'
+    signal: 'Says a fast ball "has a lot of force" before it hits anything.'
+    correction: 'What a moving object carries is momentum. Force exists only while two things interact, and it is the rate at which that interaction moves momentum from one to the other. The same momentum can arrive as a huge force for a millisecond or a small one for a second, which is the whole point of a catch.'

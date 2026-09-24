@@ -1,0 +1,6 @@
+---
+// @graded — when given `id` and `target`, the scene checks itself.
+import Island, { type RopeSledProps } from '../viz/RopeSled.tsx';
+const props = Astro.props as RopeSledProps;
+---
+<Island client:visible {...props} />

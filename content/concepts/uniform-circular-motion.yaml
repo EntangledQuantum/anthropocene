@@ -12,3 +12,7 @@ misconceptions:
     name: 'Constant speed on a circle means the velocity is constant, so the acceleration is zero.'
     signal: 'Reports zero acceleration for a satellite in a circular orbit because "it is not speeding up".'
     correction: 'Velocity is a vector, and its direction is changing the whole way round. That change is an acceleration even though the speedometer never moves — which is exactly why the direction-changing part of acceleration needs its own name.'
+  - id: 'released-object-flies-outward'
+    name: 'Let go of something whirling and it flies straight out, away from the centre.'
+    signal: 'Lets go of a whirled object at the moment the string points at the target.'
+    correction: 'At the instant of release the object has a velocity along the tangent and nothing acting on it, so it keeps that velocity: it slides off along the tangent, at right angles to the string. Its distance from the centre grows, but only because a straight line leaves a circle, not because anything pushes it out.'

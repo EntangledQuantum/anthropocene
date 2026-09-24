@@ -1,0 +1,6 @@
+---
+// Ungraded picture: the payoff under a <Predict>. Chapter 7.
+import Island, { type SlideTheZeroProps } from '../viz/SlideTheZero.tsx';
+const props = Astro.props as SlideTheZeroProps;
+---
+<Island client:visible {...props} />

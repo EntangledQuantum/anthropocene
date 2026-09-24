@@ -16,3 +16,7 @@ misconceptions:
     name: 'A ball thrown sideways takes longer to land than one simply dropped beside it.'
     signal: 'Predicts the dropped ball hits first because the thrown one "has further to travel".'
     correction: 'Both land together. The time in the air is set by the vertical story alone, and giving the ball a sideways velocity adds nothing to it — which is why the two balls stay level the whole way down.'
+  - id: 'aim-above-a-falling-target'
+    name: 'To hit a target that starts falling as you fire, aim above it to allow for gravity.'
+    signal: 'Aims high at a dropped target, as though the ball falls and the target does not.'
+    correction: 'Gravity pulls the ball below its aim line by exactly as much as it pulls the target below where it hung, because both fall for the same time. Aim straight at the target and they meet, whatever the launch speed, as long as the ball gets there before the target lands.'

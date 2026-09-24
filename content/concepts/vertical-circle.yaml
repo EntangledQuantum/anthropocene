@@ -1,0 +1,10 @@
+title: 'The vertical circle'
+blurb: 'At the top of a vertical circle gravity already does part of the turning, and the bucket, seat or track supplies the rest. It can push but never pull, which sets a slowest speed: v² = gR.'
+notation: 'mg + N = \dfrac{m v^2}{R},\quad N \ge 0 \;\Rightarrow\; v_{\text{top}} \ge \sqrt{gR}'
+tags:
+  - 'up-ch5'
+misconceptions:
+  - id: 'top-needs-upward-force'
+    name: 'Something must hold the water up at the top.'
+    signal: 'Looks for an upward force on the upside-down water, and names air pressure or a centrifugal push.'
+    correction: 'Nothing holds it up. The water is falling at the top, as fast as gravity can make it; the bucket is simply being moved down around the circle at least as fast, so the water never gets out. Go slower and the water falls faster than the bucket turns.'

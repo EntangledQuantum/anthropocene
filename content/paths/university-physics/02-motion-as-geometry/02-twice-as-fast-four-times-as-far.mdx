@@ -1,0 +1,149 @@
+---
+title: 'Twice as fast, four times as far'
+blurb: 'Place a brake point and aim a throw using the one shape constant acceleration always makes, and spot the motions where it does not apply.'
+order: 2
+tier: 'foundation'
+minutes: 10
+teaches:
+  - 'constant-acceleration'
+  - 'free-fall'
+requires:
+  - 'accumulation'
+  - 'instantaneous-rate'
+status: 'live'
+updated: 2026-09-24
+---
+
+<Step>
+
+A car doing 15 m/s (54 km/h) brakes hard and stops in 15 m. Same car, same road, same brakes, now doing 30 m/s.
+
+<Predict
+  id="up-ch02-braking-bet"
+  question="How much road does it need to stop from 30 m/s?"
+  options={[
+    { key: 'a', misconception: 'stopping-distance-proportional-to-speed', label: '30 m: twice the speed, twice the distance', why: 'That counts one factor of two. It also takes twice as long to lose twice the speed, and it covers ground twice as fast the whole time.' },
+    { key: 'b', label: '45 m', why: 'More than doubling, but still short. The time doubles and the average speed doubles, so the distance goes up by 2 × 2.' },
+    { key: 'c', label: '60 m: four times as far', why: 'Right. Twice the speed, lost at the same rate, takes twice as long, at twice the average speed. Two factors of two.' },
+    { key: 'd', label: '120 m', why: 'That is eight times. The brakes are no weaker at high speed. They take off the same 7.5 m/s every second.' },
+  ]}
+  correct="c"
+>
+
+<BrakeToTheLine
+  speed={30}
+  reference={15}
+  brakeBefore={15}
+  prompt="The post is where the 15 m/s car stops in time. Drive, then move the post and drive again."
+/>
+
+</Predict>
+
+</Step>
+
+<Step>
+
+## Stop at the line
+
+Now 25 m/s, which is 90 km/h. The dashed triangle is still the 15 m/s stop.
+
+<BrakeToTheLine
+  id="up-ch02-brake-at-25"
+  speed={25}
+  reference={15}
+  brakeBefore={20}
+  prompt="Place the brake post so the car stops at the line, not past it."
+  explanation="About 42 m. 25 m/s is 5/3 of 15 m/s, so the stop is (5/3)², about 2.8 times the 15 m: 41.7 m. The shaded triangle is 5/3 as tall and 5/3 as long as the dashed one."
+/>
+
+</Step>
+
+<Step>
+
+## Name it
+
+The speed came down as a straight line, because the brakes take off the same amount every second. The distance is the area under that line, a triangle $v$ tall and $v/a$ long:
+
+$$
+d = \tfrac12 \cdot v \cdot \frac{v}{a} = \frac{v^2}{2a} \qquad\text{and, from any start,}\qquad v^2 = v_0^2 + 2a\,\Delta x
+$$
+
+<Recall id="up-ch02-recall-square" concept="constant-acceleration">
+  <div slot="front">Braking just as hard, you arrive 1.5 times faster than usual. How much more road do you need to stop?</div>
+
+  $1.5^2 = 2.25$ times as much. The stop is the triangle under $v(t)$, and both its height
+  and its length grow with the speed.
+</Recall>
+
+</Step>
+
+<Step>
+
+## At rest, still accelerating
+
+Throw a ball straight up. For one instant at the top it is not moving at all.
+
+<FreezeAtTheTop
+  id="up-ch02-freeze-top"
+  speed={12}
+  prompt="Freeze the ball at the very top of its flight."
+  explanation="Velocity zero, acceleration still 9.81 m/s² downward. The magenta arrow never changed. At the top the velocity is changing from up to down as fast as it ever does, and the v(t) line crosses zero without a kink."
+/>
+
+<Recall id="up-ch02-recall-top" concept="free-fall">
+  <div slot="front">A ball thrown straight up is at the top of its flight. What are its velocity and its acceleration?</div>
+
+  Velocity zero. Acceleration $g$, 9.81 m/s² downward, the same as at every other moment
+  of the flight. Zero velocity says nothing about how the velocity is changing.
+</Recall>
+
+</Step>
+
+<Step>
+
+## The same triangle, standing up
+
+A 7 m/s throw peaks 2.5 m above your hand. The hall's ceiling is 10 m up: four times higher.
+
+<TouchTheCeiling
+  id="up-ch02-touch-ceiling"
+  ceiling={10}
+  reference={7}
+  prompt="Set the launch speed so the ball just touches the ceiling, then throw."
+  explanation="14 m/s: twice the speed for four times the height. Gravity takes 9.81 m/s off every second on the way up, just as the brakes took 7.5 m/s off the car. The climb is the same triangle as the stop, and it scales the same way: h = v²/2g."
+/>
+
+</Step>
+
+<Step>
+
+## Where the triangle lies
+
+Every line of this lesson assumed one thing: the acceleration never changes.
+
+<Classify
+  id="up-ch02-when-constant"
+  prompt="Can one use of v² = v₀² + 2aΔx cover the whole of each motion?"
+  buckets={[
+    { key: 'yes', label: 'One equation covers it', accent: 'ok' },
+    { key: 'no', label: 'It gives a wrong answer', accent: 'magenta' },
+  ]}
+  items={[
+    { key: 'car', label: 'A car braking hard on a dry road, from 30 m/s to rest', bucket: 'yes', why: 'The brakes take off the same 7.5 m/s every second. One a, start to finish.' },
+    { key: 'round-trip', label: 'A ball thrown up, from leaving the hand until it is caught again', bucket: 'yes', why: 'The top changes nothing. The acceleration is g the whole way, so one equation covers up and down together.' },
+    { key: 'skydiver', label: 'A skydiver, from jumping out until reaching a steady speed', bucket: 'no', why: 'Drag grows with speed, so the acceleration shrinks from 9.8 m/s² toward zero. There is no single a.' },
+    { key: 'lift', label: 'A lift ride from the ground to floor 5, start to stop', bucket: 'no', why: 'It speeds up, cruises, then slows: three different accelerations. Each piece works alone. The whole ride does not.' },
+    { key: 'bungee', label: 'A bungee jumper while the cord stretches', bucket: 'no', why: 'The cord pulls harder the further it stretches, so the acceleration changes every instant.' },
+  ]}
+  explanation="The equations need one fixed a. When the thing doing the accelerating (drag, a cord, a driver) changes with speed or position, read the graph instead, or cut the motion into pieces where a really is constant."
+/>
+
+## What to carry forward
+
+- **Constant acceleration makes v(t) a straight line,** and the distance is the triangle under it, so it grows as the square of the speed.
+- **The top of a throw is at rest and still accelerating.** Nothing happens there except that the velocity passes through zero.
+- The equations belong to **one fixed a**. Check that before you use them.
+
+Next chapter: motion in a plane, where the acceleration can turn the velocity without changing its size.
+
+</Step>

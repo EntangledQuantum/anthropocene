@@ -1,9 +1,9 @@
 ---
 title: 'Two bodies, two forces, one interaction'
-blurb: 'Find the other end of every arrow you draw, and discover that it is always on a body you did not choose — which is why equal forces can do wildly unequal damage.'
+blurb: 'Find the other end of every force, and draw the boundary that leaves the force you want as the only one crossing it.'
 order: 2
-tier: 'core'
-minutes: 13
+tier: 'foundation'
+minutes: 12
 teaches:
   - 'third-law-pair'
   - 'normal-force'
@@ -13,203 +13,179 @@ requires:
   - 'free-body-diagram'
   - 'force-as-interaction'
 status: 'live'
-updated: 2026-09-12
+updated: 2026-09-24
 ---
 
-A 1200 kg car meets a 14 000 kg truck head-on. Afterwards the car is unrecognisable and
-the truck has a bent bumper.
+<Step>
 
-Everyone agrees on that. The disagreement is about what it means.
+A 1200 kg car doing 15 m/s meets a 14 000 kg truck doing 10 m/s, head on. The car is
+crushed; the truck needs a new bumper.
 
 <Predict
-  id="up-ch4-truck-car"
-  question="During the collision, how does the force the truck exerts on the car compare with the force the car exerts on the truck?"
+  id="up-ch04-truck-car"
+  question="While the bumpers are in contact, which vehicle pushes harder on the other?"
   options={[
-    { key: 'a', misconception: 'bigger-exerts-more', label: 'The truck exerts much more — it is twelve times the mass', why: 'The majority answer, and it survives a semester of instruction. The evidence behind it is real: the car is destroyed and the truck is not. But that is the two accelerations differing, not the two forces. Run the simulation and read the two net-force numbers before you read anything else.' },
-    { key: 'b', label: 'Exactly the same size, in opposite directions', why: 'Correct, and it is not a coincidence of this collision. There is only one interaction here, and the two arrows are that interaction described from each end. Notice what the arithmetic never consults: neither mass appears anywhere in the statement.' },
-    { key: 'c', misconception: 'third-law-needs-equal-masses', label: 'They would be equal if the masses were similar, but with this mismatch the truck wins', why: 'There is no mass condition anywhere in the law — not in the statement, not in the derivation, not in the code. A fly hitting a windscreen hits exactly as hard as the windscreen hits the fly. What the mass mismatch changes is what that force *does*, because a = F/m and only one of them has a small m.' },
-    { key: 'd', misconception: 'pair-forces-cancel', label: 'They are equal, so they cancel and neither vehicle should change velocity', why: 'Right about the magnitudes, wrong about the cancelling. Forces cancel when they are added, and they are added only when they act on the same body. These act on two different bodies and enter two different sums — look at the two diagrams below and notice that neither one contains both arrows.' },
+    { key: 'a', misconception: 'bigger-exerts-more', label: 'The truck pushes harder on the car', why: 'The wreckage says so, but wreckage measures what a force did, not how big it was. Crash them below and watch the two force curves.' },
+    { key: 'b', label: 'The car pushes harder on the truck: it was going faster', why: 'Speed makes the crash harder for both of them, not for one. Crash them below: the two curves never separate.' },
+    { key: 'c', label: 'Equally hard, at every instant', why: 'Right. There is one push between two bumpers, and each vehicle gets one end of it. What differs is the acceleration: the same force on a twelfth of the mass.' },
+    { key: 'd', misconception: 'third-law-needs-equal-masses', label: 'Equally hard only if the masses were equal', why: 'Slide the truck anywhere from 1200 kg to 40 000 kg below. The two force curves stay one curve; only the acceleration arrows change.' },
   ]}
-  correct="b"
+  correct="c"
 >
 
-<FbdBuilder
-  mode="given"
-  bodies={[
-    { id: 'car', label: 'car · 1200 kg', mass: 1200, x: -1.15, size: 0.85, vx: 20, contact: false },
-    { id: 'truck', label: 'truck · 14000 kg', mass: 14000, x: 1.3, size: 1.6, vx: -14, contact: false }
-  ]}
-  gravity={false}
-  forces={[{ id: 'hit', on: 'car', by: 'truck', kind: 'contact', label: 'truck on car', fx: -600000, fy: 0, pair: true }]}
-  duration={0.04}
-  timeScale={0.012}
-  worldSpan={10}
-  autoPlay={true}
-  caption="Forty milliseconds, played back eighty times slower. Weight and the road are left off both diagrams: they cancel, and they would only crowd the arrows that matter. The blocks overlap as the run goes on — that is the bumpers crushing, which is where the 600 kN comes from."
-/>
+<CrashPair prompt="Crash them. Then change the truck’s mass and crash them again." />
 
 </Predict>
 
-Two numbers from that run are worth putting side by side. The net force on each vehicle:
-**600 kN, both of them.** The acceleration: **500 m/s² for the car, 43 m/s² for the truck** —
-a ratio of 11.7, which is exactly 14 000 / 1200.
+</Step>
 
-The forces were identical. The mass did all the discriminating, in the division.
+<Step>
 
-$$\vec F_{\text{truck on car}} = -\,\vec F_{\text{car on truck}}$$
+## Push through
 
-## Why the pair never appears on one page
+Two blocks sit touching on frictionless ice. You push the small one, and it pushes the big one.
 
-You could not have dragged those two arrows apart. In the widget above, one force was
-declared and the other was *derived* from it by swapping the two participants and flipping
-the sign — because they are not two decisions, they are one interaction read twice.
-
-What makes this useful rather than decorative is where the second arrow landed. It went on
-the **other** body's diagram. A pair can never both appear in one sum, which is the only
-reason anything in the universe is able to accelerate.
-
-<Classify
-  id="up-ch4-classify-pairs"
-  prompt="A book rests on a table; a person stands on a floor. Sort each pair of forces by what it actually is."
-  buckets={[
-    { key: 'pair', label: 'two ends of one interaction', accent: 'ok' },
-    { key: 'same', label: 'two separate forces on one body', accent: 'magenta' }
-  ]}
-  items={[
-    { key: 'book-table', label: 'The table pushes up on the book · the book pushes down on the table', bucket: 'pair', why: 'Different bodies, one contact interaction, equal and opposite. A genuine pair.' },
-    { key: 'grav-normal', label: 'The Earth pulls down on the book · the table pushes up on the book', bucket: 'same', why: 'The classic trap, and the reason it works is that the two numbers agree. They do not agree by law — they agree because the book is not accelerating. Both act on the book, and they come from two unrelated interactions: one with the Earth, one with the table. Put the book in a lift and start it upward, and the table push changes while the weight does not. Two ends of one interaction could never do that.' },
-    { key: 'book-earth', label: 'The Earth pulls down on the book · the book pulls up on the Earth', bucket: 'pair', why: "This is the real partner of the book's weight, and the reason it never appears on the book's own diagram: it acts on the planet. It is doing something, too — the Earth accelerates toward the book at about 10⁻²⁴ m/s²." },
-    { key: 'rope-friction', label: 'A rope pulls the crate forward · friction drags the crate backward', bucket: 'same', why: 'Both on the crate, from two different interactions, and there is no reason for them to be equal at all. If they happen to be, the crate is at constant velocity.' },
-    { key: 'feet-floor', label: 'Your feet push backward on the floor · the floor pushes forward on your feet', bucket: 'pair', why: 'One friction interaction, both ends. And it answers the old objection that nothing can ever move: you accelerate because of what the floor does to you, which is a force on a different body from the one you exert on it.' }
-  ]}
-  explanation="Three tests, and the third is the one that decides every hard case: equal magnitude, opposite direction, acting on different bodies. When two equal and opposite forces sit on the same body, they are not a pair — they are a coincidence that the second law arranged, and the coincidence breaks the moment the body accelerates."
+<PushThroughPair
+  id="up-ch04-push-through"
+  prompt="Push until A pushes on B with exactly 12 N, then check."
+  near={2}
+  far={6}
+  start={8}
+  target={12}
+  explanation="It takes 16 N. B pushes back on A with the same 12 N that A puts on B, so A keeps only 4 N of your push to accelerate itself. B is three times heavier and still pushes back no harder: the two contact meters are one interaction, read from each end."
 />
 
-## The table does not owe you mg
+</Step>
 
-That second item deserves its own experiment, because it is where the belief hides.
+<Step>
 
-A 5 kg block sits on a table. Its weight is 49 N. Now start pulling upward on it.
+## Name it
 
-<Predict
-  id="up-ch4-normal-when-pulled"
-  question="You pull straight up on the 5 kg block with 30 N, and it stays on the table. What is the table now pushing up with?"
-  options={[
-    { key: 'a', misconception: 'normal-always-mg', label: '49 N — the normal force balances the weight', why: 'It did, before you arrived. But "balances the weight" was never the rule; "stops the block accelerating into the table" is. Your 30 N is already doing most of that job, so the table only has to supply the rest.' },
-    { key: 'b', label: 'About 19 N', why: 'Correct: 49 minus your 30. The table contributes exactly what is left over. Now push the slider past 49 and watch what it does when there is nothing left over to contribute.' },
-    { key: 'c', misconception: 'surfaces-can-pull', label: '79 N — the table has to resist your pull as well as the weight', why: 'A table can only push. Nothing about the block is attached to it, so there is no mechanism by which pulling up could make the table press harder. Pressing *down* on the block would do exactly what you are describing — try that too.' },
-    { key: 'd', misconception: 'normal-force-is-gravity-partner', label: 'Still 49 N — the normal force is the reaction to gravity and gravity has not changed', why: 'If they were a pair, nothing you did could ever change one without changing the other. Watch the readout as you pull: the normal force moves and the weight does not. That alone rules out their being two ends of one interaction.' },
-  ]}
-  correct="b"
->
+Every contact in that scene was one interaction, read from each end:
 
-<FbdBuilder
-  mode="build"
-  mass={5}
-  bodyLabel="the block"
-  forces={[{ id: 'pull', on: 'body', by: 'you', kind: 'tension', label: 'your pull', fx: 0, fy: 30, editable: true, lockAngle: true, maxMag: 80 }]}
-  showPartners={true}
-  duration={2.5}
-  worldSpan={8}
-  caption="Your pull is the only arrow you can move. Take it past 49 N and the contact readout changes to say the block has left — the arithmetic would have handed you a negative normal force, and a negative push is a pull, which a table cannot do."
-/>
+$$\vec F_{\text{A on B}} = -\,\vec F_{\text{B on A}}$$
 
-</Predict>
+Same size, opposite directions, on **two different bodies**. That last part is why a pair
+never cancels: its two arrows land in two different sums.
 
-The normal force is not a rule with a value. It is whatever it takes to stop the block
-accelerating into the surface, **clamped at zero**, because surfaces push and never pull.
-Press down and it grows. Pull up and it shrinks. Tilt the surface and it becomes $mg\cos\theta$.
-Pull hard enough and it runs out and the block leaves.
+<Recall id="up-ch04-recall-weight-partner" concept="third-law-pair">
+  <div slot="front">What is the third-law partner of your weight, and what does it act on?</div>
 
-This is also what a bathroom scale reads — not your weight, but the force *it* is exerting
-on you, whose partner is the force you exert on it. In a lift accelerating upward the two
-disagree, and the number on the scale is the one that changed.
-
-<Recall id="up-ch4-recall-pair" concept="third-law-pair">
-  <div slot="front">Name the third-law partner of your weight. Where is it, and what is it doing?</div>
-
-  It is your gravitational pull on the **Earth**, upward, equal in magnitude to your weight
-  and acting on the planet. It is doing exactly what the second law says it should: dividing
-  by six thousand billion billion tonnes and producing an utterly negligible acceleration.
-  It is not the floor's push on you — that is a different interaction, with a different
-  partner, and it is the one that disappears when you jump.
+  Your pull on the Earth, upward, acting on the planet. It is not the floor's push on you.
+  That is a different interaction, and it vanishes when you jump.
 </Recall>
 
-## Choosing what counts as the object
+</Step>
 
-Two blocks sit touching on a frictionless surface: 2 kg in front, 6 kg behind it. You push
-the 2 kg block with 16 N and both slide off together.
+<Step>
+
+## Draw the line
+
+Three blocks on ice, and your 16 N push on A. Any group of them can be "the system".
+
+<DrawTheSystem
+  id="up-ch04-draw-system"
+  prompt="Drag the edges of the box until the only force crossing it is A’s push on B."
+  masses={[2, 3, 3]}
+  names={['A', 'B', 'C']}
+  push={16}
+  start={[0, 1]}
+  target={0}
+  explanation="Box B and C together. Only A touches them from outside, so its 12 N push is the whole outside force, and the B–C pair is inside and cancels. Every box you tried gave 2 m/s²: the boundary changes which forces you have to know, never the answer."
+/>
+
+</Step>
+
+<Step>
+
+## The horse and the cart
+
+A horse is harnessed to a cart. However hard it pulls on the cart, the cart pulls back on
+the horse just as hard.
 
 <Predict
-  id="up-ch4-contact-force"
-  question="How hard does the front block push on the back one?"
+  id="up-ch04-horse-cart"
+  question="So how do the two of them ever start moving?"
   options={[
-    { key: 'a', misconception: 'push-passes-through-unchanged', label: '16 N — your push is transmitted through to the second block', why: 'Part of your push is spent accelerating the block you are actually touching. Only the remainder is passed on. If all 16 N went through, the front block would have 16 N forward and 16 N backward on it and would never move at all.' },
-    { key: 'b', label: '12 N', why: 'Correct. Together the blocks are 8 kg and 16 N gives them 2 m/s². The 6 kg block needs 12 N to do that, and the only thing touching it is the front block. Equivalently: three quarters of the mass lies beyond the contact, so three quarters of the push gets there.' },
-    { key: 'c', label: '8 N — they share the push equally', why: 'They share the acceleration, not the force. Sharing the force equally would give the light block a much larger acceleration and the two would come apart immediately.' },
-    { key: 'd', label: '4 N', why: "This is 16 N scaled by the front block's share of the mass rather than the back block's. It is the right idea with the fraction upside down — the contact force has to accelerate everything on the far side of the contact, which here is the heavy block." },
+    { key: 'a', misconception: 'reaction-arrives-late', label: 'For a moment the horse pulls harder than the cart pulls back', why: 'There is no such moment. The harness is one interaction, and it cannot pull harder on one end than the other.' },
+    { key: 'b', misconception: 'pair-forces-cancel', label: 'The two pulls cancel, so the horse must get the cart going some other way', why: 'They never cancel: one acts on the cart, one on the horse, and a sum only ever holds forces on the bodies inside the box. Box both below and see what is left.' },
+    { key: 'c', label: 'The ground pushes the horse forward; the harness pulls are internal to horse-and-cart', why: 'Right. The hooves push back on the ground, and the ground pushes forward on the horse. Box both: the harness pair cancels, and 1800 N on 900 kg is 2 m/s².' },
+    { key: 'd', misconception: 'bigger-exerts-more', label: 'The horse is heavier, so its pull wins', why: 'Mass never enters the third law. The 300 kg cart pulls back on the 600 kg horse exactly as hard as the horse pulls it.' },
   ]}
-  correct="b"
+  correct="c"
 >
 
-<FbdBuilder
-  mode="match"
-  bodies={[
-    { id: 'A', label: 'front · 2 kg', mass: 2, x: -0.6, size: 0.3, contact: false },
-    { id: 'B', label: 'back · 6 kg', mass: 6, x: 0.2, size: 0.5, contact: false }
-  ]}
-  gravity={false}
-  forces={[
-    { id: 'push', on: 'A', by: 'you', kind: 'applied', label: 'your push', fx: 16, fy: 0 },
-    { id: 'ab', on: 'B', by: 'A', kind: 'contact', label: 'A on B', fx: 6, fy: 0, editable: true, lockAngle: true, maxMag: 20, pair: true }
-  ]}
-  showPartners={true}
-  target={{ label: 'The blocks are touching, so they cannot accelerate at different rates. Find the contact force that makes the two magenta arrows match.', agree: true, tol: 0.15 }}
-  duration={3}
-  worldSpan={14}
-  caption="One slider moves both contact arrows, because they are one interaction. Weight and the table are left off: they cancel, and this is a story about the horizontal. Watch the two acceleration arrows converge — everything except 12 N tears the blocks apart."
+<DrawTheSystem
+  prompt="Box the cart, then the horse, then both. Watch what happens to the harness."
+  masses={[300, 600]}
+  names={['cart', 'horse']}
+  driven="last"
+  push={1800}
+  by="the ground"
+  start={[0, 1]}
 />
 
 </Predict>
 
-Now draw the boundary somewhere else. Put it around **both** blocks and treat them as one
-8 kg object. The contact force and its partner are now both inside the boundary, they
-appear in the sum twice with opposite signs, and they vanish. What is left is your 16 N on
-8 kg, and the acceleration falls out in one line with no contact force ever mentioned.
+</Step>
 
-That is the whole trick, and it is available in every problem for the rest of this path:
+<Step>
 
-- **Want the acceleration of the pair?** Enclose both. The internal force cancels itself.
-- **Want the contact force?** Enclose one. It becomes the only unknown left.
+## The scale reads the floor
 
-Same physics, two boundaries, two easy problems instead of one hard one. And it is why you
-cannot move a car by pushing on its dashboard: that force is internal to the system you are
-trying to accelerate, so it contributes exactly zero. Pushing on the *ground* works, because
-the ground is outside.
+You stand on a bathroom scale in a lift that is rising at a steady 2 m/s. The scale reads
+687 N, your full weight.
 
-<Recall id="up-ch4-recall-system" concept="system-boundary">
-  <div slot="front">You choose to treat two touching blocks as a single system. What happens to the force each one exerts on the other?</div>
+<ElevatorScale
+  id="up-ch04-scale-600"
+  prompt="Work the winch until the scale reads 600 N, then check."
+  target={600}
+  explanation="The winch now pulls less than lift and rider weigh, so they accelerate downward at 1.24 m/s², rising or falling. The Earth's pull on you never changed. The scale's push did: it is not your weight, it is whatever gives you the lift's acceleration."
+/>
 
-  It drops out. Each internal force enters the system's sum twice — once as itself and once
-  as its third-law partner — so the two contributions cancel exactly and only external forces
-  can change the system's motion. That is not an approximation or a simplification; it is
-  what "internal" means. Choosing the boundary is choosing which forces you have to know
-  about.
+<Recall id="up-ch04-recall-scale" concept="normal-force">
+  <div slot="front">A scale in a lift reads less than your weight. What do you know about the lift?</div>
+
+  Its acceleration points down. Not its velocity: a lift slowing on the way up and a lift
+  speeding up on the way down give the same reading.
 </Recall>
+
+</Step>
+
+<Step>
+
+## Cut the cable
+
+The cable snaps. The lift, the scale and you fall together.
+
+<Predict
+  id="up-ch04-cable-cut"
+  question="What does the scale read while you fall?"
+  options={[
+    { key: 'a', misconception: 'weightless-means-no-gravity', label: '0 N, because gravity stops acting on you in free fall', why: 'Right number, wrong reason. The Earth pulls on you with the full 687 N all the way down: watch its arrow. What vanished is the scale’s push.' },
+    { key: 'b', label: '0 N, because the scale falls as fast as you and has nothing to push against', why: 'Right. Gravity gives you and the scale the same 9.81 m/s², so nothing is needed between you. The Earth’s arrow stays full length; the scale’s arrow shrinks to nothing.' },
+    { key: 'c', misconception: 'normal-always-mg', label: '687 N, because your weight has not changed', why: 'Your weight has not changed, and that is the point: the scale never measured it. It measures its own push, and in free fall that push is zero.' },
+    { key: 'd', label: 'More than 687 N for a moment, as the jolt presses you down', why: 'When the cable goes, the floor starts accelerating downward as fast as you do. It stops pushing up, and nothing presses down. The lurch you feel is a push disappearing.' },
+  ]}
+  correct="b"
+>
+
+<ElevatorScale
+  prompt="The winch is off. Watch both arrows on the rider, then pull again."
+  tension0={0}
+  range={[0, 8000]}
+/>
+
+</Predict>
 
 ## What to carry forward
 
-- **One interaction, two arrows, two bodies.** Equal magnitude, opposite direction, and
-  never on the same diagram. No mass condition, no exceptions, no version of the law that
-  fails when one object is bigger.
-- **Equal forces, unequal consequences.** The car and the truck feel the same 600 kN. The
-  wreckage difference is $a = F/m$ doing its work afterwards, and it is worth being able to
-  say which of the two quantities you are actually talking about.
-- **The normal force is a result, not a rule.** It supplies whatever stops the body
-  accelerating into the surface, down to zero and no further.
-- **The boundary is your move.** Redraw it and the awkward unknown either disappears or
-  becomes the only thing left.
+- **One interaction, two arrows, two bodies.** Equal, opposite, never in the same sum, and no
+  mass condition anywhere.
+- **A contact force is whatever the motion demands.** A scale reads its own push, not your weight.
+- **The boundary is your move.** Pairs inside it cancel, so draw it where the force you want is
+  the only one crossing.
 
-Next chapter keeps all of this and changes the costumes: ramps that want rotated axes,
-ropes, friction with a ceiling, and circles that need a force pointing somewhere nobody is
-moving.
+Next chapter keeps these laws and changes the costumes: ramps, ropes, friction and circles.
+
+</Step>

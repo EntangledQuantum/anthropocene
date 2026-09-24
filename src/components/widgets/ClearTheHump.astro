@@ -1,0 +1,6 @@
+---
+// @graded — when given `id`, the scene checks itself. Chapter 7.
+import Island, { type ClearTheHumpProps } from '../viz/ClearTheHump.tsx';
+const props = Astro.props as ClearTheHumpProps;
+---
+<Island client:visible {...props} />

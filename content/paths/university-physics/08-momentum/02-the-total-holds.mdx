@@ -1,0 +1,139 @@
+---
+title: 'The energy leaks, the total holds'
+blurb: 'Predict what two carts do after they collide, from the one quantity that survives every crunch and the one that depends on the bumper.'
+order: 2
+tier: 'core'
+minutes: 10
+teaches:
+  - 'momentum-conservation'
+  - 'coefficient-of-restitution'
+requires:
+  - 'momentum'
+  - 'impulse'
+  - 'third-law-pair'
+  - 'system-boundary'
+  - 'work-energy-theorem'
+status: 'live'
+updated: 2026-09-24
+---
+
+<Step>
+
+A 1 kg cart rolls at 4 m/s into a 3 kg cart at rest. Their bumpers are velcro, so they
+stick and roll off together.
+
+<Predict
+  id="up-ch08-velcro-ledger"
+  question="Compared with the two carts before the crunch, what does the stuck pair have?"
+  options={[
+    { key: 'both-less', misconception: 'inelastic-loses-momentum', label: 'Less momentum and less kinetic energy: the crunch wasted both', why: 'Right about the energy: 6 of the 8 J become heat and sound. But the bumper pushes A back exactly as hard, and for exactly as long, as it pushes B forward. Run it and watch the white total.' },
+    { key: 'p-same', label: 'The same momentum, less kinetic energy', why: 'Yes. 4 kg·m/s before and after, while 8 J becomes 2 J. Energy and momentum keep separate books.' },
+    { key: 'both-same', misconception: 'ke-constant-during-bounce', label: 'The same momentum and the same kinetic energy', why: 'Stuck together, 4 kg carrying 4 kg·m/s must move at 1 m/s, and that is only 2 J. Momentum fixes the speed, so the missing 6 J has to go somewhere else.' },
+  ]}
+  correct="p-same"
+>
+
+<AimTheCart prompt="Run it. Then drag B's arrow to send B in as well, and run again." mA={1} vA={4} mB={3} vB={0} e={0} />
+
+</Predict>
+
+</Step>
+
+<Step>
+
+## Stop them dead
+
+Now B comes to meet A. A is 1 kg at 6 m/s; B is 3 kg; the bumpers are velcro again.
+
+<AimTheCart
+  id="up-ch08-stop-dead"
+  prompt="Drag B's velocity so the stuck pair ends at rest, run it, then check."
+  mA={1}
+  vA={6}
+  mB={3}
+  vB={0}
+  e={0}
+  explanation="B needs only 2 m/s, because 3 kg × 2 m/s cancels 1 kg × 6 m/s. With the total at zero the pair can only stop, and all 24 J of kinetic energy goes into the velcro. Zero momentum, zero energy left: the two quantities answer different questions."
+/>
+
+</Step>
+
+<Step>
+
+## Name it
+
+During the crunch the bumper pushes A and B equally hard, in opposite directions, for the
+same time. Their impulses cancel, so nothing inside the system can change the total:
+
+$$m_A v_A + m_B v_B = m_A v_A' + m_B v_B'$$
+
+Kinetic energy has no such protection. How much survives depends on the bumper.
+
+<Recall id="up-ch08-recall-skaters" concept="momentum-conservation">
+  <div slot="front">Two skaters at rest push off each other. What is their total momentum afterwards, and where did their kinetic energy come from?</div>
+
+  Zero, as before: each push on one skater is matched by an equal and opposite push on the
+  other for the same time. Their kinetic energy came from their muscles. Momentum is
+  conserved inside the system; kinetic energy is not.
+</Recall>
+
+</Step>
+
+<Step>
+
+## Springy bumpers
+
+Swap the velcro for a perfect spring. A is 2 kg at 3 m/s; B waits at rest, and you choose its load.
+
+<LoadTheCart
+  id="up-ch08-load-to-stop"
+  prompt="Load B so that A stops dead, run it, then check."
+  mA={2}
+  vA={3}
+  mB={6}
+  e={1}
+  explanation="Exactly 2 kg, A's own mass. A springy bumper must balance momentum and kinetic energy at once, and for equal masses the only answer is to swap velocities. Watch the energy bar during the flash: half of it hides in the bumper, then all of it comes back."
+/>
+
+</Step>
+
+<Step>
+
+## Light into heavy
+
+Velcro keeps none of the closing speed and a perfect spring returns all of it. In between,
+the carts separate at $e$ times the speed they closed at, and the kinetic energy lost is
+$\tfrac12(1-e^2)\,\mu\,(v_A-v_B)^2$ with $\mu = m_Am_B/(m_A+m_B)$.
+
+<Predict
+  id="up-ch08-light-heavy"
+  question="A 0.5 kg cart at 4 m/s bounces off an 8 kg cart at rest, springy bumper. Afterwards, which cart carries more momentum?"
+  options={[
+    { key: 'light', misconception: 'momentum-is-speed', label: 'The light cart: it is the one flying back fast', why: 'It flies back at 3.5 m/s, which is only 1.8 kg·m/s. The heavy cart creeps off at 0.47 m/s, which is 3.8. Read the arrows in the ledger, not the speeds on the track.' },
+    { key: 'heavy', label: 'The heavy cart, with nearly twice what the light one brought', why: 'Yes: 3.8 kg·m/s against the 2 brought in. The light cart turned its momentum round, so the heavy one must carry the original 2 plus the 1.8 now pointing back. It takes that with under a quarter of the energy.' },
+    { key: 'equal', misconception: 'momenta-cancel-after', label: 'Neither: they leave with equal and opposite momenta', why: 'Equal and opposite momenta add to zero, and this system started with 2 kg·m/s. The third law makes the two changes equal and opposite, not the momenta.' },
+    { key: 'none', label: 'The light cart: the heavy one barely moves, so it carries almost nothing', why: 'Barely moving times 8 kg is not small. 0.47 m/s × 8 kg is 3.8 kg·m/s, more than the light cart ever had.' },
+  ]}
+  correct="heavy"
+>
+
+<LoadTheCart prompt="Run it and read the ledger. Then try other loads." mA={0.5} vA={4} mB={8} e={1} />
+
+</Predict>
+
+<Recall id="up-ch08-recall-bounce-wall" concept="coefficient-of-restitution">
+  <div slot="front">A ball hits a wall. Which hits the wall harder: a splat that sticks (e = 0) or a perfect bounce (e = 1)?</div>
+
+  The bounce, with twice the impulse. The wall has to reverse the ball, not just stop it,
+  and the impulse it delivers is $(1+e)\,m\,u$.
+</Recall>
+
+## What to carry forward
+
+- **The total momentum never moves** inside the boundary. Every internal push has an equal and opposite partner.
+- **Kinetic energy is the part that depends on the bumper.** $e$ decides how much comes back.
+- The picture: two momentum arrows that still reach the same white mark after the flash.
+
+Next: the centre of mass, the point that moves as if all the mass sat there.
+
+</Step>

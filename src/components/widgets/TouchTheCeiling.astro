@@ -1,0 +1,6 @@
+---
+// @graded — with `id`, set the throw speed so the ball just reaches the ceiling.
+import Island, { type TouchTheCeilingProps } from '../viz/TouchTheCeiling.tsx';
+const props = Astro.props as TouchTheCeilingProps;
+---
+<Island client:visible {...props} />

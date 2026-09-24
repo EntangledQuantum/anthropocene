@@ -1,0 +1,6 @@
+---
+// @graded — with an `id`, the released puck must hit the target.
+import Island, { type LetGoOfTheStringProps } from '../viz/LetGoOfTheString.tsx';
+const props = Astro.props as LetGoOfTheStringProps;
+---
+<Island client:visible {...props} />

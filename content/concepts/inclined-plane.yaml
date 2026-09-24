@@ -1,0 +1,10 @@
+title: 'The inclined plane'
+blurb: 'On a ramp, turn the axes to match it: gravity splits into mg sin θ along the slope and mg cos θ into it, and the normal force and friction each own one of those directions.'
+notation: 'mg\sin\theta \text{ along},\quad mg\cos\theta \text{ into},\quad \text{slips when } \tan\theta > \mu_s'
+tags:
+  - 'up-ch5'
+misconceptions:
+  - id: 'gravity-points-down-the-slope'
+    name: 'On a ramp, gravity points down the slope.'
+    signal: 'Draws the weight parallel to the ramp surface, or sets the whole weight equal to the pull along the slope.'
+    correction: 'Gravity points straight down on a ramp as it does everywhere else. Only its component along the slope, mg sin θ, tries to slide the block; the rest, mg cos θ, presses the block into the surface and is what the normal force cancels.'

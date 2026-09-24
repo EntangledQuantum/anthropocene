@@ -7,3 +7,7 @@ misconceptions:
     name: 'Changing the sign of potential energy reverses force.'
     signal: 'Predicts a force reversal when an offset moves U across zero.'
     correction: 'The sign of U depends on the chosen reference. The sign of its slope does not change when a constant is added, so neither does force.'
+  - id: 'up-ch07-u-value-is-physical'
+    name: 'The value of U is an amount of energy the object holds.'
+    signal: 'Predicts a cart swings less high after the zero of U is moved up, because it now "has less energy".'
+    correction: 'U belongs to the arrangement of the cart and the Earth, measured from a zero you choose. Moving the zero relabels every U by the same amount; the motion only ever uses differences in U.'

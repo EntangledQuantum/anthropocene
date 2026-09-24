@@ -1,0 +1,139 @@
+---
+title: 'The lift writes its own graph'
+blurb: 'Drive a lift by its lever and by hand, and read speed as steepness and distance as area.'
+order: 1
+tier: 'foundation'
+minutes: 10
+teaches:
+  - 'worldline'
+  - 'instantaneous-rate'
+  - 'accumulation'
+  - 'distance-vs-displacement'
+requires: []
+status: 'live'
+updated: 2026-09-24
+---
+
+<Step>
+
+A lift has one lever. Push it up and the car climbs, and the further you push, the faster it climbs.
+
+<Predict
+  id="up-ch02-highest-moment"
+  question="You shove the lever to full up and hold it, then ease it steadily back through stop and on toward down. When is the car at its highest?"
+  options={[
+    { key: 'a', misconception: 'fastest-means-furthest', label: 'While the lever is at full up', why: 'That is when it climbs fastest, not when it has climbed most. After you start easing back it is still going up, so it is still gaining height.' },
+    { key: 'b', label: 'Halfway through easing back, at half speed', why: 'At half speed it is still going up, just more slowly. Still climbing means not at the top yet.' },
+    { key: 'c', label: 'The instant the lever passes through stop', why: 'Right. Height keeps piling up while the car moves up at all, however slowly. It stops piling up exactly when the velocity passes through zero.' },
+    { key: 'd', label: 'When the lever reaches down', why: 'By then the car has been going down for a while. Once the lever is past stop, every moment loses height.' },
+  ]}
+  correct="c"
+>
+
+<LiftLever prompt="Push the lever up, then ease it back through stop. Watch the car as the line crosses zero." />
+
+</Predict>
+
+</Step>
+
+<Step>
+
+## Park it
+
+Now the lever has a job to do.
+
+<LiftLever
+  id="up-ch02-park-at-two"
+  prompt="Go up to floor 6, then park at floor 2 with the lever at stop."
+  visit={6}
+  park={2}
+  explanation="You went up 18 m and came down 12 m, so 30 m of cable ran through the motor, but the car is only 6 m above where it started. The shaded area above the line added height, and the area below took it away. Height is the running total of the velocity, sign included."
+/>
+
+</Step>
+
+<Step>
+
+## Hold the car instead
+
+Swap roles. Your hand is now the car's height, and a pen level with the car writes it against time.
+
+<DragTheLift
+  id="up-ch02-act-out-trip"
+  prompt="Hold the car and act out the dashed trip. The clock starts when you grab it."
+  target={[[0, 1], [2, 1], [5, 6], [7, 6], [10, 3]]}
+  explanation="The flat stretches were the car parked. The steep climb was the fastest part of the ride, and the gentler slope down was a slower ride back. The trace is not a drawing of the shaft. It is the trip, written against time."
+/>
+
+</Step>
+
+<Step>
+
+## Steep, not high
+
+Here is a trip someone else made, already written. Drag along it and the car goes where it was at that instant.
+
+<ScrubTheLift
+  id="up-ch02-fastest-instant"
+  prompt="Find the instant the car is moving fastest."
+  explanation="Early in the climb, at about 5 m/s, where the trace is steepest. The top of the trace is where the car is highest and, for an instant, not moving at all. Speed is how steep the trace is at that instant, never how high it is."
+/>
+
+</Step>
+
+<Step>
+
+## Name it
+
+The lever set how steep the height trace was. The height was the area piled up under the lever's trace. Those are the two halves of calculus, and you have done both by hand:
+
+$$
+v = \frac{dx}{dt} \qquad\qquad \Delta x = \int v\,dt
+$$
+
+<Recall id="up-ch02-recall-slope" concept="instantaneous-rate">
+  <div slot="front">On a trace of height against time, where do you read the height, and where do you read the speed?</div>
+
+  The height is how high the trace sits. The speed is how steep it is at that instant: the
+  tangent. They are unrelated, and the highest point of a trip is where the trace is flat.
+</Recall>
+
+<Recall id="up-ch02-recall-missing-start" concept="accumulation">
+  <div slot="front">You have only a lift's lever history, $v(t)$. What can you work out, and what is missing?</div>
+
+  The change in height: the signed area under $v(t)$. The starting floor is missing. Two
+  lifts with the same lever history end up the same distance from where each began, and
+  nothing in $v(t)$ says where that was.
+</Recall>
+
+</Step>
+
+<Step>
+
+## Two answers to "how far"
+
+The motor's cable counter and the floor display disagreed after your trip. Same split, new clothes.
+
+<RankOrder
+  id="up-ch02-rank-ground-covered"
+  prompt="Rank these by how much ground each one actually covers."
+  lowLabel="least ground"
+  highLabel="most ground"
+  items={[
+    { key: 'lift', label: 'A lift goes up 7 floors (21 m), then down 5', why: '21 m up and 15 m down: 36 m covered, to finish 6 m above the start.' },
+    { key: 'sprint', label: 'A sprinter runs 60 m down a straight track', why: 'No turning back, so distance and displacement agree: 60 m.' },
+    { key: 'dog', label: 'A dog runs 50 m out to a ball and 30 m back toward you', why: '80 m covered, to finish only 20 m away.' },
+    { key: 'swim', label: 'A swimmer swims four lengths of a 25 m pool', why: '100 m covered, and back exactly where they started: zero displacement.' },
+  ]}
+  correct={['lift', 'sprint', 'dog', 'swim']}
+  explanation="Rank them by where each one ends up instead and the order nearly reverses: swimmer 0 m, lift 6 m, dog 20 m, sprinter 60 m. Distance adds every metre, whichever way. Displacement is only the gap between start and finish."
+/>
+
+## What to carry forward
+
+- **One trip, one trace.** Speed is how steep the trace is at an instant. Height is how high it sits.
+- **Distance piles up as area under the velocity,** with a sign. Where you started is never in the velocity history.
+
+Next: what happens when the velocity changes at a steady rate, and why twice as fast means four times as far.
+
+</Step>

@@ -1,0 +1,7 @@
+---
+// @graded — when given `id` and `target`, the scene checks itself.
+// Run a lift's winch until a bathroom scale inside reads a target value.
+import Island, { type ElevatorScaleProps } from '../viz/ElevatorScale.tsx';
+const props = Astro.props as ElevatorScaleProps;
+---
+<Island client:visible {...props} />

@@ -1,0 +1,6 @@
+---
+// @graded — with `id` and `park`, stop the lift at a floor, at rest.
+import Island, { type LiftLeverProps } from '../viz/LiftLever.tsx';
+const props = Astro.props as LiftLeverProps;
+---
+<Island client:visible {...props} />

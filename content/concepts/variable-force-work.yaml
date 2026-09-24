@@ -15,3 +15,7 @@ misconceptions:
     name: 'A favorable final area guarantees the endpoint can be reached.'
     signal: 'Lets a cart cross an interval with negative calculated kinetic energy because a later push restores the total.'
     correction: 'Check the running work, not only the final sum. The first forward passage ends when kinetic energy reaches zero; a force farther along cannot help before it is reached.'
+  - id: 'up-spring-equal-steps'
+    name: 'Equal stretches cost equal work.'
+    signal: 'Says the second 5 cm of a spring stretch costs the same as the first because the distance is the same.'
+    correction: 'The pull grows as the spring stretches, so each later centimetre is paid at a higher force. Work is the area under the pull, and for a spring that area grows as the square of the stretch.'

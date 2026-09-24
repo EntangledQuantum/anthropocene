@@ -1,0 +1,6 @@
+---
+// @graded — when given `id`, the scene checks itself.
+import Island, { type BrakeToStopProps } from '../viz/BrakeToStop.tsx';
+const props = Astro.props as BrakeToStopProps;
+---
+<Island client:visible {...props} />
