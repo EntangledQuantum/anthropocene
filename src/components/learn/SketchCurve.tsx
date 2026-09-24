@@ -258,7 +258,7 @@ export default function SketchCurve({
   const done = submitted || solved;
 
   return (
-    <div className="not-prose" style={{ margin: '2.5rem 0' }}>
+    <div className="not-prose" data-widget-id={id} style={{ margin: '2.5rem 0' }}>
       <Panel
         title="sketch it"
         right={

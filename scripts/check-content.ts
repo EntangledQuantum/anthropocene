@@ -79,7 +79,18 @@ interface Lesson {
 }
 
 const FRONTMATTER = /^---\r?\n([\s\S]*?)\r?\n---/;
-const GRADED = ['Predict', 'Tune', 'SketchCurve', 'RankOrder', 'Classify', 'Estimate', 'RichardsonTableau'];
+const BUILTIN_GRADED = ['Predict', 'Tune', 'SketchCurve', 'RankOrder', 'Classify', 'Estimate', 'RichardsonTableau'];
+/* Any widget wrapper carrying the `@graded` marker is graded as well — a
+   lesson's self-checking scene registers itself by existing. graph.ts reads
+   the same marker. */
+const WIDGETS_DIR = join(ROOT, 'src', 'components', 'widgets');
+const GRADED = [
+  ...BUILTIN_GRADED,
+  ...readdirSync(WIDGETS_DIR)
+    .filter((f) => f.endsWith('.astro') && readFileSync(join(WIDGETS_DIR, f), 'utf8').includes('@graded'))
+    .map((f) => f.slice(0, -'.astro'.length))
+    .filter((name) => !BUILTIN_GRADED.includes(name)),
+];
 
 const lessons: Lesson[] = [];
 const referencedMisconceptions: { id: string; lesson: string }[] = [];
@@ -99,7 +110,10 @@ for (const file of walk(PATHS).filter((f) => f.endsWith('.mdx'))) {
     for (const m of body.matchAll(new RegExp(`<${kind}\\b[^>]*?\\bid=["']([^"']+)["']`, 'g'))) {
       widgets.push({ id: m[1], kind });
     }
-    // A graded widget with no id can never record progress.
+    // A graded widget with no id can never record progress. A self-checking
+    // scene (an `@graded` wrapper) may be used ungraded, as a plain picture,
+    // by leaving the id off — so only the built-in widgets demand one.
+    if (!BUILTIN_GRADED.includes(kind)) continue;
     for (const m of body.matchAll(new RegExp(`<${kind}\\b((?:[^>"']|"[^"]*"|'[^']*')*?)>`, 'g'))) {
       if (!/\bid=/.test(m[1])) err(`lesson "${id}" has a <${kind}> with no id`);
     }

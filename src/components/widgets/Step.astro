@@ -1,0 +1,20 @@
+---
+// One screen of a lesson. Write a lesson as a sequence of <Step>s and it is
+// shown one step at a time: each step's Continue unlocks once every graded
+// widget inside it has been attempted. See src/lib/step-flow.ts and AGENTS.md §2.
+//
+// Markdown works inside a step; leave a blank line after the opening tag.
+---
+<section class="lesson-step" data-step>
+  <slot />
+  <div class="step-foot" data-step-foot hidden>
+    <button type="button" class="anth-btn anth-btn-primary step-continue" data-step-continue>Continue</button>
+    <span class="step-need" data-step-need>Answer above to continue</span>
+    <span class="step-count readout" data-step-count></span>
+  </div>
+</section>
+
+<script>
+  import { initStepFlow } from '../../lib/step-flow.ts';
+  initStepFlow();
+</script>

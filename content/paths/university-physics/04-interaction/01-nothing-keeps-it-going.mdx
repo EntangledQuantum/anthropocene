@@ -1,9 +1,9 @@
 ---
 title: 'Nothing has to keep it going'
-blurb: 'Build the diagram, and the acceleration is no longer yours to choose — which is how you find out whether you believe that motion needs a cause.'
+blurb: 'Push a puck, let go, and find out whether you believe motion needs a cause.'
 order: 1
 tier: 'foundation'
-minutes: 14
+minutes: 9
 teaches:
   - 'force-as-interaction'
   - 'inertia'
@@ -14,200 +14,132 @@ requires:
   - 'instantaneous-rate'
   - 'worldline'
 status: 'live'
-updated: 2026-09-12
+updated: 2026-09-24
 ---
 
-A puck is sliding across frictionless ice at a steady 4 m/s. Ask almost anyone — including
-people who passed a physics course — what is keeping it going, and they will reach for
-something: momentum pushing it, a leftover force from the shove, impetus.
+<Step>
 
-There is a way to settle this that does not involve arguing. Put a forward force on it and
-watch what the world does.
+A puck slides across frictionless ice at 4 m/s. You lean on it with a steady push and
+keep leaning.
 
 <Predict
   id="up-ch4-coasting-puck"
-  question="The puck is already coasting at 4 m/s. You lean on it with a steady 6 N push, forward, and keep leaning. What happens over the next few seconds?"
+  question="While you keep pushing, what does its speed do?"
   options={[
-    { key: 'a', misconception: 'force-sustains-speed', label: 'It moves at a new, higher constant speed for as long as you push', why: 'This is the most common answer, and it is the old Aristotelian model wearing modern clothes: force sets the speed. Watch the readout. The speed does not settle anywhere — it climbs at 3 m/s every second and keeps climbing. A constant force buys you a constant rate of change, never a constant value.' },
-    { key: 'b', label: 'It speeds up steadily, and does not stop speeding up', why: 'Correct. 6 N on 2 kg is 3 m/s² and it never runs out. The reason this feels wrong is everyday experience, where pushing harder does settle at a higher speed — but that is drag growing until it cancels your push. Remove the drag, as here, and nothing cancels anything.' },
-    { key: 'c', misconception: 'motion-requires-force', label: 'Nothing changes — it was already moving, so your push just maintains it', why: 'This treats the push as the thing that was keeping it going in the first place. But nothing was pushing it before you arrived and it was moving perfectly well. Your push is not a payment for motion already in progress; it is an addition, and it shows up as a change.' },
-    { key: 'd', misconception: 'force-proportional-to-velocity', label: 'It speeds up at first and then levels off at 3 m/s, since F/m = 3', why: 'F/m is 3 in units of m/s², not m/s. That is an acceleration — how fast the speed changes — and reading it as a speed is the single most expensive unit slip in this chapter.' },
+    { key: 'a', misconception: 'force-sustains-speed', label: 'Jumps to a new, higher speed and holds it', why: 'That is force setting the speed, the oldest model in physics. Try it below: the speed never settles while you push.' },
+    { key: 'b', label: 'Keeps climbing for as long as you push', why: 'Right. A steady force buys a steady rate of change, not a steady value.' },
+    { key: 'c', misconception: 'motion-requires-force', label: 'Stays at 4 m/s: the push only keeps it going', why: 'Nothing was pushing it before you arrived, and it was moving fine. Your push adds; it does not pay upkeep.' },
+    { key: 'd', misconception: 'force-proportional-to-velocity', label: 'Climbs a little, then levels off', why: 'Levelling off needs something pushing back, like drag. The ice has none, so nothing cancels your push.' },
   ]}
   correct="b"
 >
 
-<FbdBuilder
-  mode="given"
-  mass={2}
-  bodyLabel="the puck"
-  v0={[4, 0]}
-  forces={[{ id: 'push', on: 'body', by: 'you', kind: 'applied', label: 'your push', fx: 6, fy: 0 }]}
-  duration={6}
-  worldSpan={26}
-  autoPlay={true}
-  caption="The weight and the table's push cancel, so the whole net force is your 6 N. Watch the speed readout rather than the puck: the frame pans once it reaches the edge, and a body that is speeding up looks much the same as one that is not."
-/>
+<HoldToPush prompt="Hold the button. Watch the trace, then let go." />
 
 </Predict>
 
-## Your arrows, the world's answer
+</Step>
 
-Here is the same puck with nothing on it but its weight and the ice. **Add a force.** Drag
-its tip, or move the sliders, and then run it.
+<Step>
 
-Two arrows in this picture are not yours. The dashed white one is the sum, and the thick
-magenta one is the acceleration. You cannot drag either, because there is nothing there to
-drag: they are arithmetic on the arrows you placed.
+## Let go
 
-<FbdBuilder
-  mode="build"
-  mass={2}
-  bodyLabel="the puck"
-  v0={[4, 0]}
-  palette={['applied']}
-  massSlider={true}
-  showPartners={true}
-  duration={8}
-  worldSpan={26}
-  caption="Three things worth doing on purpose. Point your push backwards and watch the puck slow, stop and come back. Point it straight up and turn it past 20 N, and the table gives up — the contact readout tells you when. Then slide the mass with the arrows held still: same forces, different acceleration, which is the entire job description of mass."
+Now the question that settles it. Push until the puck is doing exactly 10 m/s, then let go.
+
+<HoldToPush
+  id="up-ch4-hold-to-ten"
+  prompt="Reach 10 m/s, release, then check."
+  target={10}
+  explanation="After you let go the trace goes flat and stays flat. It does not sag back toward 4 m/s or creep toward zero. Nothing is needed to keep a velocity. A force is only needed to change one."
 />
 
-Now do the experiment that settles the opening question. Get it up to speed, then **remove
-your force while it is running**. The speed stops changing and stays exactly where you left
-it. It does not sag back toward 4 m/s and it does not creep toward zero. Nothing is owed.
+</Step>
 
-## The caption for what you just did
+<Step>
 
-Add every force acting on your chosen body. Divide by the body's mass. That is the
-acceleration, and there is nothing else to know:
+## Name it
 
-$$\vec F_{\text{net}} = \sum_i \vec F_i = m\vec a$$
+The ramp was your force. The flat line was no force. That is all Newton's second law says:
 
-Two clauses in that sentence are doing quiet work. *Every force* — because forces
-superpose, with no precedence and no winner; three arrows can add to nothing while all
-three are fully present. And *on your chosen body* — because a force is something one body
-does to another, so before you can add anything you have to say which body you are talking
-about.
+$$\vec F_{\text{net}} = m\vec a$$
 
-That is what a **free-body diagram** is. One body, every arrow that lands on it, and
-nothing else on the page.
+Force sets how fast the velocity **changes**. It says nothing about what the velocity **is**.
 
 <Recall id="up-ch4-recall-inertia" concept="inertia">
-  <div slot="front">A spacecraft is coasting between stars with its engines off. What is the net force on it, and what is keeping it moving?</div>
+  <div slot="front">A spacecraft coasts between stars with its engines off. What is keeping it moving?</div>
 
-  Zero, and nothing. Constant velocity is the free state — it is what happens when the
-  budget balances, and it costs nothing to maintain. The question "what keeps it going" has
-  no answer because it presumes that motion is a thing needing upkeep. What would need
-  explaining is a *change* in that velocity.
+  Nothing. Constant velocity is the free state and costs nothing to keep. Only a *change* in
+  velocity needs a net force.
 </Recall>
 
-## The shape of a push that ends
+</Step>
 
-You have felt it. Now commit to the picture.
+<Step>
 
-<SketchCurve
-  id="up-ch4-sketch-push-release"
-  scenario="up-ch4-push-then-release"
-  prompt="The 2 kg puck starts out coasting at 4 m/s. At t = 0 you begin a steady 6 N forward push; at t = 3 s you let go and touch nothing again. Sketch its speed over the six seconds."
-  hint="Between 0 and 3 the acceleration is constant. After 3 there is no net force at all. Neither stretch is curved."
-  explanation="A straight climb from 4 to 13 m/s — 3 m/s² for three seconds — and then a flat line at 13 m/s forever. Two wrong shapes are worth recognising in yourself. A step up to a constant speed says force sets velocity. A decay back toward 4 m/s after you let go says the puck remembers a preferred speed. It does not; the ice is frictionless and there is no mechanism that could bring it back."
-/>
+## The diagram hides the motion
 
-## Hide the motion
-
-Here is the question this chapter is really about. A crate is being dragged across a floor.
-The motion is not shown and will not be shown.
-
-<FbdBuilder
-  mode="given"
-  hideMotion={true}
-  mass={4}
-  bodyLabel="the crate"
-  forces={[
-    { id: 'rope', on: 'body', by: 'a rope', kind: 'tension', label: 'rope', fx: 14, fy: 0 },
-    { id: 'fr', on: 'body', by: 'the floor', kind: 'friction', label: 'friction', fx: -6, fy: 0 },
-  ]}
-  worldSpan={16}
-  caption="Four forces, 4 kg, and no view of what the crate is doing."
-/>
-
-You can read the acceleration straight off it: 8 N to the right on 4 kg, so 2 m/s² to the
-right. What you cannot read off it, at all, is the velocity.
+A 4 kg crate. A rope pulls it right with 14 N; friction pulls left with 6 N. That is all
+you know. The motion is not shown.
 
 <Classify
   id="up-ch4-classify-motions"
-  prompt="Each of these describes what the crate might be doing at this instant. Sort them by whether the diagram above permits it."
+  prompt="Which of these could the crate be doing right now?"
   buckets={[
-    { key: 'yes', label: 'the diagram allows this', accent: 'ok' },
-    { key: 'no', label: 'the diagram rules this out', accent: 'magenta' },
+    { key: 'yes', label: 'Possible', accent: 'ok' },
+    { key: 'no', label: 'Ruled out', accent: 'magenta' },
   ]}
   items={[
-    { key: 'right-fast', label: 'Moving right at 6 m/s and getting faster', bucket: 'yes', why: 'The obvious one. Acceleration right, velocity right, speed increasing.' },
-    { key: 'left-slow', label: 'Moving left at 3 m/s and slowing down', bucket: 'yes', why: 'Also fine, and much less obvious. Acceleration to the right acting on leftward motion is exactly what slowing down to the left means. Nothing in the diagram objects.' },
-    { key: 'at-rest', label: 'At rest right now, about to start moving right', bucket: 'yes', why: 'Zero velocity does not mean zero acceleration. This is the instant a stone reaches the top of its throw, or the instant you let go of something. The net force is large and the speed is zero.' },
-    { key: 'steady', label: 'Moving right at a steady 6 m/s', bucket: 'no', why: 'Steady means the velocity is not changing, which means zero acceleration, which means a net force of zero. This diagram sums to 8 N. Something would have to come off the page.' },
-    { key: 'right-slowing', label: 'Moving right at 6 m/s and slowing down', bucket: 'no', why: 'Slowing while moving right requires the acceleration to point left. This one points right. The motion and the acceleration may disagree about direction — but the acceleration and the net force never can.' },
+    { key: 'right-fast', label: 'Moving right, speeding up', bucket: 'yes', why: 'Net force right, velocity right: speeding up.' },
+    { key: 'left-slow', label: 'Moving left, slowing down', bucket: 'yes', why: 'A rightward push on leftward motion is exactly what slowing down to the left means.' },
+    { key: 'at-rest', label: 'Momentarily at rest', bucket: 'yes', why: 'Zero velocity is not zero acceleration. A thrown stone at the top of its arc is at rest and accelerating.' },
+    { key: 'steady', label: 'Moving right at a steady speed', bucket: 'no', why: 'Steady means zero acceleration, which means zero net force. These add to 8 N.' },
+    { key: 'right-slowing', label: 'Moving right, slowing down', bucket: 'no', why: 'Slowing while moving right needs a leftward net force. This one points right.' },
   ]}
-  explanation="The diagram fixes how the velocity is changing and says nothing about what it currently is. That is not a limitation of the drawing; it is what the second law is. Acceleration is the derivative, and a derivative at a point is compatible with any value at that point."
+  explanation="The forces fix how the velocity is changing: 2 m/s² to the right. They say nothing about what the velocity is right now."
 />
+
+</Step>
+
+<Step>
 
 ## Three arrows that add to nothing
 
-Same idea in the opposite direction: instead of reading the acceleration off the forces,
-supply forces that produce a required acceleration.
+An 8 kg crate drifts in deep space with two thrusters firing. The third thruster is yours.
 
-An 8 kg crate is drifting in deep space. Two thrusters are bolted on and fixed. The third
-is yours — set its strength and its direction so the crate stops accelerating altogether.
-
-<FbdBuilder
-  mode="match"
+<CancelTheArrow
+  id="up-ch4-cancel-thrusters"
+  prompt="Drag the tip of your force until the crate stops accelerating."
   mass={8}
-  bodyLabel="the crate"
-  surfaceAngle={null}
-  gravity={false}
-  forces={[
-    { id: 'ta', on: 'body', by: 'thruster A', kind: 'applied', label: 'thruster A', fx: 20, fy: 0 },
-    { id: 'tb', on: 'body', by: 'thruster B', kind: 'applied', label: 'thruster B', fx: 0, fy: 20 },
-    { id: 'tc', on: 'body', by: 'thruster C', kind: 'applied', label: 'thruster C', fx: 12, fy: 0, editable: true, maxMag: 40 }
-  ]}
-  target={{ label: 'Bring the acceleration to zero and keep both fixed thrusters firing.', ax: 0, ay: 0, tol: 0.12 }}
-  duration={8}
-  worldSpan={20}
-  caption="The magenta arrow is the thing to kill. Watch it shrink as you turn yours toward the south-west — and notice that it vanishes at an angle neither of the other two points in."
+  fixed={[{ label: 'A', fx: 20, fy: 0 }, { label: 'B', fx: 0, fy: 20 }]}
+  start={[12, -6]}
+  explanation="About 28 N pointing down-left, a direction neither of the others points in. Equilibrium is not the absence of forces: all three are still pulling, and their arrows laid tip to tail close into a triangle."
 />
 
-The answer is about 28 N at 225°, and it is the diagonal of the square the other two make.
-Equilibrium is not the absence of forces; it is three arrows laid tip to tail that happen
-to close. Every one of them is still there, still pulling, still able to tear a bracket off.
+<Recall id="up-ch4-recall-fbd" concept="free-body-diagram">
+  <div slot="front">Before you add an arrow to a free-body diagram, what must you be able to say?</div>
+
+  What exerts it. Every force is one body acting on another: the Earth, the floor, a rope,
+  your hand. An arrow with no source, such as a "force of motion", does not exist.
+</Recall>
+
+</Step>
+
+<Step>
 
 ## Mass, in seconds
 
 <Estimate
   id="up-ch4-estimate-car"
   scenario="up-ch4-car-to-walking-pace"
-  prompt="A 1400 kg car is in neutral on level ground. You put your shoulder against it and push with a steady 300 N — about as hard as a person can sustain. Ignoring rolling resistance, how long until it is moving at walking pace, 1.4 m/s?"
-  explanation="About six and a half seconds. Mass is a far weaker obstacle than it feels like: 300 N on 1400 kg is 0.21 m/s², which is slow but relentless, and seven seconds of relentless is walking pace. What actually defeats you when you try this is rolling resistance and a slight incline — extra forces, not the inertia. That is worth separating, because the two feel identical from behind the car."
+  prompt="A 1400 kg car in neutral on level ground. You push with a steady 300 N. Ignoring rolling resistance, how long until it moves at walking pace, 1.4 m/s?"
+  explanation="About six and a half seconds. 300 N on 1400 kg is 0.21 m/s²: slow, but it never stops adding. What defeats you in real life is rolling resistance, which is an extra force, not the mass."
 />
-
-<Recall id="up-ch4-recall-fbd" concept="free-body-diagram">
-  <div slot="front">You are drawing a free-body diagram and you want to add an arrow. What question has to be answerable first?</div>
-
-  "Exerted by what?" Every arrow is one end of an interaction, so it has a second body at
-  the other end that you can name: the Earth, the floor, a rope, the air, your hand. An
-  arrow with no source — a "force of motion", a leftover from the shove — does not exist and
-  belongs off the page. The velocity goes off the page too: it is not a force and cannot
-  enter a sum of newtons.
-</Recall>
 
 ## What to carry forward
 
-- **Velocity persists; change costs.** A net force is the price of a *change* in velocity,
-  never of velocity itself. The forward arrow on a coasting object has no one exerting it.
-- **The diagram fixes the acceleration and hides the velocity.** One free-body diagram is
-  compatible with moving fast, moving backwards, or sitting still. Read the net force as an
-  instruction to the velocity, not a description of it.
-- **Forces superpose as vectors, and equilibrium is a property of the sum.** Zero net force
-  is a closed triangle of arrows, every one of them real.
+- **Velocity persists. Change costs.** Net force is the price of a change in velocity.
+- **Forces add as arrows.** Zero net force is a closed loop of arrows that are all still there.
 
-Next: every arrow you drew has a partner you did not draw, on a body you did not choose —
-and it is the reason a heavy object does not push harder than a light one.
+Next: every force you drew has a partner on a different body.
+
+</Step>

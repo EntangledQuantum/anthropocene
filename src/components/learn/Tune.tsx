@@ -54,7 +54,7 @@ export default function Tune({
   const done = solved || verdict === 'hit';
 
   return (
-    <div className="not-prose" style={{ margin: '2rem 0' }}>
+    <div className="not-prose" data-widget-id={id} style={{ margin: '2rem 0' }}>
       <Panel
         title="tune"
         right={

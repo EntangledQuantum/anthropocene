@@ -33,8 +33,9 @@ This is the contract. Everyone adding a lesson follows it, human or agent. Most 
 enforced by `npm run content:check`, which the build runs first and which fails the build
 on violation.
 
-Read §1 and §2 before writing anything. They are the two rules that earlier lessons got
-wrong and that are expensive to fix afterwards.
+Read §1, §2 and §2a before writing anything. They are the rules that earlier lessons got
+wrong and that are expensive to fix afterwards. §2a in particular is why the first pass of
+university physics was rewritten.
 
 ---
 
@@ -147,6 +148,94 @@ Why it clears the bar:
 
 ---
 
+## 2a. Focus: one scene, one decision
+
+This section exists because the first pass of `university-physics` was thrown out. Those
+lessons were essays wrapped around 700–1,300-line "labs" full of sliders, palettes, mode
+toggles and captions that said *"three things worth doing"*. Nearly every lesson ended with
+the same "sketch the graph" exercise. Learners did not know where to look, and every
+lesson felt like the one before. **Everything below is enforced in review. Treat a
+violation as a bug, not a style choice.**
+
+### Banned
+
+1. **Kitchen-sink labs.** A widget with more than two controls, or a `mode` prop that turns
+   one component into several tools. If a caption has to list things to try, those things
+   are separate steps with separate small scenes.
+2. **The reflex `<SketchCurve>`.** "Sketch x(t) / v(t) / E(t)" is not a default ending.
+   **At most one `<SketchCurve>` per chapter**, and only when the shape *is* the idea and no
+   action in the world can ask it. The same goes for an `<Estimate>` that is trivia with a
+   slider.
+3. **A chart standing in for the physics.** A plot of a quantity against time is not a
+   visualization of a puck, a wave, a lens or a field. Show the *object*: what the learner
+   would see in the room. A graph may sit beside it as a companion strip, never instead of
+   it.
+4. **Instructions in captions.** A caption describes; it never directs. Directions go in
+   the scene's one-line `prompt`.
+5. **Prose before the first decision.** Open with a situation in two sentences or fewer,
+   then a decision. No definitions, no "in this lesson".
+6. **Paragraphs over three sentences.** Explanations live in `why`, `explanation` and the
+   one line after an action, not in blocks between widgets.
+7. **A quiz with a picture.** Multiple choice whose answer can be read from the text
+   without touching the visual.
+8. **The same move twice.** Do not use one widget the same way in two steps of a lesson,
+   and do not end two lessons of a chapter with the same kind of exercise.
+
+### Required
+
+- **A lesson is a sequence of `<Step>`s.** Aim for 5–8 steps and 8–12 minutes. The page
+  shows one step at a time, and Continue unlocks once every graded widget in the step
+  has been *attempted*, right or wrong (`src/lib/step-flow.ts`). Each step has **three
+  sentences of prose or fewer, and exactly one decision.**
+- **At least half the graded decisions are actions in the world**: drag, hold, aim,
+  release, balance, place, tilt or time. These are self-checking scenes, not multiple
+  choice. `<Predict>` is for the opening bet and for choosing between *interpretations*.
+- **Every lesson ships at least one purpose-built scene** for its idea, built from the scene
+  kit and small: roughly 250 lines at most. Reuse the *kit*, not someone else's lab.
+- **The first decision is one a thoughtful novice gets wrong about half the time.** If
+  nobody would get it wrong, it is not a hook.
+- **A wrong action changes the world.** The scene shows what is off (the arrow still
+  points, the trace sags, the image is blurred), and the `CheckBar` miss line states it as a
+  number about the scene: *"The forces still add to 7.1 N, pointing up-left."* Never write
+  "Not quite, try again".
+- **Step headings are claims or verbs** ("Let go", "The diagram hides the motion"), not
+  topic names ("Newton's second law").
+- **Physics colours are fixed** across every lesson: velocity cyan, acceleration magenta,
+  force amber, position iris, energy aqua, field orchid. Use `C` from `viz/scene.tsx`.
+
+### The scene kit: `src/components/viz/scene.tsx`
+
+`SceneCard` (the frame and its one prompt), `Stage` (SVG world coordinates; pass `equal`
+whenever angles must look true), `Arrow`, `Body`, `Handle` (drag plus keyboard), `Meter`
+(the one number that matters), and `useTask` + `CheckBar` for a scene that grades itself.
+
+To make a scene graded, give it an `id` prop, call `useTask(id)`, and put the comment
+`@graded` in its `.astro` wrapper. The build then counts it (`graph.ts` and
+`check-content.ts` both read the marker). Used without an `id`, the same scene is an
+ungraded picture. Put `id` first in the tag.
+
+**The reference to copy is
+`content/paths/university-physics/04-interaction/01-nothing-keeps-it-going.mdx`**, with
+its two scenes `HoldToPush.tsx` and `CancelTheArrow.tsx`. Measure against it:
+
+| The old lesson did | The new lesson does |
+|---|---|
+| FbdBuilder with a force palette, mass slider, partner toggles and a three-part caption | `CancelTheArrow`: one handle, one question; the closed triangle appears once you solve it |
+| "Sketch the speed over six seconds" | `HoldToPush`: push with your own hand, let go, and watch the trace stay flat |
+| Four paragraphs before the first widget | Two sentences, then a bet |
+
+### Verbs to reach for
+
+Physics is full of actions with a visible consequence. Pick the one that *is* the idea:
+**hold** a push, **release** at the right moment, **aim** a launch to hit a mark, **tilt**
+until it slips, **balance** a lever, **drag** the image until it is sharp, **place** a
+probe where the field is zero, **time** a tap to the resonance, **stop** the clock when the
+wave arrives, **pick** the frame in which it looks simple, **trace** the ray, **pour**
+until it floats, **add** the charge that cancels. If the verb you chose is "sketch" or
+"slide a number", look again.
+
+---
+
 ## 3. Content lives in `content/`, separate from the app
 
 ```
@@ -223,8 +312,8 @@ Available in any lesson with **no import and no client directive**. Wired up in
 
 | Widget | Tests |
 |---|---|
-| `<Predict>` | Commit to an outcome, then watch it. **Reach for this first.** |
-| `<SketchCurve>` | Draw the shape you expect. The strongest test we have — you cannot bluff a curve. |
+| `<Predict>` | Commit to an outcome, then watch it. The opening bet, and choices between interpretations. |
+| `<SketchCurve>` | Draw the shape you expect. **Rationed: one per chapter at most** (§2a). |
 | `<RankOrder>` | Relational judgement: which is bigger, faster, cheaper. |
 | `<Classify>` | Distinctions that blur — problem vs method, stable vs unstable. |
 | `<Tune>` | Hunt a threshold by moving a parameter until the system does the thing. |
@@ -235,6 +324,7 @@ Available in any lesson with **no import and no client directive**. Wired up in
 | Widget | Use for |
 |---|---|
 | `<Recall>` | A spaced-repetition card, authored where the idea appears. |
+| `<Step>` | One screen of a lesson. Every lesson is a sequence of these (§2a). |
 | `<Tier>` | Depth-gated section: `foundation` / `core` / `advanced` / `frontier`. |
 
 ### Visualization
@@ -249,6 +339,8 @@ Available in any lesson with **no import and no client directive**. Wired up in
 | `<FloatLab>` | Bit-level anatomy of a float64. |
 | `<CancellationLab>` | Two identical formulas, one of which survives. |
 | `<Plot>` | The general 2D primitive when nothing above fits. |
+| `<HoldToPush>` | Self-checking scene: hold a push on a puck, let go. The §2a reference. |
+| `<CancelTheArrow>` | Self-checking scene: drag one force until the acceleration vanishes. |
 
 ### Examples
 
@@ -327,8 +419,9 @@ history and resets the card.** Globally unique; `content:check` enforces it.
 3. **That is the registration.** Every `.astro` file in `src/components/widgets/` is
    globbed into the authoring vocabulary under its own filename, so there is no import
    list to edit and no merge conflict when two authors add widgets at once.
-4. If graded, add its name to `GRADED_WIDGETS` in `src/lib/graph/graph.ts` **and** `GRADED`
-   in `scripts/check-content.ts`.
+4. If graded, put the comment `@graded` in its `.astro` wrapper. Both `graph.ts` and
+   `check-content.ts` read the marker, so there is no list to edit. Build it from the scene
+   kit (`viz/scene.tsx`, §2a).
 5. Document it in §6 and add it to the design rules in §2 if it teaches something new.
 
 ### The content index

@@ -268,6 +268,29 @@ span.hud-label { display: inline-block; }
 
 .prose-anth hr { border: 0; height: 1px; background: var(--color-rule); margin: 2.8em 0; }
 
+/* ── step flow: one screen at a time (src/lib/step-flow.ts) ─────────────── */
+
+.lesson-step { margin: 0; }
+.lesson-step + .lesson-step { margin-top: 3.2em; padding-top: 2.4em; border-top: 1px solid var(--color-rule); }
+.lesson-step > :first-child { margin-top: 0; }
+.lesson-step > * + * { margin-top: 1.2em; }
+.lesson-step h2 { margin-top: 0; padding-top: 0; border-top: 0; }
+.lesson-step.step-enter { animation: step-in 420ms ease both; }
+@keyframes step-in { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: none; } }
+
+.step-foot {
+  display: flex; align-items: center; gap: 14px;
+  margin-top: 2em !important;
+  font-family: var(--font-sans);
+}
+.step-foot[hidden] { display: none; }
+.step-continue { padding: 10px 22px; font-size: 15px; }
+.step-need { font-size: 14px; color: var(--color-ink-faint); }
+.step-need[hidden] { display: none; }
+.step-count { margin-left: auto; font-size: 12.5px; color: var(--color-ink-ghost); }
+.step-all { font-size: 14px; color: var(--color-ink-faint); text-decoration: none; }
+.step-all:hover { color: var(--color-accent); }
+
 /* ── math ─────────────────────────────────────────────────────────────────── */
 
 .math-display {

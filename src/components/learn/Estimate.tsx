@@ -53,7 +53,7 @@ export default function Estimate({ id, prompt, scenario, explanation }: Estimate
     ((Math.log10(v) - spec.logRange[0]) / (spec.logRange[1] - spec.logRange[0])) * 100;
 
   return (
-    <div className="not-prose" style={{ margin: '2.5rem 0' }}>
+    <div className="not-prose" data-widget-id={id} style={{ margin: '2.5rem 0' }}>
       <Panel
         title="estimate first"
         right={

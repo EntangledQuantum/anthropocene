@@ -110,7 +110,22 @@ export const unprefix = (s: string) => s.replace(/^\d+-/, '');
 
 /** Widgets that count toward lesson completion. `<Recall>` is scheduled by
  *  FSRS rather than graded, and `<Explore>` is deliberately ungraded. */
-const GRADED_WIDGETS = ['Predict', 'Tune', 'SketchCurve', 'RankOrder', 'Classify', 'Estimate', 'RichardsonTableau'] as const;
+const BUILTIN_GRADED = ['Predict', 'Tune', 'SketchCurve', 'RankOrder', 'Classify', 'Estimate', 'RichardsonTableau'];
+
+/* A widget whose `.astro` wrapper contains the marker `@graded` is graded too.
+   That is how a lesson's own self-checking scene joins the completion roster
+   without anyone editing this list — the same add-a-file registration the
+   widget vocabulary uses. `scripts/check-content.ts` reads the same marker. */
+const wrapperSources = import.meta.glob<string>('../../components/widgets/*.astro', {
+  query: '?raw', import: 'default', eager: true,
+});
+const GRADED_WIDGETS = [
+  ...BUILTIN_GRADED,
+  ...Object.entries(wrapperSources)
+    .filter(([, src]) => src.includes('@graded'))
+    .map(([file]) => file.slice(file.lastIndexOf('/') + 1, -'.astro'.length))
+    .filter((name) => !BUILTIN_GRADED.includes(name)),
+];
 
 /** Scans lesson source for graded widget usages and their `id` props.
  *  Deliberately a scan and not a parse: the id must be a plain string literal

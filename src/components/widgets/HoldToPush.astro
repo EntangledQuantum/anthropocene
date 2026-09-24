@@ -1,0 +1,6 @@
+---
+// @graded — when given `id` and `target`, the scene checks itself.
+import Island, { type HoldToPushProps } from '../viz/HoldToPush.tsx';
+const props = Astro.props as HoldToPushProps;
+---
+<Island client:visible {...props} />

@@ -41,7 +41,7 @@ export default function Classify({ id, prompt, buckets, items, explanation }: Cl
   };
 
   return (
-    <div className="not-prose" style={{ margin: '2.5rem 0' }}>
+    <div className="not-prose" data-widget-id={id} style={{ margin: '2.5rem 0' }}>
       <Panel
         title="sort these"
         right={

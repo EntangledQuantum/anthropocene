@@ -36,6 +36,10 @@ type Listener = () => void;
 class LessonStore {
   meta: LessonMeta | null = null;
   widgets = new Map<string, WidgetRecord>();
+  /** Widgets the learner has answered at least once this session, right or
+   *  wrong. A step flow gates on an honest attempt, not on being correct: a
+   *  wrong committed prediction is exactly the struggle the lesson wants. */
+  attempted = new Set<string>();
   progress: ProgressSummary | null = null;
   ready = false;
   justCompleted = false;
@@ -70,7 +74,10 @@ class LessonStore {
     if (db.available) {
       const solved = await solvedWidgets(meta.id);
       for (const [id, w] of this.widgets) {
-        if (solved.has(id)) this.widgets.set(id, { ...w, solved: true });
+        if (solved.has(id)) {
+          this.widgets.set(id, { ...w, solved: true });
+          this.attempted.add(id);
+        }
       }
       await touchLesson(meta.id, meta.tier, this.requiredCount());
       this.progress = await summary();
@@ -87,6 +94,10 @@ class LessonStore {
       this.widgets.set(id, { id, kind, solved: false, optional });
       this.emit();
     }
+  }
+
+  hasAttempted(id: string): boolean {
+    return this.attempted.has(id) || this.isSolved(id);
   }
 
   isSolved(id: string): boolean {
@@ -116,7 +127,8 @@ class LessonStore {
     detail?: unknown;
     xp?: number;
   }): Promise<void> {
-    if (!this.meta) return;
+    this.attempted.add(opts.id);
+    if (!this.meta) { this.emit(); return; }
     const already = this.isSolved(opts.id);
 
     const w = this.widgets.get(opts.id);

@@ -1,0 +1,6 @@
+---
+// @graded — drag one force until the acceleration vanishes.
+import Island, { type CancelTheArrowProps } from '../viz/CancelTheArrow.tsx';
+const props = Astro.props as CancelTheArrowProps;
+---
+<Island client:visible {...props} />

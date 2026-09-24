@@ -67,9 +67,12 @@ The curriculum's §7 gives the beats. Follow them in order:
 8. **Edge** — where the model dies: drag, finite well, off-axis, inelastic, damping.
 9. **Reusable picture** — end with the image that should survive to tomorrow.
 
-**Length.** 8–14 minutes of focused work. If `minutes` is over 16, the lesson is two
-lessons. Earlier lessons on the other path ran 25–30 minutes and that is a defect being
-worked off, not a precedent.
+**Each beat is a `<Step>`** (`AGENTS.md` §2a): three sentences at most and one decision.
+Beats may merge, but the order holds. Not every lesson needs all nine; most land at 5–8
+steps.
+
+**Length.** 8–12 minutes of focused work. If `minutes` is over 14, the lesson is two
+lessons.
 
 **Never test code-writing.** `AGENTS.md` §1. There is no code widget and there will not be
 one. Test judgement: which model applies, what will happen, which assumption broke.
@@ -81,14 +84,19 @@ one. Test judgement: which model applies, what will happen, which assumption bro
 The bar from `AGENTS.md` §2 applies unchanged: **an interactive that could not be replaced
 by a paragraph and a static figure.**
 
-Read these two before you build anything:
+**Read `AGENTS.md` §2a first.** It bans the patterns the first pass of this path was built
+on: kitchen-sink labs, the reflex sketch-the-graph, a chart standing in for the object, and
+essays between widgets.
 
-- `src/components/viz/LinkedGraphs.tsx` — this path's exemplar. The learner shapes one
-  curve; the other two panels are *derived and not editable*, because the chapter's claim
-  is that they cannot disagree. The pedagogy is enforced by the data flow, not asserted in
-  prose.
-- `src/components/viz/StabilityExplorer.tsx` — the GPU exemplar, for when per-pixel
-  resolution is the point.
+Read these before you build anything:
+
+- `content/paths/university-physics/04-interaction/01-nothing-keeps-it-going.mdx`: the
+  reference lesson. Steps, one decision each, two small self-checking scenes.
+- `src/components/viz/scene.tsx`: the scene kit every new visual is built from.
+- `src/components/viz/HoldToPush.tsx` and `CancelTheArrow.tsx`: what "small and focused"
+  means in code. One or two controls, a live physical picture, a factual miss line.
+- `src/components/viz/StabilityExplorer.tsx`: the GPU exemplar, for when per-pixel
+  resolution is the point (fields, interference, wavefunctions).
 
 The rules that matter most here:
 
@@ -103,23 +111,18 @@ The rules that matter most here:
 6. **GPU when resolution is the point** — `src/components/viz/gl/webgl.ts`. Do not pull in
    three.js for something a fragment shader does.
 
-### Reusable worlds
+### Reuse the kit, not the lab
 
-The curriculum asks for visual worlds that **come back in new clothes**. Before building a
-bespoke widget, check whether one of these already exists and can take a new prop:
+The first pass built large shared "worlds" (`FbdBuilder`, `LinkedGraphs`, `PotentialTrack`,
+`FieldCanvas`, `SteeringLab`, `ProjectileSplit`, `VectorFrame`) and reused them with
+different props. That is how every lesson came to look the same and do too much. **Do not
+build new lessons on them.** Build a small scene for your idea from `viz/scene.tsx`, and
+import physics from `src/lib/physics/`. Those libraries *are* the shared world; the widgets
+are cheap.
 
-| World | Component | Chapters that should reuse it |
-|---|---|---|
-| Linked x/v/a graphs | `LinkedGraphs` | 2, 3, 14 |
-| Potential track + total-E line | *to build* | 7, 14, 30, 40 |
-| Free-body diagram builder | *to build* | 4, 5, 11 |
-| Field arrows + equipotentials | *to build* | 13, 21, 22, 23, 27, 28 |
-| Two-source ripple tank | *to build* | 15, 16, 35, 36 |
-| Phasor stage | *to build* | 31, 35 |
-
-If you build one of the *to build* worlds, build it **general enough for the chapters
-listed**, name it plainly, and say so in your report so later authors reuse rather than
-duplicate.
+A chapter may share one of its own scenes between its two lessons when the second lesson
+genuinely continues the first picture. That is the evolving canvas, and it is good. A
+scene built for chapter 7 reappearing in chapter 30 with a new prop is the old mistake.
 
 ---
 
