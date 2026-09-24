@@ -136,7 +136,7 @@ export function brakeRun(v0: number, decel: number, brakeAt: number) {
   const at = (t: number) => {
     if (t <= tBrake) return { x: v0 * t, v: v0, braking: false };
     const s = Math.min(t, tStop) - tBrake;
-    return { x: brakeAt + v0 * s - 0.5 * decel * s * s, v: v0 - decel * s, braking: t < tStop };
+    return { x: brakeAt + v0 * s - 0.5 * decel * s * s, v: Math.max(0, v0 - decel * s), braking: t < tStop };
   };
   return { tBrake, tStop, stopX, at };
 }
