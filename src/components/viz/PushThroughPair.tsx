@@ -30,9 +30,9 @@ const S = 0.06; // world units per newton, for every force arrow
 const F_MAX = 24;
 const AS = 0.5; // world units per m/s²
 
-/** A force's name, centred above the middle of its arrow, so it stays on the body the force acts on. */
-function Tag({ s, x, y, children }: { s: StageApi; x: number; y: number; children: string }) {
-  return <text x={s.sx(x)} y={s.sy(y) - 12} textAnchor="middle" fontSize={13} fontWeight={600} fill={C.force}
+/** A force's name, above its arrow and starting from its tail, so it stays on the body the force acts on. */
+function Tag({ s, x, y, anchor, children }: { s: StageApi; x: number; y: number; anchor: 'start' | 'end'; children: string }) {
+  return <text x={s.sx(x)} y={s.sy(y) - 12} textAnchor={anchor} fontSize={13} fontWeight={600} fill={C.force}
     stroke="var(--color-surface)" strokeWidth={4} paintOrder="stroke">{children}</text>;
 }
 
@@ -82,8 +82,8 @@ export default function PushThroughPair({
           <Arrow s={s} from={[0, yPair]} to={[c * S, yPair]} color={C.force} />
           <Arrow s={s} from={[0, yPair]} to={[onA.vec[0] * S, yPair]} color={C.force} />
           {c > 0.5 && <>
-            <Tag s={s} x={c * S / 2} y={yPair}>A on B</Tag>
-            <Tag s={s} x={onA.vec[0] * S / 2} y={yPair}>B on A</Tag>
+            <Tag s={s} x={0.06} y={yPair} anchor="start">A on B</Tag>
+            <Tag s={s} x={-0.06} y={yPair} anchor="end">B on A</Tag>
           </>}
           <Arrow s={s} from={[tailX, wA * 0.7]} to={[-wA, wA * 0.7]} color={C.force} />
           <text x={s.sx(tailX)} y={s.sy(wA * 0.7) - 18} textAnchor="middle" fontSize={14} fontWeight={600} fill={C.force}>you</text>

@@ -84,7 +84,7 @@ export default function CrashPair({
     const s = h[i];
 
     // ── the road: 24 m across, the crash at the centre
-    const road = 170, px = Wd / 24, X = (x: number) => Wd / 2 + x * px;
+    const road = 205, px = Wd / 24, X = (x: number) => Wd / 2 + x * px;
     g.strokeStyle = c.rule; g.lineWidth = 2;
     g.beginPath(); g.moveTo(0, road); g.lineTo(Wd, road); g.stroke();
 
@@ -117,7 +117,7 @@ export default function CrashPair({
     }
 
     // ── the trace: both force magnitudes against time, one drawn over the other
-    const top = 222, bot = Ht - 26, left = 52, right = Wd - 12, T = h[h.length - 1].t;
+    const top = 262, bot = Ht - 26, left = 52, right = Wd - 12, T = h[h.length - 1].t;
     const tx = (t: number) => left + (t / T) * (right - left);
     const ty = (f: number) => bot - (f / F_MAX) * (bot - top);
     g.font = '12px ui-monospace, monospace'; g.fillStyle = c.faint; g.textAlign = 'right';
@@ -170,7 +170,7 @@ export default function CrashPair({
           </div>
         </div>
       }>
-      <canvas ref={canvas} style={{ width: '100%', height: 400, display: 'block' }}
+      <canvas ref={canvas} style={{ width: '100%', height: 440, display: 'block' }}
         aria-label={`A ${mCar} kilogram car and a ${Math.round(mTruck)} kilogram truck collide. Peak force on each: ${kN(peak.f1)} and ${kN(peak.f2)} kilonewtons.`} />
     </SceneCard>
   );

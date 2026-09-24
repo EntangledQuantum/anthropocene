@@ -34,9 +34,9 @@ export interface DrawTheSystemProps {
   explanation?: string;
 }
 
-/** A force's name, centred above the middle of its arrow, so it stays on the body the force acts on. */
-function Tag({ s, x, y, children }: { s: StageApi; x: number; y: number; children: string }) {
-  return <text x={s.sx(x)} y={s.sy(y) - 10} textAnchor="middle" fontSize={13} fontWeight={600} fill={C.force}
+/** A force's name, above its arrow and starting from its tail, so it stays on the body the force acts on. */
+function Tag({ s, x, y, anchor, children }: { s: StageApi; x: number; y: number; anchor: 'start' | 'end' | 'middle'; children: string }) {
+  return <text x={s.sx(x)} y={s.sy(y) - 10} textAnchor={anchor} fontSize={13} fontWeight={600} fill={C.force}
     stroke="var(--color-surface)" strokeWidth={4} paintOrder="stroke">{children}</text>;
 }
 
@@ -127,17 +127,21 @@ export default function DrawTheSystem({
             <text x={s.sx(left[i] + wi / 2)} y={s.sy(wi) + 20} textAnchor="middle" fontSize={13} fill={C.soft}>{names[i]} · {masses[i]} kg</text>
           </g>)}
           {row.forces.map((f) => {
-            const internal = !extIds.has(f.id) && inside.has(f.on);
-            const color = internal ? C.faint : C.force;
+            // Three kinds: crossing the boundary onto the system (amber, named), a pair inside it
+            // (grey dashed: it cancels), or acting on a body outside the system (grey: not in this sum).
+            const crossing = extIds.has(f.id);
+            const internal = !crossing && inside.has(f.on);
+            const color = crossing ? C.force : C.faint;
             const dash = internal ? '4 4' : undefined;
-            const label = internal ? undefined : `${nameOf(f.by)} on ${nameOf(f.on)}`;
+            const width = crossing ? 3 : 2;
+            const label = crossing ? `${nameOf(f.by)} on ${nameOf(f.on)}` : undefined;
             if (f.id === 'outside') {
               const i = dIdx;
               const from: Vec = i === 0 ? [left[0] - push * S, w[0] / 2] : [left[i] + w[i] / 2, 0.14];
               const to: Vec = [from[0] + push * S, from[1]];
               return <g key={f.id}>
-                <Arrow s={s} from={from} to={to} color={color} dash={dash} />
-                {label && <Tag s={s} x={(from[0] + to[0]) / 2} y={from[1]}>{label}</Tag>}
+                <Arrow s={s} from={from} to={to} color={color} dash={dash} width={width} />
+                {label && <Tag s={s} x={(from[0] + to[0]) / 2} y={from[1]} anchor="middle">{label}</Tag>}
               </g>;
             }
             const li = +f.id.replace('link', '').replace('-partner', '');
@@ -147,8 +151,8 @@ export default function DrawTheSystem({
             // pull: tails at each body's facing side, pointing along the harness.
             const fromX = pull ? (bi === li ? right(li) : left[li + 1]) : gapX(li + 1);
             return <g key={f.id}>
-              <Arrow s={s} from={[fromX, y]} to={[fromX + f.vec[0] * S, y]} color={color} dash={dash} />
-              {label && <Tag s={s} x={fromX + f.vec[0] * S / 2} y={y}>{label}</Tag>}
+              <Arrow s={s} from={[fromX, y]} to={[fromX + f.vec[0] * S, y]} color={color} dash={dash} width={width} />
+              {label && <Tag s={s} x={fromX + Math.sign(f.vec[0]) * 0.05} y={y} anchor={f.vec[0] > 0 ? 'start' : 'end'}>{label}</Tag>}
             </g>;
           })}
           {w.map((wi, i) => <Arrow key={`a${i}`} s={s} from={[left[i] + wi / 2 - row.a * 0.15, wi + 0.14]}
@@ -160,7 +164,7 @@ export default function DrawTheSystem({
         </>}
       </Stage>
       <p className="hud-label" style={{ margin: '6px 0 0' }}>
-        dashed box: your system · amber: forces crossing it · grey: pairs inside it · dashed magenta: every body’s acceleration
+        dashed box: your system · amber: outside forces on it · grey dashed: pairs inside it · grey: forces on bodies left out
       </p>
     </SceneCard>
   );
