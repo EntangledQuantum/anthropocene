@@ -1,221 +1,156 @@
 ---
 title: 'Before it can be right, it has to balance'
-blurb: 'Throw out a wrong formula without evaluating it, read the mismatch to find what is missing, and know which errors this check will happily wave through.'
+blurb: 'Build a formula by levelling its dimensions, know what that check can never see, and convert units without remembering which way round.'
 order: 1
 tier: 'foundation'
-minutes: 13
+minutes: 10
 teaches:
   - 'dimensional-analysis'
   - 'unit-conversion'
 requires: []
 status: 'live'
-updated: 2026-09-12
+updated: 2026-09-24
 ---
 
-On 23 September 1999 the Mars Climate Orbiter fired its engine to slip into orbit and was
-never heard from again. It came in roughly 170 km lower than planned and broke up.
+<Step>
 
-Nobody had done the arithmetic wrong. The ground software that tracked the small thruster
-firings reported each impulse in **pound-force seconds**. The navigation software that
-consumed the file read those numbers as **newton seconds**. Both files were full of
-impulses. Both teams were right about what kind of quantity they were handling.
-
-<Estimate
-  id="up-ch1-mars-factor"
-  scenario="up-ch1-lbf-vs-newton"
-  prompt="One pound-force second and one newton second are both impulses. Before you look it up: by what factor do they differ?"
-  explanation="About 4.45. A pound-force is the weight of one pound of mass in standard gravity, so the factor is 0.45359237 kg times 9.80665 m/s squared, which is exactly 4.4482216152605 N. Every thruster firing was quietly recorded 4.45 times too small."
-/>
-
-Here is the part worth sitting with. The two quantities are the *same kind of thing*.
-Any check that asks "is this an impulse?" passes the file every single time. So there are
-two different questions to ask about every number in physics, and this lesson builds both:
-
-- **What kind of thing is it?** That is its dimension, and it can reject a formula you have
-  never evaluated.
-- **How much of it is there?** That is its unit, and no amount of dimensional care will
-  catch a mistake there.
-
-## A formula you can reject on sight
-
-A pendulum of length $L$ swings under gravity $g$. Its period is a time.
+Two pendulums hang on identical 1 m strings. One bob is 500 g, the other is ten times
+heavier, and you let both go together.
 
 <Predict
-  id="up-ch1-pendulum-form"
-  question="Four candidate formulas for the period of a pendulum. Which survives — and on what grounds?"
+  id="up-ch01-heavy-bob"
+  question="Which one swings back to your hand first?"
   options={[
-    { key: 'a', label: "Only 2π√(L/g) survives", why: "Right, and you can see it without a single measurement. A length divided by an acceleration is L divided by L·T⁻², which is T² — and the square root of a T² is a time. None of the others land on that point." },
-    { key: 'b', label: "Only 2π√(g/L) survives", why: "That one is upside down. g/L is T⁻², so its square root is T⁻¹ — you have built a frequency. It is not nonsense, it is the reciprocal of the answer, and the ledger below will tell you the mismatch is exactly T²." },
-    { key: 'c', label: "Both 2π√(L/g) and 2πL/g survive — a square root is only a detail", why: "A square root halves every exponent, which is the opposite of a detail. L/g is a T², which is an area of time, not a time. Drop the root and the formula stops describing the same kind of quantity." },
-    { key: 'd', misconception: 'units-are-labels', label: "2π√(mL/g), because a heavier bob must matter", why: "Physical intuition, put to the wrong question. Whether or not mass matters, sticking an m inside the root gives the expression half a power of mass, which is not a time — so that formula cannot be a period no matter what the bob weighs. Build the expression below and watch the mass exponent refuse to be anything but zero." },
-    { key: 'e', misconception: 'units-are-labels', label: "None of them can be judged on paper — you have to go and measure", why: "This is the belief that units are labels you attach after the arithmetic. They are not: the kind of thing an expression is, is fixed the moment you write it, before any number is chosen. That is exactly what lets you throw three of these away at a glance." },
+    { key: 'heavy', label: 'The heavy one: ten times the weight pulls it round faster', why: 'It is pulled ten times harder, and it also has ten times the mass to drag round. The two grow together, so the ratio never changes. Slide the mass below and watch them stay locked.' },
+    { key: 'light', label: 'The light one: the heavy one is harder to get moving', why: 'Half the story. The heavy bob is ten times harder to move and ten times harder pulled, and those cancel exactly.' },
+    { key: 'same', label: 'Neither: they swing in step', why: 'Right. Gravity pulls each bob in proportion to its mass, and each bob resists in proportion to its mass. The next step shows the answer was forced before anything swung.' },
+    { key: 'measure', misconception: 'units-are-labels', label: 'No way to know without timing them', why: 'You can know on paper. The only things a pendulum has are a length, g and a mass, and the next step shows that only one time can be built from them.' },
   ]}
-  correct="a"
+  correct="same"
 >
 
-<DimensionBalance
-  mode="build"
-  palette={['length', 'gravity', 'mass']}
-  target="period"
-  caption="Step the exponents. The target is a time. Try to make the mass matter."
-/>
+<SwingTwoBobs prompt="Slide the right bob from 50 g to 5 kg. Count the swings." />
 
 </Predict>
 
-Try to build a time that *does* depend on the mass. You cannot, and the widget says why:
-of every exponent combination on that grid — and the widget counts them for you — exactly
-one lands on a time, and the mass exponent in it is zero.
+</Step>
 
-That is not bookkeeping. That is a **prediction**: the period of a pendulum cannot depend
-on the mass of the bob, established before any pendulum was built. Galileo needed
-experiments to become confident of it. You needed three tiles.
+<Step>
 
-## The structure underneath
+## Build a time
 
-Seven base dimensions — mass, length, time, electric current, temperature, amount of
-substance, luminous intensity — and every physical quantity is a point in that
-seven-dimensional space. A force sits at $\mathsf{M}\,\mathsf{L}\,\mathsf{T}^{-2}$. An
-energy sits at $\mathsf{M}\,\mathsf{L}^2\,\mathsf{T}^{-2}$.
+A pendulum sets its clock with only a string length $L$ and gravity $g$. A period is a time,
+so whatever you build from them has to weigh the same as $T$ on every beam.
 
-Multiplying quantities **adds** their exponent vectors. Raising to a power **scales** one.
-And an equation can only be true if its two sides are the same point, because there is no
-sense in which a force could equal an energy.
-
-That is the whole method, and everything else is reading the ledger.
-
-<Tier level="advanced" title="what the 2019 redefinition of the SI actually did">
-
-Since 20 May 2019 not one SI unit is defined by an object or an experiment. Seven
-constants were assigned exact numerical values, and the units are whatever makes those
-numbers come out: the caesium hyperfine frequency at 9 192 631 770 Hz fixes the second,
-the speed of light at 299 792 458 m/s fixes the metre, and the Planck constant at exactly
-$6.62607015\times10^{-34}$ J·s fixes the kilogram.
-
-That last one only works because of the structure above. The Planck constant has dimension
-$\mathsf{M}\,\mathsf{L}^2\,\mathsf{T}^{-1}$ — it *carries a mass*. Fix $h$, and you have
-already fixed the metre and the second, and the kilogram has nowhere left to hide. The
-cylinder in Sèvres was retired not because it was badly made but because a point in
-exponent space is a better anchor than a lump of platinum that loses atoms.
-
-One nice consequence: the elementary charge is now exact, so 1 eV is exactly
-$1.602176634\times10^{-19}$ J. It used to be a measured quantity with an uncertainty.
-
-</Tier>
-
-## Reading the mismatch
-
-A mismatch is not a red cross. It is a message telling you what is missing.
-
-Below, the left side is the drag force on a body moving through air, and the right side is
-someone's memory of the formula: a density, a frontal area, a speed. It does not balance.
-The ledger names the gap.
-
-<DimensionBalance
-  mode="balance"
-  palette={['density', 'area', 'velocity']}
-  initial={{ density: 1, area: 1, velocity: 1 }}
-  reference={{ label: 'F', terms: { force: 1 } }}
-  caption="The mismatch is L T⁻¹ — the expression is short by exactly one velocity. Fix it by stepping the speed to a second power, not by adding a new tile."
+<ThreeBeamScale
+  id="up-ch01-build-a-time"
+  prompt="Set the powers of L and g until all three beams are level."
+  left={[{ key: 'period', exponent: 1 }]}
+  right={[{ key: 'length', exponent: 1, free: true }, { key: 'gravity', exponent: 1, free: true }]}
+  explanation="L to the ½ times g to the −½, which is √(L/g). Only g carries time, as T⁻², so only the power −½ makes one T; the L that g brings along then needs L to the ½ to cancel it. No beam ever asked for mass. Nothing else on the table carries M, so any power of the bob's mass would tip the first beam, which is why the two bobs kept step."
 />
 
-Read what happened. The diagnostic did not say *wrong*; it said **short by a velocity**,
-and there was only one honest way to supply one. Drag really does go as $v^2$, and the
-ledger got you there without a wind tunnel.
+</Step>
 
-## What it will not do for you
+<Step>
 
-The method is powerful in a narrow way, and knowing the edge of it is worth as much as
-knowing the method.
+## Name it
 
-<Classify
-  id="up-ch1-what-it-catches"
-  prompt="A dimensional check on each of these. Which mistakes does it catch, and which walk straight past it?"
-  buckets={[
-    { key: 'caught', label: 'the ledger catches it', accent: 'ok' },
-    { key: 'missed', label: 'it walks straight past', accent: 'warn' },
-  ]}
-  items={[
-    { key: 'upside', label: 'The pendulum formula written upside down, √(g/L)', bucket: 'caught', why: 'It lands on T⁻¹ instead of T. The mismatch is T², and it is loud.' },
-    { key: 'square', label: 'Drag written as ½ρAv instead of ½ρAv²', bucket: 'caught', why: 'Short by a velocity, as you just saw.' },
-    { key: 'sine', label: 'Taking the sine of a length in metres', bucket: 'caught', why: 'A sine is a sum of powers of its argument, so it would be adding a length to a volume. Arguments of sin, log and exp must be pure numbers — which is precisely why the wave is written sin(kx − ωt).' },
-    { key: 'twopi', label: 'Forgetting the 2π in the pendulum period', bucket: 'missed', why: 'A pure number moves the expression nowhere in exponent space. Dimensional analysis settles the period up to a dimensionless factor and never any further.' },
-    { key: 'half', label: 'Writing kinetic energy as mv² instead of ½mv²', bucket: 'missed', why: 'Same blindness. The ½ is invisible to the ledger, and this is the honest limit of the whole method.' },
-    { key: 'feet', label: 'Sending a length in feet to software expecting metres', bucket: 'missed', why: 'Both are lengths — the same point in exponent space. This is the Mars failure, and it is why the dimension check is only half the job.' },
-    { key: 'sign', label: 'A sign error: v − at where it should be v + at', bucket: 'missed', why: 'Signs are dimensionless. The ledger cannot see direction at all, which is what the next lesson is about.' },
-  ]}
-  explanation="The pattern: a dimensional check catches errors of KIND — a wrong power, a wrong combination, an illegal argument — and is blind to everything numerical: factors, signs, and units within a dimension. It is a necessary test, never a sufficient one."
-/>
+On the beams, $g$ is $\mathsf{L}\,\mathsf{T}^{-2}$ and a force is
+$\mathsf{M}\,\mathsf{L}\,\mathsf{T}^{-2}$; multiplying quantities adds their exponents. An
+equation can be true only when every beam is level.
 
-<Predict
-  id="up-ch1-balanced-means"
-  question="You check a colleague's formula for the speed of a wave on a string and both sides balance perfectly. What have you actually established?"
-  options={[
-    { key: 'a', misconception: 'balanced-means-correct', label: "The formula is correct", why: "Tempting, because the check felt decisive. But a whole family of formulas balances — multiply theirs by 7, by 2π, by a half, and every one of them still balances. You have ruled out a class of errors, not confirmed a result." },
-    { key: 'b', label: "The formula is not wrong in the one way this test can see, and could still be off by any pure number", why: "Correct, and this is the useful way to hold it. A balanced formula has survived a cheap test that kills most algebra slips. What remains uncaught is every dimensionless factor and every sign." },
-    { key: 'c', misconception: 'balance-catches-unit-errors', label: "The formula is correct and the units are consistent too", why: "Two different claims, and the second does not follow. A tension in pounds-force and a density in slugs per cubic foot balance exactly as well as SI throughout — and give an answer 4.45 times off. Dimension answers what kind of thing; unit answers how much." },
-    { key: 'd', label: "Nothing — dimensional checks are a formality", why: "Too cynical. It took seconds and it eliminates the largest single class of formula errors, including the one where a term got dropped. A test that is cheap and often decisive is worth running even though it is not a proof." },
-  ]}
-  correct="b"
-/>
+$$T = 2\pi\sqrt{L/g}$$
 
-<Recall id="up-ch1-recall-reject" concept="dimensional-analysis">
-  <div slot="front">You are handed a formula you have never seen, with no numbers in it. Name one thing you can establish about it immediately, and one thing you can never establish this way.</div>
+The $2\pi$ comes from solving the motion, and no beam can see it.
 
-  You can establish whether both sides are the **same kind of quantity** — whether they sit
-  at the same point in the space of base-dimension exponents. If they do not, the formula is
-  wrong and no experiment is needed.
+<Recall id="up-ch01-recall-beams" concept="dimensional-analysis">
+  <div slot="front">You are handed a formula with no numbers in it. What can you prove about it on the spot, and what can you never prove this way?</div>
 
-  You can never establish any **dimensionless** part of it: a factor of 2π, a ½, a sign, or
-  whether the numbers on each side are in compatible units. Those are invisible to the
-  ledger, and the Mars Climate Orbiter was lost inside that blind spot.
+  You can prove whether both sides are the same kind of quantity: every beam level. You can
+  never see a pure number such as $2\pi$ or ½, and never whether the units within one
+  dimension agree.
 </Recall>
 
-## The other half: multiplying by one
+</Step>
 
-So: 55 miles per hour. What is that in metres per second?
+<Step>
 
-The move is not to remember a rule. It is to multiply by 1, repeatedly, in a form that
-does some work. The statement "1 mi = 1609.344 m" is an identity between two names for the
-same length, so applying it changes nothing physical — it swaps a symbol and rescales the
-number in one act.
+## The scale is blind to numbers
 
-<UnitChain
-  start={{ value: 55, units: { mi: 1, h: -1 } }}
-  identities={['mi>m', 'h>s', 'ft>m', 'min>s']}
-  target={{ m: 1, s: -1 }}
-  caption="Apply identities until the mile and the hour are struck out and only metres and seconds are left. Watch the dimension readout while you do it: it never moves, because every factor you applied was a 1. There are two decoy identities in the rack — using them is not wrong, only pointless."
+A level scale is a necessary test, not a proof.
+
+<Classify
+  id="up-ch01-what-it-catches"
+  prompt="Which of these slips would the three beams catch?"
+  buckets={[
+    { key: 'caught', label: 'A beam tips', accent: 'ok' },
+    { key: 'missed', label: 'Every beam stays level', accent: 'warn' },
+  ]}
+  items={[
+    { key: 'upside', label: 'A pendulum period written as √(g/L)', bucket: 'caught', why: 'That is T⁻¹, a frequency. The T beam is off by two powers.' },
+    { key: 'drag', label: 'Air drag written with v where it needs v²', bucket: 'caught', why: 'Short of a force by exactly one velocity: the L and T beams tip, the M beam stays level.' },
+    { key: 'twopi', label: 'A pendulum period missing its 2π', bucket: 'missed', why: 'A pure number has no mass, length or time. It sits on no beam.' },
+    { key: 'half', label: 'Kinetic energy written mv² instead of ½mv²', bucket: 'missed', why: 'Same blindness. The ½ weighs nothing.' },
+    { key: 'feet', label: 'A length in feet fed to software that expects metres', bucket: 'missed', why: 'Feet and metres are both L, one power of it. Same beam, same exponent, and a number 3.28 times off.' },
+  ]}
+  explanation="The beams catch mistakes of kind: a wrong power, a missing quantity. They are blind to pure numbers and to which unit a dimension was measured in. The Mars Climate Orbiter was lost in 1999 inside that blind spot: impulses in pound-force seconds read as newton seconds, the same dimension, 4.45 times apart."
 />
 
-Two things to notice while you work.
+</Step>
 
-The units **cancel**, and the cancellation is the bookkeeping that tells you which way round
-to apply each identity. There is no direction to memorise: if the mile is upstairs, you need
-the identity that puts a mile downstairs, and if you apply it the wrong way the symbol
-doubles instead of vanishing and you can see it.
+<Step>
 
-The **dimension never moves**. However long the chain gets, the quantity is still a speed,
-because every factor was a 1. That invariance is the entire licence to convert at all.
+## Same speed, two numbers
 
-<Recall id="up-ch1-recall-chain" concept="unit-conversion">
-  <div slot="front">Converting 90 km/h to m/s, you write the factor for hours-to-seconds. Which way up does it go, and how do you know without remembering a rule?</div>
+Car A holds 90 km/h. Car B's speedometer counts metres per second.
 
-  Seconds on top, hours on the bottom — and you know because the hour arrives in the
-  *denominator* of km/h, so you need an hour in the *numerator* of your factor to cancel it.
-  The factor is 1 h / 3600 s, applied so that the h cancels, giving 90 × 1000 / 3600 = 25 m/s.
+<KeepAlongside
+  id="up-ch01-keep-alongside"
+  prompt="Set B's speedometer so B stays level with A."
+  speedA={90}
+  startB={50}
+  explanation="25 m/s. The two cyan arrows are the same length because it is the same speed; only the numbers differ. A metre is a thousandth of a kilometre and a second is 1/3600 of an hour, so the same speed takes a different count of each."
+/>
 
-  The cancellation decides the direction. If you get it backwards the units come out as
-  km·h⁻²·s or some other unreadable thing, which is the error message telling you so.
+</Step>
+
+<Step>
+
+## Multiply by one
+
+1000 m and 1 km are the same length, so 1000 m over 1 km is exactly 1. Multiplying by 1
+cannot change a speed, only what it is written in.
+
+<FlipToCancel
+  id="up-ch01-flip-to-cancel"
+  prompt="Turn the cards over until 90 km/h is written in m/s."
+  start={{ value: 90, units: { km: 1, h: -1 } }}
+  cards={[
+    { top: { n: 1000, unit: 'm' }, bottom: { n: 1, unit: 'km' } },
+    { top: { n: 1, unit: 'h' }, bottom: { n: 3600, unit: 's' } },
+  ]}
+  flipped={[true, true]}
+  target={{ m: 1, s: -1 }}
+  explanation="90 × 1000 ÷ 3600 = 25 m/s, the speed you found by driving. You never needed to remember whether to multiply or divide: the km on top needed a km underneath to cancel, and the h underneath needed an h on top. The arrow never moved, because every card was worth exactly 1."
+/>
+
+<Recall id="up-ch01-recall-cancel" concept="unit-conversion">
+  <div slot="front">Turning 25 m/s into km/h, which way up goes the card relating hours and seconds, and how do you know without a rule?</div>
+
+  3600 s over 1 h. The s sits underneath in m/s, so the card needs s on top to cancel it.
+  Put it the other way and the result reads s², which tells you so.
 </Recall>
 
 ## What to carry forward
 
-- A physical quantity is a **number, a unit, and a point in exponent space**. The third one
-  is checkable on paper, and checking it is the cheapest test in physics.
-- The method is **predictive, not merely defensive**: with only a length and a gravitational
-  field on the table, there is exactly one time you can build, so the pendulum period cannot
-  depend on the bob.
-- It is **blind to every pure number** — factors, signs, and the unit you happened to write
-  a correct dimension in. Both checks, every time.
+- Every quantity sits on the beams. An equation that tips is wrong before you evaluate it,
+  and a level one can tell you what a result cannot depend on.
+- The beams are blind to pure numbers and to units within one dimension.
+- Converting is multiplying by one: the cancellation picks the direction, and the quantity
+  never changes.
 
-Next: the quantities that carry a direction as well as a size, and the surprising fact that
-their components are the least real thing about them.
+Next: quantities that carry a direction, and why their components are the least real thing
+about them.
+
+</Step>

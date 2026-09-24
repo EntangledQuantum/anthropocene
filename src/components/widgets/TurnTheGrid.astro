@@ -1,0 +1,6 @@
+---
+// @graded — with an `id`, the scene checks that the first component is at its largest.
+import Island, { type TurnTheGridProps } from '../viz/TurnTheGrid.tsx';
+const props = Astro.props as TurnTheGridProps;
+---
+<Island client:visible {...props} />

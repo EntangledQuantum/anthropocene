@@ -1,0 +1,6 @@
+---
+// @graded — with `id` and `target`, the scene checks how much of the push the rail keeps.
+import Island, { type AimAlongRailProps } from '../viz/AimAlongRail.tsx';
+const props = Astro.props as AimAlongRailProps;
+---
+<Island client:visible {...props} />

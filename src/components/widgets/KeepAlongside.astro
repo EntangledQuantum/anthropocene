@@ -1,0 +1,6 @@
+---
+// @graded — with an `id`, the scene checks that car B keeps pace with car A.
+import Island, { type KeepAlongsideProps } from '../viz/KeepAlongside.tsx';
+const props = Astro.props as KeepAlongsideProps;
+---
+<Island client:visible {...props} />

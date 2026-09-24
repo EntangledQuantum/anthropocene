@@ -1,0 +1,6 @@
+---
+// @graded — with an `id`, the scene checks that all three beams are level.
+import Island, { type ThreeBeamScaleProps } from '../viz/ThreeBeamScale.tsx';
+const props = Astro.props as ThreeBeamScaleProps;
+---
+<Island client:visible {...props} />

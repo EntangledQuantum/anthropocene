@@ -1,0 +1,6 @@
+---
+// @graded — with an `id`, the scene checks that the result is in the target units.
+import Island, { type FlipToCancelProps } from '../viz/FlipToCancel.tsx';
+const props = Astro.props as FlipToCancelProps;
+---
+<Island client:visible {...props} />

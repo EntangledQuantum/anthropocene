@@ -1,0 +1,6 @@
+---
+// Ungraded: two pendulums, one bob mass you choose. The chapter 1 hook's payoff.
+import Island, { type SwingTwoBobsProps } from '../viz/SwingTwoBobs.tsx';
+const props = Astro.props as SwingTwoBobsProps;
+---
+<Island client:visible {...props} />
