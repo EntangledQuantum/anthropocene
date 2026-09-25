@@ -127,3 +127,15 @@ export function TubeRing({ s, radius }: { s: StageApi; radius: number }) {
     })}
   </g>;
 }
+
+/* ── the copper bar of lesson 2 ─────────────────────────────────────────── */
+
+/** The teardrop bar both conductor scenes share, so the second continues the first. */
+export const DROP = { cx: -0.35, cy: 0, rho: 0.6 } as const;
+export const DROP_CHARGES = 48;
+export const METAL_FILL = 'color-mix(in srgb, var(--color-amber) 14%, var(--color-surface))';
+export const METAL_LINE = 'color-mix(in srgb, var(--color-amber) 55%, var(--color-ink-soft))';
+
+export function metalPath(s: StageApi, poly: Loop): string {
+  return poly.map((p, i) => `${i ? 'L' : 'M'}${s.sx(p[0]).toFixed(1)},${s.sy(p[1]).toFixed(1)}`).join('') + 'Z';
+}

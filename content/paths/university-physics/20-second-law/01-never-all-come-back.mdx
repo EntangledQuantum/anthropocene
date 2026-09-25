@@ -26,13 +26,13 @@ out and they spread through the whole box.
   options={[
     { key: 'never', misconception: 'second-law-forbids-return', label: 'Never: the second law forbids it', why: 'Nothing forbids it. Each particle only flies and bounces, and any of them can be on the left at any moment. In the next step four of them gather on the left every quarter-minute or so.' },
     { key: 'often', label: 'Yes, every few minutes: every arrangement comes round in time', why: 'Every arrangement does come round, but all-left is one arrangement out of 2⁴⁰, about a trillion. The strip below hovers near 20 and never climbs anywhere near 40.' },
-    { key: 'rare', label: 'It can happen, but not in any wait you could sit through', why: 'Right. It is allowed, and it is one arrangement in a trillion. Watch the strip: the count jitters around 20 and the most it reaches is in the high twenties.' },
+    { key: 'rare', label: 'It can happen, but not in any wait you could sit through', why: 'Right. It is allowed, and it is one arrangement in a trillion. Watch the strip: the count jitters around 20 and it seldom climbs past the high twenties.' },
     { key: 'push', misconception: 'something-pushes-it-back', label: 'Only if something pushes them back, such as cooling the box', why: 'Nothing pushed them out, either. They spread by flying straight and bouncing, and they would gather the same way, if all forty ever happened to be on the left at once.' },
   ]}
   correct="rare"
 >
 
-<PullTheDivider n={40} prompt="Pull the divider, then wait as long as you like." />
+<PullTheDivider n={40} seed={3} prompt="Pull the divider, then wait as long as you like." />
 
 </Predict>
 

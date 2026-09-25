@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import {
-  AGE_OF_UNIVERSE_S, MID, R_GAS, arrangementTally, availableWork, binomial, blocksEntropyChange, boltzmannEntropy,
+  AGE_OF_UNIVERSE_S, R_GAS, arrangementTally, availableWork, binomial, blocksEntropyChange, boltzmannEntropy,
   carnotCoolingCOP, carnotEfficiency, carnotHeatingCOP, chanceAllLeft, chanceOfSplit, contactTemperature,
   countLeft, createGasBox, engineLedger, expectedLooks, freeExpansionEntropy, fridgeLedger, leftIn, lnEinstein,
   meanLooksUntilAllLeft, minimumDump, particlesForWait, perfectMeetingTemperature, perfectStroke,
@@ -202,6 +202,4 @@ describe('two blocks and a perfect engine', () => {
       expect(lost).toBeCloseTo(b.W, 6);
     }
   });
-
-  it('the particle box measures its left half at MID', () => { expect(MID).toBe(1); });
 });

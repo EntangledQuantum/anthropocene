@@ -1,0 +1,129 @@
+---
+title: 'Hail on the wall'
+blurb: 'Heat a sealed box and squeeze it, watch the molecules drum on the piston, and predict what any gas pushes with from how often and how hard they hit.'
+order: 1
+tier: 'core'
+minutes: 10
+teaches:
+  - 'kinetic-pressure'
+  - 'ideal-gas-law'
+requires:
+  - 'momentum'
+  - 'impulse'
+  - 'temperature'
+status: 'live'
+updated: 2026-09-25
+---
+
+<Step>
+
+A sealed steel box of air sits at 20 °C. You heat it to 40 °C.
+
+<Predict
+  id="up-ch18-heat-to-forty"
+  question="What does the pressure inside do?"
+  options={[
+    { key: 'double', misconception: 'celsius-is-absolute', label: 'It doubles: the temperature doubled', why: 'Only the number on the Celsius scale doubled. Drag the heater to 40 °C below and read the gauge: about 1.07× the start.' },
+    { key: 'seven', label: 'It rises by about 7%', why: 'Right. The molecules only care about temperature counted from 0 K. 293 K to 313 K is a rise of 6.8%, and the pressure follows it.' },
+    { key: 'same', label: 'It stays the same: the box is sealed and nothing got in', why: 'Nothing got in, but the molecules sped up. Watch the ledger under the box: faster molecules hit the piston more often, and harder.' },
+    { key: 'perdegree', label: 'It rises by 20 kPa, one for every degree', why: 'The rise is in proportion to the kelvin temperature, about a third of a kPa per degree for this box. Twenty degrees buys about 7 kPa.' },
+  ]}
+  correct="seven"
+>
+
+<HeatTheBox prompt="Drag the heater to 40 °C and read the gauge." />
+
+</Predict>
+
+</Step>
+
+<Step>
+
+## Double it
+
+The same box, back at 20 °C. This time you want the walls to feel twice the push.
+
+<HeatTheBox
+  id="up-ch18-heat-to-double"
+  prompt="Set the heater so the pressure settles at twice the start, then check."
+  target={2}
+  explanation="313 °C. The gas started at 293 K, and twice that is 586 K. Read the ledger: the molecules are √2 faster, so they hit the piston 1.41× as often and each hit is 1.41× as hard. 1.41 × 1.41 is the 2."
+/>
+
+</Step>
+
+<Step>
+
+## Squeeze instead
+
+Now the room holds the gas at 20 °C, and the piston is yours.
+
+<SqueezeThePiston
+  id="up-ch18-squeeze-to-double"
+  prompt="Push the piston in until the pressure is twice the start, then check."
+  target={2}
+  explanation="Half the volume. The molecules are as fast as before, so the push per hit has not moved. What doubled is the hits: every molecule now crosses half the distance between visits to the piston."
+/>
+
+</Step>
+
+<Step>
+
+## Name it
+
+You doubled the push two ways: faster molecules, or the same molecules crowded into half
+the room. Pressure is the momentum the walls receive per second per square metre, and
+counting it for $N$ molecules gives
+
+$$PV = NkT$$
+
+with $T$ in kelvin. Chemists count molecules in moles and write $PV = nRT$, where
+$R = N_A k = 8.314$ J/(mol·K).
+
+<Recall id="up-ch18-recall-kelvin" concept="ideal-gas-law">
+  <div slot="front">Why does the ideal gas law need kelvin rather than degrees Celsius?</div>
+
+  The push comes from molecular motion, and the motion stops at 0 K, not at 0 °C. Only a
+  scale that starts where the pushing stops can double when the push doubles. 20 °C to
+  40 °C is 293 K to 313 K: under 7%.
+</Recall>
+
+</Step>
+
+<Step>
+
+## Squeeze harder
+
+Boyle's rule says a tenth of the volume gives ten times the pressure.
+
+<Predict
+  id="up-ch18-squeeze-to-tenth"
+  question="Squeeze this box to a tenth of its volume, still at 20 °C. What does the gauge read?"
+  options={[
+    { key: 'ten', misconception: 'ideal-gas-is-perfect', label: 'Exactly 10× the start', why: 'That is the ideal gas, which assumes the molecules take up no room. Squeezed this far they cover a quarter of the floor, and the gauge reads near 18×.' },
+    { key: 'more', label: 'More than 10×: the molecules themselves take up room', why: 'Yes, near 18×. Each molecule''s own size cuts its trip to the wall short, so hits come more often than the volume alone predicts.' },
+    { key: 'less', misconception: 'collisions-drain-pressure', label: 'Less than 10×: crowded molecules collide and slow each other down', why: 'The collisions are elastic and the room holds the temperature, so nothing slows down. Watch the push per hit: it does not move.' },
+  ]}
+  correct="more"
+>
+
+<SqueezeThePiston prompt="Push the piston all the way in and read the gauge." minVolume={0.1} />
+
+</Predict>
+
+<Recall id="up-ch18-recall-hits" concept="kinetic-pressure">
+  <div slot="front">Heating a sealed gas raises its pressure. Do the molecules hit the wall more often, or harder?</div>
+
+  Both. Faster molecules reach the wall sooner and bounce off with more momentum. Each
+  factor goes as the speed, so the pressure goes as speed squared, which is as the kelvin
+  temperature.
+</Recall>
+
+## What to carry forward
+
+- **Pressure is momentum rain:** hits per second times momentum per hit, per area of wall.
+- **$PV = NkT$ counts in kelvin,** and holds only while the molecules are tiny next to the room.
+
+Next: the molecules in this box are not all moving at one speed. What does the spread look like?
+
+</Step>

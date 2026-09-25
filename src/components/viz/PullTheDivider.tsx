@@ -41,6 +41,7 @@ export default function PullTheDivider({ id, prompt, n = 40, seed = 1, spreadFor
   const spread = useRef(false);
   const most = useRef(0);
   const opened = useRef(false);
+  const pulledAt = useRef<number | null>(null);
   const [shown, setShown] = useState({ k: n, closed: true, most: 0, spread: false, t: 0 });
 
   const reset = () => {
@@ -49,6 +50,7 @@ export default function PullTheDivider({ id, prompt, n = 40, seed = 1, spreadFor
     box.current = b;
     spread.current = spreadFor > 0;
     opened.current = spreadFor > 0;
+    pulledAt.current = spreadFor > 0 ? -spreadFor : null;
     most.current = 0;
     trace.current = [{ t: 0, k: countLeft(b) }];
     setShown({ k: countLeft(b), closed: b.closed, most: 0, spread: spread.current, t: 0 });
@@ -60,6 +62,7 @@ export default function PullTheDivider({ id, prompt, n = 40, seed = 1, spreadFor
     const b = box.current;
     if (!b) return;
     b.closed = !b.closed;
+    if (!opened.current) pulledAt.current = b.t;
     opened.current = true;
     setShown((s) => ({ ...s, closed: b.closed, k: countLeft(b) }));
     task.touch();
@@ -78,7 +81,8 @@ export default function PullTheDivider({ id, prompt, n = 40, seed = 1, spreadFor
       if (b && el) {
         for (let k = 0; k < Math.round(dt / DT); k++) stepGas(b, DT);
         const k = countLeft(b);
-        if (!spread.current && k <= n / 2) spread.current = true;
+        // the first slosh out of the corner is not a return; count from 10 s after the pull
+        if (!spread.current && pulledAt.current !== null && b.t - pulledAt.current > 10) spread.current = true;
         if (spread.current && !b.closed) most.current = Math.max(most.current, k);
         const tr = trace.current;
         if (b.t - tr[tr.length - 1].t >= 0.05) tr.push({ t: b.t, k });
@@ -167,7 +171,7 @@ export default function PullTheDivider({ id, prompt, n = 40, seed = 1, spreadFor
       <canvas ref={canvas} style={{ width: '100%', height: 360, display: 'block' }}
         aria-label={`A box of ${n} gas particles, divider ${shown.closed ? 'closed' : 'open'}, ${shown.k} on the left.`} />
       <p className="hud-label" style={{ margin: '6px 0 0' }}>
-        Each particle flies straight and bounces off the walls{id ? '' : ' · most back on the left is counted once the gas has spread'}
+        Each particle flies straight and bounces off the walls{id ? '' : ' · most back on the left counts from 10 s after the pull'}
       </p>
     </SceneCard>
   );

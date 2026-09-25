@@ -1,0 +1,6 @@
+---
+// Ungraded: inject charge into a copper bar and watch where it settles.
+import Island, { type InjectTheBarProps } from '../viz/InjectTheBar.tsx';
+const props = Astro.props as InjectTheBarProps;
+---
+<Island client:visible {...props} />

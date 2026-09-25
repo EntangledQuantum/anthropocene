@@ -1,0 +1,133 @@
+---
+title: 'The speeds spread out'
+blurb: 'Watch elastic collisions turn one speed into the Maxwell–Boltzmann hump, call where its peak lands, and set two gases to one temperature by matching energies, not speeds.'
+order: 2
+tier: 'core'
+minutes: 10
+teaches:
+  - 'maxwell-boltzmann-distribution'
+  - 'kinetic-temperature'
+requires:
+  - 'kinetic-pressure'
+  - 'ideal-gas-law'
+  - 'momentum-conservation'
+  - 'temperature'
+  - 'heat'
+status: 'live'
+updated: 2026-09-25
+---
+
+<Step>
+
+Three hundred nitrogen molecules in a box, every one moving at exactly 400 m/s in its own
+direction. Every collision between them is perfectly elastic.
+
+<Predict
+  id="up-ch18-one-speed"
+  question="Let them collide for a while. What do their speeds look like?"
+  options={[
+    { key: 'same', misconception: 'elastic-keeps-speeds', label: 'Still all 400 m/s: elastic collisions keep the energy', why: 'They keep the total, not each share. A glancing hit sends one molecule off faster and the other slower, and the spike is gone within a few collisions each.' },
+    { key: 'bell', misconception: 'speeds-spread-symmetrically', label: 'A symmetric bell centred on 400 m/s', why: 'Nothing can go slower than zero, but a few can go very fast. The fast tail holds a lot of energy, so the crowd has to sit below 400 to pay for it.' },
+    { key: 'hump', label: 'A lopsided hump, peaked below 400, with a long fast tail', why: 'Yes. Release them below and watch the spike melt into it. The dashed curve is Maxwell and Boltzmann''s prediction; the bars are the molecules.' },
+    { key: 'flat', label: 'Spread evenly from 0 up to 800 m/s', why: 'An even spread would put as many near 800 as near 400. To reach 800 a molecule needs a run of lucky hits, so extreme speeds are rare.' },
+  ]}
+  correct="hump"
+>
+
+<SpreadTheSpeeds prompt="Release them and watch the histogram." />
+
+</Predict>
+
+</Step>
+
+<Step>
+
+## Call the peak
+
+A fresh box, every molecule at 600 m/s this time.
+
+<SpreadTheSpeeds
+  id="up-ch18-call-the-peak"
+  start={600}
+  prompt="Drag your marker to where the tallest bars will settle, release, then check."
+  explanation="About 424 m/s, 71% of the start. The energy is fixed at the start, so the rms speed stays exactly 600. The fast tail carries so much of that energy that the commonest speed sits well below it, with the mean, 532, in between."
+/>
+
+</Step>
+
+<Step>
+
+## Name it
+
+The energy meter never moved: collisions shuffle kinetic energy between molecules but keep
+the total, and the average per molecule is what a thermometer reads. In the room, where
+molecules move in three directions,
+
+$$\left\langle \tfrac12 mv^2 \right\rangle = \tfrac32 kT$$
+
+The hump is the **Maxwell–Boltzmann distribution**, and one temperature always makes the
+same hump, whatever the start.
+
+<Recall id="up-ch18-recall-vrms" concept="maxwell-boltzmann-distribution">
+  <div slot="front">Nitrogen at 20 °C has an rms speed of 511 m/s. Is that how fast a typical molecule moves?</div>
+
+  No. It is an average over a wide spread. Most molecules are slower, the commonest speed is
+  lower still, and a thin tail runs past twice it. A thermometer reads the average energy,
+  not anyone's speed.
+</Recall>
+
+</Step>
+
+<Step>
+
+## Light and heavy
+
+Helium and argon, mixed in one box. Every atom starts at 400 m/s, and an argon atom is ten
+times heavier.
+
+<Predict
+  id="up-ch18-mix-speeds"
+  question="After many collisions, how do their average speeds compare?"
+  options={[
+    { key: 'equal', misconception: 'equilibrium-means-equal-speeds', label: 'Equal: they settle to one shared speed', why: 'Collisions share energy, not speed. On the trace below, the lines that meet are kinetic energies, and at equal energy the heavy atoms are slower.' },
+    { key: 'helium', label: 'Helium ends about 3× faster than argon', why: 'Yes, near 830 m/s against 260. Each argon atom started with ten times helium''s energy and gave it away until they matched. At equal energy the speeds differ by √10.' },
+    { key: 'unchanged', misconception: 'elastic-keeps-speeds', label: 'Unchanged: both still average 400 m/s', why: 'Argon starts with ten times the energy per atom, and collisions carry energy from the heavy atoms to the light ones until the per-atom energies match.' },
+    { key: 'argon', label: 'Argon ends faster: heavy atoms plough through', why: 'Heavy atoms win each shove, which only means they hand energy over. They end holding the same energy as helium, which at ten times the mass is a third of the speed.' },
+  ]}
+  correct="helium"
+>
+
+<MixTheGases prompt="Release them and watch the two lines." />
+
+</Predict>
+
+</Step>
+
+<Step>
+
+## Nothing to share
+
+Choose argon's start so that no energy needs to move.
+
+<MixTheGases
+  id="up-ch18-balance-the-mix"
+  prompt="Set argon's start speed so the two lines stay level, release, then check."
+  explanation="About 127 m/s, which is 400 ÷ √10. At that speed an argon atom carries exactly the kinetic energy of a helium atom at 400, so the mixture starts at one temperature and nothing flows. Same temperature means the same energy per atom, whatever the mass."
+/>
+
+<Recall id="up-ch18-recall-equal-energy" concept="kinetic-temperature">
+  <div slot="front">At one temperature, which moves faster on average, a hydrogen molecule (2 u) or an oxygen molecule (32 u), and by how much?</div>
+
+  Hydrogen, by √16 = 4. Both carry the same average kinetic energy, and hydrogen has a
+  sixteenth of the mass.
+</Recall>
+
+## What to carry forward
+
+- **Temperature is average kinetic energy per molecule,** the same for every kind of molecule in a mixture.
+- **No molecule moves at "the" speed.** Collisions spread any start into the Maxwell–Boltzmann hump, with a long fast tail.
+- The picture: a lopsided histogram of speeds that fattens and slides right as you heat the gas.
+
+Next: a gas's energy has a ledger, and heat and work are the two ways it talks to the outside.
+
+</Step>
