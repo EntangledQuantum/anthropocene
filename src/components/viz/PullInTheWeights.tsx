@@ -100,15 +100,14 @@ export default function PullInTheWeights({
             <text x={cx + r0 * px * 0.72} y={cy - r0 * px * 0.72 - 6} fontSize={12} fill={C.faint}>start, {r0} m</text>
             {target !== undefined && <g ref={ghost} data-cx={cx} data-cy={cy}>
               <line x1={cx - R_MAX * px} y1={cy} x2={cx + R_MAX * px} y2={cy} stroke={C.position} strokeWidth={3} opacity={0.45} strokeDasharray="8 6" />
-              <text x={cx + R_MAX * px + 6} y={cy + 4} fontSize={13} fill={C.position}>ghost</text>
             </g>}
             <circle cx={cx} cy={cy} r={0.34 * px} fill="none" stroke={C.rule} strokeWidth={2} />
             <g ref={chair} data-cx={cx} data-cy={cy}>
               <line x1={cx - r * px} y1={cy} x2={cx + r * px} y2={cy} stroke={C.soft} strokeWidth={6} strokeLinecap="round" />
-              <ellipse cx={cx} cy={cy} rx={0.24 * px} ry={0.13 * px} fill={C.surface} stroke={C.soft} strokeWidth={2} />
-              <circle cx={cx} cy={cy} r={0.1 * px} fill={C.surface} stroke={C.ink} strokeWidth={2} />
-              <path d={`M${cx},${cy - 0.1 * px} l-5,-9 l10,0 Z`} fill={C.ink} />
-              {[-1, 1].map((k) => <circle key={k} cx={cx + k * r * px} cy={cy} r={0.075 * px} fill={C.surface} stroke={C.ink} strokeWidth={3} />)}
+              <ellipse cx={cx} cy={cy} rx={0.14 * px} ry={0.09 * px} fill={C.surface} stroke={C.soft} strokeWidth={2} />
+              <circle cx={cx} cy={cy} r={0.065 * px} fill={C.surface} stroke={C.ink} strokeWidth={2} />
+              <path d={`M${cx},${cy - 0.065 * px} l-5,-9 l10,0 Z`} fill={C.ink} />
+              {[-1, 1].map((k) => <circle key={k} cx={cx + k * r * px} cy={cy} r={0.06 * px} fill={C.ink} stroke={C.ink} strokeWidth={2} />)}
             </g>
             <rect x={0} y={0} width={s.W} height={s.H} fill="transparent" style={{ cursor: 'grab' }}
               tabIndex={0} role="slider" aria-label="Your reach: drag toward the centre to pull the dumbbells in"
@@ -124,7 +123,7 @@ export default function PullInTheWeights({
         }}
       </Stage>
       <p className="hud-label" style={{ margin: '6px 0 0' }}>
-        two {CHAIR.m} kg dumbbells, {r.toFixed(2)} m from the axis · you and the chair alone: I = {CHAIR.body} kg·m² · frictionless bearing
+        two {CHAIR.m} kg dumbbells, {r.toFixed(2)} m from the axis · you and the chair alone: I = {CHAIR.body} kg·m² · frictionless bearing{target !== undefined ? ' · dashed iris arm: the ghost' : ''}
       </p>
     </SceneCard>
   );

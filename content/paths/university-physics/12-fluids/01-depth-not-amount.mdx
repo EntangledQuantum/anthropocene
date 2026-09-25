@@ -1,0 +1,140 @@
+---
+title: 'Depth, not amount'
+blurb: 'Read a pressure gauge you cannot see, find where a sunken block stops being pushed harder, and load a barge to its mark using only the water it pushes aside.'
+order: 1
+tier: 'foundation'
+minutes: 11
+teaches:
+  - 'hydrostatic-pressure'
+  - 'buoyant-force'
+requires:
+  - 'newtons-second-law'
+  - 'force-superposition'
+status: 'live'
+updated: 2026-09-25
+---
+
+<Step>
+
+Three glass vessels stand on a bench: a wide tank, a thin tube and a funnel, each filled to
+0.8 m. A gauge in each floor reads how hard the water presses there.
+
+<Predict
+  id="up-ch12-three-floors"
+  question="Which floor gauge reads highest?"
+  options={[
+    { key: 'tank', misconception: 'pressure-follows-amount', label: 'The wide tank: it holds far more water', why: 'It does, and all of it presses on the floor, but the floor is wider in proportion. A gauge reads force per square metre, and per square metre it comes out the same.' },
+    { key: 'tube', label: 'The thin tube: all its weight lands on one small spot', why: 'A small spot under a small amount of water. Weight over area comes out exactly the same as the tank: 7.85 kPa.' },
+    { key: 'funnel', label: 'The funnel: its sloping sides lean on the water below', why: 'The sloping walls do press on the water, but the floor only feels how deep it is. Drag the probe into the funnel below: 7.85 kPa there too.' },
+    { key: 'same', label: 'All three read the same', why: 'Right. Each floor is 0.8 m under a free surface, and depth is all a gauge can feel: 7.85 kPa in every one.' },
+  ]}
+  correct="same"
+>
+
+<ProbeTheDepth prompt="Drag the probe anywhere in the water. Watch its arrows." />
+
+</Predict>
+
+</Step>
+
+<Step>
+
+## Under the ceiling
+
+A sealed cellar full of water has a thin chimney rising from its roof, filled to 0.8 m like
+the tube beside it. The probe's dial is covered now.
+
+<ProbeTheDepth
+  id="up-ch12-under-the-ceiling"
+  prompt="Slide the probe up or down the thin tube until it would read the same as the marked point."
+  vessels={['cellar', 'tube']}
+  mark={{ vessel: 'cellar', x: 0.3, y: 0.2 }}
+  probeIn="tube"
+  explanation="At 0.20 m, level with the mark: both sit 0.60 m below a free surface, so both read 5.89 kPa. The cellar roof is only 0.15 m above the mark, but a roof does not reset the count. The water pushes up on that roof with 4.4 kPa, which is what the arrows under it now show."
+/>
+
+</Step>
+
+<Step>
+
+## Name it
+
+Every metre down adds the weight of a metre of water on each square metre, and sideways steps
+add nothing. That is why the shape of the vessel never entered:
+
+$$p = p_0 + \rho g h$$
+
+Here $h$ is the depth below the free surface, and the pressure pushes every way at once: into
+the probe from all sides, down on a floor, up on a roof.
+
+<Recall id="up-ch12-recall-depth" concept="hydrostatic-pressure">
+  <div slot="front">A dam holds back a lake 10 km long. A lock beside it holds a strip of water 3 m wide, just as deep. Which wall is pushed harder per square metre?</div>
+
+  Neither. The pressure at each depth is $\rho g h$, whatever stretches out behind the wall.
+  A wall only feels the water touching it.
+</Recall>
+
+</Step>
+
+<Step>
+
+## A litre that bursts a barrel
+
+Pascal is said to have fixed a thin tube 10 m tall into the lid of a sealed barrel of water,
+then filled the tube. The cellar you just probed is that barrel.
+
+<Estimate
+  id="up-ch12-estimate-barrel"
+  scenario="up-ch12-pascal-barrel"
+  prompt="The lid has an area of 0.3 m². The tube is 1 cm across and its water stands 10 m above the lid: under a litre. Estimate the force of the water pushing up on the lid."
+  explanation="About 29 kN, the weight of three tonnes. The tube holds only 0.8 kg of water, but the lid sits 10 m below a free surface, so each square metre of it is pushed with 98 kPa. The barrel bursts."
+/>
+
+</Step>
+
+<Step>
+
+## Squeezed from every side
+
+Hold a cube under water and the water pushes on all six faces. The deeper faces are pushed
+harder, so the pushes do not cancel.
+
+<HoldItUnder
+  id="up-ch12-stops-growing"
+  prompt="Find the shallowest depth at which the water's net push stops growing."
+  explanation="The moment the top face goes under: 628 N, and not a newton more however deep you take it. Every arrow keeps growing, but the bottom always sits 0.4 m below the top, so the difference is always ρg × 0.4 m on each square metre. That difference is buoyancy, and it equals the weight of the water that would fill the cube's place."
+/>
+
+<Recall id="up-ch12-recall-archimedes" concept="buoyant-force">
+  <div slot="front">A 1-litre steel ball and a 1-litre wooden ball are both held fully under water. Which does the water push up on harder?</div>
+
+  Neither: each gets 9.8 N, the weight of the litre of water it replaces. The water only
+  feels the shape it presses on. The steel sinks because it weighs 77 N, not because it is
+  pushed less.
+</Recall>
+
+</Step>
+
+<Step>
+
+## Load it to the mark
+
+A floating hull settles where the water it shoves aside weighs as much as it does:
+$F_B = \rho g V_{\text{sub}}$. This deck is 10 m by 4 m, so every tonne you load pushes aside
+one more cubic metre.
+
+<LoadTheBarge
+  id="up-ch12-barge-to-mark"
+  prompt="Load crates, then cast off. Settle the waterline on the mark."
+  mark={1.1}
+  explanation="Twelve crates, 24 t. At 1.1 m the hull pushes aside 10 × 4 × 1.1 = 44 m³ of water, which weighs exactly as much as the barge and its cargo. The pressure on the floor, ρg × 1.1 m across 40 m², is that same 432 kN. A steel hull floats because it can push aside its own weight in water before the deck goes under."
+/>
+
+## What to carry forward
+
+- **Pressure is depth.** $\rho g h$ below the free surface, pushing every way, whatever the vessel's shape.
+- **Buoyancy is the bottom's push minus the top's.** It equals the weight of the water pushed aside, and it stops growing once the body is under.
+
+Next: set the water moving, and the pressure starts to depend on speed as well.
+
+</Step>

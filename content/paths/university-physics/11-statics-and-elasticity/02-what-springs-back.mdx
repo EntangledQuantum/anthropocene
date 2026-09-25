@@ -1,0 +1,132 @@
+---
+title: 'What springs back'
+blurb: 'Predict how far a wire stretches from its thickness and length, and find the pull past which it never comes back.'
+order: 2
+tier: 'foundation'
+minutes: 10
+teaches:
+  - 'stress'
+  - 'strain'
+  - 'youngs-modulus'
+  - 'elastic-limit'
+requires:
+  - 'static-equilibrium'
+  - 'force-superposition'
+status: 'live'
+updated: 2026-09-25
+---
+
+<Step>
+
+A 30 N pull stretches a 2 m copper wire, 1 mm thick, by 0.65 mm. You swap it for a copper
+wire twice as thick.
+
+<Predict
+  id="up-ch11-thick-wire"
+  question="Under the same 30 N, how far does the thick wire stretch?"
+  options={[
+    { key: 'a', label: '0.65 mm: same copper, same stretch', why: 'Same copper, yes, but the 30 N is now shared across four times as much metal. Each square millimetre carries a quarter of what it did.' },
+    { key: 'b', misconception: 'thickness-halves-stretch', label: '0.33 mm: twice as thick, half the stretch', why: 'Thickness enters twice. The load spreads over the cross-section, and doubling the diameter quadruples the area.' },
+    { key: 'c', label: '0.16 mm: a quarter as far', why: 'Right. Twice the diameter is four times the area, so each square millimetre carries a quarter of the force.' },
+    { key: 'd', label: '1.3 mm: there is more metal to stretch', why: 'More metal side by side shares the load; it does not add length. Only more length adds stretch.' },
+  ]}
+  correct="c"
+>
+
+<MatchTheStretch prompt="Drag the pull on the thick wire and watch both ends." thinLoad={30} start={30} />
+
+</Predict>
+
+</Step>
+
+<Step>
+
+## Match the stretch
+
+The thin wire keeps its 30 N. Load the thick one until the two stretch exactly the same.
+
+<MatchTheStretch
+  id="up-ch11-match-stretch"
+  prompt="Pull the thick wire until its end reaches the dashed line, then check."
+  thinLoad={30}
+  start={45}
+  explanation="120 N, four times the load. Both wires now carry 38 newtons on every square millimetre, 38 MPa, and that number, not the load, is what sets the stretch."
+/>
+
+</Step>
+
+<Step>
+
+## Name it
+
+Force per area is **stress**. Stretch per length is **strain**. Below the limit one is a fixed
+multiple of the other, and that multiple, Young's modulus, is the material's stiffness.
+
+$$\sigma = \frac{F}{A} \qquad \varepsilon = \frac{\Delta L}{L} \qquad \sigma = E\,\varepsilon$$
+
+<Recall id="up-ch11-recall-strain" concept="strain">
+  <div slot="front">A 100 m steel cable and a 1 m sample of the same steel carry the same stress. Which stretches more?</div>
+
+  The cable, by 100 times as many millimetres: every metre stretches its share. The strain,
+  stretch over length, is the same for both. That is the number that belongs to the steel.
+</Recall>
+
+</Step>
+
+<Step>
+
+## Find where it stops coming back
+
+A thin copper wire again, and a pull you can raise as far as you like. Metal springs back, up
+to a point.
+
+<WireSpringBack
+  id="up-ch11-elastic-limit"
+  prompt="Pull as hard as you can and still have the wire return to zero when you let go."
+  explanation="About 55 N, a stress of 70 MPa. Up to there the record is one straight line, walked up and back down. Past it the line lies down: a few newtons more buy millimetres, and letting go comes back down a parallel line that misses zero."
+/>
+
+<Recall id="up-ch11-recall-limit" concept="elastic-limit">
+  <div slot="front">You bend a paper clip open and let go. Why does it stay open?</div>
+
+  You pushed the metal past its elastic limit. Past that point it flows, and when the load
+  comes off it springs back only along a line parallel to the one it went up: most of the
+  bend stays.
+</Recall>
+
+</Step>
+
+<Step>
+
+## Stiff is not strong
+
+The straight part of that record has a slope, and it has an end. They are separate facts
+about a material.
+
+<Classify
+  id="up-ch11-stiff-or-strong"
+  prompt="Which one answers each question?"
+  buckets={[
+    { key: 'slope', label: 'The slope: Young’s modulus', accent: 'ok' },
+    { key: 'end', label: 'Where it ends: the elastic limit', accent: 'magenta' },
+  ]}
+  items={[
+    { key: 'guitar', label: 'How far a guitar string stretches as you tune it up', bucket: 'slope', why: 'Tuning stays on the straight part. Stretch per unit of stress is the slope.' },
+    { key: 'hook', label: 'Whether a coat hook bends for good under a heavy bag', bucket: 'end', why: 'Bending for good is flowing. The bag pushed the metal past the end of the line.' },
+    { key: 'shelf', label: 'How far a steel shelf sags under books', bucket: 'slope', why: 'The shelf comes back when you clear it, so the sag is set by stiffness.' },
+    { key: 'clip', label: 'Why a paper clip, bent open, stays open', bucket: 'end', why: 'It was taken past its limit. Below it, the clip would have sprung shut.' },
+    { key: 'lift', label: 'How much a lift cable stretches when people step in', bucket: 'slope', why: 'A lift cable is designed to stay far below its limit. Its stretch is stress over E, times its length.' },
+    { key: 'anchor', label: 'The heaviest load a bolt can carry and still come back to shape', bucket: 'end', why: 'The largest load it fully recovers from is the elastic limit, times the area.' },
+  ]}
+  explanation="Stiff is the slope; strong is where the straight line ends. Glass is twenty times stiffer than nylon and snaps at a lower stress."
+/>
+
+## What to carry forward
+
+- **A material feels stress, not load.** Twice the diameter, a quarter of the stress.
+- **It answers with strain, not millimetres.** Below the limit, $\sigma = E\varepsilon$.
+- **Past the elastic limit it flows and keeps the stretch.** Stiff is the slope; strong is where the line ends.
+
+Next: fluids, where force per area gets a new name, pressure, and pushes in every direction at once.
+
+</Step>

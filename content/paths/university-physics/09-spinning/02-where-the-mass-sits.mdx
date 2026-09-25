@@ -1,0 +1,135 @@
+---
+title: 'Where the mass sits'
+blurb: 'Slide two beads along a spinning bar, then rig a race so a hoop ties a disc, and say why mass at the rim rolls slower.'
+order: 2
+tier: 'foundation'
+minutes: 11
+teaches:
+  - 'moment-of-inertia'
+  - 'rotational-kinetic-energy'
+requires:
+  - 'angular-velocity'
+  - 'rolling-without-slipping'
+  - 'mechanical-energy-conservation'
+  - 'newtons-second-law'
+  - 'inclined-plane'
+status: 'live'
+updated: 2026-09-25
+---
+
+<Step>
+
+A hoop and a solid disc, each 1 kg and 10 cm in radius, wait at the tops of two identical
+2 m ramps. You let go of both at once, and both roll without slipping.
+
+<Predict
+  id="up-ch09-hoop-disc-race"
+  question="Which reaches the bottom first?"
+  options={[
+    { key: 'tie', misconception: 'heavier-is-harder-to-spin', label: 'A tie: same mass, same radius, same slope', why: 'That holds for things that slide without friction. Rolling adds a second job, spinning up, and the hoop, with all its mass at the rim, is harder to spin. The disc wins by 0.27 s.' },
+    { key: 'disc', label: 'The disc', why: 'Yes, by 0.27 s on this ramp. Both get the same energy from the same drop, but the hoop banks half of it as spin and the disc only a third. Watch the pale part of each bar.' },
+    { key: 'hoop', misconception: 'rim-mass-rolls-faster', label: 'The hoop: the mass at its rim carries it round', why: 'Mass at the rim makes a body harder to set spinning, not easier. Rolling forces the spin, so the hoop pays more of its energy into turning and has less left for going.' },
+  ]}
+  correct="disc"
+>
+
+<RollingRace prompt="Release them, and watch the aqua bars fill as they roll." angleDeg={12} />
+
+</Predict>
+
+</Step>
+
+<Step>
+
+## Same kilograms, new places
+
+A bar with two 250 g beads turns on an axle. A string wound on the axle holds a 150 g
+weight 0.6 m above the floor; with the beads at the hub, it lands 1.55 s after you let go.
+
+<BeadsOnTheBar
+  id="up-ch09-beads-three-seconds"
+  prompt="Place the beads so the weight takes 3.0 s to land, release, then check."
+  r={0.03}
+  target={3}
+  explanation="About 12.4 cm out, not quite halfway along the bar. The mass on the bar never changed, only its place. A bead twice as far out moves twice as fast for the same turn of the bar, so it soaks up four times the energy, and the falling weight is left with less."
+/>
+
+</Step>
+
+<Step>
+
+## Name it
+
+Each piece of a spinning body moves at its own $v = \omega r$ and carries
+$\tfrac12 m \omega^2 r^2$. Add the pieces and $\omega$ comes out in front:
+
+$$K_{\text{rot}} = \tfrac12\Big(\sum m r^2\Big)\,\omega^2 = \tfrac12 I\omega^2$$
+
+$I = \sum m r^2$ is the **moment of inertia**: $mR^2$ for a hoop, $\tfrac12 mR^2$ for a disc,
+whose mass sits closer in.
+
+<Recall id="up-ch09-recall-inertia" concept="moment-of-inertia">
+  <div slot="front">You slide a bead from 6 cm to 12 cm along a spinning bar. By what factor does its share of the bar's rotational inertia change?</div>
+
+  Four times. Each piece counts as $m r^2$: twice the distance means twice the speed at the
+  same $\omega$, and energy goes as speed squared. The mass on the bar is unchanged.
+</Recall>
+
+</Step>
+
+<Step>
+
+## Rig the race
+
+The disc's ramp stays at 12°. The hoop gets its own ramp, still 2 m long, and you choose
+its slope.
+
+<RollingRace
+  id="up-ch09-tilt-to-tie"
+  prompt="Tilt the hoop's ramp until the two arrive together, release, then check."
+  angleDeg={12}
+  explanation="About 16.1°, where sin θ is 4/3 as large as the disc's. The hoop banks half of everything as spin and the disc a third, so the hoop needs a third more energy from its drop to reach the same speed. Its bar ends taller, but the solid, moving part now matches the disc's."
+/>
+
+</Step>
+
+<Step>
+
+## The whole field
+
+Five bodies are released together on identical ramps. The four round ones roll without
+slipping; the ice cube slides on a frictionless strip.
+
+<RankOrder
+  id="up-ch09-rank-the-field"
+  prompt="Put them in order of arrival."
+  lowLabel="Arrives first"
+  highLabel="Arrives last"
+  items={[
+    { key: 'hoop', label: 'A hoop', why: 'Every gram at the full radius: half its energy goes into spin. Last.' },
+    { key: 'hollow', label: 'A hollow ball', why: 'All its mass is on the surface, but near the poles the surface is close to the axis. Two fifths of its energy is spin: it beats the hoop, and only the hoop.' },
+    { key: 'disc', label: 'A solid disc', why: 'A third of its energy is spin. It loses to the solid ball, which keeps even more of its mass near the axis.' },
+    { key: 'ball', label: 'A solid ball', why: 'The most mass close to the axis of any rolling shape here: only two sevenths of its energy is spin. First of the rollers.' },
+    { key: 'cube', label: 'An ice cube, sliding', why: 'It does not spin at all, so all of m g h goes into going. It wins.' },
+  ]}
+  correct={['cube', 'ball', 'disc', 'hollow', 'hoop']}
+  explanation="The acceleration is g sin θ / (1 + I/mR²). Mass and radius cancel, so a marble and a bowling ball tie, and only the shape, where the mass sits, decides the order."
+/>
+
+<Recall id="up-ch09-recall-friction" concept="rotational-kinetic-energy">
+  <div slot="front">A disc rolls down a ramp without slipping, with friction from the ramp acting on it the whole way. How much of m g h does friction take?</div>
+
+  None. Static friction pushes on the contact point, which is momentarily at rest, so it does
+  no work. It only steers energy into the spin: all of $mgh$ arrives at the bottom, split
+  between $\tfrac12 mv^2$ and $\tfrac12 I\omega^2$.
+</Recall>
+
+## What to carry forward
+
+- **Rotational inertia is where the mass sits.** $I = \sum m r^2$: each piece counts by the square of its distance.
+- **Spinning stores $\tfrac12 I\omega^2$.** A rolling body pays for its spin out of the same $mgh$, so the larger $I/mR^2$, the slower it rolls.
+- The picture: the same two beads at the hub and near the ends, and the weight falling fast, then slowly.
+
+Next: torque, the rotational cost of changing $\omega$.
+
+</Step>

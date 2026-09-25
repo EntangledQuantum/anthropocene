@@ -1,8 +1,8 @@
 import { useEffect, useRef, useState } from 'react';
 import { G_EARTH } from '../../lib/physics/dynamics.ts';
 import { farthestReach, supportReactions, tipStep, type Plank, type TiltState } from '../../lib/physics/statics.ts';
-import { Arrow, C, CheckBar, Handle, Meter, SceneCard, Stage, useTask } from './scene.tsx';
-import { KF, PAINTER_MID, PLANK_T, Painter, PlankBar, PlankTicks, TRESTLE_H, Trestle } from './plank-ch11.tsx';
+import { C, CheckBar, Handle, Meter, SceneCard, Stage, useTask } from './scene.tsx';
+import { PAINTER_MID, Painter, PlankBar, PlankForce, PlankTicks, TRESTLE_H, Trestle } from './plank-ch11.tsx';
 
 /**
  * A painter on a plank that overhangs its right trestle. Drag her along it.
@@ -83,12 +83,12 @@ export default function WalkThePlank({
         <div style={{ display: 'flex', gap: 22, alignItems: 'center', flexWrap: 'wrap' }}>
           <Meter label="Left trestle pushes" value={tipped ? '0' : Math.max(0, r.left).toFixed(0)} unit="N" color={C.force} />
           <Meter label="Right trestle pushes" value={tipped ? '—' : r.right.toFixed(0)} unit="N" color={C.force} />
-          <Meter label="Past the right trestle" value={past.toFixed(2)} unit="m" color={C.position} />
+          <Meter label={past >= 0 ? 'Past the right trestle' : 'Short of the right trestle'} value={Math.abs(past).toFixed(2)} unit="m" color={C.position} />
           <button type="button" className="anth-btn" style={{ marginLeft: 'auto' }} onClick={reset}>Start over</button>
         </div>
         {id && <CheckBar verdict={task.verdict} done={task.done} onCheck={() => task.check(hit, { x })} miss={miss} hit={explanation} />}
       </div>}>
-      <Stage x={[-0.3, plank.length + 0.4]} y={[-0.36, 2.75]} height={320} equal
+      <Stage x={[-0.3, plank.length + 0.4]} y={[-0.36, 2.2]} height={300} equal
         label={`Plank on two trestles. The painter stands ${past.toFixed(2)} metres ${past >= 0 ? 'past' : 'short of'} the right trestle.${tipped ? ' The plank has tipped.' : ''}`}>
         {(s) => {
           hinge.current = { px: s.sx(xB), py: s.sy(TRESTLE_H) };
@@ -98,17 +98,17 @@ export default function WalkThePlank({
             <Trestle s={s} x={xA} />
             <Trestle s={s} x={xB} />
             {!tipped && <>
-              <Arrow s={s} from={[xA, TRESTLE_H - Math.max(0, r.left) * KF]} to={[xA, TRESTLE_H]} color={C.force} label={`${Math.max(0, r.left).toFixed(0)} N`} labelSide={-1} />
-              <Arrow s={s} from={[xB, TRESTLE_H - r.right * KF]} to={[xB, TRESTLE_H]} color={C.force} label={`${r.right.toFixed(0)} N`} labelSide={1} />
+              <PlankForce s={s} x={xA} push={Math.max(0, r.left)} label={`${Math.max(0, r.left).toFixed(0)} N`} side={-1} />
+              <PlankForce s={s} x={xB} push={r.right} label={`${r.right.toFixed(0)} N`} side={x > xB ? -1 : 1} />
             </>}
             <g ref={rig}>
+              {!tipped && <>
+                <PlankForce s={s} x={plank.length / 2} push={-Wp} label={`plank ${Wp.toFixed(0)} N`} />
+                <PlankForce s={s} x={x} push={-Wm} label={`${Wm.toFixed(0)} N`} side={x > xB ? 1 : -1} />
+              </>}
               <PlankBar s={s} length={plank.length} />
               <Painter s={s} x={x} label={`${painterMass} kg`} />
-              {!tipped && <>
-                <Arrow s={s} from={[plank.length / 2, TRESTLE_H + PLANK_T / 2]} to={[plank.length / 2, TRESTLE_H + PLANK_T / 2 - Wp * KF]} color={C.force} label={`plank ${Wp.toFixed(0)} N`} labelSide={-1} />
-                <Arrow s={s} from={[x, PAINTER_MID]} to={[x, PAINTER_MID - Wm * KF]} color={C.force} label={`${Wm.toFixed(0)} N`} labelSide={1} />
-              </>}
-              <Handle s={s} at={[x, TRESTLE_H + PLANK_T + 0.02]} step={0.02} color={C.position} label="Painter: drag along the plank"
+              <Handle s={s} at={[x, PAINTER_MID]} step={0.02} color={C.position} label="Painter: drag along the plank"
                 onChange={(p) => {
                   if (tipped) return;
                   const nx = Math.round(Math.min(plank.length - 0.1, Math.max(0.2, p[0])) * 100) / 100;

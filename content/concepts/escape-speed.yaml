@@ -1,0 +1,13 @@
+title: 'Escape speed'
+blurb: 'The launch speed at which kinetic energy exactly pays off the gravitational potential energy to infinity: √2 times circular speed at the same place.'
+notation: 'v_{\text{esc}} = \sqrt{\frac{2GM}{r}} = \sqrt{2}\,v_{\text{circ}}'
+tags: ['up-ch13']
+misconceptions:
+  - id: 'escape-needs-double-speed'
+    name: 'Escaping needs about twice the speed of an orbit, or much more.'
+    signal: 'Guesses 2× or 3× circular speed for escape.'
+    correction: 'Circular speed has kinetic energy equal to half the depth of the potential well; escape needs all of it. Doubling the energy multiplies the speed by only √2 ≈ 1.41.'
+  - id: 'escape-means-leaving-gravity'
+    name: 'An escaping probe eventually gets beyond the reach of gravity.'
+    signal: 'Says the probe escapes once it reaches the place where gravity stops.'
+    correction: 'Gravity never stops, it only weakens as 1/r². An escaping probe is slowed the whole way out; it escapes because the total energy it must pay is finite, GMm/r, and it carried that much.'

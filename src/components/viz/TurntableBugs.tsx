@@ -33,6 +33,7 @@ const RADIUS = 0.16;
 const R_MIN = 0.02, R_MAX = 0.155;
 const TRAIL_S = 0.3;   // seconds of path drawn behind each bug
 const V_SCALE = 0.12;  // metres of arrow per m/s
+const KEY_STEP = 0.0025;
 
 export default function TurntableBugs({
   id, prompt, rpm = 45, rA = 0.05, rB: rB0 = 0.09, target, tolerance = 0.02, explanation,
@@ -108,7 +109,7 @@ export default function TurntableBugs({
               <circle cx={s.sx(0)} cy={s.sy(0)} r={s.len(RADIUS)} fill={C.surface} stroke={C.rule} strokeWidth={2} />
               {[0.05, 0.1, 0.15].map((r) => <circle key={r} cx={s.sx(0)} cy={s.sy(0)} r={s.len(r)} fill="none" stroke={C.grid} />)}
               <line x1={s.sx(0)} y1={s.sy(0)} x2={s.sx(RADIUS)} y2={s.sy(0)} stroke={C.soft} strokeWidth={3} strokeLinecap="round" />
-              {[5, 10, 15].map((cm) => <text key={cm} x={s.sx(cm / 100)} y={s.sy(0) + 18} textAnchor="middle" fontSize={12} fill={C.faint} fontFamily="var(--font-mono)">{cm} cm</text>)}
+              {[5, 10, 15].map((cm) => <text key={cm} x={s.sx(cm / 100)} y={s.sy(0) + 18} textAnchor="middle" fontSize={12} fill={C.faint} fontFamily="var(--font-mono)">{cm === 15 ? '15 cm' : cm}</text>)}
               {spinning && <>
                 <path d={`M${P(0, 0)} L${P(rOut * Math.cos(-sweep), rOut * Math.sin(-sweep))} ${arc(rOut).slice(arc(rOut).indexOf('A'))} Z`}
                   fill={C.position} fillOpacity={0.08} stroke="none" />
@@ -130,9 +131,14 @@ export default function TurntableBugs({
               ))}
             </g>
             <circle cx={s.sx(0)} cy={s.sy(0)} r={4} fill={C.soft} />
-            {!spinning && <Handle s={s} at={[rB * u[0], rB * u[1]]} step={0.0025} label="Bug B: drag along the stripe"
+            {!spinning && <Handle s={s} at={[rB * u[0], rB * u[1]]} step={KEY_STEP} label="Bug B: drag along the stripe"
               onChange={(p) => {
-                const r = Math.max(R_MIN, Math.min(R_MAX, p[0] * u[0] + p[1] * u[1]));
+                // Arrow keys move the handle one step along x or y; read any key as in or out
+                // along the stripe, whichever way the stripe happens to point.
+                const d = [p[0] - rB * u[0], p[1] - rB * u[1]];
+                const key = (Math.abs(Math.abs(d[0]) - KEY_STEP) < 1e-9 && Math.abs(d[1]) < 1e-12) || (Math.abs(d[0]) < 1e-12 && Math.abs(Math.abs(d[1]) - KEY_STEP) < 1e-9);
+                const proposed = key ? rB + (d[0] > 0 || d[1] > 0 ? KEY_STEP : -KEY_STEP) : p[0] * u[0] + p[1] * u[1];
+                const r = Math.max(R_MIN, Math.min(R_MAX, proposed));
                 setRB(Math.round(r * 2000) / 2000);
                 setRan(false);
                 task.touch();

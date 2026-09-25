@@ -92,7 +92,7 @@ export default function PushTheDoor({
           {/* the door itself, closed */}
           <line x1={st.sx(0)} y1={st.sy(0)} x2={st.sx(L)} y2={st.sy(0)} stroke={C.soft} strokeWidth={9} strokeLinecap="round" />
           <circle cx={st.sx(0)} cy={st.sy(0)} r={7} fill={C.surface} stroke={C.ink} strokeWidth={2} />
-          <text x={st.sx(0) - 14} y={st.sy(0) - 12} textAnchor="end" fontSize={13} fill={C.faint}>hinge</text>
+          <text x={st.sx(0) - 22} y={st.sy(0) + 30} textAnchor="end" fontSize={13} fill={C.faint}>hinge</text>
           <Curl st={st} tau={tau} />
           <LineOfAction st={st} at={contact} F={F} />
           {arm > 0.01 && <>

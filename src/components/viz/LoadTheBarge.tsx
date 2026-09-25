@@ -109,12 +109,12 @@ export default function LoadTheBarge({ id, prompt, mark = 1.1, explanation }: Lo
           onCheck={() => task.check(shown.settled && Math.abs(off) <= 0.02, { crates, draft: d })}
           miss={miss} hit={explanation} />}
       </div>}>
-      <Stage x={[-7, 7]} y={[-2.1, 2.6]} height={330} equal
+      <Stage x={[-6.3, 6.3]} y={[-2.2, 3.4]} height={330} equal
         label={`A barge of ${t(BARGE.mass)} with ${crates} crates of 2 tonnes, ${shown.released ? `floating at ${d.toFixed(2)} metres` : 'held by dock lines'}.`}>
         {(s) => { stage.current = s; return <>
-          <rect x={s.sx(-9)} y={s.sy(0)} width={s.len(18)} height={s.sy(-2.1) - s.sy(0)} fill={WATER_FILL} />
+          <rect x={s.sx(-9)} y={s.sy(0)} width={s.len(14.5)} height={s.sy(-2.2) - s.sy(0)} fill={WATER_FILL} />
           {/* the dock */}
-          <rect x={s.sx(6)} y={s.sy(0.9)} width={s.len(2)} height={s.sy(-2.1) - s.sy(0.9)} fill={C.surface} stroke={C.soft} strokeWidth={2} />
+          <rect x={s.sx(5.5)} y={s.sy(0.9)} width={s.len(2)} height={s.sy(-2.2) - s.sy(0.9)} fill={C.surface} stroke={C.soft} strokeWidth={2} />
           <g ref={hull}>
             <rect x={s.sx(-L / 2)} y={s.sy(H - EMPTY)} width={s.len(L)} height={s.len(H)} rx={3} fill={C.surface} stroke={C.ink} strokeWidth={2} />
             {/* painted draft marks, measured up from the keel */}
@@ -133,11 +133,11 @@ export default function LoadTheBarge({ id, prompt, mark = 1.1, explanation }: Lo
               <PushArrow key={x} s={s} at={[x, -EMPTY - 0.03]} dir={[0, 1]} len={hydrostaticPressure(d) * PER_PA} width={2.5} />
             ))}
           </g>
-          {!shown.released && [-4.6, 4.6].map((x) => (
-            <line key={x} x1={s.sx(x)} y1={s.sy(H - EMPTY)} x2={s.sx(6.3)} y2={s.sy(0.9)} stroke={C.soft} strokeWidth={1.5} />
+          {!shown.released && [[H - EMPTY, 0.9], [0.3, 0.3]].map(([a, b]) => (
+            <line key={a} x1={s.sx(L / 2)} y1={s.sy(a)} x2={s.sx(5.5)} y2={s.sy(b)} stroke={C.soft} strokeWidth={2} />
           ))}
-          <line x1={s.sx(-9)} x2={s.sx(6)} y1={s.sy(0)} y2={s.sy(0)} stroke={WATER_LINE} strokeWidth={2} />
-          <text x={s.sx(-6.8)} y={s.sy(-1.9)} fontSize={12} fill={C.faint}>deck 10 m × 4 m · hull {t(BARGE.mass)} · each crate 2 t</text>
+          <line x1={s.sx(-9)} x2={s.sx(5.5)} y1={s.sy(0)} y2={s.sy(0)} stroke={WATER_LINE} strokeWidth={2} />
+          <text x={s.sx(-6)} y={s.sy(-1.9)} fontSize={12} fill={C.faint}>deck 10 m × 4 m · hull {t(BARGE.mass)} · each crate 2 t</text>
         </>; }}
       </Stage>
       <p className="hud-label" style={{ margin: '6px 0 0' }}>

@@ -1,0 +1,6 @@
+---
+// @graded — when given `id`, the scene checks itself: the slowest launch that never comes back.
+import Island, { type FireToEscapeProps } from '../viz/FireToEscape.tsx';
+const props = Astro.props as FireToEscapeProps;
+---
+<Island client:visible {...props} />

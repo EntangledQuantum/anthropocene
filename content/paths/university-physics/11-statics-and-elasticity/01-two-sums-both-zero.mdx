@@ -1,0 +1,150 @@
+---
+title: 'Two sums, both zero'
+blurb: 'Balance a seesaw, walk a painter to the edge of a plank, and solve any support by picking the point that makes an unknown vanish.'
+order: 1
+tier: 'foundation'
+minutes: 11
+teaches:
+  - 'static-equilibrium'
+  - 'pivot-choice'
+requires:
+  - 'torque'
+  - 'force-superposition'
+  - 'free-body-diagram'
+  - 'normal-force'
+status: 'live'
+updated: 2026-09-25
+---
+
+<Step>
+
+A painter stands on a 4 m plank laid across two trestles. The right trestle is 1 m from the
+end, and the plank weighs half as much as she does.
+
+<Predict
+  id="up-ch11-painter-overhang"
+  question="How far past the right trestle can she walk before the plank tips?"
+  options={[
+    { key: 'a', misconception: 'past-the-support-it-tips', label: 'Not at all: past the trestle there is nothing under her', why: "There is plank under her, and the plank's own weight sits back between the trestles, turning it the other way. Walk her out below and watch the left trestle's push shrink first." },
+    { key: 'b', label: 'Halfway along the overhang, 0.5 m', why: "Right. The plank's 294 N acts at its middle, 1 m behind the trestle. Her 588 N matches that turn 0.5 m in front of it." },
+    { key: 'c', label: 'All the way to the end: two trestles hold anything', why: 'A trestle can push up but it cannot pull down. Past 0.5 m the left end would need holding down, and nothing is there to do it.' },
+    { key: 'd', label: 'The same distance whatever the plank weighs', why: "The plank's weight is what holds the near end down. A plank as heavy as she is would let her reach the very end." },
+  ]}
+  correct="b"
+>
+
+<WalkThePlank prompt="Walk her toward the end and watch both trestles." plank={{ mass: 30, length: 4 }} painterMass={60} xA={0.5} xB={3} start={1.6} />
+
+</Predict>
+
+</Step>
+
+<Step>
+
+## Level the seesaw
+
+A 25 kg child sits 1.6 m left of the pivot. Your 40 kg sack goes on the right, and your hand
+holds the plank level until you let go.
+
+<LevelTheSeesaw
+  id="up-ch11-level-seesaw"
+  prompt="Slide the sack to where the plank stays level, then let go."
+  child={{ mass: 25, x: 0.4 }}
+  sackMass={40}
+  start={3.6}
+  explanation="1.0 m out. The child's 245 N at 1.6 m and the sack's 392 N at 1.0 m each turn the plank by 392 N·m, in opposite senses. And the pivot pushes up with 834 N, every weight at once: a balanced plank is not free of forces."
+/>
+
+</Step>
+
+<Step>
+
+## Name it
+
+The seesaw needed two things at once. The pivot's push made the forces add to zero; the
+arms made the turning effects add to zero.
+
+$$\sum \vec F = 0 \qquad\qquad \sum \tau = 0$$
+
+Push a plank on ice up at one end and down at the other, equally hard: it passes the first
+test, fails the second, and spins in place.
+
+<Recall id="up-ch11-recall-two-sums" concept="static-equilibrium">
+  <div slot="front">Two equal and opposite forces act on a resting plank, at different points. Does it stay at rest?</div>
+
+  No. The forces add to zero, so its centre stays put, but their torques do not cancel. It
+  spins in place. Rest needs both sums to vanish.
+</Recall>
+
+</Step>
+
+<Step>
+
+## Kill an unknown
+
+The painter now stands 2.8 m along the plank, and neither trestle's push is known. At rest,
+the torques add to zero about every point you could pick.
+
+<TorquesAnywhere
+  id="up-ch11-kill-an-unknown"
+  prompt="Drag the point you take torques about until only one unknown push is left in the sum."
+  plank={{ mass: 30, length: 4 }}
+  painterMass={60}
+  painterX={2.8}
+  xA={0.5}
+  xB={3}
+  start={[1.3, 1.7]}
+  explanation="On a trestle's line of action, that push has no arm, so it cannot appear in the sum. One equation, one unknown."
+/>
+
+<Recall id="up-ch11-recall-any-point" concept="pivot-choice">
+  <div slot="front">A ladder leans on a wall, at rest. About which point should you add up the torques?</div>
+
+  Any point: at rest the sum is zero about all of them. Choose the foot of the ladder, where
+  two unknown forces act, and both drop out at once.
+</Recall>
+
+</Step>
+
+<Step>
+
+## Walk to the edge
+
+A heavier painter, 70 kg, on a 4.5 m plank of 40 kg. The right trestle sits 1.3 m from the end.
+
+<WalkThePlank
+  id="up-ch11-walk-to-edge"
+  prompt="Walk her as far out as she can go without the plank tipping, then check."
+  plank={{ mass: 40, length: 4.5 }}
+  painterMass={70}
+  xA={0.5}
+  xB={3.2}
+  start={1.8}
+  explanation="0.54 m past the trestle. There the left trestle's push reaches zero, so the right trestle is the only point that matters: her 687 N × 0.54 m matches the plank's 392 N × 0.95 m. One step further and the left trestle would have to pull."
+/>
+
+</Step>
+
+<Step>
+
+## Your arm is a lever
+
+Hold a 5 kg dumbbell with your forearm level. The biceps attaches 4 cm from the elbow, the
+dumbbell is 35 cm out, and the forearm's own 1.5 kg acts 15 cm out.
+
+<Estimate
+  id="up-ch11-estimate-biceps"
+  scenario="up-ch11-biceps"
+  prompt="How hard does the biceps pull?"
+  explanation="About 480 N, ten times the dumbbell's weight. Take torques about the elbow and its unknown push drops out; the muscle's 4 cm arm has to answer arms of 35 cm and 15 cm. A short arm buys speed at the hand and pays for it in force."
+/>
+
+## What to carry forward
+
+- **Rest takes two sums.** Forces add to zero *and* torques add to zero. A couple passes the first and spins anyway.
+- **Take torques about any point.** Put it on an unknown's line of action and that unknown drops out.
+- **A support pushes; it never pulls.** Tipping is the moment one push reaches zero.
+
+Next: the plank itself gives a little. Stretch a wire and find where "rigid" stops being true.
+
+</Step>

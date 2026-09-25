@@ -1,0 +1,6 @@
+---
+// @graded — with `id`, reach the 30° mark within ten shoves. Without it, free play for the hook.
+import Island, { type PumpTheSwingProps } from '../viz/PumpTheSwing.tsx';
+const props = Astro.props as PumpTheSwingProps;
+---
+<Island client:visible {...props} />

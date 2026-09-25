@@ -105,7 +105,7 @@ export default function SizeThePulley({
         {graded && <CheckBar verdict={task.verdict} done={task.done}
           onCheck={() => task.check(hit, { drumR })} miss={miss} hit={explanation} />}
       </div>}>
-      <Stage x={[-0.1, 0.48]} y={[-0.2, 0.19]} height={300} equal
+      <Stage x={[-0.1, 0.48]} y={[-0.19, 0.18]} height={330} equal
         label={`A ${(motorR * 100).toFixed(0)} centimetre motor pulley belted to a ${(drumR * 100).toFixed(1)} centimetre drum pulley.`}>
         {(s) => {
           stage.current = s;

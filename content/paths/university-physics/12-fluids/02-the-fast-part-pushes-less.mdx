@@ -1,0 +1,137 @@
+---
+title: 'The fast part pushes less'
+blurb: 'Pinch a pipe and read its pressure off glass columns, aim a jet from a tank into a drain, and tell where Bernoulli''s equation holds and where it lies.'
+order: 2
+tier: 'foundation'
+minutes: 10
+teaches:
+  - 'flow-continuity'
+  - 'bernoulli-equation'
+  - 'torricelli-efflux'
+requires:
+  - 'hydrostatic-pressure'
+  - 'work-energy-theorem'
+  - 'mechanical-energy-conservation'
+  - 'projectile-independence'
+status: 'live'
+updated: 2026-09-25
+---
+
+<Step>
+
+Water is pumped steadily along a pipe with a narrow waist. Three open glass tubes stand on it,
+before, on and after the waist, and the water climbs each as high as the pressure under it can
+push.
+
+<Predict
+  id="up-ch12-venturi-columns"
+  question="Once the flow is steady, how do the three columns compare?"
+  options={[
+    { key: 'high', misconception: 'squeezed-means-higher-pressure', label: 'Highest over the waist, where the water is squeezed', why: 'The water there is not packed any tighter. It is moving faster, and the push that sped it up came from higher pressure behind it. Pinch the pipe below and watch the middle column fall.' },
+    { key: 'same', label: 'All the same: the same water flows through them all', why: 'The same volume per second, yes, but not at the same speed. Speed costs pressure, so the middle column drops.' },
+    { key: 'falling', label: 'Falling from first to last, as the pipe uses the pressure up', why: 'That happens in a long real pipe, through friction. This pipe is short and smooth, and the last column matches the first. Only the waist differs.' },
+    { key: 'low', label: 'Lowest over the waist; the first and last match', why: 'Right. The water speeds up into the waist, so the pressure behind it must beat the pressure ahead. It slows again after the waist and gets the pressure back.' },
+  ]}
+  correct="low"
+>
+
+<PinchThePipe prompt="Drag the waist's wall down to pinch the pipe. Watch the middle column." start={0.8} />
+
+</Predict>
+
+</Step>
+
+<Step>
+
+## Twice as fast
+
+The pump delivers the same volume every second, whatever you do to the waist. The waist's
+speedometer is covered.
+
+<PinchThePipe
+  id="up-ch12-twice-as-fast"
+  prompt="Pinch the waist until the water through it runs exactly twice as fast as in the pipe."
+  target={2}
+  explanation="About 8.5 cm, 71% of the pipe's width, not half. The waist must pass the same volume per second, and a round pipe's area goes as its width squared: 0.71² is one half. Pinch to half the width and the area is a quarter, so the water runs four times as fast."
+/>
+
+</Step>
+
+<Step>
+
+## Name it
+
+The volume per second is the same through every section, and a parcel only speeds up when the
+pressure behind it beats the pressure ahead. Along one streamline of a steady, frictionless
+flow, those two facts make an energy budget:
+
+$$A_1 v_1 = A_2 v_2 \qquad\qquad p + \tfrac12\rho v^2 + \rho g y = \text{constant}$$
+
+<Recall id="up-ch12-recall-bernoulli" concept="bernoulli-equation">
+  <div slot="front">Why must the water in a pipe's narrow waist be at lower pressure than the water before it?</div>
+
+  It is faster there, so it sped up on the way in, and speeding up needs a net push forward.
+  Only the surrounding water pushes on it, so the pressure behind each parcel must beat the
+  pressure ahead. Fast water is water whose pressure has been spent.
+</Recall>
+
+</Step>
+
+<Step>
+
+## Aim the jet
+
+Open a hole in a tank and the budget runs from the still surface to the jet. Both are at the
+air's pressure, so the depth alone pays for the speed, $v = \sqrt{2gh}$, and after that the
+water is a projectile.
+
+<PunchTheHole
+  id="up-ch12-hit-the-drain"
+  prompt="Place the hole, pull the plug, and land the jet in the drain."
+  drain={0.8}
+  explanation="From 0.20 m up, or from 0.80 m. The low hole is twice as fast, 3.96 m/s against 1.98 m/s, but it has a quarter of the height to fall, so it spends half as long in the air. The two cancel exactly: the range is 2√(y(H − y)), the same from either side of halfway, and farthest, 1.0 m, from halfway down."
+/>
+
+<Recall id="up-ch12-recall-torricelli" concept="torricelli-efflux">
+  <div slot="front">Why does a hole at the very bottom of a tank not throw its jet the farthest across the floor?</div>
+
+  It is the fastest jet, at $\sqrt{2gH}$, but it starts almost on the floor and lands almost
+  at once. Reach needs speed and time in the air together, and the best trade is from
+  halfway down.
+</Recall>
+
+</Step>
+
+<Step>
+
+## Where Bernoulli lies
+
+The budget holds along one streamline of a flow that is steady, frictionless and
+incompressible. Break one of those and it can point the wrong way.
+
+<Classify
+  id="up-ch12-bernoulli-holds"
+  prompt="Can you trust Bernoulli's budget here?"
+  buckets={[
+    { key: 'holds', label: 'Bernoulli holds', accent: 'ok' },
+    { key: 'lies', label: 'Bernoulli misleads', accent: 'magenta' },
+  ]}
+  items={[
+    { key: 'waist', label: 'Water speeding through the smooth waist of a short pipe', bucket: 'holds', why: 'Steady, nearly frictionless, and one streamline runs from the pipe into the waist. The columns you pinched obeyed it.' },
+    { key: 'tank', label: 'The jet from a hole in a tank kept full by a tap', bucket: 'holds', why: 'A streamline runs from the still surface to the jet, and the tap keeps the flow steady.' },
+    { key: 'hose', label: 'Water crawling at constant speed through 30 m of thin hose, its pressure falling all the way', bucket: 'lies', why: 'Constant speed with falling pressure breaks the budget. Friction with the wall is eating the energy, and friction is exactly what Bernoulli leaves out.' },
+    { key: 'valve', label: 'The first half second after a valve is snapped open', bucket: 'lies', why: 'The water is still getting going, so the flow is not steady. Part of the pressure goes into accelerating the whole column.' },
+    { key: 'wing', label: 'A wing lifts because air over the longer top must rejoin the air beneath at the back', bucket: 'lies', why: 'Nothing makes the two parcels meet again, and in measured flows the top air arrives first. The pressure difference over a wing is real; this story for it is invented.' },
+    { key: 'nozzle', label: 'Air through a jet engine nozzle near the speed of sound', bucket: 'lies', why: 'That fast, air compresses noticeably, so its density changes along the streamline and the incompressible budget no longer balances.' },
+  ]}
+  explanation="Bernoulli is an energy budget for one streamline of a steady, frictionless, incompressible flow. Friction, a flow still starting up, air squeezed near the speed of sound, and a story with no streamline behind it each break one of those conditions."
+/>
+
+## What to carry forward
+
+- **The same volume every second through every section.** Squeeze the area and the speed rises in proportion, and area goes as width squared.
+- **Speed costs pressure.** Along one steady streamline, $p + \tfrac12\rho v^2 + \rho g y$ holds, so fast water is low-pressure water and a jet's speed is paid for by depth.
+
+Next: gravitation, where one force law reaches from a falling apple to the Moon.
+
+</Step>

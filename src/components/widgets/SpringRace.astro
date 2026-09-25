@@ -1,0 +1,6 @@
+---
+// @graded — with `id` and `ratio`, make your cart cross the middle `ratio` times as fast. Without them, the hook's payoff.
+import Island, { type SpringRaceProps } from '../viz/SpringRace.tsx';
+const props = Astro.props as SpringRaceProps;
+---
+<Island client:visible {...props} />

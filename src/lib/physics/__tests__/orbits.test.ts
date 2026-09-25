@@ -208,3 +208,24 @@ describe('escape: v_esc = √2 · v_circ, and E = 0 is the line', () => {
     expect(ra[ra.length - 1]).toBeGreaterThan(50 * rISS);
   });
 });
+
+describe('the chase: speeding up makes you fall behind', () => {
+  it('after one lap of the raised orbit, a station that started 300 km ahead is thousands of km ahead', async () => {
+    const { flyOnce } = await import('../orbits.ts');
+    const vc = circularSpeed(GM_EARTH, rISS);
+    const f = flyOnce(GM_EARTH, [0, rISS], [vc * 1.03, 0], 2, 1e9, 1e5);
+    const lap = f.path[f.path.length - 1].t;
+    expect(f.turned[f.turned.length - 1]).toBeCloseTo(2 * Math.PI, 2);
+    const stationTurned = 300e3 / rISS + (vc / rISS) * lap;
+    const lead = (stationTurned - 2 * Math.PI) * rISS;
+    expect(lead).toBeGreaterThan(3000e3);
+  });
+
+  it('far away, a launch just over escape speed keeps only a little speed', async () => {
+    const { speedAtInfinity } = await import('../orbits.ts');
+    const ve = escapeSpeed(GM_EARTH, rISS);
+    expect(speedAtInfinity(GM_EARTH, rISS, ve - 10)).toBe(0);
+    expect(speedAtInfinity(GM_EARTH, rISS, ve + 100)).toBeLessThan(1600);
+    expect(speedAtInfinity(GM_EARTH, rISS, ve + 100)).toBeGreaterThan(1400);
+  });
+});

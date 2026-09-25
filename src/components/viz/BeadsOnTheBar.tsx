@@ -102,10 +102,10 @@ export default function BeadsOnTheBar({ id, prompt, r: r0 = 0.03, target, tolera
             <line x1={s.sx(-1.2)} x2={s.sx(1.2)} y1={s.sy(0)} y2={s.sy(0)} stroke={C.rule} strokeWidth={2} />
             <polyline points={`${P(-0.34, 0)} ${P(0, AXLE)} ${P(0.34, 0)}`} fill="none" stroke={C.grid} strokeWidth={4} strokeLinejoin="round" />
             {/* the drop, with a scale */}
-            <line x1={s.sx(0.2)} x2={s.sx(0.2)} y1={s.sy(0)} y2={s.sy(RIG.drop)} stroke={C.faint} />
+            <line x1={s.sx(0.42)} x2={s.sx(0.42)} y1={s.sy(0)} y2={s.sy(RIG.drop)} stroke={C.faint} />
             {[0, 0.2, 0.4, 0.6].map((h) => <g key={h}>
-              <line x1={s.sx(0.2)} x2={s.sx(0.215)} y1={s.sy(h)} y2={s.sy(h)} stroke={C.faint} />
-              <text x={s.sx(0.225)} y={s.sy(h) + 4} fontSize={12} fill={C.faint} fontFamily="var(--font-mono)">{h} m</text>
+              <line x1={s.sx(0.42)} x2={s.sx(0.435)} y1={s.sy(h)} y2={s.sy(h)} stroke={C.faint} />
+              <text x={s.sx(0.445)} y={s.sy(h) + 4} fontSize={12} fill={C.faint} fontFamily="var(--font-mono)">{h} m</text>
             </g>)}
             <line ref={string} x1={s.sx(RIG.spoolR)} x2={s.sx(RIG.spoolR)} y1={s.sy(AXLE)} y2={s.sy(RIG.drop + BOX)} stroke={C.soft} strokeWidth={1.5} />
             <g ref={weight}>
@@ -119,8 +119,7 @@ export default function BeadsOnTheBar({ id, prompt, r: r0 = 0.03, target, tolera
             </g>
             <circle cx={s.sx(0)} cy={s.sy(AXLE)} r={3.5} fill={C.ink} />
             {!shown.released && <>
-              {[-r, r].map((x) => <text key={x} x={s.sx(x)} y={s.sy(AXLE + 0.06)} textAnchor="middle" fontSize={12} fill={C.soft}>{RIG.beadMass * 1000} g</text>)}
-              <text x={s.sx(r / 2)} y={s.sy(AXLE - 0.055)} textAnchor="middle" fontSize={12} fill={C.faint} fontFamily="var(--font-mono)">{(r * 100).toFixed(1)} cm</text>
+              <text x={s.sx(0)} y={s.sy(AXLE + 0.07)} textAnchor="middle" fontSize={13} fill={C.soft}>beads {(r * 100).toFixed(1)} cm from the axle</text>
               <Handle s={s} at={[r, AXLE]} step={0.0025} label="Right bead: drag along the bar"
                 onChange={(p) => { setR(Math.round(Math.max(R_MIN, Math.min(R_MAX, p[0])) * 2000) / 2000); task.touch(); }} />
             </>}
@@ -128,7 +127,7 @@ export default function BeadsOnTheBar({ id, prompt, r: r0 = 0.03, target, tolera
         }}
       </Stage>
       <p className="hud-label" style={{ margin: '6px 0 0' }}>
-        Seen side-on · the beads move as a pair · the string unwinds from a 3 cm spool on the axle
+        Seen side-on · two 250 g beads, moving as a pair · the string unwinds from a 3 cm spool on the axle
       </p>
     </SceneCard>
   );

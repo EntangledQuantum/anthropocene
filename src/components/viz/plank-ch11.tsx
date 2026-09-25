@@ -4,13 +4,13 @@
  * TorquesAnywhere and WalkThePlank, which are the same picture asked two
  * different questions.
  */
-import { C, type StageApi } from './scene.tsx';
+import { Arrow, C, type StageApi } from './scene.tsx';
 
 /** Height of the plank's underside above the floor, m. */
 export const TRESTLE_H = 0.8;
 export const PLANK_T = 0.08;
 /** Newtons → metres of arrow. */
-export const KF = 0.0007;
+export const KF = 0.00068;
 
 export function Trestle({ s, x }: { s: StageApi; x: number }) {
   const top = s.sy(TRESTLE_H), foot = s.sy(0);
@@ -27,17 +27,36 @@ export function PlankBar({ s, length }: { s: StageApi; length: number }) {
     fill={C.surface} stroke={C.soft} strokeWidth={2} />;
 }
 
-/** A standing figure whose feet are at (x, plank top). Returns its centre height. */
-export const PAINTER_MID = TRESTLE_H + PLANK_T + 0.62;
+/** Height of a standing figure's middle, where the drag handle goes. */
+export const PAINTER_MID = TRESTLE_H + PLANK_T + 0.45;
 
 export function Painter({ s, x, label }: { s: StageApi; x: number; label?: string }) {
   const feet = TRESTLE_H + PLANK_T;
   const cx = s.sx(x);
   return <g>
-    <rect x={cx - s.len(0.14)} y={s.sy(feet + 1.22)} width={s.len(0.28)} height={s.len(0.98)} rx={s.len(0.1)}
+    <rect x={cx - s.len(0.13)} y={s.sy(feet + 0.84)} width={s.len(0.26)} height={s.len(0.84)} rx={s.len(0.1)}
       fill={C.surface} stroke={C.soft} strokeWidth={2} />
-    <circle cx={cx} cy={s.sy(feet + 1.42)} r={s.len(0.13)} fill={C.surface} stroke={C.soft} strokeWidth={2} />
-    {label && <text x={cx} y={s.sy(feet + 1.62)} textAnchor="middle" fontSize={13} fill={C.soft}>{label}</text>}
+    <circle cx={cx} cy={s.sy(feet + 1.0)} r={s.len(0.12)} fill={C.surface} stroke={C.soft} strokeWidth={2} />
+    {label && <text x={cx} y={s.sy(feet + 1.18)} textAnchor="middle" fontSize={13} fill={C.soft}>{label}</text>}
+  </g>;
+}
+
+/** A force on the plank, drawn where it acts: a push down from above ends
+ *  below the plank with its tail at the plank; a push up from a trestle ends
+ *  at the plank's underside. Draw these BEFORE the plank so it covers the tails.
+ *  The label sits beside the shaft, clear of the plank. */
+export function PlankForce({ s, x, push, label, side = 1 }: {
+  s: StageApi; x: number; push: number; label: string; side?: 1 | -1;
+}) {
+  const n = Math.abs(push) * KF;
+  const up = push > 0;
+  const from: readonly [number, number] = up ? [x, TRESTLE_H - n] : [x, TRESTLE_H + PLANK_T];
+  const to: readonly [number, number] = up ? [x, TRESTLE_H] : [x, TRESTLE_H - n + PLANK_T];
+  const my = up ? TRESTLE_H - n * 0.55 : TRESTLE_H + PLANK_T - n * 0.6;
+  return <g>
+    <Arrow s={s} from={from} to={to} color={C.force} />
+    <text x={s.sx(x) + side * 9} y={s.sy(my) + 5} textAnchor={side > 0 ? 'start' : 'end'} fontSize={14} fontWeight={600} fill={C.force}
+      stroke="var(--color-surface)" strokeWidth={4} paintOrder="stroke">{label}</text>
   </g>;
 }
 

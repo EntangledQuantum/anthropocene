@@ -117,7 +117,7 @@ export default function ProbeTheDepth({
           <text x={s.sx(-0.1)} y={s.sy(level) - 6} fontSize={12} fill={C.faint}>surface, {level} m</text>
           {markW && <g>
             <circle cx={s.sx(markW[0])} cy={s.sy(markW[1])} r={7} fill="none" stroke={C.position} strokeWidth={2.5} />
-            <text x={s.sx(markW[0]) + 12} y={s.sy(markW[1]) + 4} fontSize={13} fill={C.position}>marked point</text>
+            <text x={s.sx(markW[0])} y={s.sy(markW[1]) + 24} textAnchor="middle" fontSize={13} fill={C.position}>marked point</text>
           </g>}
           {revealed && inWater(probe) && DIRS.map((d, i) => (
             <PushArrow key={i} s={s} at={[probe[0] + d[0] * 0.035, probe[1] + d[1] * 0.035]} dir={[-d[0], -d[1]]} len={pProbe * ARROW_PER_PA} />

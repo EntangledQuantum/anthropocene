@@ -29,7 +29,7 @@ export interface PebbleInTheTyreProps {
   explanation?: string;
 }
 
-const X0 = 0.4, X_END = 2.5, SPAN = 2.8, K = 0.035; // metres of arrow per m/s
+const X0 = 0.4, X_END = 2.5, SPAN = 2.8, K = 0.05; // metres of arrow per m/s
 
 function cssVar(name: string): string {
   return getComputedStyle(document.documentElement).getPropertyValue(name).trim() || '#ccc';
@@ -60,6 +60,7 @@ export default function PebbleInTheTyre({
       ink: cssVar('--color-ink'), soft: cssVar('--color-ink-soft'), faint: cssVar('--color-ink-faint'), rule: cssVar('--color-rule-bright'),
       grid: cssVar('--color-rule'), v: cssVar('--color-cyan'), pos: cssVar('--color-iris'), surf: cssVar('--color-surface'),
     };
+    HALO.color = col.surf;
     const frame = (now: number) => {
       const dt = Math.min((now - last) / 1000, 0.05);
       last = now;
@@ -97,7 +98,7 @@ export default function PebbleInTheTyre({
     }
 
     const s = state();
-    if (playing.current) trail.current.push(s.point);
+    if (playing.current) trail.current.push([s.point[0], s.point[1]]);
     g.strokeStyle = c.pos; g.lineWidth = 2; g.beginPath();
     trail.current.forEach((p, i) => (i ? g.lineTo(X(p[0]), Y(p[1])) : g.moveTo(X(p[0]), Y(p[1]))));
     g.stroke();
@@ -114,7 +115,7 @@ export default function PebbleInTheTyre({
     g.fillStyle = c.soft; g.beginPath(); g.arc(X(ax), Y(ay), 4, 0, Math.PI * 2); g.fill();
 
     // the axle's velocity: the bike's speed
-    arrow(g, X(ax), Y(ay), X(ax + v * K), Y(ay), c.v, 2.5, `bike ${v.toFixed(1)} m/s`, [0, -12]);
+    arrow(g, X(ax), Y(ay), X(ax + v * K), Y(ay), c.v, 2.5, `bike ${v.toFixed(1)} m/s`, [-40, 22]);
 
     const [px, py] = s.point;
     if (solved.current) {
@@ -173,6 +174,8 @@ export default function PebbleInTheTyre({
   );
 }
 
+const HALO = { color: '#000' };
+
 function arrow(g: CanvasRenderingContext2D, x1: number, y1: number, x2: number, y2: number, color: string, w: number, label?: string, off: [number, number] = [0, -10]) {
   const L = Math.hypot(x2 - x1, y2 - y1);
   if (L < 3) return;
@@ -182,5 +185,10 @@ function arrow(g: CanvasRenderingContext2D, x1: number, y1: number, x2: number, 
   const saved = g.getLineDash(); g.setLineDash([]);
   g.beginPath(); g.moveTo(x2, y2); g.lineTo(x2 - ux * h - uy * h * 0.5, y2 - uy * h + ux * h * 0.5); g.lineTo(x2 - ux * h + uy * h * 0.5, y2 - uy * h - ux * h * 0.5); g.closePath(); g.fill();
   g.setLineDash(saved);
-  if (label) { g.font = '600 13px Inter, sans-serif'; g.textAlign = 'left'; g.fillText(label, x2 + off[0], y2 + off[1]); }
+  if (label) {
+    g.font = '600 13px Inter, sans-serif'; g.textAlign = 'left';
+    g.lineWidth = 4; g.strokeStyle = HALO.color; g.lineJoin = 'round';
+    g.strokeText(label, x2 + off[0], y2 + off[1]);
+    g.fillText(label, x2 + off[0], y2 + off[1]);
+  }
 }

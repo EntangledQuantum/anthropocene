@@ -1,0 +1,6 @@
+---
+// @graded — drag the release angle until the real pendulum ends half a cycle behind the small-angle clock.
+import Island, { type PendulumDriftProps } from '../viz/PendulumDrift.tsx';
+const props = Astro.props as PendulumDriftProps;
+---
+<Island client:visible {...props} />

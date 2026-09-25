@@ -1,0 +1,6 @@
+---
+// @graded — with `id`, find the shaking rate that gives the widest settled swing.
+import Island, { type ShakeToResonanceProps } from '../viz/ShakeToResonance.tsx';
+const props = Astro.props as ShakeToResonanceProps;
+---
+<Island client:visible {...props} />

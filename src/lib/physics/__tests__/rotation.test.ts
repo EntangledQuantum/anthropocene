@@ -61,6 +61,7 @@ describe('a belt forces two rims to share one speed', () => {
   it('the lesson\'s drum: a 4 cm pulley at 90 rpm drives a 40 rpm drum only with a 9 cm pulley', () => {
     const r = pulleyRadiusFor(rpmToRadPerSec(90), 0.04, rpmToRadPerSec(40));
     expect(r).toBeCloseTo(0.09, 12);
+    expect(beltSpeed(rpmToRadPerSec(90), 0.04)).toBeCloseTo(0.377, 3);
     // a bigger pulley turns slower
     expect(drivenOmega(1, 0.04, 0.12)).toBeLessThan(drivenOmega(1, 0.04, 0.06));
   });
@@ -225,6 +226,11 @@ describe('the rolling race', () => {
     const st = rollState(SHAPE_K.hoop, rad(12), 2, 1, 1, 0.1);
     expect(st.spinning / (st.moving + st.spinning)).toBeCloseTo(0.5, 12);
     expect(st.moving + st.spinning).toBeCloseTo(st.supplied, 10);
+    // the rank step: a hollow ball banks two fifths, a solid ball two sevenths
+    expect(rollingEnergySplit(SHAPE_K['hollow-sphere']).spinning).toBeCloseTo(2 / 5, 12);
+    expect(rollingEnergySplit(SHAPE_K['solid-sphere']).spinning).toBeCloseTo(2 / 7, 12);
+    // at equal speeds the hoop carries 4/3 of the disc's energy
+    expect((1 + SHAPE_K.hoop) / (1 + SHAPE_K.disc)).toBeCloseTo(4 / 3, 12);
     // same drop, same energy, less speed
     expect(rollingSpeedAfterDrop(1, 0.4)).toBeLessThan(rollingSpeedAfterDrop(0.5, 0.4));
   });

@@ -138,7 +138,7 @@ export default function RollingRace({
             })}
             {id && !shown.running && (() => {
               const th = rad(topDeg);
-              return <Handle s={s} at={[FINISH - L * Math.cos(th), BASES[0] + L * Math.sin(th)]} step={0.01} label="Top ramp: drag its high end up or down"
+              return <Handle s={s} at={[FINISH - 1.4 * Math.cos(th), BASES[0] + 1.4 * Math.sin(th)]} step={0.01} label="Top ramp: drag it steeper or shallower"
                 onChange={(p) => {
                   const d = (Math.atan2(p[1] - BASES[0], Math.max(FINISH - p[0], 0.05)) * 180) / Math.PI;
                   setTopDeg(Math.round(Math.max(MIN_DEG, Math.min(MAX_DEG, d)) * 10) / 10);

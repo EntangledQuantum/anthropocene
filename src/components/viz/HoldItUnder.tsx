@@ -22,7 +22,7 @@ export interface HoldItUnderProps {
   explanation?: string;
 }
 
-const DEEP = 2.0;          // deepest the top face can go, m
+const DEEP = 1.5;          // deepest the top face can go, m
 const PER_PA = 0.02 / 1000; // arrow metres per pascal
 const PER_N = 0.0009;       // net arrow metres per newton
 
@@ -66,13 +66,13 @@ export default function HoldItUnder({ id, prompt, side = 0.4, explanation }: Hol
             : `The top face is still ${(-top).toFixed(2)} m above the water. The net push is ${N(net)}, and it still grows as the block goes down.`}
           hit={explanation} />}
       </div>}>
-      <Stage x={[-1.1, 1.1]} y={[-2.55, 0.5]} height={380} equal label={`A cube ${side} m on a side, its top face ${under ? `${top.toFixed(2)} m under` : `${(-top).toFixed(2)} m above`} the surface. Net push of the water ${N(net)} upward.`}>
+      <Stage x={[-1.1, 1.1]} y={[-2.0, 0.45]} height={340} equal label={`A cube ${side} m on a side, its top face ${under ? `${top.toFixed(2)} m under` : `${(-top).toFixed(2)} m above`} the surface. Net push of the water ${N(net)} upward.`}>
         {(s) => <>
-          <rect x={s.sx(-1.6)} y={s.sy(0)} width={s.len(3.2)} height={s.sy(-2.5) - s.sy(0)} fill={WATER_FILL} />
-          <line x1={s.sx(-1.6)} x2={s.sx(1.6)} y1={s.sy(0)} y2={s.sy(0)} stroke={WATER_LINE} strokeWidth={2} />
-          {[0.5, 1, 1.5, 2].map((d) => <g key={d}>
+          <rect x={s.sx(-4)} y={s.sy(0)} width={s.len(8)} height={s.sy(-2.1) - s.sy(0)} fill={WATER_FILL} />
+          <line x1={s.sx(-4)} x2={s.sx(4)} y1={s.sy(0)} y2={s.sy(0)} stroke={WATER_LINE} strokeWidth={2} />
+          {[0.5, 1, 1.5].map((d) => <g key={d}>
             <line x1={s.sx(-1.02)} x2={s.sx(-0.94)} y1={s.sy(-d)} y2={s.sy(-d)} stroke={C.faint} />
-            <text x={s.sx(-0.92)} y={s.sy(-d) + 4} fontSize={12} fill={C.faint} fontFamily="var(--font-mono)">{d} m</text>
+            <text x={s.sx(-0.9)} y={s.sy(-d) + 4} fontSize={12} fill={C.faint} fontFamily="var(--font-mono)">{d} m</text>
           </g>)}
           <text x={s.sx(-1.02)} y={s.sy(0) - 8} fontSize={12} fill={C.faint}>depth</text>
           {/* your arm */}
@@ -84,15 +84,15 @@ export default function HoldItUnder({ id, prompt, side = 0.4, explanation }: Hol
             onChange={(p) => { setTop(Math.min(DEEP, Math.max(-0.36, -(p[1] + h / 2)))); task.touch(); }} />
         </>}
       </Stage>
-      <Stage x={[-0.4, DEEP]} y={[0, 3500]} height={170} axes={{ x: 'depth of the top face (m)', y: 'push (N)', yTicks: [0, 1000, 2000, 3000] }}
+      <Stage x={[-0.4, DEEP]} y={[0, 3]} height={170} axes={{ x: 'depth of the top face (m)', y: 'push (kN)', yTicks: [0, 1, 2, 3] }}
         label="Push on the bottom face and net push, against depth, where you have been">
         {(p) => {
-          const line = (k: 'up' | 'net') => pts.map(([t, v], i) => `${i ? 'L' : 'M'}${p.sx(t).toFixed(1)},${p.sy(v[k]).toFixed(1)}`).join('');
+          const line = (k: 'up' | 'net') => pts.map(([t, v], i) => `${i ? 'L' : 'M'}${p.sx(t).toFixed(1)},${p.sy(v[k] / 1000).toFixed(1)}`).join('');
           return <>
             <path d={line('up')} fill="none" stroke={C.force} strokeWidth={1.5} strokeDasharray="4 4" opacity={0.7} />
             <path d={line('net')} fill="none" stroke={C.force} strokeWidth={3} />
-            <circle cx={p.sx(top)} cy={p.sy(net)} r={4} fill={C.force} />
-            <text x={p.sx(DEEP) - 4} y={p.sy(3200)} textAnchor="end" fontSize={12} fill={C.soft}>dashed: bottom face · solid: net</text>
+            <circle cx={p.sx(top)} cy={p.sy(net / 1000)} r={4} fill={C.force} />
+            <text x={p.sx(DEEP) - 4} y={p.sy(2.75)} textAnchor="end" fontSize={12} fill={C.soft}>dashed: bottom face · solid: net</text>
           </>;
         }}
       </Stage>

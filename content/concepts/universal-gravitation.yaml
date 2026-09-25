@@ -1,0 +1,13 @@
+title: 'Universal gravitation'
+blurb: 'Every mass pulls every other along the line between them, weakening as the square of the distance. The apple and the Moon fall by the same law.'
+notation: 'F = \frac{GMm}{r^2}, \qquad g(r) = \frac{GM}{r^2}'
+tags: ['up-ch13']
+misconceptions:
+  - id: 'gravity-stops-at-atmosphere'
+    name: 'Gravity is left behind with the air: above the atmosphere there is little or none.'
+    signal: 'Says gravity at the height of the space station is a few percent of its value on the ground, or zero.'
+    correction: 'Gravity depends on the distance from the Earth''s centre, not on the air. The station is 6,771 km from the centre instead of 6,371 km, so gravity there is (6371/6771)² ≈ 89% of the surface value. The Moon, 60 times farther, still feels 1/3600 of it: enough to hold it in orbit.'
+  - id: 'heavier-body-pulls-harder'
+    name: 'The Earth pulls on you harder than you pull on the Earth.'
+    signal: 'Says the bigger mass exerts the bigger gravitational force in a pair.'
+    correction: 'The two forces are a third-law pair: equal in size, opposite in direction, GMm/r² each. The Earth barely moves because the same force divided by its huge mass gives a tiny acceleration.'

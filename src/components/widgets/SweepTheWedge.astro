@@ -1,0 +1,6 @@
+---
+// @graded — when given `id`, the scene checks itself: place the comet where it is 60 days after aphelion.
+import Island, { type SweepTheWedgeProps } from '../viz/SweepTheWedge.tsx';
+const props = Astro.props as SweepTheWedgeProps;
+---
+<Island client:visible {...props} />

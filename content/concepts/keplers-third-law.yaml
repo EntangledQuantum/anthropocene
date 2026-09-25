@@ -1,0 +1,9 @@
+title: 'Bigger orbits take longer'
+blurb: 'The square of an orbit''s period is proportional to the cube of its semi-major axis, the same constant for everything round one centre. A higher orbit is slower and longer.'
+notation: 'T^2 = \frac{4\pi^2}{GM}\,a^3'
+tags: ['up-ch13']
+misconceptions:
+  - id: 'speed-up-to-catch-up'
+    name: 'To catch something ahead of you in the same orbit, speed up.'
+    signal: 'Fires forward to close the gap on a station ahead.'
+    correction: 'A forward burn raises the far side of your orbit. The bigger orbit has a longer period, and you lose speed climbing to it, so you fall behind. To catch up you slow down, drop into a smaller, quicker orbit, and rise again later.'

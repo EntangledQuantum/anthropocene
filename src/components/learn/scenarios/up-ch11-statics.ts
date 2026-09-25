@@ -5,8 +5,7 @@
  *  chapter's scenes run, and pinned in __tests__/statics.test.ts.
  */
 import type { EstimateScenario } from '../estimate-scenarios.ts';
-import { G_EARTH } from '../../../lib/physics/dynamics.ts';
-import { STEEL, bicepsPull, hookeExtension, wireArea } from '../../../lib/physics/statics.ts';
+import { bicepsPull } from '../../../lib/physics/statics.ts';
 
 export const estimate: Record<string, EstimateScenario> = {
   'up-ch11-biceps': {
@@ -20,17 +19,5 @@ export const estimate: Record<string, EstimateScenario> = {
       { value: 700, label: 'your body weight' },
     ],
     truth: () => bicepsPull({ loadMass: 5, loadArm: 0.35, armMass: 1.5, armCg: 0.15, muscleArm: 0.04 }),
-  },
-  'up-ch11-crane-cable': {
-    quantity: 'millimetres a 100 m steel cable, 2 cm thick, stretches when it lifts 2 tonnes',
-    unit: 'mm',
-    logRange: [-1, 4],
-    logStart: 0,
-    withinFactor: 2,
-    landmarks: [
-      { value: 1, label: 'a millimetre' },
-      { value: 1000, label: 'a metre' },
-    ],
-    truth: () => 1000 * hookeExtension(2000 * G_EARTH, 100, wireArea(0.02), STEEL.E),
   },
 };

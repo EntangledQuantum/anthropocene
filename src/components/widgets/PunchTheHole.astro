@@ -1,0 +1,6 @@
+---
+// @graded — with `id`, the scene checks itself.
+import Island, { type PunchTheHoleProps } from '../viz/PunchTheHole.tsx';
+const props = Astro.props as PunchTheHoleProps;
+---
+<Island client:visible {...props} />

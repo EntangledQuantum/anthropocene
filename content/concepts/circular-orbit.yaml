@@ -1,0 +1,13 @@
+title: 'Circular orbit: a fall that misses'
+blurb: 'An orbiting body is in free fall the whole time. At v = √(GM/r) the ground curves away exactly as fast as it falls, so its height never changes.'
+notation: 'v_{\text{circ}} = \sqrt{\frac{GM}{r}} = \sqrt{g(r)\,r}'
+tags: ['up-ch13']
+misconceptions:
+  - id: 'orbit-forces-balance'
+    name: 'In orbit, gravity is balanced by an outward force, so the satellite is not falling.'
+    signal: 'Draws an outward centrifugal arrow on an orbiting body, or says it stays up because the forces cancel.'
+    correction: 'Only one force acts on the satellite: gravity, pointing at the centre. It is unbalanced, so the satellite accelerates toward the centre every instant; it is falling. It never lands because it moves sideways fast enough that the ground curves away beneath it as fast as it falls.'
+  - id: 'orbit-needs-thrust'
+    name: 'A satellite needs its engine running to stay up.'
+    signal: 'Expects an orbit to decay the moment the engine stops, even with no air.'
+    correction: 'With no air there is nothing to take the sideways speed away, so nothing needs replacing. Gravity bends the path; it does not slow a circular orbit, because it is always at right angles to the motion.'

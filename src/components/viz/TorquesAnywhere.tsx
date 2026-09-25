@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { plankForces, torqueLedger, type Plank } from '../../lib/physics/statics.ts';
-import { Arrow, C, CheckBar, Handle, SceneCard, Stage, useTask, type Vec } from './scene.tsx';
-import { KF, PAINTER_MID, PLANK_T, Painter, PlankBar, PlankTicks, TRESTLE_H, Trestle } from './plank-ch11.tsx';
+import { C, CheckBar, Handle, SceneCard, Stage, useTask, type Vec } from './scene.tsx';
+import { Painter, PlankBar, PlankForce, PlankTicks, Trestle } from './plank-ch11.tsx';
 
 /**
  * The plank and painter at rest, and one thing to move: the point you take
@@ -27,7 +27,7 @@ export interface TorquesAnywhereProps {
 const ON_LINE = 0.06;
 
 export default function TorquesAnywhere({
-  id, prompt, plank = { mass: 30, length: 4 }, painterMass = 60, painterX = 2.8, xA = 0.5, xB = 3, start = [1.4, 2.1], explanation,
+  id, prompt, plank = { mass: 30, length: 4 }, painterMass = 60, painterX = 2.8, xA = 0.5, xB = 3, start = [1.3, 1.7], explanation,
 }: TorquesAnywhereProps) {
   const task = useTask(id, 'torques-anywhere');
   const [ref, setRef] = useState<Vec>(start);
@@ -48,30 +48,26 @@ export default function TorquesAnywhere({
         onCheck={() => task.check(onA || onB, { ref })}
         miss={`About this point both trestle pushes have arms, ${armA.toFixed(2)} m and ${armB.toFixed(2)} m: one equation, two unknowns.`}
         hit={<>{explanation} {onB ? `About the right trestle: the left push is ${push('left trestle').toFixed(0)} N.` : `About the left trestle: the right push is ${push('right trestle').toFixed(0)} N.`}</>} /> : undefined}>
-      <Stage x={[-0.3, plank.length + 0.4]} y={[-0.36, 2.75]} height={320} equal
+      <Stage x={[-0.3, plank.length + 0.4]} y={[-0.36, 2.2]} height={300} equal
         label={`Plank on two trestles with a painter. The torque reference point is at ${ref[0].toFixed(2)} metres.`}>
         {(s) => <>
           <line x1={0} x2={s.W} y1={s.sy(0)} y2={s.sy(0)} stroke={C.rule} strokeWidth={2} />
           <PlankTicks s={s} length={plank.length} />
-          {lines.map((x, i) => <line key={i} x1={s.sx(x)} x2={s.sx(x)} y1={s.sy(2.7)} y2={s.sy(-0.02)} stroke={C.ghost} strokeDasharray="4 5" />)}
+          {lines.map((x, i) => <line key={i} x1={s.sx(x)} x2={s.sx(x)} y1={s.sy(2.15)} y2={s.sy(-0.02)} stroke={C.ghost} strokeDasharray="4 5" />)}
           <Trestle s={s} x={xA} />
           <Trestle s={s} x={xB} />
-          <PlankBar s={s} length={plank.length} />
-          <Painter s={s} x={painterX} label={`${painterMass} kg`} />
           {forces.map((f) => {
             const x = f.at![0];
-            const up = f.vec[1] > 0;
-            const n = Math.abs(f.vec[1]);
-            const txt = unknown(f.label!) ? '?' : `${n.toFixed(0)} N`;
-            return up
-              ? <Arrow key={f.id} s={s} from={[x, TRESTLE_H - n * KF]} to={[x, TRESTLE_H]} color={C.force} label={txt} labelSide={x < plank.length / 2 ? -1 : 1} />
-              : <Arrow key={f.id} s={s} from={[x, f.label === 'painter' ? PAINTER_MID : TRESTLE_H + PLANK_T / 2]} to={[x, (f.label === 'painter' ? PAINTER_MID : TRESTLE_H + PLANK_T / 2) - n * KF]}
-                  color={C.force} label={txt} labelSide={f.label === 'painter' ? 1 : -1} />;
+            const txt = unknown(f.label!) ? '?' : `${Math.abs(f.vec[1]).toFixed(0)} N`;
+            const side = f.label === 'right trestle' ? (painterX > xB ? -1 : 1) : f.label === 'painter' ? (painterX > xB ? 1 : -1) : -1;
+            return <PlankForce key={f.id} s={s} x={x} push={f.vec[1]} label={f.label === 'plank' ? `plank ${txt}` : txt} side={side} />;
           })}
+          <PlankBar s={s} length={plank.length} />
+          <Painter s={s} x={painterX} label={`${painterMass} kg`} />
           <line x1={s.sx(Math.min(ref[0], ...lines))} x2={s.sx(Math.max(ref[0], ...lines))} y1={s.sy(ref[1])} y2={s.sy(ref[1])} stroke={C.position} strokeDasharray="3 4" />
           {lines.map((x, i) => <circle key={i} cx={s.sx(x)} cy={s.sy(ref[1])} r={3} fill={C.position} />)}
           <Handle s={s} at={ref} step={0.05} color={C.position} label="Torque reference point: drag anywhere"
-            onChange={(p) => { setRef([Math.max(-0.2, Math.min(plank.length + 0.3, p[0])), Math.max(-0.2, Math.min(2.6, p[1]))]); task.touch(); }} />
+            onChange={(p) => { setRef([Math.max(-0.2, Math.min(plank.length + 0.3, p[0])), Math.max(-0.2, Math.min(2.1, p[1]))]); task.touch(); }} />
         </>}
       </Stage>
       <table className="readout" style={{ width: '100%', marginTop: 10, fontSize: 14, borderCollapse: 'collapse' }}>

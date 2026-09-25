@@ -161,15 +161,6 @@ describe('thick and thin (MatchTheStretch)', () => {
   });
 });
 
-describe('the crane cable (estimate)', () => {
-  it('100 m of 2 cm steel under two tonnes stretches about 3 cm', () => {
-    const d = hookeExtension(2000 * G_EARTH, 100, wireArea(0.02), STEEL.E);
-    expect(d).toBeCloseTo(0.0312, 3);
-    // and it is well inside the elastic range
-    expect(stress(2000 * G_EARTH, wireArea(0.02))).toBeLessThan(STEEL.yieldStress / 3);
-  });
-});
-
 describe('the elastic limit (WireSpringBack)', () => {
   it('1 mm copper reaches its limit at 55 N', () => {
     expect(yieldLoad(COPPER, 1e-3)).toBeCloseTo(54.98, 2);

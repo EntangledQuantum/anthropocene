@@ -7,4 +7,4 @@ misconceptions:
   - id: 'stiff-means-strong'
     name: 'Stiff and strong are the same word.'
     signal: 'Expects the material that stretches least under a load to be the one that takes the most load before it gives.'
-    correction: 'Stiffness is the slope of the straight part of the record: how much stress per unit strain. Strength is where the straight part ends. Glass is stiffer than copper and snaps at a strain copper would barely notice.'
+    correction: 'Stiffness is the slope of the straight part of the record: how much stress per unit strain. Strength is where the straight part ends. Glass is about twenty times stiffer than nylon, yet a glass rod snaps at a lower stress than a nylon line carries without complaint.'

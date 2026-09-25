@@ -241,3 +241,33 @@ export function cometDaysFromAphelion(theta: number): number {
   const t = timeFromPeriapsis(GM, a, e, theta) - T / 2;
   return (((t % T) + T) % T) / DAY;
 }
+
+/* ── one revolution, or until it is far away ───────────────────────────── */
+
+export interface Flight {
+  path: OrbitState[];
+  /** Clockwise angle turned about the centre at each sample, radians. */
+  turned: number[];
+}
+
+/** Fly until the body has gone once round (clockwise or counter), passed rMax, or tMax. */
+export function flyOnce(GM: number, p0: Vec2, v0: Vec2, h: number, rMax: number, tMax: number): Flight {
+  const turned = [0];
+  let prev = Math.atan2(p0[1], p0[0]);
+  const path = integrate(GM, p0, v0, h, tMax, (s) => {
+    const ang = Math.atan2(s.p[1], s.p[0]);
+    let d = prev - ang;
+    if (d > Math.PI) d -= 2 * Math.PI;
+    if (d < -Math.PI) d += 2 * Math.PI;
+    prev = ang;
+    turned.push(turned[turned.length - 1] + d);
+    return Math.abs(turned[turned.length - 1]) >= 2 * Math.PI || Math.hypot(s.p[0], s.p[1]) > rMax;
+  });
+  return { path, turned };
+}
+
+/** Speed left over far away, for a launch at speed v from radius r (0 if bound). */
+export function speedAtInfinity(GM: number, r: number, v: number): number {
+  const e2 = v * v - (2 * GM) / r;
+  return e2 > 0 ? Math.sqrt(e2) : 0;
+}

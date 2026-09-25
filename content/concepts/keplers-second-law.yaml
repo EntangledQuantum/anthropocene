@@ -1,0 +1,13 @@
+title: 'Equal areas in equal times'
+blurb: 'The line from the Sun to a planet sweeps equal areas in equal times, so an orbit is fast near the Sun and slow far away. It is angular momentum conservation drawn as a wedge.'
+notation: '\frac{dA}{dt} = \frac{L}{2m} = \text{constant}'
+tags: ['up-ch13']
+misconceptions:
+  - id: 'orbit-constant-speed'
+    name: 'A planet moves round its orbit at a steady speed.'
+    signal: 'Spaces equal-time positions evenly along an elliptical orbit.'
+    correction: 'Only a circular orbit has a steady speed. On an ellipse, gravity has a component along the motion: it speeds the planet up on the way in and slows it on the way out. Equal areas means a short, fat wedge near the Sun and a long, thin one far away.'
+  - id: 'lingers-near-the-sun'
+    name: 'A comet spends most of its time near the Sun, where the pull is strongest.'
+    signal: 'Predicts the comet dwells at perihelion because the pull there is strongest.'
+    correction: 'The strong pull near the Sun is exactly what whips the comet round fast. It spends most of its period far out, crawling past aphelion.'

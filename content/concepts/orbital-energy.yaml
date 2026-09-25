@@ -1,0 +1,9 @@
+title: 'Orbital energy: bound or gone'
+blurb: 'With the zero of potential energy at infinity, total energy per kilogram, ½v² − GM/r, decides everything: negative and the path closes, zero or positive and it never comes back.'
+notation: 'E = \tfrac12 mv^2 - \frac{GMm}{r}, \qquad E < 0 \iff \text{bound}'
+tags: ['up-ch13']
+misconceptions:
+  - id: 'negative-energy-is-impossible'
+    name: 'Energy cannot be negative, so the minus sign in the orbital energy is a mistake.'
+    signal: 'Drops the sign of GMm/r, or is confused that a bound orbit has E < 0.'
+    correction: 'Only differences in potential energy are physical. Putting U = 0 at infinity makes every point near the planet negative, and then the sign of the total says at a glance whether the body can reach infinity.'

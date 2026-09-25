@@ -94,8 +94,11 @@ export const floatingBlockPeriod = (d: number, g = G) => TAU * Math.sqrt(d / g);
 /* ── lesson 2: the swing and the shove ─────────────────────────────────── */
 
 /** A 2 m swing, lightly damped, and a shove that adds 0.16 rad/s of swing. */
-export const SWING = { L: 2, beta: 0.02, kick: 0.16, start: 5, target: 30, shoves: 10 } as const;
+export const SWING = { L: 2, mass: 25, beta: 0.02, kick: 0.16, start: 5, target: 30, shoves: 10 } as const;
 export const swingGL = G / SWING.L;
+
+/** Energy per unit moment of inertia → joules, for a 25 kg child-plus-seat on 2 m ropes. */
+export const swingJoules = (perUnit: number) => SWING.mass * SWING.L * SWING.L * perUnit;
 
 /** Energy per unit moment of inertia: ½θ'² + (g/L)(1 − cos θ). */
 export const swingEnergy = (theta: number, omega: number, gL: number = swingGL) =>
