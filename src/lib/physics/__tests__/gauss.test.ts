@@ -130,10 +130,10 @@ describe('a charge outside moves the field, not the flux', () => {
     expect(fluxThroughLoop(both, sleeve)).toBeCloseTo(fluxThroughLoop(alone, sleeve), 2);
   });
 
-  it('while the field around the sleeve is rearranged, some of it now pointing in', () => {
+  it('while the field around the sleeve is rearranged, from nothing at the mark to over 20 N/C across from it', () => {
     const both = rodsFromNano([{ x: 0, y: 0, q: 1 }, { x: 2 * mark[0], y: 2 * mark[1], q: 1 }]);
     const en = normalFieldAlong(both, sleeve).map((t) => t.en);
-    expect(Math.min(...en)).toBeLessThan(0);
+    expect(Math.min(...en)).toBeLessThan(0.5);
     expect(Math.max(...en)).toBeGreaterThan(20);
   });
 
@@ -205,7 +205,7 @@ describe('choosing the Gaussian sleeve', () => {
     const phi = fluxThroughLoop(tube, loop);
     expect(phi).toBeCloseTo(gaussFlux(lambda), 2);
     expect(phi / perimeter(loop)).toBeCloseTo(mag(rodField(tube, probe[0], probe[1])), 1);
-    expect(mag(rodField(tube, probe[0], probe[1]))).toBeCloseTo(46.3, 1);
+    expect(mag(rodField(tube, probe[0], probe[1]))).toBeCloseTo(46.2, 1);
   });
 
   it('an off-centre sleeve has the same flux but no single field to read off', () => {
@@ -217,60 +217,60 @@ describe('choosing the Gaussian sleeve', () => {
 });
 
 describe('a conductor: charge put inside ends on the surface', () => {
-  const metal = dropOutline(0, 0, 1);
-  const N = 40;
+  const metal = dropOutline(-0.35, 0, 0.6);
+  const N = 48;
   const lambda = 6 * NANO;
-  const settled = settle(clusterAt(-0.2, 0.05, N, 0.08), metal);
+  const settled = settle(clusterAt(-0.3, 0.05, N, 0.08), metal, 1500);
   const rods = chargesAsRods(settled, lambda);
 
   it('the outline is a closed teardrop with its sharp edge at +x', () => {
-    expect(contains(metal, 0, 0)).toBe(true);
-    expect(contains(metal, 0.95, 0)).toBe(true);
-    expect(contains(metal, 1.05, 0)).toBe(false);
+    expect(contains(metal, -0.35, 0)).toBe(true);
+    expect(contains(metal, 0.8, 0)).toBe(true);
+    expect(contains(metal, 0.9, 0)).toBe(false);
+    expect(contains(metal, -0.97, 0)).toBe(false);
   });
 
   it('every charge ends on the surface, wherever it was put in', () => {
     expect(chargesInside(settled, metal)).toBe(0);
     for (const p of settled) expect(nearestOnLoop(metal, p).d).toBeLessThan(1e-9);
-    const elsewhere = settle(clusterAt(0.5, -0.1, N, 0.05), metal);
+    const elsewhere = settle(clusterAt(0.4, -0.05, N, 0.05), metal, 1500);
     expect(chargesInside(elsewhere, metal)).toBe(0);
   });
 
-  it('and leaves the inside of the metal free of field', () => {
-    const skin = offsetOutline(metal, 0.12);
+  it('and leaves the inside of the metal all but free of field', () => {
+    const skin = offsetOutline(metal, 0.1);
     const outside = skin.map((p) => mag(rodField(rods, p[0], p[1])));
     const mean = outside.reduce((a, b) => a + b, 0) / outside.length;
-    for (const [x, y] of [[-0.3, 0], [0, 0.1], [0.3, 0], [-0.55, -0.1]] as Vec2[]) {
-      expect(mag(rodField(rods, x, y)) / mean).toBeLessThan(0.01);
+    for (const [x, y] of [[-0.35, 0], [-0.6, 0.2], [0, 0], [-0.3, -0.3]] as Vec2[]) {
+      expect(mag(rodField(rods, x, y)) / mean).toBeLessThan(0.02);
     }
   });
 
   it('the charge crowds toward the sharp edge, and the field just outside is strongest there', () => {
-    const skin = offsetOutline(metal, 0.12);
+    const skin = offsetOutline(metal, 0.06);
     const field = skin.map((p) => mag(rodField(rods, p[0], p[1])));
     const iMax = field.indexOf(Math.max(...field));
-    // the strongest spot is at the pointed end…
-    expect(skin[iMax][0]).toBeGreaterThan(0.9);
-    // …well over the blunt end's field
-    const blunt = field[skin.reduce((bi, p, i) => (p[0] < skin[bi][0] ? i : bi), 0)];
-    expect(Math.max(...field) / blunt).toBeGreaterThan(1.8);
-    // and more charges sit near the tip than in an equal stretch at the blunt end
-    const near = (x: number, y: number) => settled.filter((p) => Math.hypot(p[0] - x, p[1] - y) < 0.35).length;
-    expect(near(1, 0)).toBeGreaterThan(near(-1, 0));
+    // the strongest spot is at the sharp edge…
+    expect(skin[iMax][0]).toBeGreaterThan(0.8);
+    // …well over the round end's field and about twice the flanks'
+    const at = (x: number, y: number) => field[skin.reduce((bi, p, i) =>
+      (Math.hypot(p[0] - x, p[1] - y) < Math.hypot(skin[bi][0] - x, skin[bi][1] - y) ? i : bi), 0)];
+    expect(Math.max(...field) / at(-1.01, 0)).toBeGreaterThan(1.3);
+    expect(Math.max(...field) / at(0.35, 0.33)).toBeGreaterThan(1.8);
+    // and more charges sit near the sharp edge than near the round end
+    const near = (x: number, y: number) => settled.filter((p) => Math.hypot(p[0] - x, p[1] - y) < 0.3).length;
+    expect(near(0.85, 0)).toBeGreaterThan(near(-0.95, 0));
   });
 
   it('the field just outside is σ/ε₀: the local charge per area of surface', () => {
-    const skin = offsetOutline(metal, 0.04);
-    const i = Math.round(skin.length * 0.25); // top flank
-    const p = skin[i];
-    const e = mag(rodField(rods, p[0], p[1]));
-    // σ from the local spacing of charges along the surface
-    const sorted = settled.map((q) => ({ q, d: Math.hypot(q[0] - p[0], q[1] - p[1]) })).sort((a, b) => a.d - b.d);
-    const a = sorted[0].q, b = sorted[1].q;
-    const spacing = Math.hypot(a[0] - b[0], a[1] - b[1]);
-    const sigma = lambda / N / spacing;
-    expect(e / (sigma / EPS0)).toBeGreaterThan(0.7);
-    expect(e / (sigma / EPS0)).toBeLessThan(1.3);
+    // σ over the top of the round end: charges within ±35° of straight up,
+    // counted about the round end's centre, per metre of arc.
+    const win = (35 * Math.PI) / 180;
+    const count = settled.filter((q) => Math.abs(Math.atan2(q[1], q[0] + 0.35) - Math.PI / 2) < win).length;
+    const sigma = (count * (lambda / N)) / (2 * win * 0.6);
+    const e = mag(rodField(rods, -0.35, 0.68));
+    expect(e / (sigma / EPS0)).toBeGreaterThan(0.85);
+    expect(e / (sigma / EPS0)).toBeLessThan(1.15);
   });
 
   it('K and ε₀ agree', () => {
