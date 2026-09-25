@@ -49,10 +49,14 @@ export default function TouchTheSpheres({
   const push = onB[0] > 0;
   const match = touched && push && Math.abs(F - f0) / f0 <= tolerance;
 
+  // Arrows never leave the stage (x from about −6.5 to 40.5 cm).
   const arrowTo = (x0: number, fx: number): { to: Vec; capped: boolean } => {
-    const L = Math.min(CAP, Math.abs(fx) * PER_N);
-    return { to: [x0 + Math.sign(fx) * L, 4.2], capped: Math.abs(fx) * PER_N > CAP };
+    const room = fx >= 0 ? 39.5 - x0 : x0 + 5.5;
+    const lim = Math.max(1.5, Math.min(CAP, room));
+    const L = Math.min(lim, Math.abs(fx) * PER_N);
+    return { to: [x0 + Math.sign(fx) * L, 4.2], capped: Math.abs(fx) * PER_N > lim };
   };
+  const close = xb < 12;
   const arA = arrowTo(0, onA[0]);
   const arB = arrowTo(xb, onB[0]);
 
@@ -82,8 +86,8 @@ export default function TouchTheSpheres({
           </g>)}
           <ChargeDot s={s} at={[0, 0]} q={qa} r={s.len(R)} />
           <ChargeDot s={s} at={[xb, 0]} q={qb} r={s.len(R)} />
-          <text x={s.sx(0)} y={s.sy(R) - 10} textAnchor="middle" fontSize={14} fontWeight={600} fill={C.soft}>A {fmtQ(qa)}</text>
-          <text x={s.sx(xb)} y={s.sy(R) - 10} textAnchor="middle" fontSize={14} fontWeight={600} fill={C.soft}>B {fmtQ(qb)}</text>
+           <text x={s.sx(0) + (close ? s.len(R) : 0)} y={s.sy(R) - 10} textAnchor={close ? 'end' : 'middle'} fontSize={14} fontWeight={600} fill={C.soft}>A {fmtQ(qa)}</text>
+          <text x={s.sx(xb) - (close ? s.len(R) : 0)} y={s.sy(R) - 10} textAnchor={close ? 'start' : 'middle'} fontSize={14} fontWeight={600} fill={C.soft}>B {fmtQ(qb)}</text>
           <Arrow s={s} from={[0, 4.2]} to={arA.to} color={C.force} width={3} dash={arA.capped ? '6 4' : undefined} />
           <Arrow s={s} from={[xb, 4.2]} to={arB.to} color={C.force} width={3} dash={arB.capped ? '6 4' : undefined} />
           {touched && <text x={s.sx(17)} y={s.sy(6.2)} textAnchor="middle" fontSize={13} fill={C.soft}>

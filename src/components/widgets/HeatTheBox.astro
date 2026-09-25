@@ -1,0 +1,6 @@
+---
+// @graded — when given `id` and `target`, the scene checks itself.
+import Island, { type HeatTheBoxProps } from '../viz/HeatTheBox.tsx';
+const props = Astro.props as HeatTheBoxProps;
+---
+<Island client:visible {...props} />
