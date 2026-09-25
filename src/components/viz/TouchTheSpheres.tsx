@@ -86,8 +86,8 @@ export default function TouchTheSpheres({
           </g>)}
           <ChargeDot s={s} at={[0, 0]} q={qa} r={s.len(R)} />
           <ChargeDot s={s} at={[xb, 0]} q={qb} r={s.len(R)} />
-           <text x={s.sx(0) + (close ? s.len(R) : 0)} y={s.sy(R) - 10} textAnchor={close ? 'end' : 'middle'} fontSize={14} fontWeight={600} fill={C.soft}>A {fmtQ(qa)}</text>
-          <text x={s.sx(xb) - (close ? s.len(R) : 0)} y={s.sy(R) - 10} textAnchor={close ? 'start' : 'middle'} fontSize={14} fontWeight={600} fill={C.soft}>B {fmtQ(qb)}</text>
+           <text x={s.sx(0) + (close ? s.len(R) * 0.3 : 0)} y={s.sy(R) - 10} textAnchor={close ? 'end' : 'middle'} fontSize={14} fontWeight={600} fill={C.soft}>A {fmtQ(qa)}</text>
+          <text x={s.sx(xb) - (close ? s.len(R) * 0.3 : 0)} y={s.sy(R) - 10} textAnchor={close ? 'start' : 'middle'} fontSize={14} fontWeight={600} fill={C.soft}>B {fmtQ(qb)}</text>
           <Arrow s={s} from={[0, 4.2]} to={arA.to} color={C.force} width={3} dash={arA.capped ? '6 4' : undefined} />
           <Arrow s={s} from={[xb, 4.2]} to={arB.to} color={C.force} width={3} dash={arB.capped ? '6 4' : undefined} />
           {touched && <text x={s.sx(17)} y={s.sy(6.2)} textAnchor="middle" fontSize={13} fill={C.soft}>

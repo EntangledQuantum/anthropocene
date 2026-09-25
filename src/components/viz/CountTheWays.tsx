@@ -76,11 +76,11 @@ export default function CountTheWays({ id, prompt, explanation }: CountTheWaysPr
         const el = dots.current[i];
         if (el) el.setAttribute('transform', `translate(${BX + (g.x[i] / BOX_W) * BW},${BY + BH - (g.y[i] / BOX_H) * BH})`);
       }
-      for (let a = 0; a < ALL; a++) {
+      for (let a = 0; a < ALL && total.current > 0; a++) {
         const el = bars.current[a];
         if (el) el.setAttribute('width', String(Math.min(1, (tally.current[a] / total.current) * 8) * (COL_W - 8)));
       }
-      if (now - lastShown > 150) {
+      if (total.current > 0 && now - lastShown > 150) {
         lastShown = now;
         setShare(Array.from(tally.current, (v) => v / total.current));
         setArr(arrangementOf(g));

@@ -30,8 +30,8 @@ export interface DropTheIronProps {
 const AREA = 100;          // cm², beaker cross-section
 const PLATE_W = 8;         // cm; the block is an 8 × 8 cm slab
 const G = 7.5;             // W/K between block and stirred water
-const SPEED = 25;          // playback, × life
-const T_END = 300;         // s of simulated time on the strip
+const SPEED = 36;          // playback, × life
+const T_END = 450;         // s of simulated time on the strip: eight time constants
 
 export default function DropTheIron({
   id, prompt, ironKg = 1, ironT = 100, waterKg: w0 = 1, waterT = 20, target, tolerance = 1, explanation,
@@ -54,7 +54,8 @@ export default function DropTheIron({
   });
 
   const now = dropped ? ex.at(t.current) : { Ta: ironT, Tb: waterT, Q: 0, P: 0 };
-  const settled = dropped && t.current >= Math.min(T_END, 6 * ex.tau);
+  const settled = dropped && t.current >= Math.min(T_END, 8 * ex.tau);
+  const flowing = dropped && now.Ta - now.Tb > 0.05;
   const level = (waterKg * 1000 + (dropped ? ironKg / MATERIALS.iron.rho * 1e6 : 0)) / AREA;
   const P0 = G * (ironT - waterT);
 
@@ -110,12 +111,12 @@ export default function DropTheIron({
               fill={C.surface} stroke={C.ink} strokeWidth={2} />
             {!dropped && <text x={s.sx(PLATE_W / 2 + 1)} y={s.sy(blockBottom + plateH / 2) + 4} fontSize={13} fill={C.soft}>iron, {ironKg} kg</text>}
             {/* heat leaving the block: as thick as the current */}
-            {dropped && now.P > P0 * 0.02 && [-2.5, 0, 2.5].map((x) => (
+            {flowing && [-2.5, 0, 2.5].map((x) => (
               <Arrow key={x} s={s} from={[x, blockBottom + plateH + 0.3]} to={[x, blockBottom + plateH + 0.8 + 3.2 * Math.sqrt(now.P / P0)]}
                 color={HEAT} width={1.5 + 4 * (now.P / P0)} />
             ))}
-            {dropped && <text x={s.sx(0)} y={s.sy(23)} textAnchor="middle" fontSize={13} fill={now.P > P0 * 0.02 ? HEAT : C.faint}>
-              {now.P > P0 * 0.02 ? `heat ${now.P.toFixed(0)} W` : 'no more heat flows'}
+            {dropped && <text x={s.sx(0)} y={s.sy(23)} textAnchor="middle" fontSize={13} fill={flowing ? HEAT : C.faint}>
+              {flowing ? `heat ${now.P.toFixed(0)} W` : 'no more heat flows'}
             </text>}
             <Thermometer x={s.sx(-15)} y={s.sy(1)} h={170} T={now.Ta} lo={0} hi={100} step={20} label="iron" />
             <Thermometer x={s.sx(15)} y={s.sy(1)} h={170} T={now.Tb} lo={0} hi={100} step={20} label="water" />

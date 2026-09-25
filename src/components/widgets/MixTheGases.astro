@@ -1,0 +1,6 @@
+---
+// @graded — when given an `id`, the scene checks itself.
+import Island, { type MixTheGasesProps } from '../viz/MixTheGases.tsx';
+const props = Astro.props as MixTheGasesProps;
+---
+<Island client:visible {...props} />

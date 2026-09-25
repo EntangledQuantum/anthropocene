@@ -1,0 +1,14 @@
+title: 'Temperature as mean kinetic energy'
+blurb: 'Temperature measures the average translational kinetic energy per molecule, ⟨½mv²⟩ = (3/2)kT, the same for every kind of molecule in the mixture. Heavy molecules share it by moving slower.'
+notation: '\langle \tfrac12 m v^2\rangle = \tfrac32 kT'
+tags:
+  - 'up-ch18'
+misconceptions:
+  - id: 'equilibrium-means-equal-speeds'
+    name: 'Gases mixed at one temperature end up with their molecules moving at the same speed.'
+    signal: 'Predicts helium and argon atoms settle to a common average speed.'
+    correction: 'Collisions share energy, not speed. The two gases settle when their mean kinetic energies match, and argon atoms, ten times heavier, need only 1/√10 of helium''s speed to carry the same energy. Helium ends about three times faster.'
+  - id: 'heat-is-molecular-ke'
+    name: 'Heat is the kinetic energy of the molecules.'
+    signal: 'Calls the energy a gas holds "heat", or says a hot gas contains more heat.'
+    correction: 'The kinetic energy the molecules hold is internal energy, and temperature measures its average per molecule. Heat is the energy that crosses a boundary because of a temperature difference. The argon in a mixed box does not contain heat; it passes energy to the helium, and that transfer is heat.'

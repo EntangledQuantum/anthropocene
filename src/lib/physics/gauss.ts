@@ -262,16 +262,32 @@ export function dropOutline(cx: number, cy: number, rho: number, apexDeg = 60, p
   return out;
 }
 
-/** A loop pushed a distance d outward along the averaged vertex normals. */
+/** The path a distance d outside a convex outline: each vertex pushed out
+ *  along its normal, and a sharp corner rounded by an arc, so every point
+ *  of it really is d from the metal. */
 export function offsetOutline(poly: Loop, d: number): Vec2[] {
   const loop = counterClockwise(poly);
   const n = loop.length;
-  return loop.map((p, i) => {
-    const a = loop[(i - 1 + n) % n], b = loop[(i + 1) % n];
-    const tx = b[0] - a[0], ty = b[1] - a[1];
-    const L = Math.hypot(tx, ty) || 1;
-    return [p[0] + (d * ty) / L, p[1] - (d * tx) / L] as Vec2;
-  });
+  const normal = (a: Vec2, b: Vec2): number => Math.atan2(-(b[0] - a[0]), b[1] - a[1]);
+  const out: Vec2[] = [];
+  for (let i = 0; i < n; i++) {
+    const p = loop[i];
+    const a1 = normal(loop[(i - 1 + n) % n], p);
+    let a2 = normal(p, loop[(i + 1) % n]);
+    while (a2 - a1 > Math.PI) a2 -= 2 * Math.PI;
+    while (a2 - a1 < -Math.PI) a2 += 2 * Math.PI;
+    const steps = Math.max(1, Math.ceil(Math.abs(a2 - a1) / (Math.PI / 36)));
+    if (steps === 1) {
+      const m = (a1 + a2) / 2;
+      out.push([p[0] + d * Math.cos(m), p[1] + d * Math.sin(m)]);
+    } else {
+      for (let k = 0; k <= steps; k++) {
+        const m = a1 + ((a2 - a1) * k) / steps;
+        out.push([p[0] + d * Math.cos(m), p[1] + d * Math.sin(m)]);
+      }
+    }
+  }
+  return out;
 }
 
 /** n charges placed in a tight sunflower around (x, y): where an injection lands. */

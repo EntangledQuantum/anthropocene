@@ -78,7 +78,7 @@ export function createGasBox(n: number, seed = 1): GasBox {
   for (let i = 0; i < n; i++) {
     box.x[i] = 0.05 + r() * (MID - 0.1);
     box.y[i] = 0.05 + r() * (BOX_H - 0.1);
-    box.vx[i] = (r() < 0.5 ? -1 : 1) * (0.25 + 0.35 * r());
+    box.vx[i] = (r() < 0.5 ? -1 : 1) * (0.12 + 0.78 * r());
     box.vy[i] = (r() < 0.5 ? -1 : 1) * (0.1 + 0.3 * r());
   }
   return box;

@@ -142,7 +142,7 @@ export default function SlamThePump({ id, prompt, target = 430, explanation }: S
         <text x={vx(PUMP_V1) - 44} y={PT - 10} fontSize={12} fill={C.soft}>p (kPa)</text>
         <polyline points={ISO} fill="none" stroke={C.soft} strokeWidth={1.5} strokeDasharray="6 5" />
         <polyline points={ADI} fill="none" stroke={C.soft} strokeWidth={1.5} strokeDasharray="2 4" />
-        <text x={vx(PUMP_V1) + 6} y={py(pressureAt(PUMP_GAS, CH19_ROOM, PUMP_V1)) + 16} fontSize={12} fill={C.soft}>isotherm, 300 K</text>
+        <text x={vx(0.2e-3)} y={py(pressureAt(PUMP_GAS, CH19_ROOM, 0.2e-3)) + 28} fontSize={12} fill={C.soft}>isotherm, 300 K</text>
         <text x={vx(PUMP_V1) + 6} y={py(adiabatPressure(PUMP_GAS, S0, PUMP_V1)) - 6} fontSize={12} fill={C.soft}>adiabat, no heat</text>
         <polyline points={trace} fill="none" stroke={C.position} strokeWidth={2.5} strokeLinejoin="round" />
       </svg>

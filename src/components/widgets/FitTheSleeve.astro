@@ -1,0 +1,6 @@
+---
+// @graded — with `id`, the scene checks itself.
+import Island, { type FitTheSleeveProps } from '../viz/FitTheSleeve.tsx';
+const props = Astro.props as FitTheSleeveProps;
+---
+<Island client:visible {...props} />

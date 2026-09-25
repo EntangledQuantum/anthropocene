@@ -1,0 +1,18 @@
+title: 'Maxwell–Boltzmann speed distribution'
+blurb: 'The spread of molecular speeds that elastic collisions produce from any start: a lopsided hump with a long fast tail, fixed by the temperature and the molecular mass alone.'
+notation: 'f(v) = 4\pi\left(\frac{m}{2\pi kT}\right)^{3/2} v^2\, e^{-mv^2/2kT}'
+tags:
+  - 'up-ch18'
+misconceptions:
+  - id: 'all-molecules-at-vrms'
+    name: 'All the molecules in a gas move at the rms speed.'
+    signal: 'Treats v_rms, or one typical speed, as the speed of every molecule.'
+    correction: 'The rms speed is an average over a wide spread. Most molecules are slower than it, the most common speed sits well below it, and a thin tail runs to several times it. In the flat box the peak is at 71% of the rms speed.'
+  - id: 'elastic-keeps-speeds'
+    name: 'In elastic collisions each molecule keeps its speed.'
+    signal: 'Predicts that molecules which all start at one speed stay at that speed forever.'
+    correction: 'Elastic means the total kinetic energy is kept, not each molecule''s share. A glancing collision sends one molecule off faster and the other slower. Within a few collisions each, the single speed has spread into the Maxwell–Boltzmann hump.'
+  - id: 'speeds-spread-symmetrically'
+    name: 'The speeds spread into a symmetric bell around the starting speed.'
+    signal: 'Expects as many molecules faster than the start as slower, with the peak where they started.'
+    correction: 'No molecule can go slower than zero, but a few can go very fast, so the spread is lopsided. The energy is fixed, and a long fast tail holds a lot of it, so the crowd has to sit below the starting speed to pay for the tail.'

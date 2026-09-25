@@ -34,7 +34,7 @@ const CM = 0.01;
 const fmtQ = (q: number) => `${q > 0 ? '+' : '−'}${Math.abs(q)} nC`;
 
 export default function SwapTheProbe({
-  id, prompt, source = 2, spot = [12, 9], probes = [-2, -1, 1, 2, 3], guess, scale = 5, explanation,
+  id, prompt, source = 2, spot = [12, 9], probes = [-2, -1, 1, 2, 3], guess, scale = 4, explanation,
 }: SwapTheProbeProps) {
   const graded = Boolean(id && guess !== undefined);
   const task = useTask(graded ? id : undefined, 'swap-the-probe');
@@ -81,13 +81,13 @@ export default function SwapTheProbe({
           miss={`A ${fmtQ(guess!)} bead here is pulled ${mN(Fmag)} toward the sphere. Your arrow is ${mN(gMag)}, pointing ${gDir}.`}
           hit={explanation} />}
       </div>}>
-      <Stage x={[-8, 32]} y={[-6, 20]} height={270} equal
+      <Stage x={[-8, 32]} y={[-5, 17]} height={250} equal
         label={`A +${source} microcoulomb sphere. At the marked spot the field is ${sci(Math.hypot(E[0], E[1]), 'N/C')}, pointing away from it.`}>
         {(s) => <>
           <line x1={s.sx(0)} y1={s.sy(0)} x2={s.sx(spot[0] * 2.2)} y2={s.sy(spot[1] * 2.2)} stroke={C.grid} strokeDasharray="3 6" />
           <line x1={s.sx(0)} x2={s.sx(0)} y1={s.sy(-1.4)} y2={s.sy(-7)} stroke={C.ghost} strokeWidth={4} />
           <ChargeDot s={s} at={[0, 0]} q={source} r={s.len(1.4)} />
-          <text x={s.sx(0)} y={s.sy(2.4)} textAnchor="middle" fontSize={14} fontWeight={600} fill={C.soft}>+{source} µC</text>
+          <text x={s.sx(0) - s.len(1.4) - 8} y={s.sy(0) + 5} textAnchor="end" fontSize={14} fontWeight={600} fill={C.soft}>+{source} µC</text>
           {showTrue && F && <Arrow s={s} from={spot} to={trueTip} color={C.force} width={5}
             label={`F ${mN(Fmag)}`} labelSide={-1} />}
           <Arrow s={s} from={spot} to={tipOf(perNC)} color={C.field} width={2.5}

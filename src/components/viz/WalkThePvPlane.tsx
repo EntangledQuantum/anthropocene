@@ -108,11 +108,11 @@ export default function WalkThePvPlane({ id, prompt, toB, routes, loop, target, 
         {live && flow.q > 1 && <Flame cx={95} y={294} size={0.7} />}
         {live && flow.q < -1 && <Ice cx={95} y={292} />}
         {live && Math.abs(flow.q) > 1 && (flow.q > 0
-          ? <PxArrow x1={24} y1={288} x2={24} y2={236} label="heat in" anchor="start" dx={-18} dy={-34} />
-          : <PxArrow x1={24} y1={236} x2={24} y2={288} label="heat out" anchor="start" dx={-18} dy={-34} />)}
+          ? <PxArrow x1={24} y1={288} x2={24} y2={236} label="heat in" anchor="start" dx={-18} dy={44} />
+          : <PxArrow x1={24} y1={236} x2={24} y2={288} label="heat out" anchor="start" dx={-18} dy={44} />)}
         {live && Math.abs(flow.dV) > 0.01 && (flow.dV > 0
-          ? <PxArrow x1={170} y1={gasTop - 4} x2={170} y2={gasTop - 44} label="work out" anchor="start" dx={-10} dy={-30} />
-          : <PxArrow x1={170} y1={gasTop - 44} x2={170} y2={gasTop - 4} label="work in" anchor="start" dx={-10} dy={-30} />)}
+          ? <PxArrow x1={128} y1={gasTop - 4} x2={128} y2={gasTop - 44} label="work out" dy={-30} />
+          : <PxArrow x1={128} y1={gasTop - 44} x2={128} y2={gasTop - 4} label="work in" dy={-30} />)}
 
         {/* the plane */}
         {[0, 100, 200, 300].map((p) => <g key={p}>

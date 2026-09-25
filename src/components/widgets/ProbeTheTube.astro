@@ -1,0 +1,6 @@
+---
+// Ungraded: drag a probe through a charged tube and watch the field.
+import Island, { type ProbeTheTubeProps } from '../viz/ProbeTheTube.tsx';
+const props = Astro.props as ProbeTheTubeProps;
+---
+<Island client:visible {...props} />

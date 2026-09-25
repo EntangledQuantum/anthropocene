@@ -1,0 +1,14 @@
+title: 'Pressure as molecular hits'
+blurb: 'A gas pushes on a wall because molecules hit it and bounce. Pressure is the momentum delivered per second per area: how often they hit, times how hard.'
+notation: 'P = \tfrac{1}{3}\,\tfrac{N}{V}\,m\langle v^2\rangle'
+tags:
+  - 'up-ch18'
+misconceptions:
+  - id: 'hotter-means-harder-only'
+    name: 'Heating a gas raises the pressure only because each hit is harder.'
+    signal: 'Credits the pressure rise to harder hits alone, or to more frequent hits alone.'
+    correction: 'Faster molecules do both at once. At 4× the kelvin temperature they move 2× as fast, so each hit carries twice the momentum and they arrive twice as often. Two factors of 2 give the 4× in pressure.'
+  - id: 'pressure-proportional-to-speed'
+    name: 'Pressure is proportional to molecular speed.'
+    signal: 'Expects doubling the molecules'' speed to double the pressure.'
+    correction: 'Speed enters twice, once in how hard each hit is and once in how often hits come, so pressure goes as speed squared. Doubling every speed quadruples the pressure, and it takes four times the kelvin temperature.'

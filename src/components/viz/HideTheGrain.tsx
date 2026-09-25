@@ -72,7 +72,7 @@ export default function HideTheGrain({
     <SceneCard id={id} prompt={prompt}
       footer={<div style={{ display: 'grid', gap: 14 }}>
         <div style={{ display: 'flex', gap: 22, flexWrap: 'wrap', alignItems: 'end' }}>
-          <Meter label="Field at the grain" value={si(EgMag, 'N/C')} color={C.field} />
+          <Meter label="Field at the grain" value={EgMag < 1e-6 * alone ? '0 N/C' : si(EgMag, 'N/C')} color={C.field} />
           <Meter label="From the big charge alone" value={si(alone, 'N/C')} color={C.faint} />
         </div>
         {id && <CheckBar verdict={task.verdict} done={task.done}
