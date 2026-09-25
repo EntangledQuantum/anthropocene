@@ -1,0 +1,14 @@
+title: 'Torque'
+blurb: 'How hard a push twists something about an axis: the force times its lever arm, the perpendicular distance from the axis to the line the force acts along. Where and which way you push matter as much as how hard.'
+notation: '\tau = rF\sin\varphi = r_\perp F, \qquad \vec\tau = \vec r\times\vec F'
+tags:
+  - 'up-ch10'
+misconceptions:
+  - id: 'torque-is-a-force'
+    name: 'Torque is just force: the harder push always turns it more.'
+    signal: 'Predicts that a 50 N push near the hinge beats a 20 N push at the handle.'
+    correction: 'Torque is force times lever arm, measured in N·m, not N. A 50 N push 0.3 m from the hinge twists with 15 N·m; 20 N square-on at a 0.9 m door edge twists with 18 N·m and wins. A push through the hinge, however hard, twists with nothing.'
+  - id: 'full-push-counts'
+    name: 'Only the size of the push and its distance from the axis matter.'
+    signal: 'Multiplies force by distance from the hinge without looking at the angle.'
+    correction: 'Only the part of the push across the door twists it. Tilt the push and its line of action swings closer to the hinge: the lever arm is the distance from the hinge to that line, which is r sin φ, not r.'

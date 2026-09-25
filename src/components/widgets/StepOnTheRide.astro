@@ -1,0 +1,6 @@
+---
+// @graded — with `id` and `target` (rpm), choose where the child steps on so the ride ends at that spin.
+import Island, { type StepOnTheRideProps } from '../viz/StepOnTheRide.tsx';
+const props = Astro.props as StepOnTheRideProps;
+---
+<Island client:visible {...props} />

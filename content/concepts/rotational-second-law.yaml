@@ -1,0 +1,10 @@
+title: 'Newton''s second law for rotation'
+blurb: 'A net torque about a fixed axis gives an angular acceleration in inverse proportion to the rotational inertia. The rotational costume of F = ma: any unbalanced twist starts a rotation, however heavy the thing.'
+notation: '\tau_{\text{net}} = I\alpha'
+tags:
+  - 'up-ch10'
+misconceptions:
+  - id: 'heavy-means-immovable'
+    name: 'A heavy enough door cannot be swung by a small push.'
+    signal: 'Expects a vault door to stay put under a one-hand push.'
+    correction: 'Any unbalanced torque gives an angular acceleration, α = τ/I. A large I makes α small, not zero: 50 N at the edge of a 2000 kg vault door swings it open in about six and a half seconds, with good hinges.'

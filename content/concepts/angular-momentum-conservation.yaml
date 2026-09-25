@@ -1,0 +1,14 @@
+title: 'Conservation of angular momentum'
+blurb: 'With no net external torque about an axis, the total angular momentum about it cannot change, however the parts rearrange or grab one another. Kinetic energy keeps a separate book and can go up or down.'
+notation: '\tau_{\text{ext}} = 0 \;\Rightarrow\; I_1\omega_1 = I_2\omega_2'
+tags:
+  - 'up-ch10'
+misconceptions:
+  - id: 'kinetic-energy-follows-l'
+    name: 'If angular momentum is conserved, the spin energy is too.'
+    signal: 'Says the skater has the same kinetic energy after pulling her arms in, only spinning faster.'
+    correction: 'K = L²/2I. With L fixed, halving I doubles K. The extra energy is the work your arms do hauling the weights inward against their tendency to fly out. Step onto a turning ride and the reverse happens: L holds and K falls, lost to the skid.'
+  - id: 'no-friction-anywhere'
+    name: 'Angular momentum is conserved only when there is no friction at all.'
+    signal: 'Says the ride''s angular momentum drops because the child''s shoes skid on the deck.'
+    correction: 'Only an external torque about the axis can change the total. Friction between the child and the deck is internal: it drags her forward and the deck back by equal and opposite amounts. A rusty axle would be external, and that one would spin the ride down.'

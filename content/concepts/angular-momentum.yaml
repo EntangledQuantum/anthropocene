@@ -1,0 +1,10 @@
+title: 'Angular momentum'
+blurb: 'The rotational costume of momentum: for a point mass r × p, and for a body spinning about a fixed axis the sum of those, Iω. It is the product that matters, not how fast the thing spins or how hard it is to spin.'
+notation: 'L = \sum_i m_i r_i^2\,\omega = I\omega, \qquad \vec L = \vec r\times\vec p'
+tags:
+  - 'up-ch10'
+misconceptions:
+  - id: 'spin-rate-conserved'
+    name: 'Nothing pushed it round, so its spin rate cannot change.'
+    signal: 'Predicts the chair keeps turning at 1 rev/s when the dumbbells come in.'
+    correction: 'With no outside twist it is Iω that cannot change, not ω. Bring the mass closer to the axis and I falls, so ω must rise to keep the product.'

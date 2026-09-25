@@ -1,0 +1,6 @@
+---
+// @graded — with `id`, the scene checks itself: put the torque point where one unknown drops out.
+import Island, { type TorquesAnywhereProps } from '../viz/TorquesAnywhere.tsx';
+const props = Astro.props as TorquesAnywhereProps;
+---
+<Island client:visible {...props} />
