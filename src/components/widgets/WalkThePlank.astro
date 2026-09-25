@@ -1,0 +1,6 @@
+---
+// @graded — with `id`, the scene checks itself: walk out as far as the plank allows.
+import Island, { type WalkThePlankProps } from '../viz/WalkThePlank.tsx';
+const props = Astro.props as WalkThePlankProps;
+---
+<Island client:visible {...props} />

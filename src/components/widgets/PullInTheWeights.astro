@@ -1,0 +1,6 @@
+---
+// @graded — with `id` and `target`, keep pace with a ghost arm turning at `target` times the starting spin.
+import Island, { type PullInTheWeightsProps } from '../viz/PullInTheWeights.tsx';
+const props = Astro.props as PullInTheWeightsProps;
+---
+<Island client:visible {...props} />

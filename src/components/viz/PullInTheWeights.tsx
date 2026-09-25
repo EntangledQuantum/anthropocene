@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useRef, useState, type PointerEvent as RPointerEvent } from 'react';
 import { CHAIR, TWO_PI, chairInertia, chairSpin, spinEnergy } from '../../lib/physics/torque.ts';
 import { C, CheckBar, Meter, SceneCard, Stage, useTask, type StageApi } from './scene.tsx';
 
@@ -55,8 +55,8 @@ export default function PullInTheWeights({
       th += chairSpin(CHAIR, L, rRef.current) * dt;
       if (target !== undefined) thG += target * rev0 * TWO_PI * dt;
       const d = (a: number) => (-(a * 180) / Math.PI) % 360;
-      chair.current?.setAttribute('transform', `rotate(${d(th)} 320 ${chair.current.dataset.cy})`);
-      ghost.current?.setAttribute('transform', `rotate(${d(thG)} 320 ${ghost.current.dataset.cy})`);
+      chair.current?.setAttribute('transform', `rotate(${d(th)} ${chair.current.dataset.cx} ${chair.current.dataset.cy})`);
+      ghost.current?.setAttribute('transform', `rotate(${d(thG)} ${ghost.current.dataset.cx} ${ghost.current.dataset.cy})`);
       raf = requestAnimationFrame(frame);
     };
     raf = requestAnimationFrame(frame);
@@ -71,7 +71,7 @@ export default function PullInTheWeights({
   const hit = graded && Math.abs(rev / goal - 1) <= tolerance;
   const showSpin = !graded || task.done;
 
-  const worldFromEvent = (s: StageApi, e: React.PointerEvent<SVGRectElement>) => {
+  const worldFromEvent = (s: StageApi, e: RPointerEvent<SVGRectElement>) => {
     const svg = (e.target as SVGElement).ownerSVGElement!;
     const p = new DOMPoint(e.clientX, e.clientY).matrixTransform(svg.getScreenCTM()!.inverse());
     const x0 = s.sx(0), x1 = s.sx(1), y0 = s.sy(0), y1 = s.sy(1);
@@ -94,21 +94,21 @@ export default function PullInTheWeights({
       <Stage x={[-1, 1]} y={[-0.95, 0.95]} height={340} equal
         label={`Spinning chair from above. Dumbbells ${r.toFixed(2)} metres from the axis.`}>
         {(s) => {
-          const cy = s.sy(0), px = s.len(1);
+          const cx = s.sx(0), cy = s.sy(0), px = s.len(1);
           return <>
-            <circle cx={320} cy={cy} r={r0 * px} fill="none" stroke={C.grid} strokeDasharray="4 6" />
-            <text x={320 + r0 * px * 0.72} y={cy - r0 * px * 0.72 - 6} fontSize={12} fill={C.faint}>start, {r0} m</text>
-            {target !== undefined && <g ref={ghost} data-cy={cy}>
-              <line x1={320 - R_MAX * px} y1={cy} x2={320 + R_MAX * px} y2={cy} stroke={C.position} strokeWidth={3} opacity={0.45} strokeDasharray="8 6" />
-              <text x={320 + R_MAX * px + 6} y={cy + 4} fontSize={13} fill={C.position}>ghost</text>
+            <circle cx={cx} cy={cy} r={r0 * px} fill="none" stroke={C.grid} strokeDasharray="4 6" />
+            <text x={cx + r0 * px * 0.72} y={cy - r0 * px * 0.72 - 6} fontSize={12} fill={C.faint}>start, {r0} m</text>
+            {target !== undefined && <g ref={ghost} data-cx={cx} data-cy={cy}>
+              <line x1={cx - R_MAX * px} y1={cy} x2={cx + R_MAX * px} y2={cy} stroke={C.position} strokeWidth={3} opacity={0.45} strokeDasharray="8 6" />
+              <text x={cx + R_MAX * px + 6} y={cy + 4} fontSize={13} fill={C.position}>ghost</text>
             </g>}
-            <circle cx={320} cy={cy} r={0.34 * px} fill="none" stroke={C.rule} strokeWidth={2} />
-            <g ref={chair} data-cy={cy}>
-              <line x1={320 - r * px} y1={cy} x2={320 + r * px} y2={cy} stroke={C.soft} strokeWidth={6} strokeLinecap="round" />
-              <ellipse cx={320} cy={cy} rx={0.24 * px} ry={0.13 * px} fill={C.surface} stroke={C.soft} strokeWidth={2} transform={`rotate(90 320 ${cy})`} />
-              <circle cx={320} cy={cy} r={0.1 * px} fill={C.surface} stroke={C.ink} strokeWidth={2} />
-              <path d={`M${320},${cy - 0.1 * px} l-5,-9 l10,0 Z`} fill={C.ink} />
-              {[-1, 1].map((k) => <circle key={k} cx={320 + k * r * px} cy={cy} r={0.075 * px} fill={C.surface} stroke={C.ink} strokeWidth={3} />)}
+            <circle cx={cx} cy={cy} r={0.34 * px} fill="none" stroke={C.rule} strokeWidth={2} />
+            <g ref={chair} data-cx={cx} data-cy={cy}>
+              <line x1={cx - r * px} y1={cy} x2={cx + r * px} y2={cy} stroke={C.soft} strokeWidth={6} strokeLinecap="round" />
+              <ellipse cx={cx} cy={cy} rx={0.24 * px} ry={0.13 * px} fill={C.surface} stroke={C.soft} strokeWidth={2} />
+              <circle cx={cx} cy={cy} r={0.1 * px} fill={C.surface} stroke={C.ink} strokeWidth={2} />
+              <path d={`M${cx},${cy - 0.1 * px} l-5,-9 l10,0 Z`} fill={C.ink} />
+              {[-1, 1].map((k) => <circle key={k} cx={cx + k * r * px} cy={cy} r={0.075 * px} fill={C.surface} stroke={C.ink} strokeWidth={3} />)}
             </g>
             <rect x={0} y={0} width={s.W} height={s.H} fill="transparent" style={{ cursor: 'grab' }}
               tabIndex={0} role="slider" aria-label="Your reach: drag toward the centre to pull the dumbbells in"
