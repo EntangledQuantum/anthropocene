@@ -1,0 +1,14 @@
+title: 'Angular velocity'
+blurb: 'The rate at which a rigid body turns, in radians per second. It is the same for every point on the body; what differs from point to point is the speed, v = ωr.'
+notation: '\omega = \frac{d\theta}{dt}, \qquad v = \omega r'
+tags:
+  - 'up-ch09'
+misconceptions:
+  - id: 'omega-is-metres-per-second'
+    name: 'Points farther out turn faster, so ω is how many metres per second a point travels around.'
+    signal: 'Gives the outer bug on a turntable a larger angular velocity than the inner one, or quotes ω in m/s.'
+    correction: 'Every point on a rigid body sweeps the same angle in the same time, so they all share one ω. The outer point covers more ground per radian, which is the speed v = ωr, measured in m/s. ω counts turning, v counts distance, and r converts one into the other.'
+  - id: 'big-pulley-turns-faster'
+    name: 'A bigger pulley on the same belt turns faster because its rim is longer.'
+    signal: 'Enlarges the driven pulley to speed it up.'
+    correction: 'The belt gives both rims the same speed. A bigger rim needs more belt to go once round, so it turns fewer times per second: ω₁r₁ = ω₂r₂.'

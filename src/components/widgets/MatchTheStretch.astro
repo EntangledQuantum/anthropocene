@@ -1,0 +1,6 @@
+---
+// @graded — with `id`, the scene checks itself: stretch the thick wire as far as the thin one.
+import Island, { type MatchTheStretchProps } from '../viz/MatchTheStretch.tsx';
+const props = Astro.props as MatchTheStretchProps;
+---
+<Island client:visible {...props} />

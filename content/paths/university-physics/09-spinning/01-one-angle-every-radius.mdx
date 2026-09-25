@@ -1,0 +1,130 @@
+---
+title: 'One angle, every radius'
+blurb: 'Place a bug on a spinning turntable, size a pulley to a belt, and freeze a rolling wheel at the instant a pebble in its tread matches the bike.'
+order: 1
+tier: 'foundation'
+minutes: 10
+teaches:
+  - 'rigid-body-rotation'
+  - 'angular-velocity'
+  - 'rolling-without-slipping'
+requires:
+  - 'uniform-circular-motion'
+  - 'vector-components'
+status: 'live'
+updated: 2026-09-25
+---
+
+<Step>
+
+A bike rolls along at a steady 5 m/s. A pebble is stuck in the tread of its front tyre.
+
+<Predict
+  id="up-ch09-pebble-top"
+  question="At the moment the pebble passes over the top of the wheel, how fast is it moving over the road?"
+  options={[
+    { key: 'same', misconception: 'rolling-all-points-same-speed', label: '5 m/s: the whole bike moves together', why: 'The frame and the axle do. But the tyre is also turning about the axle, and at the top that turning points forward too. Play it and read the pebble at the top.' },
+    { key: 'double', label: '10 m/s, twice the bike', why: 'Yes. At the top the pebble rides forward with the axle at 5 m/s and swings forward round it at another 5. At the bottom the two cancel, and the pebble stands still on the road.' },
+    { key: 'slower', label: 'Less than 5 m/s: the tyre turns back against the ride', why: 'A wheel rolling to the right turns clockwise, so its top swings forward. It is the bottom that moves backward relative to the axle, which is how it comes to rest on the road.' },
+    { key: 'size', misconception: 'rolling-speed-depends-on-wheel-size', label: 'It depends on the size of the wheel', why: 'A smaller wheel just spins faster to keep up with the bike. Its rim still moves at 5 m/s relative to the axle, so its top still does 10 m/s.' },
+  ]}
+  correct="double"
+>
+
+<PebbleInTheTyre prompt="Play it. Pause when the pebble is at the top, then at the bottom." />
+
+</Predict>
+
+</Step>
+
+<Step>
+
+## Take the road away
+
+Lay the wheel flat and pin its centre: a turntable at 45 rpm, with two bugs on one painted
+stripe. Bug A rides 5 cm out.
+
+<TurntableBugs
+  id="up-ch09-place-the-bug"
+  prompt="Place bug B so it moves at 0.59 m/s, spin it, then check."
+  rpm={45}
+  rA={0.05}
+  rB={0.08}
+  target={0.59}
+  explanation="12.5 cm: two and a half times as far out as A, for two and a half times A's 0.24 m/s. Both bugs sweep the same wedge in the same time, and B's arc is simply longer. One rate of turning for the whole platter; a speed that grows with the radius."
+/>
+
+</Step>
+
+<Step>
+
+## Name it
+
+The stripe turns through one angle $\theta$ and everything on it goes along. In radians, a
+point at radius $r$ runs an arc $s = r\theta$, so it moves at
+
+$$v = \omega r, \qquad \omega = \frac{d\theta}{dt}$$
+
+$\omega$ is the **angular velocity**, shared by every point of a rigid body: 45 rpm is
+4.71 rad/s, and 4.71 × 0.125 m is bug B's 0.59 m/s.
+
+<Recall id="up-ch09-recall-omega" concept="angular-velocity">
+  <div slot="front">Bug B sits three times as far from a turntable's centre as bug A. Compare their angular velocities, then their speeds.</div>
+
+  The same $\omega$: they turn through the same angle every second. B moves three times as
+  fast, because $v = \omega r$. $\omega$ counts radians per second; only $v$ is in metres per
+  second.
+</Recall>
+
+</Step>
+
+<Step>
+
+## Rim speeds must match
+
+A motor turns a 4 cm pulley at 90 rpm. A belt that cannot stretch or slip carries the
+motion to a drum, which has to turn at 40 rpm.
+
+<SizeThePulley
+  id="up-ch09-size-the-pulley"
+  prompt="Size the drum's pulley, run the motor, then check."
+  motorRpm={90}
+  motorR={0.04}
+  drumR={0.06}
+  targetRpm={40}
+  explanation="9 cm. The belt runs at one speed, 0.38 m/s, and both rims must keep up with it, so ω₁r₁ = ω₂r₂. A pulley 9/4 as large turns 4/9 as fast: a bigger rim needs more belt to go once round."
+/>
+
+</Step>
+
+<Step>
+
+## The road is a belt that stands still
+
+A tyre is belted to the road, and the road never moves: the contact point is at rest, so
+the axle travels $v = \omega R$. The pebble's velocity is two arrows added: forward with the
+axle at 5 m/s, and round the axle at $\omega R$, also 5 m/s.
+
+<PebbleInTheTyre
+  id="up-ch09-freeze-the-pebble"
+  prompt="Freeze the wheel when the pebble moves exactly as fast as the bike, then check."
+  parts={true}
+  explanation="At half the axle height, one wheel radius from the contact point, on either side of it. At that instant the wheel pivots about its contact point the way the turntable pivots about its pin, so each point's speed is ω times its distance from the road contact. The top, 2R away, does 2v; the contact point, at no distance at all, stands still."
+/>
+
+<Recall id="up-ch09-recall-rolling" concept="rolling-without-slipping">
+  <div slot="front">A car drives at 30 m/s. How fast is the bottom of a tyre moving over the road? The top?</div>
+
+  The bottom is at rest: rolling without slipping means the contact point moves with the
+  road. The top moves at 60 m/s. At every instant the wheel pivots about its contact point.
+</Recall>
+
+## What to carry forward
+
+- **One angle, every radius.** A rigid body has one $\omega$; each point moves at $v = \omega r$.
+- **Rolling is a constraint.** The contact point is at rest, the axle moves at $\omega R$, and the top at twice that.
+- The picture: a pebble's row of arches, with a sharp cusp each time it touches the road.
+
+Next: a hoop and a disc of the same mass race down a ramp, and where the mass sits decides it.
+
+</Step>

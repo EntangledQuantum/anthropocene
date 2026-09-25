@@ -1,0 +1,6 @@
+---
+// @graded — with `id`, the scene checks itself.
+import Island, { type HoldItUnderProps } from '../viz/HoldItUnder.tsx';
+const props = Astro.props as HoldItUnderProps;
+---
+<Island client:visible {...props} />

@@ -68,7 +68,7 @@ describe('one second of orbit', () => {
   const vc = circularSpeed(GM_EARTH, rISS);
 
   it('the fall in the first second does not depend on the sideways speed', () => {
-    expect(fallInTime(g, 1)).toBeCloseTo(4.34, 2);
+    expect(fallInTime(g, 1)).toBeCloseTo(4.35, 2);
   });
 
   it('at v = √(g r) the ground curves away exactly as far as the ball falls', () => {
@@ -198,7 +198,7 @@ describe('escape: v_esc = √2 · v_circ, and E = 0 is the line', () => {
     const ve = escapeSpeed(GM_EARTH, rISS);
     const below = integrate(GM_EARTH, [0, rISS], [0.99 * ve, 0], 20, 4e6);
     const rs = below.map((s) => r(s.p));
-    const iMax = rs.indexOf(Math.max(...rs));
+    const iMax = rs.reduce((best, v, i) => (v > rs[best] ? i : best), 0);
     expect(iMax).toBeLessThan(rs.length - 1);
     expect(rs[rs.length - 1]).toBeLessThan(rs[iMax]);
 

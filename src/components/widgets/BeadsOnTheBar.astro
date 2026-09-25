@@ -1,0 +1,6 @@
+---
+// @graded — with `id` and `target`, place the beads, release, check the landing time.
+import Island, { type BeadsOnTheBarProps } from '../viz/BeadsOnTheBar.tsx';
+const props = Astro.props as BeadsOnTheBarProps;
+---
+<Island client:visible {...props} />

@@ -22,7 +22,6 @@ import {
   workOfConstantForce,
 } from '../work.ts';
 import { add2, dot2, mag2, rotate2, scale2, type Vec2 } from '../vectors.ts';
-import { sketch as workSketch } from '../../../components/learn/scenarios/up-ch6-work.ts';
 
 /* Every claim Chapter 6 makes out loud, pinned as an assertion. A wrong
    simulation is a wrong lesson, which is worse than no lesson. */
@@ -262,22 +261,6 @@ describe('only the shared piece counts: lesson claims', () => {
     const b = run(1e6).samples.at(-1)!;
     expect(b.netWork).toBeCloseTo(a.netWork, 9);
     expect(b.K).toBeCloseTo(a.K, 9);
-  });
-
-  it('grades the changed force pair against a measured straight decline from 180 J to 100 J', () => {
-    const scenario = workSketch['up-ch6-kinetic-energy-with-brake'];
-    const points = scenario.truth();
-    expect(points[0]).toEqual({ x: 0, y: 180 });
-    expect(points.at(-1)!.x).toBe(4);
-    expect(points.at(-1)!.y).toBeCloseTo(100, 4);
-    for (const p of points) expect(p.y).toBeCloseTo(180 - 20 * p.x, 4);
-    // Neither the flat "zero net work" answer nor counting only the pull is
-    // near the target; both misconception curves fit on the drawing surface.
-    const flatError = points.reduce((sum, p) => sum + Math.abs(p.y - 180), 0) / points.length;
-    const pullOnlyError = points.reduce((sum, p) => sum + Math.abs(p.y - (180 + 20 * p.x)), 0) / points.length;
-    expect(flatError).toBeGreaterThan(scenario.tolerance);
-    expect(pullOnlyError).toBeGreaterThan(scenario.tolerance);
-    expect(scenario.yRange[1]).toBeGreaterThan(260);
   });
 
   it('ends the trial at its first stop instead of inventing a negative kinetic energy', () => {

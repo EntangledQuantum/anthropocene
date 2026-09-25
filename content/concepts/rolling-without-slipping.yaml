@@ -1,0 +1,14 @@
+title: 'Rolling without slipping'
+blurb: 'A constraint, not a force law: the contact point shares the road''s velocity, so the axle moves one circumference per turn and v = ωR. At each instant the wheel pivots about the contact point.'
+notation: 'v_{\text{axle}} = \omega R, \qquad v_{\text{contact}} = 0, \qquad v_{\text{top}} = 2v_{\text{axle}}'
+tags:
+  - 'up-ch09'
+misconceptions:
+  - id: 'rolling-all-points-same-speed'
+    name: 'Every part of a moving bike moves at the bike''s speed.'
+    signal: 'Says the top of a rolling tyre moves over the road at the same speed as the bike, or that the tyre''s contact point is sliding backward.'
+    correction: 'A rolling wheel does two things at once: it rides forward with the axle and it turns about the axle. At the top the two motions point the same way and add to twice the bike''s speed. At the bottom they cancel, so the contact point is momentarily at rest on the road, which is why the tyre does not skid.'
+  - id: 'rolling-speed-depends-on-wheel-size'
+    name: 'A bigger wheel''s top moves faster than a smaller wheel''s on the same bike.'
+    signal: 'Expects the speed of the top of the tyre to depend on the wheel''s radius at a fixed bike speed.'
+    correction: 'Rolling fixes ωR = v. A small wheel spins faster and a big one slower, but the rim of either moves at v relative to the axle, so the top moves at 2v over the road for every size.'

@@ -1,0 +1,6 @@
+---
+// @graded — with `id`, freeze the wheel when the pebble moves at the bike's speed.
+import Island, { type PebbleInTheTyreProps } from '../viz/PebbleInTheTyre.tsx';
+const props = Astro.props as PebbleInTheTyreProps;
+---
+<Island client:visible {...props} />

@@ -1,0 +1,6 @@
+---
+// @graded — with `id` and `targetRpm`, size the drum pulley, run the motor, check.
+import Island, { type SizeThePulleyProps } from '../viz/SizeThePulley.tsx';
+const props = Astro.props as SizeThePulleyProps;
+---
+<Island client:visible {...props} />

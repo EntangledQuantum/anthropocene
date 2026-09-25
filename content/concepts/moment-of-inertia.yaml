@@ -1,0 +1,14 @@
+title: 'Moment of inertia'
+blurb: 'Rotational mass: how hard a body is to set spinning about a given axis. It depends on where the mass sits, each piece counting in proportion to the square of its distance from the axis.'
+notation: 'I = \sum_i m_i r_i^2 \qquad (\text{hoop } mR^2,\ \text{disc } \tfrac12 mR^2)'
+tags:
+  - 'up-ch09'
+misconceptions:
+  - id: 'heavier-is-harder-to-spin'
+    name: 'Rotational inertia is set by the mass: same mass and same size means same stubbornness.'
+    signal: 'Predicts a tie between a hoop and a disc of equal mass and radius, or thinks sliding beads along a bar changes nothing because the mass is unchanged.'
+    correction: 'Mass counts in proportion to the square of its distance from the axis. A hoop has all its mass at the rim; a disc has much of it near the centre, where it barely moves when the body turns. Same kilograms, half the rotational inertia.'
+  - id: 'rim-mass-rolls-faster'
+    name: 'Mass at the rim gives a wheel more momentum, so a hoop rolls faster.'
+    signal: 'Bets on the hoop in a hoop-versus-disc race.'
+    correction: 'Mass at the rim makes the body harder to spin up, not easier. Rolling forces it to spin as it goes, so the hoop has to put more of its energy into turning and has less left over for going.'

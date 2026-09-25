@@ -1,0 +1,6 @@
+---
+// @graded — with `id` and `target`, place bug B, spin, and the scene checks its speed.
+import Island, { type TurntableBugsProps } from '../viz/TurntableBugs.tsx';
+const props = Astro.props as TurntableBugsProps;
+---
+<Island client:visible {...props} />

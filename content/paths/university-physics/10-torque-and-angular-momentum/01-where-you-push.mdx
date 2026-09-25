@@ -1,0 +1,120 @@
+---
+title: 'Where you push'
+blurb: 'Swing a door to a mark and hold it against a push from the other side, and see that a twist is force times lever arm, not force alone.'
+order: 1
+tier: 'core'
+minutes: 10
+teaches:
+  - 'torque'
+  - 'rotational-second-law'
+requires:
+  - 'newtons-second-law'
+  - 'moment-of-inertia'
+  - 'angular-velocity'
+status: 'live'
+updated: 2026-09-25
+---
+
+<Step>
+
+Two identical doors, 0.9 m wide, at rest. You push yours at its outer edge with 20 N,
+slanted 30° to its face. Your friend pushes theirs square-on at the middle, also with 20 N.
+
+<Predict
+  id="up-ch10-two-doors"
+  question="Which door swings open faster?"
+  options={[
+    { key: 'edge', misconception: 'full-push-counts', label: 'Yours: you push twice as far from the hinge', why: 'Twice as far, but the slant wastes half the push: only 20 sin 30° = 10 N acts across the door. 0.9 m × 10 N and 0.45 m × 20 N are both 9 N·m.' },
+    { key: 'middle', misconception: 'torque-is-a-force', label: 'Your friend’s: a square push puts all 20 N into turning', why: 'All 20 N, but on a lever half as long. Move your friend’s push out to the edge and it wins; leave it at the middle and it only ties.' },
+    { key: 'same', label: 'They swing open together', why: 'Right. Draw the line each push acts along. Both lines pass 0.45 m from the hinge, and that distance times 20 N is all the door feels.' },
+    { key: 'none', label: 'Yours barely moves: a slanted push mostly slides along the door', why: 'Only a push exactly along the door slides off. At 30° half the force still acts across it, which is plenty.' },
+  ]}
+  correct="same"
+>
+
+<PushTheDoor prompt="Drag the white dot to move your push along the door, and the amber dot to aim it." start={{ s: 0.9, angle: 30 }} />
+
+</Predict>
+
+</Step>
+
+<Step>
+
+## Swing it to the doorstop
+
+There is a doorstop at 60°. Your hand has 20 N, no more and no less.
+
+<PushTheDoor
+  id="up-ch10-door-doorstop"
+  prompt="Place and aim your push so the door reaches the doorstop in exactly one second, then check."
+  start={{ s: 0.3, angle: 90 }}
+  target={60}
+  explanation="It takes 10.2 N·m, so the push’s line must pass 0.51 m from the hinge. Square-on 0.51 m out works; so does the edge with a 34° slant. The door feels only the product of force and lever arm."
+/>
+
+</Step>
+
+<Step>
+
+## Name it
+
+The dashed iris segment was the **lever arm** $r_\perp$: the distance from the hinge to the
+push's line. Force times lever arm is the **torque**, and a net torque gives an angular
+acceleration the way a net force gives a linear one:
+
+$$\tau = r_\perp F = rF\sin\varphi, \qquad \tau_{\text{net}} = I\alpha$$
+
+<Recall id="up-ch10-recall-lever-arm" concept="torque">
+  <div slot="front">Can a 500 N push on a door turn it not at all?</div>
+
+  Yes, if its line of action passes through the hinge: a push at the hinge itself, or one
+  straight along the door. The lever arm is zero, so the torque is zero, however hard you
+  push.
+</Recall>
+
+</Step>
+
+<Step>
+
+## The stronger push loses
+
+Your friend pushes the door shut, square-on at its edge, with 12 N. You push back with 30 N.
+
+<PushTheDoor
+  id="up-ch10-door-hold"
+  prompt="Place and aim your 30 N so the door stays exactly where it is, then check."
+  force={30}
+  start={{ s: 0.2, angle: 90 }}
+  against={{ s: 0.9, F: 12, angle: -90, label: 'friend' }}
+  target={0}
+  explanation="Your line has to pass 0.36 m from the hinge: 30 × 0.36 = 12 × 0.9 = 10.8 N·m. Any closer and the weaker push wins. The two torques twist in opposite senses, so they add to zero while 42 N of force still acts on the door."
+/>
+
+</Step>
+
+<Step>
+
+## A vault door, one hand
+
+<Estimate
+  id="up-ch10-estimate-vault"
+  scenario="up-ch10-vault-door"
+  prompt="A 2000 kg vault door, 1 m wide, on perfect hinges. You push square-on at its edge with 50 N. How long until it has swung open 90°?"
+  explanation="About six and a half seconds. Its I is 667 kg·m², so 50 N·m buys only 0.075 rad/s², but that never stops adding up. A heavy door is a slow door, never an immovable one."
+/>
+
+<Recall id="up-ch10-recall-heavy-door" concept="rotational-second-law">
+  <div slot="front">Why does a vault door open under one hand, but slowly?</div>
+
+  Any net torque gives $\alpha = \tau/I$. A huge $I$ makes $\alpha$ small, never zero, and a
+  small $\alpha$ still builds up speed over time.
+</Recall>
+
+## What to carry forward
+
+- **A twist is force times lever arm.** The lever arm runs from the axis to the push's line, not to the push's point.
+- **Torques have a sense.** Opposite twists cancel even while the forces are all still there.
+
+Next: spin something with no torque at all, and watch it speed up anyway.
+
+</Step>

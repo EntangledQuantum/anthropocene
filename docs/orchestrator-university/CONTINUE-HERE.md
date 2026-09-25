@@ -1,282 +1,76 @@
 # University Physics — how to continue
 
-Handoff note, 2026-09-16. Written for the next orchestrator or agent picking this up cold.
+Handoff note for the next orchestrator or agent picking this up cold. Last rewritten
+2026-09-25, during the focused rewrite.
 
 **You are responsible for `content/paths/university-physics/` only.** The
-computational-physics and linear-algebra paths belong to a different orchestrator. Do not
-edit them, their lessons, or `src/lib/numerics/`. If you find a bug there, write it down
-and move on — there is one already recorded in §5.
+computational-physics and linear-algebra paths belong to another orchestrator. Do not edit
+them, their lessons, or `src/lib/numerics/`.
 
 ---
 
-## 1. Read these first, in order
+## 1. What happened, in one paragraph
 
-1. [`docs/learning-with-visualizations-thesis.md`](../learning-with-visualizations-thesis.md) — doctrine, wins all conflicts
-2. [`AGENTS.md`](../../AGENTS.md) — house rules
-3. [`docs/university-physics-brief.md`](../university-physics-brief.md) — the authoring contract for this path
-4. [`docs/university-physics-curriculum.md`](../university-physics-curriculum.md) — the map: 44 chapters, each with its lesson list, visual questions, misconceptions and reusable picture
-5. [`UNIVERSITY-PHYSICS-PLAN.md`](../../UNIVERSITY-PHYSICS-PLAN.md) — the build queue and chapter tick-list
+The first pass of this path was rejected by the owner: lessons were essays around huge
+multi-control "labs" (FbdBuilder, SteeringLab, ProjectileSplit, LinkedGraphs…), and nearly
+every lesson ended with the same sketch-the-graph exercise. The path is being rewritten in
+a focused, Brilliant-style shape: **one screen at a time, one decision per screen, small
+purpose-built scenes the learner acts in.** The rules are `AGENTS.md` §2a. Read them before
+anything else.
 
-The reference lesson to copy for voice and shape is
-`content/paths/university-physics/02-motion-as-geometry/01-three-graphs.mdx`.
+## 2. Read these, in order
 
----
+1. `AGENTS.md`, especially §2a (banned patterns, the required lesson shape, the scene kit)
+2. [`docs/learning-with-visualizations-thesis.md`](../learning-with-visualizations-thesis.md)
+3. [`docs/university-physics-brief.md`](../university-physics-brief.md)
+4. [`AGENT-BRIEF.md`](AGENT-BRIEF.md): the exact brief each chapter agent is given
+5. [`docs/university-physics-curriculum.md`](../university-physics-curriculum.md): the map
+6. [`UNIVERSITY-PHYSICS-PLAN.md`](../../UNIVERSITY-PHYSICS-PLAN.md): the tick list
 
-## 2. Where the work stands
+The reference lesson is
+`content/paths/university-physics/04-interaction/01-nothing-keeps-it-going.mdx`.
 
-**Latest verified local state (2026-09-17): 10 university lessons across 7 chapters;
-940 tests in 51 files, 113 indexed pages, 0 content errors/warnings/gaps. Chapters 6, 7
-and 14 each have a first lesson integrated and browser-tested locally, included in the
-verified-lessons checkpoint on `university-physics/verified-lessons`; not deployed. Full TypeScript checking still fails only on the out-of-scope §5.2 error.**
+## 3. Platform pieces the rewrite added
 
-Chapter 7 and 14 author worktrees are preserved; their scoped reviewed files and fixes
-are integrated. One author per lesson remains the workflow. Resume the same author
-after transient failures; do not abandon existing files. No commits or pushes without
-the user's request.
+- **`<Step>`** (`src/components/widgets/Step.astro`, `src/lib/step-flow.ts`). Shows a
+  lesson one step at a time. Continue unlocks when every graded widget in the step has
+  been *attempted*. Graded widgets mark their root with `data-widget-id`, which is how the
+  step finds them before hydration. `?all` in the URL opens every step.
+- **Self-checking scenes.** A widget whose `.astro` wrapper contains `@graded` counts as
+  graded (both `graph.ts` and `check-content.ts` read the marker). Such a widget used
+  without an `id` is an ungraded picture.
+- **Scene kit** (`src/components/viz/scene.tsx`): `SceneCard`, `Stage` (use `equal` for
+  true angles), `Arrow`, `Body`, `Handle`, `Meter`, `useTask`, `CheckBar`, and the fixed
+  physics palette `C`.
+- **Preview tool.** `bash scripts/preview/preview.sh <tag> <route>` builds into a private
+  dir under a lock (so parallel agents do not collide) and screenshots the lesson with
+  every step shown into `/tmp/anth-shots/<tag>/`, printing page errors. Agents copy
+  `scripts/preview/shoot.mjs` to make Playwright drivers for their graded scenes.
 
-| Chapter | State |
-|---|---|
-| 01 Language of Nature | 2 lessons live |
-| 02 Motion Along a Line | 1 lesson live (the reference lesson); a second is still wanted |
-| 03 Motion in Two/Three Dimensions | 2 lessons live; lesson 1 hydration repaired and regression-tested |
-| 04 Newton's Laws | 2 lessons live; FbdBuilder browser-tested; hidden-motion speed leak repaired locally |
-| 06 Work & Kinetic Energy | First lesson integrated locally; second flagship still needed |
-| 07 Potential Energy | First lesson integrated and browser-tested locally; second flagship still needed |
-| 14 Periodic Motion | First lesson integrated and browser-tested locally; second flagship still needed |
-| Remaining chapters 05–44 | chapter.yaml stubs |
+## 4. How a wave runs
 
-### Shared visual worlds — build once, reuse
+- One agent per chapter, briefed with `AGENT-BRIEF.md` plus a paragraph of chapter-specific
+  hooks. Keep about eight running and start the next chapter as each finishes.
+- Agents never run git. The orchestrator commits: a per-chapter commit after review, plus
+  `wip:` checkpoints of in-flight work so nothing is lost if the container is reclaimed.
+- The orchestrator reviews every chapter by building and reading screenshots before
+  committing it. Agents also drive their graded scenes with Playwright.
+- A session limit can kill agents mid-task. Resume the *same* agent with SendMessage; its
+  files are on disk and in the checkpoints.
 
-This is the single most important structural idea in this path. The curriculum asks for
-worlds that come back in new clothes; building them once is the difference between a path
-and a pile.
+## 5. Traps already paid for
 
-| World | Component | Chapters | Status |
-|---|---|---|---|
-| Linked x/v/a graphs | `LinkedGraphs` | 2, 3, 14 | built, verified in browser |
-| Free-body diagram builder | `FbdBuilder` | 4, 5, 11 | chapter 4 lesson 1 browser-verified; ramp/multi-body modes still need coverage |
-| Potential track + total-E line | `PotentialTrack` | 7, 14, 30, 40 | built, verified in browser |
-| Field arrows + equipotentials | `FieldCanvas` | 13, 21, 22, 23, 27, 28 | built, verified in browser |
-| Two-source ripple tank | `RippleTank` | 15, 16, 35, 36 | **to build** |
-| Phasor stage | `PhasorStage` | 31, 35 | **to build** |
-
-Before building any widget, check this table. Chapter 22 should reuse chapter 21's field
-canvas, not write a second one.
-
-### `src/lib/physics/` — the single source of truth
-
-Every number a widget prints must come from here. Never reimplement physics in a widget.
-
-- `vectors.ts` — arrow vs components kept as separate operations, because that distinction *is* chapter 1
-- `kinematics.ts` — one worldline, differentiated down and accumulated back up; projectiles with optional quadratic drag
-- `interp.ts` — Fritsch–Carlson monotone cubic. A spline that overshoots would invent accelerations the learner never asked for
-- `fields.ts` — superposed inverse-power fields. **Read the header comment before using `flux`** (see §4)
-- `landscape.ts` — potential landscapes, velocity-Verlet marble, turning points, equilibria
-- `dimensions.ts`, `dynamics.ts`, `motion2d.ts` — chapters 1, 4, 3 respectively
-- `work.ts`, `landscapes-ch7.ts`, `oscillator.ts` — **partial**, see §3
-
----
-
-## 3. Unfinished work already on disk
-
-Three agents were killed mid-task by a session limit. Their libraries landed and pass
-tests; their **lessons were never written**. Do not rewrite these from scratch — finish them.
-
-| File | For | State |
-|---|---|---|
-| `src/lib/physics/work.ts` + tests | Ch 6 Work & Kinetic Energy | first lesson integrated locally; independently integrated constant-force ledger tested |
-| `src/components/viz/WorkArrows.tsx` | Ch 6 | wrapper registered; signs, drag/keyboard, work ledger and stopping boundary browser-tested |
-| `src/lib/physics/landscapes-ch7.ts` + tests | Ch 7 Potential Energy | extra landscapes done, no lessons |
-| `src/components/viz/ForceFromSlope.tsx` + `.astro` | Ch 7 | built, unverified |
-| `src/lib/physics/oscillator.ts` + tests | Ch 14 Periodic Motion | library done (driven damped oscillator, exact pendulum period via AGM), no lessons |
-
-`oscillator.test.ts` arrived with five wrong assertions, now fixed. Worth knowing what they
-were, because they are the kind of error to watch for:
-
-- It claimed the pendulum period is ~3× at 170°. The exact value is **2.4394** —
-  T/T₀ = (2/π)·K(sin θ₀/2), and K diverges only logarithmically, so 3× belongs much closer
-  to 180°. The library was right and the test was wrong.
-- It read `equilibriaOf(LANDSCAPES.pendulum)[0]`, which is the **unstable** maximum at −π
-  and has no `omega`. Ask for `.find(e => e.stability === 'stable')`.
-- Two tolerances were tighter than the physics they measured (asserting a tiny swing's
-  period is *exactly* the small-angle period, when it genuinely differs by θ₀²/16).
-
----
-
-## 4. Traps already paid for
-
-**The Gauss dimension trap.** Flux through a plane loop is invariant only for a 1/r field.
-Drawing 1/r² point charges and integrating around a circle — the obvious thing to build —
-makes the flux *halve* when the radius doubles, teaching the exact opposite of Gauss's law.
-`fields.ts` makes `kind` an explicit choice (`'point'` = 1/r², a 3D charge in a slice, use
-`fluxThroughSphere`; `'line'` = 1/r, end-on line charge, plane flux is honest). Tests pin
-both behaviours. **A Gauss lesson must use `kind="line"`.**
-
-**Never animate through React state.** Drive the loop from refs and throttle readouts to
-~8 Hz. `setState` per frame re-runs the effect, resets the accumulator and silently drops
-the simulation to a few steps per second. `PotentialTrack.tsx` is the reference
-implementation of doing it right.
-
-**Widgets and scenarios register by directory.** Adding `src/components/widgets/X.astro`
-registers `<X>` in every lesson — there is no import list to edit. Scenario packs go in
-`src/components/learn/scenarios/*.ts` exporting `tune` / `sketch` / `estimate`. This exists
-so several authors can work at once without colliding; do not edit the big shared
-`*-scenarios.ts` files.
-
-**Concept ids are globally unique and single-owner.** Before creating one, `ls
-content/concepts/`. If the id is taken, that is the rule working — `requires:` it and link.
-Give each concurrent agent a disjoint reserved id set up front.
-
-**YAML:** LaTeX in single quotes (double quotes turn `\tfrac` into a TAB); apostrophes
-doubled. **MDX:** write `≤`/`≥` in prose, never `<=`/`>=`.
-
----
-
-## 5. Open bugs
-
-### 5.1 Hydration failure — repaired locally, 2026-09-16
-
-**Verified repair:** `Predict.tsx` now renders its payoff inside a `hidden` container
-before commitment rather than omitting the children. Astro had placed its first
-`client:visible` bootstrap script in the unused-slot `<template>`, where browsers never
-execute it. No visibility observer was registered anywhere on the page. This was not an
-IntersectionObserver or hidden-browser failure.
-
-Static-build Chromium verification passes: payoff hidden before commitment, visible and
-hydrated afterward, speed rises under leftward acceleration, Tune accepts 90°, and the
-below-fold RankOrder hydrates after scrolling. No browser page errors; 919 tests and
-build pass. Regression: `npx tsx scripts/check-lesson-hydration.ts` against a static preview
-at `http://127.0.0.1:4322/anthropocene` (or pass an alternate base URL).
-
-The original incident notes follow for provenance; the diagnosis below is superseded.
-
-`content/paths/university-physics/03-motion-in-space/01-acceleration-need-not-point-where-you-are-going.mdx`
-
-**Every `client:visible` island on this page fails to hydrate.** Not just its `SteeringLab`
-— the Predicts, Tune, RankOrder and Recalls are all inert too. The page renders its
-server-side markup and nothing ever becomes interactive. `SteeringLab`'s canvas stays at
-the default 300×150 backing store, never paints, and its readouts sit frozen at their
-initial values — so it reports aₙ = 0 and "straight" at 90°, which contradicts the very
-claim the lesson is built on.
-
-Reproduce:
-
-```bash
-npm run build
-# serve dist/ on any port, then in the browser:
-#   [...document.querySelectorAll('astro-island[client=visible]')]
-#     .map(e => e.hasAttribute('ssr') ? 0 : 1).join('')
-```
-
-Use a tall viewport (e.g. 1100×2600) so several islands are in view at load — scrolling
-does **not** trigger hydration in the embedded browser pane, so only what is visible at
-load counts. On this page you get `0000000`. On every other lesson, and on
-computational-physics, the islands inside the viewport hydrate normally (`111000000`).
-
-Already ruled out: missing or misnamed JS chunks (all present and correctly referenced),
-malformed island `props` (all parse), the `astro-island` custom element (defined), console
-errors (none), network failures (none), viewport and scroll. The island modules are
-**never even requested**, so the IntersectionObserver callback never fires for this page.
-
-Next thing to try: bisect the lesson body. Delete widgets from the MDX one at a time,
-rebuild, and re-run the hydration probe until the page comes back — `SteeringLab` and
-`RankOrder` are the two components unique to this lesson versus the working ones.
-
-### 5.2 Pre-existing, outside this path — report only, do not fix
-
-```
-src/lib/numerics/sph.ts(298,72): error TS1117:
-An object literal cannot have multiple properties with the same name.
-```
-
-Two independent agents flagged it. It is the only error in a full `npx tsc --noEmit` of the
-repo. A duplicate key means one value silently wins, so it is a real bug — but it belongs
-to the computational-physics orchestrator.
-
-### 5.3 Not browser-verified
-
-`VectorFrame`, `DimensionBalance`, `UnitChain`, `ProjectileSplit` still need recorded
-browser acceptance. Chapter 7 and 14 reviews, corrections and scoped integration are
-complete. All five regression scripts pass against the combined main static build on
-port 4322 (pass `http://127.0.0.1:4322/anthropocene` to the chapter 7/14 scripts).
-
-- Chapter 7 (`agent-a4ebb16279d758d0d`): corrected force-axis directions to coordinate-neutral
-  positive/negative x and removed the pre-prediction gravity answer from the caption.
-  Rebuilt static preview on port 4325; `npx tsx scripts/check-landscape-lesson.ts` passes,
-  including assertions against both review defects and the existing graded interactions.
-- Chapter 14 (`agent-a5ee80fb9a17a95a5`): reproduced disappearing pendulum bobs at 120°
-  (centres y = −25 outside the SVG). Changed only the pendulum viewport in
-  `OscillatorClock.tsx` to `0 -55 660 310`; spring viewport and physics are unchanged.
-  Rebuilt static preview on port 4326; `npx tsx scripts/check-oscillator-clock.ts` passes:
-  spring amplitude independence, quarter-cycle x/v/a, mass scaling, reset, keyboard time,
-  sampled table, and bob bounds at 5°, 10°, 90°, 120° over the displayed time range.
-  Before/after screenshot inspected; 45 oscillator physics tests pass. Integrated-main
-  browser acceptance also verifies the 10°/90° period excess, full-cycle return, all three
-  predictions, wrong-then-correct velocity sketch, and both Recalls with no page errors.
-
-Verified locally on 2026-09-17:
-- `npx tsx scripts/check-work-lesson.ts`: signs, keyboard/drag, independent work/K ledger,
-  stop-boundary clamp, childless Predict, sketch rejection/retry, classification and Recalls.
-- `npx tsx scripts/check-fbd-lesson.ts`: both chapter 4 lessons, F/m, mass scaling,
-  coasting after removing force, hidden-motion speed suppression, three-force equilibrium,
-  equal 600 kN interaction forces, normal-force release and 12 N block-contact matching.
-- `Predict.astro` now omits the slot for childless Predict instances. Otherwise the server
-  emitted an empty hidden payoff while the client omitted it, producing React #418.
-
-Outstanding visual polish: SketchCurve's y-axis title overlaps its top tick; FbdBuilder's
-south-west arrow label can crowd the force scale. These are not physics or hydration
-failures. Track them without misreporting untested configurations as verified.
-
----
-
-## 6. How to run a wave
-
-Six concurrent Opus agents worked in one checkout successfully. What made it work:
-
-1. **One agent owns one chapter** and writes its two flagship lessons. Two excellent
-   lessons beat four thin ones.
-2. **Disjoint file ownership.** Each agent creates only its own lessons, concepts, widgets,
-   lib module and scenario pack. Everything shared is import-only.
-3. **Agents must not run `npm run dev` or `npm run build`** — the port and the Vite cache
-   collide across agents, and HMR churn from concurrent writes will invalidate any browser
-   check you try to run at the same time. Agents verify with `npm run content:check` and
-   `npx vitest run src/lib/physics`.
-4. **Agents must not run git.** The orchestrator commits, so a half-written file never
-   lands on its own.
-5. **The orchestrator does all browser validation**, against a **static build**, not the
-   dev server:
-
-```bash
-npm run build                      # then serve dist/ yourself on a spare port
-```
-
-Validate by outcome, not by reading the diff. Drive the interactions, read the numbers
-back, and check them against the physics. Both bugs in §5.1 and the five wrong assertions
-in §3 were invisible to `content:check`, to `vitest`, and to the agents' own reports.
-
-### Before you commit
-
-```bash
-npm run content:check
-npm test
-npm run build
-```
-
-Then tick the chapter in `UNIVERSITY-PHYSICS-PLAN.md`, flip its `chapter.yaml` to
-`status: 'live'`, and delete the row you finished — ship the thing, delete the entry, same
-commit.
-
----
-
-## 7. What to do next, in order
-
-1. **Fix §5.1.** A lesson that is live and inert is worse than one that does not exist.
-2. **Finish chapters 6, 7 and 14** from the libraries already on disk (§3). Cheapest real
-   progress available — the hard part is done.
-3. **Browser-verify the widgets in §5.3**, starting with `FbdBuilder`, because chapters 5
-   and 11 are scheduled to reuse it and will inherit any defect.
-4. **Chapter 5** (Applying Newton's Laws) — reuses `FbdBuilder` with rotated axes.
-5. **Chapter 2 lesson 2** — constant acceleration, the case people reach for when it does
-   not apply.
-6. Then work down the curriculum. Chapters 13 and 21–23 are cheap because `FieldCanvas`
-   already exists; 15/16/35/36 need `RippleTank` built first.
+- **Gauss dimension trap.** Flux through a plane loop is invariant only for a 1/r field;
+  `fields.ts` makes `kind` explicit. A Gauss lesson must use line charges (1/r) in a plane
+  slice, or real 3D spheres.
+- **Rolling marbles carry spin.** A rolling ball hides 2/7 of its KE in rotation; a
+  frictionless cart does not. Chapter 7 uses carts for that reason.
+- **Pendulum period.** It is 2.4394× the small-angle period at 170°, not 3×.
+- **Never animate through React state.** Loops live in refs; readouts are throttled to about
+  8 Hz (`HoldToPush.tsx`).
+- **Predict payoffs hydrate late.** A scene inside a `<Predict>` loads only once revealed,
+  so a click in the first instant after commit can be lost. Harmless for people; drive
+  scripts should wait.
+- **YAML:** LaTeX goes in single quotes, apostrophes doubled. **MDX:** use `≤`/`≥` in prose.
+- **Out of scope, known:** `src/lib/numerics/sph.ts(298)` has a duplicate object key
+  (TS1117). It belongs to computational physics; report it, don't fix it.

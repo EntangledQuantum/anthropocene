@@ -1,0 +1,6 @@
+---
+// @graded — when given `id`, the scene checks itself: the sideways speed at which the ground falls away as fast as the ball falls.
+import Island, { type OneSecondOfOrbitProps } from '../viz/OneSecondOfOrbit.tsx';
+const props = Astro.props as OneSecondOfOrbitProps;
+---
+<Island client:visible {...props} />

@@ -64,6 +64,13 @@ describe('τ = I α', () => {
     expect(tau / DOOR.F).toBeCloseTo(0.509, 3);
     // reachable: square-on at the edge is 18 N·m, well above it
     expect(doorTorque(DOOR.L, DOOR.F, Math.PI / 2)).toBeGreaterThan(tau);
+    // … or at the edge with a slant of about 34°
+    expect((Math.asin(tau / DOOR.F / DOOR.L) * 180) / Math.PI).toBeCloseTo(34, 0);
+  });
+
+  it('the misconception numbers: 50 N at 0.3 m (15 N·m) loses to 20 N square-on at the 0.9 m edge (18 N·m)', () => {
+    expect(doorTorque(0.3, 50, Math.PI / 2)).toBeCloseTo(15, 12);
+    expect(doorTorque(DOOR.L, 20, Math.PI / 2)).toBeCloseTo(18, 12);
   });
 
   it('holding the door: 30 N needs 0.36 m of lever arm to cancel 12 N square-on at the edge', () => {
@@ -112,6 +119,8 @@ describe('pulling in the weights: L holds, K does not', () => {
 
   it('the chair starts at 1 rev/s with the dumbbells at 0.75 m: I = 3.45 kg·m²', () => {
     expect(chairInertia(CHAIR, 0.75)).toBeCloseTo(3.45, 10);
+    expect(chairInertia(CHAIR, 0.15)).toBeCloseTo(1.29, 10);
+    expect(chairInertia(CHAIR, 0.75) * TWO_PI).toBeCloseTo(21.7, 1);
   });
 
   const L = chairInertia(CHAIR, 0.75) * TWO_PI;
@@ -134,6 +143,7 @@ describe('pulling in the weights: L holds, K does not', () => {
     expect(K0).toBeCloseTo(68.1, 1);
     expect(K1).toBeCloseTo(182.1, 1);
     expect(rel(pullInWork(CHAIR, L, 0.75, 0.15), K1 - K0)).toBeLessThan(1e-5);
+    expect(K1 - K0).toBeCloseTo(114, 0);
   });
 
   it('pushing the weights back out returns the chair to its starting spin', () => {
@@ -149,6 +159,7 @@ describe('stepping onto the ride: L shared, K lost', () => {
   it('17 rpm needs the child 1.15 m from the axle', () => {
     const r = stepRadiusFor(RIDE, 17);
     expect(r).toBeCloseTo(1.15, 2);
+    expect(RIDE.child * r * r).toBeCloseTo(40, 0);
     expect(rideAfterStep(RIDE, r)).toBeCloseTo(17, 10);
   });
 

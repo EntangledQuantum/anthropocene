@@ -1,8 +1,0 @@
----
-// Wrapper so lessons can write <FbdBuilder /> with no import and no client
-// directive: MDX components supplied through the `components` prop cannot carry
-// client:* directives themselves, so the directive lives here.
-import Island, { type FbdBuilderProps } from '../viz/FbdBuilder.tsx';
-const props = Astro.props as FbdBuilderProps;
----
-<Island client:visible {...props} />

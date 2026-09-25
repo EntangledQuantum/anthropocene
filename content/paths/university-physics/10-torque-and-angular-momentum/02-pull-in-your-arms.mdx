@@ -1,0 +1,125 @@
+---
+title: 'Pull in your arms'
+blurb: 'Spin up a chair by pulling weights in and slow a merry-go-round by stepping on, and find the one quantity that never changes while the energy does.'
+order: 2
+tier: 'core'
+minutes: 10
+teaches:
+  - 'angular-momentum'
+  - 'angular-momentum-conservation'
+requires:
+  - 'torque'
+  - 'moment-of-inertia'
+  - 'angular-velocity'
+  - 'momentum-conservation'
+  - 'rotational-kinetic-energy'
+status: 'live'
+updated: 2026-09-25
+---
+
+<Step>
+
+You sit on a frictionless office chair, turning once a second, with a 2 kg dumbbell at
+arm's length in each hand. You pull both dumbbells in to your chest.
+
+<Predict
+  id="up-ch10-what-stays"
+  question="While you pull them in, which of these stays the same?"
+  options={[
+    { key: 'spin', misconception: 'spin-rate-conserved', label: 'How fast you turn: nothing twisted the chair', why: 'Nothing twisted it, and you still speed up. Try it below and watch the spin meter climb.' },
+    { key: 'inertia', label: 'How hard you are to turn, I', why: 'I is exactly what you changed. Mass near the axis counts for less, so I falls from 3.45 to 1.29 kg·m² as the dumbbells come in.' },
+    { key: 'energy', misconception: 'kinetic-energy-follows-l', label: 'The kinetic energy of the spin', why: 'The tempting one. Watch the energy meter below: it nearly triples.' },
+    { key: 'none', label: 'None of these three', why: 'Right. Spin goes up, I goes down, energy goes up. Watch the I × ω meter: it does not move.' },
+  ]}
+  correct="none"
+>
+
+<PullInTheWeights prompt="Drag toward the centre to pull the dumbbells in, and outward to push them back." />
+
+</Predict>
+
+</Step>
+
+<Step>
+
+## Keep pace with the ghost
+
+The faint arm turns at exactly twice your starting spin. The spin meter is hidden.
+
+<PullInTheWeights
+  id="up-ch10-chair-ghost"
+  prompt="Pull the dumbbells in until your arms keep pace with the ghost, then check."
+  target={2}
+  explanation="0.36 m. Twice the spin needs half the inertia, 1.73 kg·m², because I × ω cannot change. The dumbbells’ share of I shrinks as r², but your own 1.2 kg·m² stays put."
+/>
+
+</Step>
+
+<Step>
+
+## Name it
+
+The product that held still is the **angular momentum**. For each dumbbell it is
+$\vec r\times\vec p$; for the whole spinning chair it adds up to $I\omega$. With no torque
+from outside, it cannot change:
+
+$$L = I\omega = \Big(I_{\text{you}} + \textstyle\sum m r^2\Big)\,\omega, \qquad \tau_{\text{ext}} = 0 \;\Rightarrow\; I_1\omega_1 = I_2\omega_2$$
+
+<Recall id="up-ch10-recall-diver" concept="angular-momentum">
+  <div slot="front">A diver tucks mid-air and spins faster. What did she change, and what could she not?</div>
+
+  She shrank her $I$ by pulling mass toward her spin axis. She could not change $L$: in the
+  air nothing twists her about her centre of mass, so $\omega$ rises to keep $I\omega$ fixed.
+</Recall>
+
+</Step>
+
+<Step>
+
+## Where did the energy come from?
+
+Pulling the dumbbells from 0.75 m to 0.15 m takes the spin energy from 68 J to 182 J.
+
+<Predict
+  id="up-ch10-energy-source"
+  question="Where did the extra 114 J come from?"
+  options={[
+    { key: 'arms', label: 'Your arms: you hauled each dumbbell inward against its pull outward', why: 'Right. Each dumbbell needs an inward pull, m ω² r, to stay on its circle, and you moved it inward along that pull. Pull times distance adds up to exactly 114 J.' },
+    { key: 'L', misconception: 'kinetic-energy-follows-l', label: 'From the angular momentum: some of L became energy', why: 'L is 21.7 kg·m²/s before and after, so none was spent. They are separate books: K = L²/2I, so the same L on a smaller I is more energy.' },
+    { key: 'free', label: 'From nowhere: a spin does not have to conserve energy', why: 'Energy is always accounted for, and here you can feel the account: a spinning weight is hard to pull in, and harder the faster you turn.' },
+    { key: 'bearing', label: 'From the chair’s bearing, which pushes harder as you speed up', why: 'The bearing does not move, so its force does no work. It also sits on the axis, so it exerts no torque.' },
+  ]}
+  correct="arms"
+/>
+
+</Step>
+
+<Step>
+
+## Step onto the ride
+
+A merry-go-round coasts at 20 rpm on a frictionless axle. A 30 kg child standing beside it
+steps on.
+
+<StepOnTheRide
+  id="up-ch10-ride-step"
+  prompt="Choose where she steps on so the ride settles at 17 rpm, step her on, then check."
+  target={17}
+  explanation="1.15 m from the axle, adding 40 kg·m² to the ride’s 225. Her shoes skid, but that friction is inside the system, so L stays put. The energy falls from 493 J to 420 J: the same L with less energy, the chair run backwards."
+/>
+
+<Recall id="up-ch10-recall-star" concept="angular-momentum-conservation">
+  <div slot="front">The Sun turns once in about 25 days. Squeezed to a ball 24 km across, with nothing twisting it, how fast would it turn?</div>
+
+  About 1500 times a second. $I$ scales as $R^2$, and $R$ shrinks by a factor of 58,000,
+  so $\omega$ grows by $58{,}000^2$. Real collapsed stars shed some spin on the way, and the fastest pulsars still turn over 700 times a second.
+</Recall>
+
+## What to carry forward
+
+- **With no outside twist, $I\omega$ is fixed.** Shrink $I$ and the spin rises to pay for it.
+- **Angular momentum and energy keep separate books.** Pulling in adds energy; stepping on loses it; $L$ never moves.
+
+Next: bodies where every torque cancels, and nothing turns at all.
+
+</Step>

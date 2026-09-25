@@ -11,33 +11,29 @@ ones carrying the chapter's core structure and its reusable picture. Depth passe
 later; a chapter with two excellent lessons beats four thin ones. Ship the lesson, tick the
 row, same commit.
 
-## Shared visual worlds
+## How lessons are built now
 
-The curriculum asks for worlds that come back in new clothes. Build these general, reuse
-them rather than duplicating.
+Every lesson is a sequence of `<Step>`s with one decision each, built on small
+self-checking scenes from `src/components/viz/scene.tsx` (`AGENTS.md` §2a). The old
+shared "worlds" (FbdBuilder, LinkedGraphs, PotentialTrack, FieldCanvas and the rest)
+were deleted in the rewrite: reuse the kit and `src/lib/physics/`, not a lab.
 
-| World | Component | Chapters | Status |
-|---|---|---|---|
-| Linked x/v/a graphs | `LinkedGraphs` | 2, 3, 14 | **built** |
-| Free-body diagram builder | `FbdBuilder` | 4, 5, 11 | **built** |
-| Potential track + total-E line | `PotentialTrack` | 7, 14, 30, 40 | **built** |
-| Field arrows + equipotentials | `FieldCanvas` | 13, 21, 22, 23, 27, 28 | **built** |
-| Two-source ripple tank | `RippleTank` | 15, 16, 35, 36 | to build |
-| Phasor stage | `PhasorStage` | 31, 35 | to build |
+Chapters are written by one agent each, from
+[`docs/orchestrator-university/AGENT-BRIEF.md`](docs/orchestrator-university/AGENT-BRIEF.md).
 
 ## Chapters
 
 Tick when the chapter has its two flagship lessons live.
 
 ### Mechanics
-- [ ] 01 Language of Nature — dimension, vectorhood
-- [~] 02 Motion Along a Line — *"Three graphs that must agree" live*
-- [ ] 03 Motion in Two and Three Dimensions
-- [x] 04 Newton's Laws — *"Nothing has to keep it going" and "Two bodies, two forces, one interaction" live*
-- [ ] 05 Applying Newton's Laws
-- [~] 06 Work and Kinetic Energy — *"Only the shared piece counts" integrated and browser-tested locally; second flagship still needed*
-- [~] 07 Potential Energy and Conservation — *"Height is not force" integrated and browser-tested locally; second flagship still needed*
-- [ ] 08 Momentum, Impulse, and Collisions
+- [x] 01 Language of Nature — dimension, vectorhood
+- [x] 02 Motion Along a Line
+- [x] 03 Motion in Two and Three Dimensions
+- [x] 04 Newton's Laws
+- [x] 05 Applying Newton's Laws
+- [x] 06 Work and Kinetic Energy
+- [x] 07 Potential Energy and Conservation
+- [x] 08 Momentum, Impulse, and Collisions
 - [ ] 09 Rotation of Rigid Bodies
 - [ ] 10 Dynamics of Rotational Motion
 - [ ] 11 Equilibrium and Elasticity

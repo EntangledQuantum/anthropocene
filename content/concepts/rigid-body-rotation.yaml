@@ -1,0 +1,5 @@
+title: 'Rigid rotation'
+blurb: 'A rigid body is many particles locked together, so when it turns they all turn through one shared angle. Each point runs its own circle, sized by its distance from the axis.'
+notation: 's = r\theta'
+tags:
+  - 'up-ch09'

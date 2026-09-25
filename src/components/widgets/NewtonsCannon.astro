@@ -1,0 +1,6 @@
+---
+// @graded — when given `id`, the scene checks itself: fire a shot that never lands.
+import Island, { type NewtonsCannonProps } from '../viz/NewtonsCannon.tsx';
+const props = Astro.props as NewtonsCannonProps;
+---
+<Island client:visible {...props} />

@@ -28,3 +28,6 @@ public/pagefind/
 
 # agent worktrees
 .claude/worktrees/
+
+# per-agent Playwright drivers made from scripts/preview/shoot.mjs
+scripts/preview/drive-*.mjs

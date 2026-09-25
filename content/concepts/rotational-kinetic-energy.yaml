@@ -1,0 +1,10 @@
+title: 'Rotational kinetic energy'
+blurb: 'A spinning body stores ½Iω², the sum of ½mv² over its pieces, each moving at its own v = ωr. A rolling body fills two lockers from one supply: ½mv² for going and ½Iω² for turning.'
+notation: 'K = \tfrac12 M v_{\text{cm}}^2 + \tfrac12 I\omega^2'
+tags:
+  - 'up-ch09'
+misconceptions:
+  - id: 'friction-steals-rolling-energy'
+    name: 'Rolling objects are slower than sliding ones because friction eats their energy.'
+    signal: 'Explains the hoop''s slower descent as energy lost to friction or heat.'
+    correction: 'Static friction does push on a rolling body, but on a point that is momentarily at rest, so it does no work and takes no energy. All of m g h is still there at the bottom. The hoop is slower because half of that energy is in its spin, not because any went missing.'

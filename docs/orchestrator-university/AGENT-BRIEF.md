@@ -102,7 +102,7 @@ your small scene.
 3. **Look at it.** Build and screenshot your lesson with every step shown:
 
    ```bash
-   bash node_modules/.agent-tools/preview.sh chNN /learn/university-physics/<chapter-slug>/<lesson-slug>
+   bash scripts/preview/preview.sh chNN /learn/university-physics/<chapter-slug>/<lesson-slug>
    ```
 
    The chapter slug is the directory name without its number prefix, and likewise the
@@ -111,8 +111,8 @@ your small scene.
    and each scene has one obvious thing to do. The JSON it prints lists page errors; there
    must be none. If the build fails because of *another* chapter's file, wait a minute and
    retry.
-4. **Drive each graded scene.** Copy `node_modules/.agent-tools/shoot.mjs` to
-   `node_modules/.agent-tools/drive-chNN.mjs` and adapt it. Perform the wrong action,
+4. **Drive each graded scene.** Copy `scripts/preview/shoot.mjs` to
+   `scripts/preview/drive-chNN.mjs` and adapt it. Perform the wrong action,
    click Check and read the miss line. Then perform the right action, click Check and
    confirm it says Solved. Fix what you find and re-run.
 
