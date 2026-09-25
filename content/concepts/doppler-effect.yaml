@@ -1,0 +1,17 @@
+title: 'The Doppler effect'
+blurb: 'A moving source bunches its crests up ahead and spreads them out behind, and a moving listener meets crests faster or slower. The pitch depends on the velocity component along the line to the listener, never on the distance.'
+notation: 'f'' = f\,\frac{v + v_L}{v - v_S}'
+tags: ['up-ch16']
+misconceptions:
+  - id: 'up-ch16-pitch-rises-as-it-nears'
+    name: 'An approaching siren sounds higher and higher the closer it gets.'
+    signal: 'Predicts a pitch that climbs steadily during the approach and peaks at the closest point.'
+    correction: 'At steady speed the crests arrive equally bunched the whole way in, so the pitch is high and constant. What grows is the loudness. The pitch falls only around the moment it passes, as the velocity toward you swings round.'
+  - id: 'up-ch16-doppler-relative-only'
+    name: 'Only the relative speed matters, so a moving listener and a moving source give the same shift.'
+    signal: 'Expects the same speed to produce the same pitch whether you or the siren moves.'
+    correction: 'The air is the stage. A moving source shortens the wavelength in the air; a moving listener leaves it unchanged and only meets crests faster. To hear 800 Hz from a 700 Hz whistle, the whistle must approach at 42.9 m/s but you must ride at 49.0 m/s.'
+  - id: 'up-ch16-no-shift-while-still'
+    name: 'You hear the true pitch until the source passes, then a lower one.'
+    signal: 'Thinks the shift only happens on the way out.'
+    correction: 'The approach shortens the gaps between crests just as the retreat stretches them. The pitch is above the true value on the way in and below it on the way out.'

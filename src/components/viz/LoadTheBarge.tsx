@@ -124,7 +124,7 @@ export default function LoadTheBarge({ id, prompt, mark = 1.1, explanation }: Lo
               <text x={s.sx(L / 2 - 0.6)} y={s.sy(m - EMPTY) + 4} textAnchor="end" fontSize={11} fill={C.faint} fontFamily="var(--font-mono)">{m}</text>
             </g>)}
             <line x1={s.sx(-L / 2 + 0.2)} x2={s.sx(-L / 2 + 3.2)} y1={s.sy(mark - EMPTY)} y2={s.sy(mark - EMPTY)} stroke={C.ink} strokeWidth={3} />
-            <text x={s.sx(-L / 2 + 3.4)} y={s.sy(mark - EMPTY) + 5} fontSize={13} fill={C.ink}>mark, {mark} m</text>
+            <text x={s.sx(-L / 2 + 0.2)} y={s.sy(mark - EMPTY) - 7} fontSize={13} fill={C.ink}>mark, {mark} m</text>
             {Array.from({ length: crates }, (_, i) => {
               const col = i % 4, row = Math.floor(i / 4);
               const cx = -3.6 + col * 2.4, y0 = H - EMPTY + row * 0.42;
@@ -138,7 +138,7 @@ export default function LoadTheBarge({ id, prompt, mark = 1.1, explanation }: Lo
             <line key={a} x1={s.sx(L / 2)} y1={s.sy(a)} x2={s.sx(5.5)} y2={s.sy(b)} stroke={C.soft} strokeWidth={2} />
           ))}
           <line x1={s.sx(-9)} x2={s.sx(5.5)} y1={s.sy(0)} y2={s.sy(0)} stroke={WATER_LINE} strokeWidth={2} />
-          <text x={s.sx(-6.6)} y={s.sy(-1.75)} fontSize={12} fill={C.faint}>deck 10 m × 4 m · hull {t(BARGE.mass)} · each crate 2 t</text>
+          <text x={s.sx(-6.6)} y={s.sy(3.9)} fontSize={12} fill={C.faint}>deck 10 m × 4 m · hull {t(BARGE.mass)} · each crate 2 t</text>
         </>; }}
       </Stage>
       <p className="hud-label" style={{ margin: '6px 0 0' }}>

@@ -6,7 +6,7 @@
 import { describe, expect, it } from 'vitest';
 import {
   B_AIR, BOOM_TUBE, CROWD_WAVE, RHO_AIR, RIDER_FORK, V_AIR, WHISTLE,
-  beatEnvelope, beatFrequency, closedPipeHarmonics, closedTubeDisplacement, closedTubeResonantLengths,
+  beatEnvelope, beatEnvelopeAtPhase, beatFrequency, closedPipeHarmonics, closedTubeDisplacement, closedTubeResonantLengths,
   closedTubeResponse, crests, displacement, dopplerShift, emissionLag, heardFrequency, idealGasSoundSpeed,
   listenerSpeedFor, openPipeHarmonics, pressure, pressureAmplitude, resonatorAmplitude, riderForkFrequency,
   riderPositionFor, sourceSpeedFor, speedOfSound, superpose, wavelength, wavelengthAhead, wavelengthBehind,
@@ -204,6 +204,12 @@ describe('beats', () => {
       const product = 2 * Math.cos(Math.PI * (f1 - f2) * t) * Math.cos(Math.PI * (f1 + f2) * t);
       expect(superpose(f1, f2, t)).toBeCloseTo(product, 10);
       expect(Math.abs(superpose(f1, f2, t))).toBeLessThanOrEqual(beatEnvelope(f1, f2, t) + 1e-12);
+    }
+  });
+
+  it('the running-phase envelope matches the closed form for a steady pair', () => {
+    for (const t of [0.05, 0.31, 1.7]) {
+      expect(beatEnvelopeAtPhase(2 * Math.PI * (440 - 443.5) * t)).toBeCloseTo(beatEnvelope(440, 443.5, t), 12);
     }
   });
 

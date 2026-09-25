@@ -1,0 +1,13 @@
+title: 'Mechanical wave'
+blurb: 'A wave is a pattern that travels through a medium while each piece of the medium only moves back and forth about its own place. In a pulse sliding at speed v, every bead moves at minus v times the slope of the rope under it.'
+notation: 'y(x,t) = f(x - vt),\qquad \partial_t y = -v\,\partial_x y'
+tags: ['up-ch15']
+misconceptions:
+  - id: 'up-ch15-wave-carries-medium'
+    name: 'A wave carries the medium along with it.'
+    signal: 'Draws a bead on a passing pulse moving in the direction the pulse travels, or expects the rope to bunch up at the far end.'
+    correction: 'Each bead on a transverse wave moves only up and down about its own floor mark. What travels is the shape: the next bead copies the one before it a moment later. When the pulse has passed, every bead is back where it started.'
+  - id: 'up-ch15-bead-slides-down-slope'
+    name: 'A bead on a sloping part of the rope slides down the slope, like a ball on a hill.'
+    signal: 'Says a bead on the front of a right-moving hump is falling because the rope there slopes down to the right.'
+    correction: 'The slope is not a hill; it is the shape arriving. A hump moving right is about to put a higher piece of rope where the front bead sits, so the front bead rises and the back bead falls, at v times the slope.'

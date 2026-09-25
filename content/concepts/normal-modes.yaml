@@ -1,0 +1,13 @@
+title: 'Normal modes and harmonics'
+blurb: 'A rope fixed at both ends can hold only patterns with a still point at each end: one half-wavelength, two, three. Each fits at one frequency, a whole-number multiple of the lowest, and the rope, not the shaker, sets them.'
+notation: '\lambda_n = \frac{2L}{n},\qquad f_n = \frac{n v}{2L} = \frac{n}{2L}\sqrt{\frac{F}{\mu}}'
+tags: ['up-ch15']
+misconceptions:
+  - id: 'up-ch15-one-wavelength-fits'
+    name: 'The lowest note of a rope is the one where a whole wavelength fits.'
+    signal: 'Shakes a rope at v/L for its fundamental, and gets two loops.'
+    correction: 'The lowest pattern is a single loop, which is half a wavelength. So λ₁ = 2L and f₁ = v/2L. A whole wavelength on the rope is already the second harmonic, with a still point in the middle.'
+  - id: 'up-ch15-harder-shake-higher-note'
+    name: 'Shaking harder or faster raises the rope''s harmonics.'
+    signal: 'Sorts a harder or faster shake as something that changes the rope''s lowest note.'
+    correction: 'The harmonics are fₙ = n v/2L: length, tension and mass per length set them. Shaking harder makes the loops bigger; shaking faster only picks a different harmonic or none.'

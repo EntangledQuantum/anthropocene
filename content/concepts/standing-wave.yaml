@@ -1,0 +1,13 @@
+title: 'Standing waves'
+blurb: 'Shake a rope that is tied at the far end and the wave going out adds to the wave coming back. At a few rates they add to a pattern that stays in place: loops that swing hugely, and points in between that never move.'
+notation: 'y = 2A\sin kx\,\cos\omega t'
+tags: ['up-ch15']
+misconceptions:
+  - id: 'up-ch15-standing-no-motion'
+    name: 'Nothing moves in a standing wave; it is a frozen shape.'
+    signal: 'Says a standing wave carries no energy or that the loops are still.'
+    correction: 'Only the still points are still. Everything between them swings back and forth, and the pattern is two travelling waves going opposite ways, each carrying energy, whose sum happens to stay in place.'
+  - id: 'up-ch15-rope-sets-frequency'
+    name: 'A shaken rope moves at its own frequency, whatever the shaker does.'
+    signal: 'Expects the rope to vibrate at a harmonic even when shaken between harmonics.'
+    correction: 'A driven rope always moves at the shaker''s rate. The rope decides only how big the answer is: huge when the shaker''s rate is one of the rope''s harmonics, a shiver the size of the shaker''s own motion otherwise.'

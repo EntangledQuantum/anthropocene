@@ -1,0 +1,9 @@
+title: 'Beats'
+blurb: 'Two tones a few hertz apart drift in and out of step, so their sum swells and fades, once for every hertz of difference. Tuners listen for the throb to stop; it tells you how far apart two notes are, not which is higher.'
+notation: 'f_{\text{beat}} = |f_1 - f_2|'
+tags: ['up-ch16']
+misconceptions:
+  - id: 'up-ch16-beats-show-which-is-higher'
+    name: 'The beat rate tells you which of the two notes is higher.'
+    signal: 'Reads a 3 Hz throb as the second fork being 3 Hz sharp.'
+    correction: 'Three swells a second means three hertz apart, either way. To find which is higher, change one fork slightly and watch whether the throb slows or speeds up.'

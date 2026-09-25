@@ -1,0 +1,138 @@
+---
+title: 'Two humps walk through each other'
+blurb: 'Predict what overlapping waves do, find the energy in a flat rope, and shake a rope at the rates where its loops stand still.'
+order: 2
+tier: 'core'
+minutes: 10
+teaches:
+  - 'wave-superposition'
+  - 'standing-wave'
+  - 'normal-modes'
+requires:
+  - 'mechanical-wave'
+  - 'wave-speed-on-string'
+  - 'mechanical-energy-conservation'
+  - 'simple-harmonic-motion'
+status: 'live'
+updated: 2026-09-25
+---
+
+<Step>
+
+Two humps run toward each other on one rope: one up, one down, the same shape. They meet
+in the middle.
+
+<Predict
+  id="up-ch15-humps-meet"
+  question="What happens when they meet?"
+  options={[
+    { key: 'bounce', misconception: 'up-ch15-pulses-bounce', label: 'They bounce off each other and head back', why: 'Humps are not balls. Play it: afterwards the up-hump is on the right, still heading right.' },
+    { key: 'gone', misconception: 'up-ch15-cancel-destroys', label: 'They cancel, and the rope stays flat', why: 'They do cancel, for one instant. But a moment later both humps are back. Watch the energy bar as the rope goes flat.' },
+    { key: 'through', label: 'The rope goes flat for an instant, then both carry on', why: 'Yes. Heights add, so up plus down is flat. Then each hump carries on as if the other had never been there.' },
+    { key: 'aside', misconception: 'up-ch15-humps-push-aside', label: 'They squeeze past each other, so the rope is never flat', why: 'Drag the clock to 1.00 s: the rope is flat to a hair. The heights simply add, point by point.' },
+  ]}
+  correct="through"
+>
+
+<PassThrough
+  prompt="Play it, then drag the clock to the instant the rope is flat."
+  pulses={[{ centre: -2, amp: 0.35, width: 0.35, speed: 2 }, { centre: 2, amp: -0.35, width: 0.35, speed: -2 }]}
+/>
+
+</Predict>
+
+</Step>
+
+<Step>
+
+## Flat is not still
+
+That flat instant again, frozen. The dashed lines are the two humps, still there underneath.
+
+<AimTheBead
+  id="up-ch15-aim-flat-bead"
+  prompt="Drag the painted bead's velocity arrow to show how it is moving right now."
+  pulses={[{ centre: 0, amp: 0.35, width: 0.35, speed: 2 }, { centre: 0, amp: -0.35, width: 0.35, speed: -2 }]}
+  bead={-0.25}
+  explanation="Both humps tell it to fall: the up-hump is leaving the bead, the down-hump arriving. Velocities add just as heights do, so the bead moves twice as fast as either hump alone would make it."
+/>
+
+</Step>
+
+<Step>
+
+## Name it
+
+Where two waves overlap, the rope's height is the sum of theirs, and each carries on untouched:
+
+$$y(x,t) = y_1(x,t) + y_2(x,t)$$
+
+At the flat instant none of the energy is in stretch. All of it, every joule, is in motion.
+
+<Recall id="up-ch15-recall-flat" concept="wave-superposition">
+  <div slot="front">Two equal and opposite pulses overlap and the rope is exactly flat. Where is their energy?</div>
+
+  All in motion. The flat rope is not stretched, but its beads are moving at their fastest,
+  and a moment later the two pulses re-emerge and carry on.
+</Recall>
+
+</Step>
+
+<Step>
+
+## Shake it into loops
+
+Now tie the far end to a wall and put a shaker on the near end. The shaker moves only 1 cm;
+you choose its rate.
+
+<DriveTheString
+  id="up-ch15-two-loops"
+  prompt="Find the shaker rate that makes the rope swing in two loops with its middle still."
+  start={0.6}
+  loops={2}
+  explanation="2.00 Hz, where exactly one wavelength fits the 4 m rope. The wave going out and the wave coming back from the wall (dashed) add to a pattern that stays put. At 1.00 Hz the rope makes one loop; 2 Hz is its double."
+/>
+
+</Step>
+
+<Step>
+
+## The rope picks the notes
+
+Only patterns with a still point at each end fit, so the loops come in half-wavelengths,
+$\lambda_n = 2L/n$:
+
+$$f_n = \frac{n\,v}{2L} = \frac{n}{2L}\sqrt{\frac{F}{\mu}}$$
+
+<Classify
+  id="up-ch15-classify-lowest-note"
+  prompt="The rope's lowest note is 1.00 Hz. Which changes move it?"
+  buckets={[
+    { key: 'moves', label: 'Moves the lowest note', accent: 'cyan' },
+    { key: 'stays', label: 'Leaves it where it is', accent: 'magenta' },
+  ]}
+  items={[
+    { key: 'tighter', label: 'Four times the tension', bucket: 'moves', why: 'The wave speed doubles, so the note doubles to 2 Hz.' },
+    { key: 'harder', label: 'A shaker that moves 2 cm instead of 1', bucket: 'stays', why: 'The loops get twice as big. The rates at which they appear do not move.' },
+    { key: 'faster', label: 'Running the shaker faster', bucket: 'stays', why: 'That only picks a different harmonic, or none. The rope still has the same notes to offer.' },
+    { key: 'longer', label: 'A rope twice as long', bucket: 'moves', why: 'Half a wavelength must now span 8 m, so the note halves to 0.5 Hz.' },
+    { key: 'heavier', label: 'A rope four times heavier per metre', bucket: 'moves', why: 'The wave speed halves, and so does the note.' },
+  ]}
+  explanation="Length, tension and mass per metre build the rope's notes. The shaker only chooses which one it answers, and how loudly."
+/>
+
+<Recall id="up-ch15-recall-modes" concept="normal-modes">
+  <div slot="front">A 4 m rope, fixed at both ends, has its lowest note at 1 Hz. Shake it at 3 Hz. Where are the still points?</div>
+
+  At the ends and at 4/3 m and 8/3 m. Three loops means three half-wavelengths, each 4/3 m long.
+</Recall>
+
+## What to carry forward
+
+- **Waves add and pass through.** The rope takes the sum of the heights, and each wave leaves unchanged.
+- **A standing wave is two travellers**, one out and one back, adding to loops that stay put.
+- **The rope sets its notes**: $f_n = n v / 2L$. The source only picks which one it drives.
+
+Next: the same loops in a column of air, where the ends can be open or closed.
+
+</Step>

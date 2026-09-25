@@ -1,0 +1,17 @@
+title: 'Standing sound waves in pipes'
+blurb: 'A column of air booms at the frequencies whose standing wave fits its ends: a closed end, where the air cannot move, and an open end, where it moves most. A pipe closed at one end fits odd quarter-waves only.'
+notation: 'f_n = \frac{nv}{4L}\ (n\ \text{odd, closed}),\qquad f_n = \frac{nv}{2L}\ (\text{open})'
+tags: ['up-ch16']
+misconceptions:
+  - id: 'up-ch16-one-length-per-note'
+    name: 'An air column booms at one length only for a given note.'
+    signal: 'Stops pouring at the first boom and takes it as the only one.'
+    correction: 'Any column that fits a whole number of half-waves on top of the quarter-wave booms too: a closed tube booms for a 440 Hz fork at 19.5 cm and again at 58.5 cm, three quarter-waves.'
+  - id: 'up-ch16-closed-end-pressure-node'
+    name: 'The closed end of a pipe is where the pressure stays normal.'
+    signal: 'Puts the pressure node at the wall because the air there does not move.'
+    correction: 'The air at a wall cannot move, so it is squeezed and stretched hardest there: a displacement node is a pressure antinode. The open end, joined to the room, is where the pressure stays at normal.'
+  - id: 'up-ch16-every-pipe-every-harmonic'
+    name: 'Every pipe can sound every whole-number multiple of its lowest note.'
+    signal: 'Lists 2f, 3f, 4f for a pipe closed at one end.'
+    correction: 'A closed pipe needs a node at one end and an antinode at the other, which only odd quarter-waves provide: f, 3f, 5f. That missing even set is the hollow sound of a clarinet.'

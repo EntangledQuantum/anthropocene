@@ -1,0 +1,128 @@
+---
+title: 'The shape leaves, the rope stays'
+blurb: 'Flick a rope, time the hump, and read from a frozen snapshot which way every piece of it is moving.'
+order: 1
+tier: 'core'
+minutes: 9
+teaches:
+  - 'mechanical-wave'
+  - 'wave-speed-on-string'
+requires:
+  - 'newtons-second-law'
+status: 'live'
+updated: 2026-09-25
+---
+
+<Step>
+
+A heavy rope runs from your hand, over a pulley, to a hanger. You flick your end and a
+hump runs down the rope toward a painted bead.
+
+<Predict
+  id="up-ch15-bigger-flick"
+  question="You flick again, twice as high. Does the bigger hump reach the bead sooner?"
+  options={[
+    { key: 'sooner', misconception: 'up-ch15-bigger-flick-faster', label: 'Sooner: you put more into it', why: 'You did put in more energy, but energy here buys size, not speed. Flick small, then big, and read the stopwatch.' },
+    { key: 'snap', misconception: 'up-ch15-quick-flick-faster', label: 'Only if you also flick more quickly', why: 'A quick snap makes a short hump, not a fast one. Try a slow heave and a sharp snap: the stopwatch reads the same.' },
+    { key: 'same', label: 'At the same moment', why: 'Yes. The speed belongs to the rope. Your hand decides the shape; the rope decides how fast every shape travels.' },
+    { key: 'later', label: 'Later: a taller hump has more rope to lift', why: 'It does have more to lift, but its sides are steeper, so the rope pulls back harder too. The two grow together and cancel.' },
+  ]}
+  correct="same"
+>
+
+<FlickTheRope prompt="Drag your end up and let go. Try small, big, slow and quick flicks." load={4} />
+
+</Predict>
+
+</Step>
+
+<Step>
+
+## Only the rope decides
+
+Your hand cannot change the speed. The hanger can: it sets how hard the rope is pulled tight.
+
+<FlickTheRope
+  id="up-ch15-load-to-halve"
+  prompt="Load the hanger so the hump reaches the bead in half the time, flick, then check."
+  load={4}
+  targetRatio={0.5}
+  explanation="16 kg: four times the load for twice the speed. Twice the load, 8 kg, only brings the time down to 0.64 s. The tension pulls each piece of rope back toward straight; the rope's mass per metre resists being hurried."
+/>
+
+</Step>
+
+<Step>
+
+## Name it
+
+Tension straightens the rope and its mass per metre, $\mu$, resists. Their contest sets one
+speed for every shape:
+
+$$v = \sqrt{F/\mu}$$
+
+Whatever your hand does, the rope repeats it farther along and later: $y(x,t) = f(x - vt)$.
+
+<Recall id="up-ch15-recall-tension" concept="wave-speed-on-string">
+  <div slot="front">You double the tension in a guitar string. How much faster does a pulse run along it?</div>
+
+  About 1.41 times, which is $\sqrt 2$. Speed goes as the square root of tension, so doubling
+  the speed takes four times the tension.
+</Recall>
+
+</Step>
+
+<Step>
+
+## Freeze it
+
+A hump frozen mid-flight, moving right. The painted bead sits on its front slope.
+
+<AimTheBead
+  id="up-ch15-aim-front-bead"
+  prompt="Drag the bead's velocity arrow to show how it is moving right now."
+  pulses={[{ centre: 0, amp: 0.35, width: 0.35, speed: 2 }]}
+  bead={0.25}
+  explanation="A hump moving right is about to put a higher part of the rope where the bead is. Its speed is the hump's speed times the slope under it, and a bead on the back slope falls just as fast. When the hump has gone, every bead is back on its floor mark."
+/>
+
+<Recall id="up-ch15-recall-cork" concept="mechanical-wave">
+  <div slot="front">A single wave rolls under a floating cork. Where is the cork once the wave has passed?</div>
+
+  Back where it started. The water under it rose and fell; the shape moved on. A wave moves a
+  pattern, not the stuff it is made of.
+</Recall>
+
+</Step>
+
+<Step>
+
+## Five ropes
+
+The same flick on five different ropes.
+
+<RankOrder
+  id="up-ch15-rank-ropes"
+  prompt="Rank the ropes by how fast a hump runs along them."
+  lowLabel="slowest"
+  highLabel="fastest"
+  items={[
+    { key: 'light-tight', label: 'Light rope, 0.1 kg/m, at 40 N', why: '√(40 / 0.1) = 20 m/s: moderate tension, very little mass to hurry.' },
+    { key: 'heavy-tight', label: 'Heavy rope, 0.4 kg/m, at 90 N', why: '15 m/s. The biggest tension here, but four times the mass per metre takes half the speed back.' },
+    { key: 'light-slack', label: 'Light rope, 0.1 kg/m, at 10 N', why: '10 m/s.' },
+    { key: 'chain', label: 'Chain, 0.9 kg/m, at 40 N', why: '6.7 m/s. The same pull as the fastest rope, nine times the mass: a third of the speed.' },
+    { key: 'heavy-slack', label: 'Heavy rope, 0.4 kg/m, at 10 N', why: '5 m/s: little pull, lots of mass.' },
+  ]}
+  correct={['heavy-slack', 'chain', 'light-slack', 'heavy-tight', 'light-tight']}
+  explanation="Only the ratio F/μ matters, and speed goes as its square root. Ranking by tension alone puts the 90 N rope first, and its heavy rope drags it back to second."
+/>
+
+## What to carry forward
+
+- **The shape travels; the rope stays.** Each bead goes up and down on its own mark.
+- **The rope sets the speed**, $v = \sqrt{F/\mu}$. The flick sets only the shape.
+- The picture: a hump sliding along while the painted bead just rises and falls.
+
+Next: two humps meet on one rope, and pass straight through each other.
+
+</Step>

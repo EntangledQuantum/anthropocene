@@ -1,0 +1,6 @@
+---
+// @graded — with `id`, slide the rider on your fork until the beats against 440 Hz stop.
+import Island, { type KillTheThrobProps } from '../viz/KillTheThrob.tsx';
+const props = Astro.props as KillTheThrobProps;
+---
+<Island client:visible {...props} />

@@ -1,0 +1,9 @@
+title: 'Speed of sound'
+blurb: 'Sound runs at a speed set by the material alone: its stiffness against a quick squeeze pushes the wave on, its density holds it back. In air at 20 °C that is 343 m/s, whatever the pitch or the loudness.'
+notation: 'v = \sqrt{B/\rho},\qquad v = f\lambda'
+tags: ['up-ch16']
+misconceptions:
+  - id: 'up-ch16-high-notes-faster'
+    name: 'High notes or loud sounds travel faster than low or quiet ones.'
+    signal: 'Expects the treble of a distant band to arrive before the bass.'
+    correction: 'The speed belongs to the air, not the sound. A higher note is packed into shorter wavelengths so that f λ still equals 343 m/s. Music from far away arrives with its chords intact.'

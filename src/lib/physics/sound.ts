@@ -235,6 +235,14 @@ export function beatEnvelope(f1: number, f2: number, t: number): number {
 }
 
 /**
+ * The same swell written with the running phase difference φ = ∫2π(f₁ − f₂)dt,
+ * so it stays continuous when one tone is retuned mid-sound: |2 cos(φ/2)|.
+ */
+export function beatEnvelopeAtPhase(phi: number): number {
+  return Math.abs(2 * Math.cos(phi / 2));
+}
+
+/**
  * A tuning fork with a small clamp (a rider) on one tine. The tine bends like
  * a cantilever, whose static deflection shape, normalised to 1 at the tip, is
  * φ(ξ) = ξ²(6 − 4ξ + ξ²)/3 for ξ from 0 at the root to 1 at the tip. A rider

@@ -1,0 +1,17 @@
+title: 'Superposition of waves'
+blurb: 'Where two waves overlap on a rope, the rope''s height is the sum of the two heights, and each wave carries on afterwards exactly as if the other had never been there. Heights can cancel; the energy cannot.'
+notation: 'y(x,t) = y_1(x,t) + y_2(x,t)'
+tags: ['up-ch15']
+misconceptions:
+  - id: 'up-ch15-pulses-bounce'
+    name: 'Two pulses that meet bounce off each other and head back to where they came from.'
+    signal: 'Predicts that an up-hump and a down-hump rebound after they meet.'
+    correction: 'Pulses are not objects that collide. The rope simply takes the sum of the two shapes, and after the overlap each shape carries on in its own direction, unchanged.'
+  - id: 'up-ch15-cancel-destroys'
+    name: 'When two waves cancel, they are destroyed along with their energy.'
+    signal: 'Expects the rope to stay flat after an up-hump and a down-hump overlap exactly.'
+    correction: 'At the instant the rope is flat, it is not still. Every bead is moving at its fastest, so all of the energy is in motion rather than in stretch. A moment later the humps reappear and carry on.'
+  - id: 'up-ch15-humps-push-aside'
+    name: 'Overlapping pulses push each other aside, so the rope is never flat.'
+    signal: 'Expects two humps to squeeze past each other rather than add.'
+    correction: 'At every point the heights add. An up-hump plus a down-hump of the same shape, lined up exactly, sums to zero everywhere, so for one instant the rope is perfectly flat.'

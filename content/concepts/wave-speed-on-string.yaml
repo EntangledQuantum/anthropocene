@@ -1,0 +1,17 @@
+title: 'Wave speed on a string'
+blurb: 'A pulse runs along a stretched rope at a speed set by the rope alone: its tension pulls it back straight, its mass per length resists. How big or how quick the flick was does not enter.'
+notation: 'v = \sqrt{F/\mu}'
+tags: ['up-ch15']
+misconceptions:
+  - id: 'up-ch15-bigger-flick-faster'
+    name: 'A bigger or harder flick sends a faster pulse.'
+    signal: 'Predicts that a pulse twice as tall reaches the far end sooner.'
+    correction: 'The flick sets the size and shape of the pulse, not its speed. Every small disturbance on the rope travels at the same speed, √(F/μ), which belongs to the rope. A twice-as-tall hump arrives at exactly the same moment.'
+  - id: 'up-ch15-quick-flick-faster'
+    name: 'A quicker flick sends a faster pulse.'
+    signal: 'Expects a sharp snap of the wrist to outrun a slow heave.'
+    correction: 'A quick flick makes a short pulse and a slow one makes a long pulse. Both slide at the rope''s own speed; only their lengths differ.'
+  - id: 'up-ch15-speed-proportional-to-tension'
+    name: 'Doubling the tension doubles the wave speed.'
+    signal: 'Loads twice the hanger to halve the travel time.'
+    correction: 'Speed goes as the square root of tension. Twice the tension buys only √2 ≈ 1.41 times the speed; halving the travel time takes four times the tension.'
