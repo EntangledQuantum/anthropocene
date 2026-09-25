@@ -1,0 +1,6 @@
+---
+// @graded — when given `id` and `target`, the scene checks itself.
+import Island, { type SqueezeThePistonProps } from '../viz/SqueezeThePiston.tsx';
+const props = Astro.props as SqueezeThePistonProps;
+---
+<Island client:visible {...props} />

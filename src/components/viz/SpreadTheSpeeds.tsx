@@ -131,9 +131,9 @@ export default function SpreadTheSpeeds({ id, prompt, start = 400, tolerance = 4
             </g>)}
           </>}
           {graded && <>
-            <line x1={s.sx(marker)} x2={s.sx(marker)} y1={s.sy(0)} y2={s.sy(YMAX * 0.92)} stroke={C.accel} strokeWidth={2} strokeDasharray="4 4" />
-            <text x={s.sx(marker) - 8} y={s.sy(YMAX * 0.92) + 4} textAnchor="end" fontSize={13} fill={C.accel}>your peak {marker.toFixed(0)}</text>
-            {!released && <Handle s={s} at={[marker, YMAX * 0.92]} color={C.accel} step={10} label="Marker: where the tallest bar will settle, metres per second"
+            <line x1={s.sx(marker)} x2={s.sx(marker)} y1={s.sy(0)} y2={s.sy(YMAX * 0.92)} stroke={"var(--color-accent)"} strokeWidth={2} strokeDasharray="4 4" />
+            <text x={s.sx(marker) - 8} y={s.sy(YMAX * 0.92) + 4} textAnchor="end" fontSize={13} fill={"var(--color-accent)"}>your peak {marker.toFixed(0)}</text>
+            {!released && <Handle s={s} at={[marker, YMAX * 0.92]} color={"var(--color-accent)"} step={10} label="Marker: where the tallest bar will settle, metres per second"
               onChange={(p) => { setMarker(Math.round(Math.min(1300, Math.max(0, p[0])) / 5) * 5); task.touch(); }} />}
           </>}
         </>; }}
