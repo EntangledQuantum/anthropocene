@@ -1,0 +1,6 @@
+---
+// @graded — with `id`, set the speed of the moving whistle (or listener) until the 800 Hz glass rings.
+import Island, { type RingTheGlassProps } from '../viz/RingTheGlass.tsx';
+const props = Astro.props as RingTheGlassProps;
+---
+<Island client:visible {...props} />
