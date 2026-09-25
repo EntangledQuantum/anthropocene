@@ -1,0 +1,13 @@
+title: 'Damped oscillation'
+blurb: 'A force against the velocity leaks energy from every cycle; the swing shrinks while its rhythm barely changes.'
+notation: '\ddot x + 2\beta\dot x + \omega_0^2 x = 0'
+tags: ['up-ch14']
+misconceptions:
+  - id: 'up-ch14-push-at-the-top'
+    name: 'The best moment to push a swing is at its highest point.'
+    signal: 'Times a quick shove for the instant the seat stops at the back of its swing.'
+    correction: 'A push only does work if the seat moves while you push. At the turning point it is not moving, so a quick shove adds almost nothing. Push along the motion, hardest where it moves fastest.'
+  - id: 'up-ch14-any-push-helps'
+    name: 'Every push adds energy to a swing.'
+    signal: 'Shoves without regard to which way the seat is moving.'
+    correction: 'A push against the motion does negative work and takes energy out. Damping is exactly such a push, applied all the time.'

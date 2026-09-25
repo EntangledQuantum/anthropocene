@@ -1,141 +1,146 @@
 ---
 title: 'A bigger swing, the same clock'
-blurb: 'Predict which changes alter a spring clock, read its motion three ways, and catch the pendulum where the same rule fails.'
+blurb: 'Predict what sets a spring''s period, and find the angle at which a pendulum stops keeping time.'
 order: 1
 tier: 'foundation'
-minutes: 12
+minutes: 10
 teaches: ['simple-harmonic-motion', 'pendulum-small-angle']
 requires: ['newtons-second-law', 'instantaneous-rate']
 runtime: 'none'
 status: 'live'
-updated: 2026-09-17
+updated: 2026-09-25
 ---
 
-You release two identical spring-mounted masses from rest. One starts twice as far from
-the middle. It must travel twice as far to complete a swing. Does it arrive late?
+<Step>
 
-You are going to build a clock, then find the change that breaks it. Here a **cycle**
-means returning to the same position **and** the same direction of motion.
+Two identical carts sit on identical springs. You pull one back twice as far as the other
+and let both go at the same instant.
 
 <Predict
-  id="up-ch14-double-release"
-  question="Keep both masses at 1 kg and both springs at 4 N/m. Double only one release distance. Which clock completes a cycle first?"
+  id="up-ch14-double-pull"
+  question="Which cart gets back to where it started first?"
   options={[
-    { key: 'small', misconception: 'up-ch14-bigger-spring-slower', label: 'The smaller swing — it travels less far', why: 'That would follow if speed stayed the same. Scrub the two swings together: the larger one covers a larger distance in every equal time interval, not just over the whole cycle.' },
-    { key: 'large', label: 'The larger swing — the spring pulls harder', why: 'The stronger pull really does give more speed. But the path is longer too. Compare their first crossing of the middle, then their return to the release point.' },
-    { key: 'same', label: 'They stay in step', why: 'Both effects scale together. Twice the release distance produces twice the velocity at every matching instant, so neither clock wins.' },
+    { key: 'small', misconception: 'up-ch14-bigger-spring-slower', label: 'The one pulled less: it has less distance to cover', why: 'That would follow if the two moved at the same speed. They do not: the stretched spring pulls twice as hard, and the far cart is twice as fast at every matching moment.' },
+    { key: 'big', label: 'The one pulled more: its spring pulls harder', why: 'The harder pull is real, but it only pays for the longer trip. Twice the distance at twice the speed takes the same time.' },
+    { key: 'same', label: 'They arrive together', why: 'Right. Twice the stretch gives twice the pull, twice the speed and twice the distance, all at once. The trip time does not change.' },
   ]}
   correct="same"
+>
+
+<SpringRace prompt="Drag your cart to any pull, release both, and watch the trace." />
+
+</Predict>
+
+</Step>
+
+<Step>
+
+## Twice as far, twice as fast
+
+The bigger swing only keeps up by moving faster. How much faster?
+
+<SpringRace
+  id="up-ch14-race-double-speed"
+  prompt="Pull your cart so it crosses the middle exactly twice as fast as the top one."
+  reference={0.3}
+  start={0.45}
+  ratio={2}
+  explanation="Twice the pull: 0.60 m against 0.30 m. The speed through the middle is proportional to the pull, and that is the whole trick. A bigger swing covers more ground at more speed, and the trip time comes out the same."
 />
 
-<OscillatorClock amplitude={1} />
+</Step>
 
-Leave **Moving mass** at 1 kg. Move **Release distance** between 0.5 m and 1 m, then scrub
-the clock through one cycle. The peaks grow taller without sliding sideways. Use
-**One full cycle** to check the return, not just an accidental crossing.
+<Step>
 
-## The circle explains the bargain
+## Name it
 
-Watch the rotating point and its shadow. The point covers equal angles in equal times;
-the shadow does not cover equal distances. Near an end, most of the point's motion is
-up or down. At the middle, its motion is entirely sideways.
+Pull twice as far and the spring pulls twice as hard, so every part of the motion scales
+together. For that, the acceleration has to be proportional to the displacement and point
+back toward the middle:
 
-Set the release distance to 1 m. Compare **Reset experiment** with **Quarter cycle**.
-At release, the mass is stopped but its acceleration is large. At the middle, it is
-fastest but its acceleration is zero.
+$$a = -\frac{k}{m}\,x = -\omega^2 x,\qquad T = 2\pi\sqrt{\frac{m}{k}}$$
 
-<Predict
-  id="up-ch14-middle-acceleration"
-  question="The shadow is crossing the middle toward the left. Which reading belongs there?"
-  options={[
-    { key: 'both', misconception: 'up-ch14-fastest-means-most-accelerated', label: 'Largest speed and largest acceleration magnitude', why: 'Speed is largest, but acceleration measures how velocity changes. The spring is neither stretched nor compressed at the middle, so its force is zero at that instant.' },
-    { key: 'speed', label: 'Largest speed and zero acceleration', why: 'Yes. The negative velocity is most negative here: its graph has a flat bottom. Zero slope of velocity means zero acceleration, not zero velocity.' },
-    { key: 'rest', label: 'Zero speed and largest acceleration magnitude', why: 'That is a turning point. At the middle the mass has not turned around: it is racing through.' },
-  ]}
-  correct="speed"
-/>
-
-This is **simple harmonic motion**: acceleration points toward the middle and grows in
-proportion to displacement. For an ideal spring, Newton's law gives
-
-$$a=-\frac{k}{m}x=-\omega^2x,\qquad \omega=\sqrt{\frac{k}{m}}.$$
-
-The circle's horizontal coordinate names the curve you just moved:
-
-$$x(t)=A\cos(\omega t),\qquad T=\frac{2\pi}{\omega}=2\pi\sqrt{\frac{m}{k}}.$$
-
-$A$ is the release distance, $T$ the time for one cycle, and $\omega$ the angle swept per
-second. This cosine starts at the right-hand turning point. Starting somewhere else
-shifts the curve in time. We assume an ideal Hookean spring and no friction or driving.
-
-## Make one clock lose
-
-Now keep the release distance fixed and change **Moving mass** from 1 kg to 4 kg.
-Scrub to the reference spring's first return. Your spring is at the opposite end.
-More inertia slows the circle: four times the mass makes the period twice as long.
+That is **simple harmonic motion**, and $A$ appears nowhere in $T$. Only the mass and the
+stiffness set the clock.
 
 <Recall id="up-ch14-recall-spring-clock" concept="simple-harmonic-motion">
-  <div slot="front">An ideal spring swings twice as far but keeps the same period. What else must double, and why?</div>
+  <div slot="front">A cart on a spring is pulled twice as far. Why does one cycle still take the same time?</div>
 
-  The whole velocity history doubles. The restoring acceleration also doubles at each
-  matching instant because $a=-(k/m)x$. Twice the travel at twice the speed takes the
-  same time. The clock is set by $m/k$, not the release distance.
+  Its acceleration is proportional to its displacement, so twice the pull means twice the
+  acceleration and twice the speed at every moment. Twice the distance at twice the speed
+  takes the same time. Only $m/k$ sets the period: four times the mass doubles it.
 </Recall>
 
-## Change the starting side
+</Step>
 
-A different 1 kg mass is attached to a 9 N/m spring. You pull it **0.4 m left** of the
-middle and release it from rest. Its cycle takes about 2.09 s. Positive means right.
+<Step>
 
-<SketchCurve
-  id="up-ch14-sketch-left-release"
-  scenario="up-ch14-left-release-velocity"
-  prompt="Sketch velocity through one complete cycle. Start at zero; decide which way the mass moves first, and where it next stops."
-  hint="The first pull is toward the middle, to the right. Velocity is largest in magnitude at each middle crossing, not at the turning points."
-  explanation="The first lobe is positive: the mass starts left and moves right. At half a cycle it stops at the right-hand end; the second lobe is negative as it returns. The peaks are ±1.2 m/s. Copying the position cosine would put the largest speed at release, when the mass is actually at rest."
+## Swap the spring for a pendulum
+
+A pendulum ticks too, and on the ghost clock beside it every swing takes exactly the same
+time, whatever the angle. The real bob has to keep up.
+
+<PendulumDrift
+  id="up-ch14-drift-half-cycle"
+  prompt="Find the release angle at which, after ten ticks, the real bob is on the far side as the ghost gets home."
+  explanation="About 51°. The real period there is 5.3% longer than the ghost's, so ten ticks lose half a cycle. At 10° the loss is 0.2%, too small to see in ten ticks. The pendulum's clock is not broken at some particular angle. It drifts more and more as the swing grows."
 />
 
-## Does every repeating swing share the clock?
+</Step>
 
-Replace the spring with a pendulum. At small angles, its restoring acceleration is
-almost proportional to angle. Try 10°, then 90° below. Use **One full cycle** and look
-at where the hollow model bob is when the solid bob returns.
+<Step>
 
-<OscillatorClock mode="pendulum" angle={10} />
+## Name the break
 
-At 10°, the period excess is about 0.19%. At 90°, it is about 18%. The real pendulum
-still repeats; it is not simple harmonic motion at large angles.
+The pendulum's pull back toward the bottom is proportional to $\sin\theta$, not $\theta$.
+For small angles the two are almost equal, and the pendulum becomes the spring clock:
 
-The actual angular acceleration is $\ddot\theta=-(g/L)\sin\theta$. Replacing
-$\sin\theta$ by $\theta$ makes a harmonic oscillator, with
+$$\ddot\theta = -\frac{g}{L}\sin\theta \;\approx\; -\frac{g}{L}\,\theta,\qquad T_0 = 2\pi\sqrt{\frac{L}{g}}$$
 
-$$T_0=2\pi\sqrt{L/g}.$$
-
-That replacement is the **small-angle approximation**, not a law that all pendulums
-keep perfect time. The error grows continuously; how small is “small” depends on the
-accuracy you need. The solid trace integrates the sine force, not a slower cosine.
-
-<Predict
-  id="up-ch14-transfer-playground-clock"
-  question="A frictionless playground swing repeats, but its large swings take longer than its small swings. What failed?"
-  options={[
-    { key: 'friction', label: 'The observation proves friction is present', why: 'The sine-force pendulum produces this difference with no friction. A changing period does not by itself diagnose energy loss.' },
-    { key: 'periodic', misconception: 'up-ch14-every-periodic-motion-is-shm', label: 'It cannot be periodic if period depends on amplitude', why: 'For each fixed release angle the motion repeats. Periodic does not mean every possible release shares one period.' },
-    { key: 'linear', label: 'The restoring acceleration is no longer proportional to displacement', why: 'Exactly. The sine of a large angle is not the angle. The special scaling bargain of the ideal spring breaks, even though the swing still repeats.' },
-  ]}
-  correct="linear"
-/>
+At larger angles $\sin\theta$ falls short of $\theta$, the pull back is weaker than the
+clock assumes, and every swing takes longer.
 
 <Recall id="up-ch14-recall-pendulum-limit" concept="pendulum-small-angle">
-  <div slot="front">What turns a pendulum into a harmonic clock, and what experiment exposes the approximation?</div>
+  <div slot="front">Why does a pendulum released from 60° run slow against the small-angle clock?</div>
 
-  Replace $\sin\theta$ by $\theta$, so acceleration is proportional to angle toward the
-  bottom. Compare periods at increasing release angles: the actual pendulum falls behind
-  the amplitude-independent small-angle clock. Even a small nonzero swing has some error.
+  Its restoring pull goes as $\sin\theta$, which is smaller than $\theta$ at large angles. The
+  pull back is weaker than the clock assumes, so it takes longer to return: 7% longer at
+  60°. The small-angle period $2\pi\sqrt{L/g}$ is only a limit.
 </Recall>
+
+</Step>
+
+<Step>
+
+## Which clocks keep time?
+
+The test is always the same one: does the pull back grow in proportion to how far out the
+object is?
+
+<Classify
+  id="up-ch14-classify-clocks"
+  prompt="Sort each oscillator by what doubling its swing does to its period."
+  buckets={[
+    { key: 'same', label: 'Same period at any size', accent: 'ok' },
+    { key: 'slower', label: 'Takes longer when bigger', accent: 'magenta' },
+  ]}
+  items={[
+    { key: 'cart', label: 'A cart on a spring, pulled 5 cm or 50 cm', bucket: 'same', why: 'A spring’s pull is proportional to its stretch. That is the proportional pull the clock needs.' },
+    { key: 'block', label: 'A straight-sided wooden block bobbing in a bath', bucket: 'same', why: 'Push it 1 cm deeper and it displaces 1 cm more water. The extra buoyancy grows in proportion, like a spring.' },
+    { key: 'swing', label: 'A playground swing at 10° and at 60°', bucket: 'slower', why: 'A swing is a pendulum. Its pull goes as sin θ, which falls short of θ at large angles: about 7% slower at 60°.' },
+    { key: 'ball', label: 'A ball bouncing on a hard floor', bucket: 'slower', why: 'Gravity pulls with the same force at every height. Dropped from twice as high, it takes √2 as long.' },
+    { key: 'trough', label: 'A puck sliding in a V-shaped trough', bucket: 'slower', why: 'The sloping sides give a pull of fixed size at any distance out. Twice as far out takes √2 as long.' },
+  ]}
+  explanation="Only a pull back proportional to the displacement makes a clock that ignores size. A fixed pull (the bounce, the trough) or a pull that grows too slowly (a pendulum at large angles) makes bigger swings slower."
+/>
 
 ## What to carry forward
 
-A bigger circle casts a bigger shadow, not a slower clock: that is the picture of ideal
-spring motion. A pendulum borrows the picture only near the bottom. Next, follow where
-the energy goes during a tick, before letting damping take some of it away.
+- **A proportional pull back makes a clock that ignores size.** Twice the swing is twice
+  the speed, so the period is the same.
+- **A pendulum is that clock only at small angles.** Its period grows as the swing grows.
+
+Next: a swing slowly loses energy, and you have to know exactly when to push to put some
+back.
+
+</Step>

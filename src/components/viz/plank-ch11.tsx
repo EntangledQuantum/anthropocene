@@ -41,18 +41,17 @@ export function Painter({ s, x, label }: { s: StageApi; x: number; label?: strin
   </g>;
 }
 
-/** A force on the plank, drawn where it acts: a push down from above ends
- *  below the plank with its tail at the plank; a push up from a trestle ends
- *  at the plank's underside. Draw these BEFORE the plank so it covers the tails.
- *  The label sits beside the shaft, clear of the plank. */
+/** A force on the plank, drawn on its line of action below the plank: a
+ *  downward push hangs from the plank's underside; a trestle's upward push
+ *  ends at it. Labels sit beside the shaft, clear of the plank. */
 export function PlankForce({ s, x, push, label, side = 1 }: {
   s: StageApi; x: number; push: number; label: string; side?: 1 | -1;
 }) {
   const n = Math.abs(push) * KF;
   const up = push > 0;
-  const from: readonly [number, number] = up ? [x, TRESTLE_H - n] : [x, TRESTLE_H + PLANK_T];
-  const to: readonly [number, number] = up ? [x, TRESTLE_H] : [x, TRESTLE_H - n + PLANK_T];
-  const my = up ? TRESTLE_H - n * 0.55 : TRESTLE_H + PLANK_T - n * 0.6;
+  const from: readonly [number, number] = up ? [x, TRESTLE_H - n] : [x, TRESTLE_H];
+  const to: readonly [number, number] = up ? [x, TRESTLE_H] : [x, TRESTLE_H - n];
+  const my = up ? TRESTLE_H - n * 0.55 : TRESTLE_H - n + 0.02;
   return <g>
     <Arrow s={s} from={from} to={to} color={C.force} />
     <text x={s.sx(x) + side * 9} y={s.sy(my) + 5} textAnchor={side > 0 ? 'start' : 'end'} fontSize={14} fontWeight={600} fill={C.force}

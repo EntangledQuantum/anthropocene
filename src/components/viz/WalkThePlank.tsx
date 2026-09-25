@@ -88,7 +88,7 @@ export default function WalkThePlank({
         </div>
         {id && <CheckBar verdict={task.verdict} done={task.done} onCheck={() => task.check(hit, { x })} miss={miss} hit={explanation} />}
       </div>}>
-      <Stage x={[-0.3, plank.length + 0.4]} y={[-0.36, 2.2]} height={300} equal
+      <Stage x={[-0.3, plank.length + 0.4]} y={[-0.36, 2.2]} height={350} equal
         label={`Plank on two trestles. The painter stands ${past.toFixed(2)} metres ${past >= 0 ? 'past' : 'short of'} the right trestle.${tipped ? ' The plank has tipped.' : ''}`}>
         {(s) => {
           hinge.current = { px: s.sx(xB), py: s.sy(TRESTLE_H) };

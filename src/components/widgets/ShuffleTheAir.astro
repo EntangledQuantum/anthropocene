@@ -1,0 +1,6 @@
+---
+// @graded — with `id`, the frozen note asks for the pressure gauge to be placed at the squeeze.
+import Island, { type ShuffleTheAirProps } from '../viz/ShuffleTheAir.tsx';
+const props = Astro.props as ShuffleTheAirProps;
+---
+<Island client:visible {...props} />

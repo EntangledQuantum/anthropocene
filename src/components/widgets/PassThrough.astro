@@ -1,0 +1,6 @@
+---
+// Ungraded: two pulses meeting on one rope, played or scrubbed.
+import Island, { type PassThroughProps } from '../viz/PassThrough.tsx';
+const props = Astro.props as PassThroughProps;
+---
+<Island client:visible {...props} />

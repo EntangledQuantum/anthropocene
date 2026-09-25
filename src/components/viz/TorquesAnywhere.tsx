@@ -48,7 +48,7 @@ export default function TorquesAnywhere({
         onCheck={() => task.check(onA || onB, { ref })}
         miss={`About this point both trestle pushes have arms, ${armA.toFixed(2)} m and ${armB.toFixed(2)} m: one equation, two unknowns.`}
         hit={<>{explanation} {onB ? `About the right trestle: the left push is ${push('left trestle').toFixed(0)} N.` : `About the left trestle: the right push is ${push('right trestle').toFixed(0)} N.`}</>} /> : undefined}>
-      <Stage x={[-0.3, plank.length + 0.4]} y={[-0.36, 2.2]} height={300} equal
+      <Stage x={[-0.3, plank.length + 0.4]} y={[-0.36, 2.2]} height={350} equal
         label={`Plank on two trestles with a painter. The torque reference point is at ${ref[0].toFixed(2)} metres.`}>
         {(s) => <>
           <line x1={0} x2={s.W} y1={s.sy(0)} y2={s.sy(0)} stroke={C.rule} strokeWidth={2} />

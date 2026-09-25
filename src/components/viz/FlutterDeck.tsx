@@ -24,9 +24,9 @@ export interface FlutterDeckProps {
   explanation?: string;
 }
 
-const SUB = 1 / 1000, SPAN = 20, KICK = 0.25, LIMIT = 25;
+const SUB = 1 / 1000, SPAN = 20, KICK = 0.33, LIMIT = 20;
 const START_DEG = deg(KICK / (2 * Math.PI * FLUTTER.f0));
-const TR = { x0: -1.3, x1: 1.45, y0: -1.42, y1: -0.62, amp: 28 };
+const TR = { x0: -1.3, x1: 1.45, y0: -1.42, y1: -0.62, amp: 22 };
 
 export default function FlutterDeck({ id, prompt, start = 8, tolerance = 1.5, explanation }: FlutterDeckProps) {
   const task = useTask(id, 'flutter-deck');
@@ -117,7 +117,7 @@ export default function FlutterDeck({ id, prompt, start = 8, tolerance = 1.5, ex
             </g>
             <circle cx={s.sx(0)} cy={s.sy(0.15)} r={3.5} fill={C.soft} />
             {/* strip: twist against time, with the starting twist as a dashed band */}
-            {[-20, 0, 20].map((v) => {
+            {[-15, 0, 15].map((v) => {
               const y = s.sy((TR.y0 + TR.y1) / 2 + (v / TR.amp) * ((TR.y1 - TR.y0) / 2));
               return <g key={v}>
                 <line x1={s.sx(TR.x0)} x2={s.sx(TR.x1)} y1={y} y2={y} stroke={v === 0 ? C.rule : C.grid} />

@@ -1,0 +1,123 @@
+---
+title: 'An orbit is a fall that misses'
+blurb: 'Fire a cannonball sideways from a 400 km mountain until it never lands, and find the speed at which falling and missing balance.'
+order: 1
+tier: 'core'
+minutes: 10
+teaches:
+  - 'universal-gravitation'
+  - 'circular-orbit'
+requires:
+  - 'newtons-second-law'
+  - 'centripetal-acceleration'
+  - 'projectile-independence'
+  - 'free-fall'
+status: 'live'
+updated: 2026-09-25
+---
+
+<Step>
+
+The International Space Station circles 400 km above the ground, and everyone aboard
+floats. That is 45 Everests up.
+
+<Predict
+  id="up-ch13-iss-gravity"
+  question="Up there, how strong is the Earth's gravity compared with on the ground?"
+  options={[
+    { key: 'a', misconception: 'weightless-means-no-gravity', label: 'Almost zero: they are in space', why: 'Then nothing would bend the station round the Earth, and it would leave in a straight line. Read the magenta meter below: the mountain top is as high as the station.' },
+    { key: 'b', misconception: 'gravity-stops-at-atmosphere', label: 'A few percent: most of it stays behind with the air', why: 'Gravity does not care about air. It depends on distance from the Earth’s centre, and 400 km up is only 6% farther from the centre than the ground.' },
+    { key: 'c', label: 'About half', why: 'Half would need you 41% farther from the centre, about 2,600 km up. The station is only 6% farther, so gravity hardly drops.' },
+    { key: 'd', label: 'About 90%', why: 'Right: (6371/6771)² ≈ 0.89. Gravity up there is nearly full strength. The astronauts float because they and the station fall together, not because gravity has gone.' },
+  ]}
+  correct="d"
+>
+
+<NewtonsCannon prompt="Fire at any speed and watch the magenta arrow on the ball." start={3} />
+
+</Predict>
+
+</Step>
+
+<Step>
+
+## Fire until it never lands
+
+Every ball you fired fell. The faster ones fell just as hard, and landed farther round the curve.
+
+<NewtonsCannon
+  id="up-ch13-never-lands"
+  prompt="Set the speed with the arrow tip, fire, and find a shot that never lands."
+  start={5}
+  explanation="Anything from about 7.6 km/s comes all the way round. The ball never stops falling: the magenta arrow is on it the whole trip. It moves sideways so fast that the Earth curves away beneath it as fast as it falls. That is an orbit, and it is exactly what the station is doing."
+/>
+
+</Step>
+
+<Step>
+
+## One second of falling and missing
+
+Zoom in on the first second of a shot at 400 km. Gravity pulls the ball down 4.35 m in that
+second, whatever its sideways speed.
+
+<OneSecondOfOrbit
+  id="up-ch13-one-second"
+  prompt="Drag the ball sideways until, after one second, it has lost no height."
+  start={5}
+  explanation="7.67 km/s. In one second the ball goes 7.67 km sideways and falls 4.35 m, and over 7.67 km the Earth's curve drops exactly 4.35 m below a straight line. The fall and the curve match second after second, so the height never changes: a circular orbit."
+/>
+
+</Step>
+
+<Step>
+
+## Name it
+
+A circle drops $d^2/2r$ below a straight line in a distance $d$; the ball falls $\tfrac12 g t^2$.
+With $d = vt$ the two match only when
+
+$$v^2 = g\,r = \frac{GM}{r} \qquad\Longrightarrow\qquad v_{\text{circ}} = \sqrt{\frac{GM}{r}}$$
+
+Gravity is supplying exactly the $v^2/r$ a circle needs, and gravity itself is $g = GM/r^2$:
+9.82 m/s² at the ground, 8.69 m/s² at 400 km.
+
+<Recall id="up-ch13-recall-float" concept="circular-orbit">
+  <div slot="front">Gravity at the space station is about 90% of its value on the ground. So why do the astronauts float?</div>
+
+  They and the station fall together, with nothing pushing on them. Both fall toward the Earth
+  at 8.7 m/s², and both move sideways at 7.7 km/s, so the ground curves away as fast as they fall.
+</Recall>
+
+</Step>
+
+<Step>
+
+## The Moon is falling too
+
+The Moon is 60 times farther from the Earth's centre than you are, so the same gravity is
+60² = 3,600 times weaker there.
+
+<Estimate
+  id="up-ch13-moon-fall"
+  scenario="up-ch13-moon-fall"
+  prompt="In one second, how far does the Moon fall toward the Earth, away from the straight line it would otherwise follow?"
+  explanation="About 1.35 mm. Gravity there is 9.8/3600 ≈ 2.7 mm/s², and one second of falling from rest covers half of that. Newton checked it against the Moon's orbit: 1.02 km/s round a 384,000 km circle bends away from a straight line by the same 1.35 mm each second. The apple and the Moon obey one law."
+/>
+
+<Recall id="up-ch13-recall-inverse-square" concept="universal-gravitation">
+  <div slot="front">You move from the ground to twice as far from the Earth's centre. What happens to gravity's pull on you?</div>
+
+  It drops to a quarter. Gravity falls as 1/r², with r measured from the centre, so the station's
+  400 km barely matters (89%) but another 6,371 km cuts it to 25%.
+</Recall>
+
+## What to carry forward
+
+- **An orbit is free fall** with enough sideways speed that the ground curves away as fast as you fall.
+- **Gravity weakens as 1/r² from the centre**: 89% at the station, 1/3600 at the Moon, never zero.
+- **A circle at radius r needs v = √(GM/r)**: 7.67 km/s at 400 km.
+
+Next: fire faster than that, and the height stops being constant. How fast is gone for good?
+
+</Step>

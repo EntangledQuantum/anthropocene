@@ -100,7 +100,7 @@ export default function LevelTheSeesaw({
         miss={`The child turns it with ${left.toFixed(0)} N·m, the sack with ${right.toFixed(0)} N·m. The ${net > 0 ? 'left' : 'right'} end goes down.`}
         hit={explanation} />
         : <button type="button" className="anth-btn" onClick={() => { released.current = true; }}>Let go</button>}>
-      <Stage x={[-0.3, 4.3]} y={[-0.3, 1.75]} height={300} equal ground
+      <Stage x={[-0.3, 4.3]} y={[-0.3, 1.9]} height={300} equal ground
         label={`Seesaw. Child ${child.mass} kilograms ${(PIVOT - child.x).toFixed(2)} metres left of the pivot; sack ${sackMass} kilograms ${(sack - PIVOT).toFixed(2)} metres right.`}>
         {(s) => {
           geo.current = { ppm: s.len(1), px: s.sx(PIVOT), py: s.sy(H) };
@@ -110,7 +110,7 @@ export default function LevelTheSeesaw({
               <line x1={s.sx(PIVOT + d)} x2={s.sx(PIVOT + d)} y1={s.sy(0)} y2={s.sy(0) + 6} stroke={C.faint} />
               <text x={s.sx(PIVOT + d)} y={s.sy(0) + 20} textAnchor="middle" fontSize={12} fill={C.faint} fontFamily="var(--font-mono)">{Math.abs(d)}</text>
             </g>)}
-            <text x={s.sx(L) + 14} y={s.sy(0) + 20} fontSize={12} fill={C.faint}>m from the pivot</text>
+            <text x={s.sx(L) + 12} y={s.sy(0) + 20} fontSize={12} fill={C.faint}>m</text>
             <polygon points={[P([PIVOT, H - THICK / 2]), P([PIVOT - 0.3, 0]), P([PIVOT + 0.3, 0])].join(' ')} fill={C.surface} stroke={C.rule} strokeWidth={2} />
             {boxes.map((b, i) => (
               <g key={`w${i}`} ref={(el) => { arrows.current[i] = el; }}>
@@ -139,7 +139,7 @@ export default function LevelTheSeesaw({
         }}
       </Stage>
       <p className="hud-label" style={{ margin: '6px 0 0' }}>
-        4 m plank, {PLANK_KG} kg, pivot at its middle · amber: weights{task.done ? ', and the pivot’s push on the plank' : ''}
+        4 m plank, {PLANK_KG} kg · distances measured from the pivot · amber: weights{task.done ? ', and the pivot’s push on the plank' : ''}
       </p>
     </SceneCard>
   );

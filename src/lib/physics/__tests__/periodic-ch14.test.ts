@@ -5,7 +5,7 @@ import {
   peakAngle, pendulumStep, periodExcessPercent, rad, deg, racePeriod, settledSwing, shakeOsc, shakenStep,
   shove, shoveGain, springCart, swingEnergy, swingGL, vTroughPeriod,
 } from '../periodic-ch14.ts';
-import { G, pendulumPeriodRatio, peakGain, steadyAmplitude } from '../oscillator.ts';
+import { G, measuredResponse, pendulumPeriodRatio, peakGain, steadyAmplitude } from '../oscillator.ts';
 
 /** Time of the n-th upward zero crossing of x(t), integrated with `step`. */
 function crossings(step: (x: number, v: number, dt: number) => [number, number], x0: number, v0: number, tEnd: number, dt: number) {
@@ -52,6 +52,7 @@ describe('lesson 1: the pendulum falls off the clock', () => {
   it('the real period grows with release angle: 0.19% at 10°, 18% at 90°, 2.4394× at 170°', () => {
     expect(periodExcessPercent(rad(10))).toBeCloseTo(0.19, 2);
     expect(periodExcessPercent(rad(90))).toBeCloseTo(18.0, 1);
+    expect(periodExcessPercent(rad(60))).toBeCloseTo(7.3, 1);
     expect(pendulumPeriodRatio(rad(170))).toBeCloseTo(2.4394, 3);
   });
   it('the target angle for half a cycle lost in ten ticks is about 51°', () => {
@@ -165,6 +166,10 @@ describe('lesson 2: shaking the end of the spring', () => {
     // halving the damping roughly doubles the peak
     const light = { ...shakeOsc, beta: shakeOsc.beta / 2 };
     expect(steadyAmplitude(light, 2 * Math.PI * SHAKE.f0) / steadyAmplitude(shakeOsc, 2 * Math.PI * SHAKE.f0)).toBeCloseTo(2, 9);
+  });
+  it('at the widest swing the cart runs a quarter-cycle behind the hand (measured)', () => {
+    const lag = measuredResponse(shakeOsc, 2 * Math.PI * bestShakeHz()).phaseLag;
+    expect(Math.abs(lag * 180 / Math.PI - 90)).toBeLessThan(5);
   });
   it('4% off the best rate still keeps most of the peak; 25% off loses most of it', () => {
     const best = settledSwing(bestShakeHz());

@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from 'react';
-import { displacedMass, heaveStep, hydrostaticPressure, type Barge, type Heave } from '../../lib/physics/fluids.ts';
+import { displacedMass, floatDraft, heaveStep, hydrostaticPressure, type Barge, type Heave } from '../../lib/physics/fluids.ts';
 import { C, CheckBar, Meter, SceneCard, Stage, useTask, type StageApi } from './scene.tsx';
 import { PushArrow, WATER_FILL, WATER_LINE } from './fluid-kit.tsx';
 
@@ -53,7 +53,8 @@ export default function LoadTheBarge({ id, prompt, mark = 1.1, explanation }: Lo
         for (let k = 0; k < Math.round(dt / DT); k++) r.s = heaveStep(BARGE, totalRef.current, r.s, DT);
         r.t += dt;
         place(r.s.draft);
-        const settled = r.t > 6;
+        // settled once the bobbing has died below a millimetre a second
+        const settled = r.t > 2 && Math.abs(r.s.v) < 1e-3 && Math.abs(r.s.draft - floatDraft(BARGE, totalRef.current)) < 1e-3;
         if (settled) r.running = false;
         if (settled || now - lastShown > 120) {
           lastShown = now;
@@ -109,12 +110,12 @@ export default function LoadTheBarge({ id, prompt, mark = 1.1, explanation }: Lo
           onCheck={() => task.check(shown.settled && Math.abs(off) <= 0.02, { crates, draft: d })}
           miss={miss} hit={explanation} />}
       </div>}>
-      <Stage x={[-6.3, 6.3]} y={[-2.2, 3.4]} height={330} equal
+      <Stage x={[-6.9, 6.9]} y={[-2.0, 4.2]} height={300} equal
         label={`A barge of ${t(BARGE.mass)} with ${crates} crates of 2 tonnes, ${shown.released ? `floating at ${d.toFixed(2)} metres` : 'held by dock lines'}.`}>
         {(s) => { stage.current = s; return <>
-          <rect x={s.sx(-9)} y={s.sy(0)} width={s.len(14.5)} height={s.sy(-2.2) - s.sy(0)} fill={WATER_FILL} />
+          <rect x={s.sx(-9)} y={s.sy(0)} width={s.len(14.5)} height={s.sy(-2.0) - s.sy(0)} fill={WATER_FILL} />
           {/* the dock */}
-          <rect x={s.sx(5.5)} y={s.sy(0.9)} width={s.len(2)} height={s.sy(-2.2) - s.sy(0.9)} fill={C.surface} stroke={C.soft} strokeWidth={2} />
+          <rect x={s.sx(5.5)} y={s.sy(0.9)} width={s.len(2)} height={s.sy(-2.0) - s.sy(0.9)} fill={C.surface} stroke={C.soft} strokeWidth={2} />
           <g ref={hull}>
             <rect x={s.sx(-L / 2)} y={s.sy(H - EMPTY)} width={s.len(L)} height={s.len(H)} rx={3} fill={C.surface} stroke={C.ink} strokeWidth={2} />
             {/* painted draft marks, measured up from the keel */}
@@ -137,7 +138,7 @@ export default function LoadTheBarge({ id, prompt, mark = 1.1, explanation }: Lo
             <line key={a} x1={s.sx(L / 2)} y1={s.sy(a)} x2={s.sx(5.5)} y2={s.sy(b)} stroke={C.soft} strokeWidth={2} />
           ))}
           <line x1={s.sx(-9)} x2={s.sx(5.5)} y1={s.sy(0)} y2={s.sy(0)} stroke={WATER_LINE} strokeWidth={2} />
-          <text x={s.sx(-6)} y={s.sy(-1.9)} fontSize={12} fill={C.faint}>deck 10 m × 4 m · hull {t(BARGE.mass)} · each crate 2 t</text>
+          <text x={s.sx(-6.6)} y={s.sy(-1.75)} fontSize={12} fill={C.faint}>deck 10 m × 4 m · hull {t(BARGE.mass)} · each crate 2 t</text>
         </>; }}
       </Stage>
       <p className="hud-label" style={{ margin: '6px 0 0' }}>

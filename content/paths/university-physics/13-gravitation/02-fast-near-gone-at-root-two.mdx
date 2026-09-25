@@ -1,0 +1,137 @@
+---
+title: 'Fast near, slow far, gone at √2'
+blurb: 'Place a comet on its orbit by equal areas, then fire a probe at exactly the speed that never comes back.'
+order: 2
+tier: 'core'
+minutes: 11
+teaches:
+  - 'keplers-second-law'
+  - 'escape-speed'
+  - 'orbital-energy'
+  - 'keplers-third-law'
+requires:
+  - 'circular-orbit'
+  - 'universal-gravitation'
+  - 'mechanical-energy-conservation'
+  - 'potential-reference-zero'
+status: 'live'
+updated: 2026-09-25
+---
+
+<Step>
+
+A comet swings round the Sun on a long ellipse: 0.8 AU from the Sun at its closest, 3.2 AU at
+its farthest. One lap takes 1,032 days.
+
+<Predict
+  id="up-ch13-comet-time"
+  question="Where does the comet spend most of those 1,032 days?"
+  options={[
+    { key: 'a', misconception: 'orbit-constant-speed', label: 'Evenly, all the way round', why: 'That needs a steady speed. On the way in, gravity pulls partly along the motion and speeds the comet up; on the way out it slows it down.' },
+    { key: 'b', misconception: 'lingers-near-the-sun', label: 'Near the Sun, where the pull is strongest', why: 'The strong pull is what whips the comet round fast there. Each wedge below takes the same 86 days, and near the Sun one wedge covers a huge stretch of orbit.' },
+    { key: 'c', label: 'Far from the Sun, crawling', why: 'Right. It spends about 70% of its time on the far half of the orbit. Far out, one 86-day wedge is a thin sliver of arc.' },
+  ]}
+  correct="c"
+>
+
+<SweepTheWedge prompt="Each wedge takes the same 86 days. Follow the comet through them." />
+
+</Predict>
+
+</Step>
+
+<Step>
+
+## Sixty days, far out
+
+The shaded wedge is swept in the 60 days after the comet passes closest to the Sun.
+
+<SweepTheWedge
+  id="up-ch13-sixty-days-far"
+  prompt="Drag the marker to where the comet will be 60 days after its farthest point."
+  explanation="A sliver: about 0.37 AU of orbit, against 1.33 AU near the Sun, yet the two wedges have the same area. The line from the Sun sweeps area at a steady rate, so a long radius turns through a small angle. Gravity pulls straight at the Sun, has no lever arm, and cannot change that rate: it is angular momentum, conserved."
+/>
+
+<Recall id="up-ch13-recall-areas" concept="keplers-second-law">
+  <div slot="front">A planet is three times farther from the Sun at its farthest point than at its closest. How do its speeds at those two points compare?</div>
+
+  Three times slower when farthest. At both points the velocity is at right angles to the
+  radius, so equal areas means r·v is the same: triple the r, a third of the v.
+</Recall>
+
+</Step>
+
+<Step>
+
+## Fire to escape
+
+Back at Earth, 400 km up, where 7.67 km/s holds a circle. Faster launches swing out and come
+back, until one does not.
+
+<FireToEscape
+  id="up-ch13-escape"
+  prompt="Find the slowest launch that never comes back, then check."
+  start={9}
+  explanation="10.86 km/s, which is 1.414 times the circular 7.67. At that speed the kinetic bar stands exactly as tall as the potential bar is deep, and the total touches zero. Below zero the path always closes; at zero it only just fails to."
+/>
+
+</Step>
+
+<Step>
+
+## Name it
+
+With the zero of potential energy at infinity, energy per kilogram is
+
+$$\frac{E}{m} = \tfrac12 v^2 - \frac{GM}{r}$$
+
+Negative is bound and zero is the edge, so $v_{\text{esc}} = \sqrt{2GM/r} = \sqrt2\,v_{\text{circ}}$:
+a circle carries half the kinetic energy that escape needs.
+
+<Recall id="up-ch13-recall-escape" concept="escape-speed">
+  <div slot="front">Circular speed just above the Moon's surface is 1.68 km/s. What is escape speed there?</div>
+
+  About 2.38 km/s, which is √2 × 1.68. Escape needs twice the kinetic energy of a circle at the
+  same place, and twice the energy is √2 times the speed.
+</Recall>
+
+</Step>
+
+<Step>
+
+## Speed up to fall behind
+
+You share the station's circular orbit, 300 km behind it. You fire your engine forward
+briefly, from 7.67 to 7.90 km/s.
+
+<Predict
+  id="up-ch13-chase"
+  question="One lap later, where are you compared with the station?"
+  options={[
+    { key: 'a', misconception: 'speed-up-to-catch-up', label: 'Caught up: you were going faster', why: 'Faster for a moment. The extra speed lifts you onto a bigger ellipse, you slow as you climb, and the bigger orbit takes longer to get round.' },
+    { key: 'b', label: 'Farther behind, by thousands of kilometres', why: 'Right. Your new orbit peaks about 870 km higher and takes 9 minutes longer. The station, still on the small circle, ends the lap about 4,400 km ahead.' },
+    { key: 'c', label: 'Still 300 km behind, just higher', why: 'Higher, yes, but a bigger orbit has a longer period, so the gap grows every lap.' },
+  ]}
+  correct="b"
+>
+
+<FireToEscape station reach={10} start={7.9} prompt="Fire, and read the gap when you are back where you started." />
+
+</Predict>
+
+<Recall id="up-ch13-recall-chase" concept="keplers-third-law">
+  <div slot="front">To catch a station ahead of you in the same circular orbit, which way do you fire?</div>
+
+  Backward. You drop into a smaller orbit with a shorter period, gain on the station each lap,
+  then fire forward to rise back. T² ∝ a³: smaller orbits are quicker.
+</Recall>
+
+## What to carry forward
+
+- **Equal areas in equal times**: fast near the centre, slow far away.
+- **E = ½v² − GM/r decides the fate**: negative comes back; zero escapes, at √2 times circular speed.
+- **Bigger orbits are slower and longer**: T² ∝ a³.
+
+Next: anything sitting near the bottom of a well, like this one, ticks. Periodic motion.
+
+</Step>

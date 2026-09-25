@@ -161,7 +161,7 @@ export default function SpringRace({ id, prompt, reference = 0.4, start = 0.8, r
             </g>)}
             {[0, 2, 4, 6, 8, 10].map((v) => <text key={v} x={s.sx(tx(v))} y={s.sy(TR.y0) + 16} textAnchor="middle" fontSize={12} fill={C.faint} fontFamily="var(--font-mono)">{v}</text>)}
             <text x={s.sx(TR.x0) + 4} y={s.sy(TR.y1) - 8} fontSize={13} fill={C.soft}>position (m)</text>
-            <text x={s.sx(TR.x1)} y={s.sy(TR.y0) + 16} textAnchor="end" fontSize={13} fill={C.soft}>time (s)</text>
+            <text x={s.sx(TR.x1)} y={s.sy(TR.y1) - 8} textAnchor="end" fontSize={13} fill={C.soft}>time (s) →</text>
             {cart('ref', reference)}
             {cart('you', pull)}
             {!running && <Handle s={s} at={[pull, LANES.you]} color={C.position} step={0.05} label="Your cart: drag to set how far it is pulled"

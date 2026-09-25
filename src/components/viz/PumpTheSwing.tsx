@@ -27,10 +27,10 @@ export default function PumpTheSwing({ id, prompt, explanation }: PumpTheSwingPr
   const task = useTask(id, 'pump-the-swing');
   const limit = graded ? SWING.shoves : Infinity;
   const stage = useRef<StageApi | null>(null);
-  const sim = useRef({ th: rad(SWING.start), w: 0, best: SWING.start, flash: 0 });
+  const sim = useRef({ th: rad(SWING.start), w: 0, best: SWING.start as number, flash: 0 });
   const log = useRef({ used: 0, against: 0, idle: 0, last: 0 });
   const els = useRef<Record<string, SVGElement | null>>({});
-  const [shown, setShown] = useState({ peak: SWING.start, best: SWING.start, used: 0, last: 0, against: 0, idle: 0 });
+  const [shown, setShown] = useState({ peak: SWING.start as number, best: SWING.start as number, used: 0, last: 0, against: 0, idle: 0 });
 
   const read = () => {
     const m = sim.current, l = log.current;
@@ -81,7 +81,7 @@ export default function PumpTheSwing({ id, prompt, explanation }: PumpTheSwingPr
     read();
   };
   const restart = () => {
-    sim.current = { th: rad(SWING.start), w: 0, best: SWING.start, flash: 0 };
+    sim.current = { th: rad(SWING.start), w: 0, best: SWING.start as number, flash: 0 };
     log.current = { used: 0, against: 0, idle: 0, last: 0 };
     task.touch();
     read();
@@ -148,10 +148,10 @@ export default function PumpTheSwing({ id, prompt, explanation }: PumpTheSwingPr
             </g>
             <line ref={(el) => { els.current.v = el; }} stroke={C.velocity} strokeWidth={3} markerEnd="url(#pts-v)" opacity={0} />
             <g fontSize={13}>
-              <line x1={s.sx(0.62)} x2={s.sx(0.72)} y1={s.sy(-1.0)} y2={s.sy(-1.0)} stroke={C.position} strokeWidth={2.5} />
-              <text x={s.sx(0.75)} y={s.sy(-1.0) + 4} fill={C.soft}>highest so far</text>
-              <line x1={s.sx(0.62)} x2={s.sx(0.72)} y1={s.sy(-1.09)} y2={s.sy(-1.09)} stroke={C.velocity} strokeWidth={3} />
-              <text x={s.sx(0.75)} y={s.sy(-1.09) + 4} fill={C.soft}>velocity</text>
+              <line x1={s.sx(0.72)} x2={s.sx(0.82)} y1={s.sy(-0.1)} y2={s.sy(-0.1)} stroke={C.position} strokeWidth={2.5} />
+              <text x={s.sx(0.85)} y={s.sy(-0.1) + 4} fill={C.soft}>highest so far</text>
+              <line x1={s.sx(0.72)} x2={s.sx(0.82)} y1={s.sy(-0.19)} y2={s.sy(-0.19)} stroke={C.velocity} strokeWidth={3} />
+              <text x={s.sx(0.85)} y={s.sy(-0.19) + 4} fill={C.soft}>velocity</text>
             </g>
           </>;
         }}

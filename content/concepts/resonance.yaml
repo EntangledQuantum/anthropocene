@@ -1,0 +1,13 @@
+title: 'Resonance'
+blurb: 'Drive an oscillator at its own rhythm and each cycle''s push adds to the last, until the damping leak matches the input.'
+notation: '\ddot x + 2\beta\dot x + \omega_0^2 x = f_0\cos\omega t,\qquad A_{\text{peak}} \approx Q\,\frac{f_0}{\omega_0^2}'
+tags: ['up-ch14']
+misconceptions:
+  - id: 'up-ch14-resonance-infinite'
+    name: 'At resonance the amplitude grows without limit.'
+    signal: 'Expects a resonant swing to keep growing forever, or to break anything that is driven at its natural frequency.'
+    correction: 'The amplitude grows until the energy damping removes each cycle equals the energy the drive puts in. The peak is finite, and it is set by the damping: halve the damping and the peak roughly doubles.'
+  - id: 'up-ch14-tacoma-forced-resonance'
+    name: 'Tacoma Narrows fell because gusts matched its natural frequency.'
+    signal: 'Explains every wind-driven collapse as a rhythmic push that happened to match the structure.'
+    correction: 'The wind that day was steady. The twisting deck steered the airflow so that the wind pushed with the motion every cycle, which is damping of the wrong sign. The rhythm came from the bridge, not from the wind.'

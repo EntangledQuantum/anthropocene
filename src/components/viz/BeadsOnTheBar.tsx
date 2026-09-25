@@ -93,7 +93,7 @@ export default function BeadsOnTheBar({ id, prompt, r: r0 = 0.03, target, tolera
         {graded && <CheckBar verdict={task.verdict} done={task.done}
           onCheck={() => task.check(hit, { r })} miss={miss} hit={explanation} />}
       </div>}>
-      <Stage x={[-0.45, 0.45]} y={[-0.06, 1.32]} height={380} equal
+      <Stage x={[-0.45, 0.45]} y={[-0.06, 1.32]} height={440} equal
         label={`A bar with two beads ${(r * 100).toFixed(1)} centimetres from the axle. A weight hangs from a string wound on the axle, ${RIG.drop} metres above the floor.`}>
         {(s) => {
           stage.current = s;

@@ -17,7 +17,7 @@ export function HWire({ s, y, end, from, thick, label }: {
     <line x1={s.sx(from)} x2={bx - 6} y1={s.sy(y)} y2={s.sy(y)} stroke={C.soft} strokeWidth={thick} />
     <line x1={bx + 6} x2={s.sx(end)} y1={s.sy(y)} y2={s.sy(y)} stroke={C.soft} strokeWidth={thick} />
     <path d={`M${bx - 10},${s.sy(y) + 9}L${bx - 2},${s.sy(y) - 9}M${bx + 2},${s.sy(y) + 9}L${bx + 10},${s.sy(y) - 9}`} stroke={C.faint} strokeWidth={1.5} />
-    <text x={bx} y={s.sy(y) - 16} textAnchor="middle" fontSize={12} fill={C.faint}>{label}</text>
+    <text x={s.sx(from) + 6} y={s.sy(y) - 18} fontSize={12} fill={C.faint}>{label}</text>
     <rect x={s.sx(end) - 5} y={s.sy(y) - 11} width={10} height={22} rx={2} fill={C.surface} stroke={C.ink} strokeWidth={2} />
   </g>;
 }

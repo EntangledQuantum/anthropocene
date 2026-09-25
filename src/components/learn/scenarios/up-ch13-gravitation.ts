@@ -13,7 +13,7 @@ export const estimate: Record<string, EstimateScenario> = {
   'up-ch13-moon-fall': {
     quantity: 'how far the Moon falls toward the Earth in one second',
     unit: 'mm',
-    logRange: [-3, 4],
+    logRange: [-3, 5],
     logStart: 2,
     withinFactor: 3,
     truth: () => fallInTime(gravityAt(GM_EARTH, MOON_DISTANCE), 1) * 1000,

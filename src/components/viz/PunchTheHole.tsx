@@ -115,7 +115,7 @@ export default function PunchTheHole({ id, prompt, drain = 0.8, explanation }: P
             <text x={s.sx(0.06)} y={s.sy(mirror) - 8} fontSize={12} fill={C.soft}>a hole at {m(mirror)} lands here too</text>
           </>}
           <path ref={jet} fill="none" stroke={WATER_LINE} strokeWidth={4} strokeLinecap="round" />
-          {open && <Arrow s={s} from={[0.02, y]} to={[0.02 + v * 0.08, y]} color={C.velocity} label={`${v.toFixed(2)} m/s`} />}
+          {open && <Arrow s={s} from={[0.02, y]} to={[0.02 + v * 0.08, y]} color={C.velocity} label={`${v.toFixed(2)} m/s`} labelSide={-1} />}
           {!open && <rect x={s.sx(0)} y={s.sy(y) - 5} width={10} height={10} rx={2} fill={C.soft} />}
           <Handle s={s} at={[0, y]} color={C.ink} step={0.01} r={7} label="The hole: drag it up or down the wall"
             onChange={(p) => move(Math.round(Math.min(0.95, Math.max(0.05, p[1])) * 100) / 100)} />

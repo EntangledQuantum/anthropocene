@@ -109,7 +109,7 @@ export default function TurntableBugs({
               <circle cx={s.sx(0)} cy={s.sy(0)} r={s.len(RADIUS)} fill={C.surface} stroke={C.rule} strokeWidth={2} />
               {[0.05, 0.1, 0.15].map((r) => <circle key={r} cx={s.sx(0)} cy={s.sy(0)} r={s.len(r)} fill="none" stroke={C.grid} />)}
               <line x1={s.sx(0)} y1={s.sy(0)} x2={s.sx(RADIUS)} y2={s.sy(0)} stroke={C.soft} strokeWidth={3} strokeLinecap="round" />
-              {[5, 10, 15].map((cm) => <text key={cm} x={s.sx(cm / 100)} y={s.sy(0) + 18} textAnchor="middle" fontSize={12} fill={C.faint} fontFamily="var(--font-mono)">{cm === 15 ? '15 cm' : cm}</text>)}
+              <text x={s.sx(RADIUS) + 6} y={s.sy(0) + 4} fontSize={12} fill={C.faint} fontFamily="var(--font-mono)">16 cm</text>
               {spinning && <>
                 <path d={`M${P(0, 0)} L${P(rOut * Math.cos(-sweep), rOut * Math.sin(-sweep))} ${arc(rOut).slice(arc(rOut).indexOf('A'))} Z`}
                   fill={C.position} fillOpacity={0.08} stroke="none" />
@@ -126,7 +126,7 @@ export default function TurntableBugs({
               {[['A', rA], ['B', rB]].map(([name, r]) => (
                 <g key={name as string}>
                   <ellipse cx={s.sx(r as number)} cy={s.sy(0)} rx={9} ry={6} fill={C.surface} stroke={name === 'B' ? C.ink : C.soft} strokeWidth={2} />
-                  <text x={s.sx(r as number) - 12} y={s.sy(0) - 10} fontSize={13} fontWeight={600} fill={name === 'B' ? C.ink : C.soft}>{name}</text>
+                  <text x={s.sx(r as number)} y={s.sy(0) + 24} textAnchor="middle" fontSize={13} fontWeight={600} fill={name === 'B' ? C.ink : C.soft}>{name}</text>
                 </g>
               ))}
             </g>
@@ -147,7 +147,7 @@ export default function TurntableBugs({
         }}
       </Stage>
       <p className="hud-label" style={{ margin: '6px 0 0' }}>
-        Seen from above · purple arcs: where each bug was 0.3 s ago · cyan: velocity
+        Seen from above · rings every 5 cm · purple arcs: where each bug was 0.3 s ago · cyan: velocity
       </p>
     </SceneCard>
   );

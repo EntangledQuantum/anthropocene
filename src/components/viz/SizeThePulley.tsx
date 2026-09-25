@@ -105,7 +105,7 @@ export default function SizeThePulley({
         {graded && <CheckBar verdict={task.verdict} done={task.done}
           onCheck={() => task.check(hit, { drumR })} miss={miss} hit={explanation} />}
       </div>}>
-      <Stage x={[-0.1, 0.48]} y={[-0.19, 0.18]} height={330} equal
+      <Stage x={[-0.1, 0.48]} y={[-0.19, 0.21]} height={340} equal
         label={`A ${(motorR * 100).toFixed(0)} centimetre motor pulley belted to a ${(drumR * 100).toFixed(1)} centimetre drum pulley.`}>
         {(s) => {
           stage.current = s;
@@ -139,7 +139,7 @@ export default function SizeThePulley({
             <path d={d} fill="none" stroke={C.rule} strokeWidth={4} strokeLinejoin="round" />
             <path ref={belt} d={d} fill="none" stroke={C.ink} strokeWidth={2} strokeDasharray={`${s.len(DASH)} ${s.len(DASH)}`} />
             {running && [[0, motorR], [D, drumR]].map(([cx, r]) => (
-              <Arrow key={cx} s={s} from={[cx - L / 2, r + 0.022]} to={[cx + L / 2, r + 0.022]} color={C.velocity}
+              <Arrow key={cx} s={s} from={[cx - L / 2, r + 0.05]} to={[cx + L / 2, r + 0.05]} color={C.velocity}
                 label={`${vBelt.toFixed(2)} m/s`} />
             ))}
             {!running && <Handle s={s} at={[D + drumR, 0]} step={0.0025} label="Drum pulley rim: drag to resize"

@@ -1,0 +1,6 @@
+---
+// @graded — the scene checks itself; `id` is required.
+import Island, { type AimTheBeadProps } from '../viz/AimTheBead.tsx';
+const props = Astro.props as AimTheBeadProps;
+---
+<Island client:visible {...props} />

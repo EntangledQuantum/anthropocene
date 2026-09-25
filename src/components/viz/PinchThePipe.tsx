@@ -74,7 +74,7 @@ export default function PinchThePipe({ id, prompt, target, start = 1, explanatio
   const revealed = !graded || task.verdict !== 'none' || task.done;
   const cm = (m: number) => `${(m * 100).toFixed(1)} cm`;
   const wall = (sgn: 1 | -1, s: StageApi, back = false) => Array.from({ length: 81 }, (_, i) => {
-    const x = -0.05 + ((back ? 80 - i : i) * (LEN + 0.1)) / 80;
+    const x = -0.12 + ((back ? 80 - i : i) * (LEN + 0.24)) / 80;
     return `${i ? 'L' : 'M'}${s.sx(x).toFixed(1)},${s.sy((sgn * waistDiameter(x, D, d, XC, HW)) / 2).toFixed(1)}`;
   }).join('');
 
@@ -91,11 +91,11 @@ export default function PinchThePipe({ id, prompt, target, start = 1, explanatio
           miss={`The waist is ${cm(d)} across, ${((d / D) * 100).toFixed(0)}% of the pipe's width, so its area is ${((pipeArea(d) / pipeArea(D)) * 100).toFixed(0)}% and the water there runs ${ratio.toFixed(2)}× as fast.`}
           hit={explanation} />}
       </div>}>
-      <Stage x={[-0.05, LEN + 0.05]} y={[-0.1, 0.6]} height={320} equal label={`A pipe 12 cm across pinched to ${cm(d)}. Water stands ${cm(columnHeight(waist.p))} high over the waist.`}>
+      <Stage x={[-0.12, LEN + 0.12]} y={[-0.12, 0.76]} height={320} equal label={`A pipe 12 cm across pinched to ${cm(d)}. Water stands ${cm(columnHeight(waist.p))} high over the waist.`}>
         {(s) => { stage.current = s; return <>
           {/* the water in the pipe */}
           <path d={`${wall(1, s)}${wall(-1, s, true).replace(/^M/, 'L')}Z`} fill={WATER_FILL} />
-          {LANES.map((f) => <path key={f} d={Array.from({ length: 61 }, (_, i) => { const x = -0.05 + (i * (LEN + 0.1)) / 60; return `${i ? 'L' : 'M'}${s.sx(x).toFixed(1)},${s.sy((f * waistDiameter(x, D, d, XC, HW)) / 2).toFixed(1)}`; }).join('')} fill="none" stroke={C.ghost} strokeWidth={1} />)}
+          {LANES.map((f) => <path key={f} d={Array.from({ length: 61 }, (_, i) => { const x = -0.12 + (i * (LEN + 0.24)) / 60; return `${i ? 'L' : 'M'}${s.sx(x).toFixed(1)},${s.sy((f * waistDiameter(x, D, d, XC, HW)) / 2).toFixed(1)}`; }).join('')} fill="none" stroke={C.ghost} strokeWidth={1} />)}
           <path ref={dots} fill={C.velocity} />
           <path d={wall(1, s)} fill="none" stroke={C.soft} strokeWidth={2.5} />
           <path d={wall(-1, s)} fill="none" stroke={C.soft} strokeWidth={2.5} />
@@ -104,7 +104,7 @@ export default function PinchThePipe({ id, prompt, target, start = 1, explanatio
             <line x1={s.sx(0.1)} x2={s.sx(1.5)} y1={s.sy(h)} y2={s.sy(h)} stroke={C.grid} />
             <text x={s.sx(0.08)} y={s.sy(h) + 4} textAnchor="end" fontSize={11} fill={C.faint} fontFamily="var(--font-mono)">{h}</text>
           </g>)}
-          <text x={s.sx(0.02)} y={s.sy(0.56)} fontSize={12} fill={C.faint}>height (m)</text>
+          <text x={s.sx(-0.1)} y={s.sy(0.6)} fontSize={12} fill={C.faint}>height (m)</text>
           {TUBES.map((x) => {
             const { p } = venturiAt(vt, x);
             const h = columnHeight(p), base = waistDiameter(x, D, d, XC, HW) / 2, w = 0.035;
@@ -120,8 +120,8 @@ export default function PinchThePipe({ id, prompt, target, start = 1, explanatio
               </>}
             </g>;
           })}
-          <text x={s.sx(0.02)} y={s.sy(-0.085)} fontSize={12} fill={C.faint}>pipe 12 cm across</text>
-          <text x={s.sx(XC)} y={s.sy(-d / 2 - 0.03)} textAnchor="middle" fontSize={12} fill={C.soft}>waist {cm(d)}</text>
+          <text x={s.sx(-0.1)} y={s.sy(-0.1)} fontSize={12} fill={C.faint}>pipe 12 cm across</text>
+          <text x={s.sx(XC)} y={s.sy(-d / 2 - 0.035)} textAnchor="middle" fontSize={12} fill={C.soft}>waist {cm(d)}</text>
           <Handle s={s} at={[XC, d / 2]} color={C.ink} step={0.001} r={7} label="The waist's wall: drag down to pinch"
             onChange={(p) => { setD(Math.min(D, Math.max(0.05, 2 * p[1]))); task.touch(); }} />
         </>; }}

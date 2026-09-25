@@ -1,0 +1,6 @@
+---
+// @graded — with `id`, find the shortest air column that booms with the fork.
+import Island, { type PourToBoomProps } from '../viz/PourToBoom.tsx';
+const props = Astro.props as PourToBoomProps;
+---
+<Island client:visible {...props} />

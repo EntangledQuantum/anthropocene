@@ -1,0 +1,6 @@
+---
+// Ungraded: a train passes you; its crests bunch ahead and the pitch trace stays flat on the way in.
+import Island, { type WhistlePassProps } from '../viz/WhistlePass.tsx';
+const props = Astro.props as WhistlePassProps;
+---
+<Island client:visible {...props} />

@@ -25,7 +25,7 @@ export interface PendulumDriftProps {
   explanation?: string;
 }
 
-const MIN = 5, MAX = 120, SUB = 1 / 1000;
+const MIN = 5, MAX = 100, SUB = 1 / 1000;
 
 export default function PendulumDrift({ id, prompt, start = 20, tolerance = 4, explanation }: PendulumDriftProps) {
   const task = useTask(id, 'pendulum-drift');
@@ -99,7 +99,7 @@ export default function PendulumDrift({ id, prompt, start = 20, tolerance = 4, e
             : `From ${angle}°, the real bob ends ${lag.toFixed(2)} of a cycle behind, not 0.50: its period is ${periodExcessPercent(rad(angle)).toFixed(1)}% longer than the ideal clock's.`}
           hit={explanation} />}
       </div>}>
-      <Stage x={[-1.2, 1.2]} y={[-1.22, 0.14]} height={320} equal
+      <Stage x={[-1.2, 1.2]} y={[-1.12, 0.6]} height={380} equal
         label={`Pendulum released at ${angle} degrees beside the small-angle clock`}>
         {(s) => {
           stage.current = s;
@@ -111,7 +111,7 @@ export default function PendulumDrift({ id, prompt, start = 20, tolerance = 4, e
             <line x1={s.sx(0)} x2={s.sx(0)} y1={s.sy(0)} y2={s.sy(-1.12)} stroke={C.grid} strokeDasharray="2 6" />
             <path d={arc(1, th0, -th0)} fill="none" stroke={C.grid} strokeDasharray="3 5" />
             <path d={arc(0.22, th0, 0)} fill="none" stroke={C.faint} />
-            <text x={s.sx(0.27 * Math.sin(th0 / 2)) + 4} y={s.sy(-0.27 * Math.cos(th0 / 2)) + 4} fontSize={13} fill={C.soft}>{angle}°</text>
+            <text x={s.sx(-0.04)} y={s.sy(-0.26)} textAnchor="end" fontSize={13} fill={C.soft}>{angle}°</text>
             {/* the ideal clock, a ghost */}
             <line ref={(el) => { els.current['ideal-rod'] = el; }} x1={s.sx(0)} y1={s.sy(0)} x2={s.sx(Math.sin(th0))} y2={s.sy(-Math.cos(th0))}
               stroke={C.faint} strokeWidth={1.4} strokeDasharray="5 5" />
@@ -126,10 +126,10 @@ export default function PendulumDrift({ id, prompt, start = 20, tolerance = 4, e
             </g>
             <circle cx={s.sx(0)} cy={s.sy(0)} r={4} fill={C.soft} />
             <g fontSize={13}>
-              <line x1={s.sx(-1.12)} x2={s.sx(-1.02)} y1={s.sy(-0.93)} y2={s.sy(-0.93)} stroke={C.faint} strokeDasharray="5 5" strokeWidth={1.6} />
-              <text x={s.sx(-1.0)} y={s.sy(-0.93) + 4} fill={C.soft}>ideal clock: same period at any angle</text>
-              <circle cx={s.sx(-1.07)} cy={s.sy(-1.05)} r={6} fill={C.surface} stroke={C.position} strokeWidth={2} />
-              <text x={s.sx(-1.0)} y={s.sy(-1.05) + 4} fill={C.soft}>real pendulum, 25 cm</text>
+              <line x1={s.sx(-1.44)} x2={s.sx(-1.34)} y1={s.sy(0.5)} y2={s.sy(0.5)} stroke={C.faint} strokeDasharray="5 5" strokeWidth={1.6} />
+              <text x={s.sx(-1.3)} y={s.sy(0.5) + 4} fill={C.soft}>ideal clock: same period at any angle</text>
+              <circle cx={s.sx(-1.39)} cy={s.sy(0.38)} r={6} fill={C.surface} stroke={C.position} strokeWidth={2} />
+              <text x={s.sx(-1.3)} y={s.sy(0.38) + 4} fill={C.soft}>real pendulum, 25 cm</text>
             </g>
             {phase !== 'run' && <Handle s={s} at={[Math.sin(th0), -Math.cos(th0)]} color={C.position} step={0.02}
               label="Real bob: drag to set the release angle"

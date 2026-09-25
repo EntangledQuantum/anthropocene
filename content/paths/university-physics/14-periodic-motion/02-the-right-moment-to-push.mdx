@@ -1,0 +1,140 @@
+---
+title: 'The right moment to push'
+blurb: 'Pump a swing with well-timed shoves, find the rhythm that makes a spring go wild, and tell resonance from flutter.'
+order: 2
+tier: 'foundation'
+minutes: 11
+teaches: ['damped-oscillation', 'resonance']
+requires: ['simple-harmonic-motion', 'work-energy-theorem']
+runtime: 'none'
+status: 'live'
+updated: 2026-09-25
+---
+
+<Step>
+
+A child sits on a swing that is barely moving. You get quick shoves, one at a time, each
+pushing away from you.
+
+<Predict
+  id="up-ch14-when-to-shove"
+  question="Where in the swing does one quick shove add the most energy?"
+  options={[
+    { key: 'top', misconception: 'up-ch14-push-at-the-top', label: 'At the back, the instant the seat stops', why: 'It feels right because the seat is easy to reach there. But a push only does work while the seat moves, and here it is not moving: one quick shove adds almost nothing.' },
+    { key: 'bottom-away', label: 'At the bottom, as it rushes away from you', why: 'Right. Work is force times the distance the seat moves while you push. Where it moves fastest, the same shove covers the most distance.' },
+    { key: 'bottom-toward', label: 'At the bottom, as it rushes toward you', why: 'That shove meets the seat head on. It does negative work and slows the swing down.' },
+    { key: 'any', misconception: 'up-ch14-any-push-helps', label: 'Anywhere: a shove is a shove', why: 'The same shove can add energy, add nothing or take energy out, depending on which way the seat is moving when it lands.' },
+  ]}
+  correct="bottom-away"
+>
+
+<PumpTheSwing prompt="Shove at different moments and watch what each one adds." />
+
+</Predict>
+
+</Step>
+
+<Step>
+
+## Ten shoves
+
+The ropes creak and lose a little every swing, so wasted shoves cost you.
+
+<PumpTheSwing
+  id="up-ch14-pump-to-mark"
+  prompt="Get the swing up to the dashed 30° mark in ten shoves or fewer."
+  explanation="Each good shove lands as the seat passes the bottom moving away from you, one shove per cycle, in time with the swing's own rhythm. Pushing at the wrong moment is not merely weaker. Against the motion, it undoes the work you have already done."
+/>
+
+</Step>
+
+<Step>
+
+## Let a hand keep the rhythm
+
+Now a hand shakes the end of a spring, by 1.5 cm each way, at whatever rate you set. It
+cannot choose its moment. It can only choose its rhythm.
+
+<ShakeToResonance
+  id="up-ch14-shake-widest"
+  prompt="Find the shaking rate that makes the cart swing widest once it settles."
+  explanation="About 1.2 shakes a second, the rate the cart swings at on its own. There the cart settles to about ±12 cm, eight times the hand's ±1.5 cm, and it stops growing. On the strip the cart runs a quarter-cycle behind the hand, so the hand's pull is always with the cart's motion, like your well-timed shoves."
+/>
+
+</Step>
+
+<Step>
+
+## Name it
+
+The creaking ropes are **damping**: a force against the velocity that leaks energy from
+every cycle. A drive in step with the natural rhythm puts energy in every cycle. That is
+**resonance**:
+
+$$\ddot x + 2\beta\,\dot x + \omega_0^2\,x = f_0\cos\omega t$$
+
+The swing stops growing once the leak through $2\beta\dot x$ matches what the drive supplies
+each cycle. So the peak is finite, about $Q = \omega_0/2\beta$ times the hand's own
+movement. Halve the damping and the peak doubles.
+
+<Recall id="up-ch14-recall-resonance" concept="resonance">
+  <div slot="front">A spring is shaken at exactly its natural rate. Why doesn't the swing grow forever?</div>
+
+  Damping drains more energy per cycle the bigger the swing gets. The swing grows until
+  that drain equals what the drive puts in each cycle, then holds. The peak is set by the
+  damping: roughly $Q$ times what the same shaking gives at a very slow rate.
+</Recall>
+
+</Step>
+
+<Step>
+
+## The bridge that twisted itself
+
+On 7 November 1940, a steady wind of about 68 km/h twisted the Tacoma Narrows Bridge
+apart. The deck twisted back and forth about once every five seconds for an hour.
+
+<Predict
+  id="up-ch14-tacoma"
+  question="What kept feeding the twist?"
+  options={[
+    { key: 'gusts', misconception: 'up-ch14-tacoma-forced-resonance', label: 'Gusts arriving once every five seconds, in step with the deck', why: 'That is the textbook story, but the wind was steady. Nothing in the air beat at five seconds.' },
+    { key: 'vortices', label: 'Swirls shed behind the deck, at the deck’s own rate', why: 'Swirls are real, and they probably caused the gentler bouncing seen before. That day they came off several times faster than the deck twisted, so they could not keep in step with it.' },
+    { key: 'self', label: 'The twist itself: the tilting deck made the wind push along with its motion', why: 'Right. As the deck tilted, the airflow over it pushed the way it was already turning, every cycle. The deck made its own rhythm and the wind paid for it.' },
+    { key: 'free', misconception: 'up-ch14-resonance-infinite', label: 'Nothing: once started at resonance, a twist grows by itself', why: 'Damping drains every oscillation. Something has to put energy in every cycle for a twist to grow, and it has to push in step with the motion.' },
+  ]}
+  correct="self"
+/>
+
+</Step>
+
+<Step>
+
+## Damping with the wrong sign
+
+A model deck in a wind tunnel. Its wind pushes in proportion to how fast the deck is
+already twisting, so the wind has no rhythm of its own.
+
+<FlutterDeck
+  id="up-ch14-flutter-onset"
+  prompt="Find the slowest steady wind at which a small twist grows instead of dying."
+  explanation="About 18 m/s for this deck. Below that, the wind's push with the motion is weaker than the deck's own damping, and the twist dies. Above it, the damping is effectively negative and each twist is bigger than the last. The deck twists at its own rate whatever the wind speed. This is flutter, not resonance."
+/>
+
+<Recall id="up-ch14-recall-flutter" concept="damped-oscillation">
+  <div slot="front">A steady wind makes a bridge deck twist harder and harder. In terms of damping, what is the wind doing?</div>
+
+  Supplying damping of the wrong sign. Its push follows the deck's twisting velocity, so it
+  adds energy every cycle instead of removing it. Once that beats the structure's own
+  damping, any small twist grows, at the deck's own frequency.
+</Recall>
+
+## What to carry forward
+
+- **A push adds energy only along the motion.** Damping is a push against it, all the time.
+- **Resonance is a drive in step with the natural rhythm.** It is limited by damping, and
+  flutter is what happens when the damping turns negative.
+
+Next: two oscillations added together, which is the door to waves.
+
+</Step>

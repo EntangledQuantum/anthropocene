@@ -164,6 +164,7 @@ export default function PebbleInTheTyre({
           if (!d) return;
           e.preventDefault();
           t.current = Math.max(0, t.current + (d * (2 * Math.PI) / 180) * (R / v)); // 2° of roll
+          if (d > 0) { const p = state().point; trail.current.push([p[0], p[1]]); }
           publish();
           task.touch();
         }} />
