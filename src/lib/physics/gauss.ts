@@ -237,13 +237,27 @@ export const pointField = (Q: number, r: number) => (K * Q) / (r * r);
 
 /* ── a conductor: charge free to move inside a metal bar ───────────────── */
 
-/** A teardrop cross-section, pointed at +x (a 90° edge) and round at −x,
- *  counter-clockwise. `size` is the half-length. */
-export function dropOutline(cx: number, cy: number, size: number, n = 240): Vec2[] {
+/** A teardrop cross-section, counter-clockwise: a round end of radius `rho`
+ *  centred on (cx, cy), and two straight flanks meeting in a sharp edge on the
+ *  +x side with an apex angle of `apexDeg`. Starts at the sharp edge. */
+export function dropOutline(cx: number, cy: number, rho: number, apexDeg = 60, perFlank = 16, arcPoints = 56): Vec2[] {
+  const half = (apexDeg * Math.PI) / 360;
+  const tip: Vec2 = [cx + rho / Math.sin(half), cy];
+  const tangent = Math.PI / 2 - half; // where each flank meets the round end
+  const upper: Vec2 = [cx + rho * Math.cos(tangent), cy + rho * Math.sin(tangent)];
+  const lower: Vec2 = [cx + rho * Math.cos(tangent), cy - rho * Math.sin(tangent)];
   const out: Vec2[] = [];
-  for (let i = 0; i < n; i++) {
-    const t = (2 * Math.PI * i) / n;
-    out.push([cx + size * Math.cos(t), cy + size * 0.95 * Math.sin(t) * Math.sin(t / 2)]);
+  for (let i = 0; i < perFlank; i++) {
+    const t = i / perFlank;
+    out.push([tip[0] + t * (upper[0] - tip[0]), tip[1] + t * (upper[1] - tip[1])]);
+  }
+  for (let i = 0; i < arcPoints; i++) {
+    const a = tangent + ((2 * Math.PI - 2 * tangent) * i) / arcPoints;
+    out.push([cx + rho * Math.cos(a), cy + rho * Math.sin(a)]);
+  }
+  for (let i = 0; i < perFlank; i++) {
+    const t = i / perFlank;
+    out.push([lower[0] + t * (tip[0] - lower[0]), lower[1] + t * (tip[1] - lower[1])]);
   }
   return out;
 }
@@ -292,12 +306,28 @@ export function settleStep(pos: Vec2[], metal: Loop, rate: number, cap: number):
     let mx = rate * fx[i], my = rate * fy[i];
     const m = Math.hypot(mx, my);
     if (m > cap) { mx *= cap / m; my *= cap / m; }
-    let p: Vec2 = [pos[i][0] + mx, pos[i][1] + my];
-    if (!contains(metal, p[0], p[1])) p = nearestOnLoop(metal, p).at;
-    biggest = Math.max(biggest, Math.hypot(p[0] - pos[i][0], p[1] - pos[i][1]));
-    pos[i] = p;
+    let px = pos[i][0] + mx, py = pos[i][1] + my;
+    if (!contains(metal, px, py)) [px, py] = projectToBoundary(metal, px, py);
+    biggest = Math.max(biggest, Math.hypot(px - pos[i][0], py - pos[i][1]));
+    pos[i] = [px, py];
   }
   return biggest;
+}
+
+/** `nearestOnLoop(...).at` without the allocations, for the settling loop. */
+function projectToBoundary(loop: Loop, x: number, y: number): [number, number] {
+  let bd = Infinity, bx = x, by = y;
+  for (let i = 0; i < loop.length; i++) {
+    const a = loop[i], b = loop[(i + 1) % loop.length];
+    const ex = b[0] - a[0], ey = b[1] - a[1];
+    const L2 = ex * ex + ey * ey;
+    let t = L2 > 0 ? ((x - a[0]) * ex + (y - a[1]) * ey) / L2 : 0;
+    t = t < 0 ? 0 : t > 1 ? 1 : t;
+    const qx = a[0] + t * ex, qy = a[1] + t * ey;
+    const d = (x - qx) * (x - qx) + (y - qy) * (y - qy);
+    if (d < bd) { bd = d; bx = qx; by = qy; }
+  }
+  return [bx, by];
 }
 
 export const SETTLE_RATE = 6e-4;

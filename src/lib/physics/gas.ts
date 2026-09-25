@@ -58,6 +58,11 @@ const KPA_PER_UNIT = (DALTON / (1e-24 * 1e-9)) / 1000;
 export const kelvin = (celsius: number): number => celsius + ZERO_C;
 export const celsius = (K: number): number => K - ZERO_C;
 
+/** A momentum in u·nm/ps, in kg·m/s. */
+export const momentumSI = (p: number): number => p * DALTON * MS_PER_NMPS;
+/** An energy in u·nm²/ps², in joules. */
+export const energySI = (e: number): number => e * DALTON * 1e6;
+
 /** A 2D pressure (force per nm of wall, u/ps²) in kPa. */
 export const toKPa = (p2d: number): number => (p2d / SLAB_DEPTH_NM) * KPA_PER_UNIT;
 

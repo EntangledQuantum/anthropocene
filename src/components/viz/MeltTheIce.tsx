@@ -71,7 +71,7 @@ export default function MeltTheIce({ prompt, iceKg = 1, T0 = -20, power = 2090 }
           <Meter label="Ice left" value={(ice * 1000).toFixed(0)} unit="g" />
         </span>
       </div>}>
-      <Stage x={[-24, 24]} y={[-6, 21]} height={240} equal
+      <Stage x={[-24, 24]} y={[-6, 23]} height={250} equal
         label={`A beaker holding ${(ice * 1000).toFixed(0)} grams of ice and ${(liquid * 1000).toFixed(0)} grams of water at ${T.toFixed(1)} degrees.`}>
         {(s) => <>
           {level > 0.02 && <rect x={s.sx(-7)} y={s.sy(level)} width={s.len(14)} height={s.sy(0) - s.sy(level)} fill="var(--color-cyan)" opacity={0.16} />}

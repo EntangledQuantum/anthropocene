@@ -83,7 +83,7 @@ export default function BoxOrPiston({ id, prompt, rise = 30, tolerance = 2, expl
         load={lid ? undefined : 'load'} caption={lid ? 'bolted lid' : 'free piston, 100 kPa'} />
       {lit && <Flame cx={x + 75} y={BOTTOM + 2} size={0.8} />}
       {lit && <PxArrow x1={x - 34} y1={BOTTOM - 4} x2={x - 34} y2={BOTTOM - 70} label="heat in" anchor="end" dx={-8} dy={0} />}
-      {lit && !lid && <PxArrow x1={x + 150 + 30} y1={gasTop - 10} x2={x + 150 + 30} y2={gasTop - 70} label="work out" anchor="start" dx={8} dy={0} />}
+      {lit && !lid && <PxArrow x1={x + 150 + 24} y1={gasTop - 10} x2={x + 150 + 24} y2={gasTop - 70} label="work out" anchor="start" dx={8} dy={0} />}
     </g>;
   };
 
@@ -106,8 +106,8 @@ export default function BoxOrPiston({ id, prompt, rise = 30, tolerance = 2, expl
       </div>}>
       <svg viewBox="0 0 640 330" role="img" style={{ width: '100%', display: 'block', userSelect: 'none', fontFamily: 'var(--font-sans)' }}
         aria-label={`Bolted box at ${shown.box.T.toFixed(1)} kelvin; free piston at ${shown.pis.T.toFixed(1)} kelvin.`}>
-        {col(shown.box, 85, true, shown.onBox)}
-        {col(shown.pis, 405, false, shown.onPis)}
+        {col(shown.box, 95, true, shown.onBox)}
+        {col(shown.pis, 380, false, shown.onPis)}
       </svg>
       <p className="hud-label" style={{ margin: '6px 0 0' }}>
         One mole of air in each, starting at 300 K · each flame gives 100 J every second · insulated walls

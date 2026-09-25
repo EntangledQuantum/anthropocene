@@ -48,6 +48,8 @@ export default function BeadBetweenCharges({
   const each = src.map((c) => forceOn([c], qb, p[0] * CM, p[1] * CM));
   const net = forceOn(src, qb, p[0] * CM, p[1] * CM);
   const netMag = Math.hypot(net[0], net[1]);
+  // Below a millionth of the pushes it is rounding, not physics: call it zero.
+  const zero = netMag < 1e-6 * Math.max(...each.map((f) => Math.hypot(f[0], f[1])));
 
   const width = span[1] - span[0];
   const H = wire ? 180 : 300;
@@ -90,7 +92,7 @@ export default function BeadBetweenCharges({
         <div style={{ display: 'flex', gap: 22, flexWrap: 'wrap' }}>
           {charges.map((c, i) => <Meter key={i} label={`Push from ${c.q > 0 ? '+' : '−'}${Math.abs(c.q)} µC`}
             value={`${si(Math.hypot(...each[i]), 'N')} ${way(each[i])}`} color={C.force} />)}
-          <Meter label="Net force on the bead" value={`${si(netMag, 'N')} ${netMag > 1e-5 ? way(net) : ''}`} color={C.force} />
+          <Meter label="Net force on the bead" value={zero ? '0 N' : `${si(netMag, 'N')} ${way(net)}`} color={C.force} />
         </div>
         {id && <CheckBar verdict={task.verdict} done={task.done}
           onCheck={() => task.check(onNull, { x: p[0] })}
@@ -118,7 +120,7 @@ export default function BeadBetweenCharges({
           })()}
           <Handle s={s} at={p} color={C.ink} step={0.5} label={wire ? 'The bead: slide it along the wire' : 'The bead: drag it anywhere'}
             onChange={(q) => { setP(clamp(q)); task.touch(); }} />
-          <text x={s.sx(p[0])} y={s.sy(p[1]) + 28} textAnchor="middle" fontSize={12} fill={C.soft}>+{bead} µC</text>
+          <text x={s.sx(p[0])} y={s.sy(p[1]) + 38} textAnchor="middle" fontSize={12} fill={C.soft}>+{bead} µC</text>
         </>}
       </Stage>
       <p className="hud-label" style={{ margin: '6px 0 0' }}>

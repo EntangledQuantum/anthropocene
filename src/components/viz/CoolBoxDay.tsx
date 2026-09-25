@@ -81,7 +81,7 @@ export default function CoolBoxDay({
         {id && <CheckBar verdict={task.verdict} done={task.done}
           onCheck={() => task.check(finished && ok, { L, ice: end.ice })}
           miss={!finished ? 'Run the whole day first.'
-            : end.ice < keepKg ? `Only ${end.ice.toFixed(2)} kg of ice left at hour ${hours}. Through ${L.toFixed(1)} cm of foam ${P0.toFixed(1)} W leaks in, and ${hours} hours of that is ${(P0 * day / 1e6).toFixed(2)} MJ: enough to melt ${(P0 * day / L_FUSION).toFixed(1)} kg.`
+            : end.ice < keepKg ? `${end.ice > 0 ? `Only ${end.ice.toFixed(2)} kg of ice left` : 'No ice left at all'} at hour ${hours}. Through ${L.toFixed(1)} cm of foam ${P0.toFixed(1)} W leaks in, and ${hours} hours of that is ${(P0 * day / 1e6).toFixed(2)} MJ: enough to melt ${(P0 * day / L_FUSION).toFixed(1)} kg.`
               : `${end.ice.toFixed(2)} kg left: plenty, but ${(L - Lstar).toFixed(1)} cm thicker than it needs to be. Every centimetre of foam is food you cannot pack.`}
           hit={explanation} />}
       </div>}>
@@ -116,7 +116,7 @@ export default function CoolBoxDay({
           </>;
         }}
       </Stage>
-      <Stage x={[0, hours]} y={[0, iceKg]} height={150} axes={{ x: 'hour', y: 'ice left (kg)', yTicks: [0, 1, 2, 3].filter((v) => v <= iceKg) }}
+      <Stage x={[0, hours]} y={[0, iceKg * 1.18]} height={150} axes={{ x: 'hour', y: 'ice left (kg)', yTicks: [0, 1, 2, 3].filter((v) => v <= iceKg) }}
         label="Ice left against the hour">
         {(p) => {
           let d = '';

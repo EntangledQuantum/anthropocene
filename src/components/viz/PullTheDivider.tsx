@@ -167,7 +167,7 @@ export default function PullTheDivider({ id, prompt, n = 40, seed = 1, spreadFor
       <canvas ref={canvas} style={{ width: '100%', height: 360, display: 'block' }}
         aria-label={`A box of ${n} gas particles, divider ${shown.closed ? 'closed' : 'open'}, ${shown.k} on the left.`} />
       <p className="hud-label" style={{ margin: '6px 0 0' }}>
-        Each particle flies straight and bounces off the walls · most back on the left is counted once the gas has spread
+        Each particle flies straight and bounces off the walls{id ? '' : ' · most back on the left is counted once the gas has spread'}
       </p>
     </SceneCard>
   );

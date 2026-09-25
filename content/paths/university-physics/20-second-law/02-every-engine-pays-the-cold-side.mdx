@@ -1,0 +1,143 @@
+---
+title: 'Every engine pays the cold side'
+blurb: 'Squeeze an engine''s dump until it stalls, read the Carnot limit off the entropy ledger, and find where a perfect engine leaves two blocks.'
+order: 2
+tier: 'core'
+minutes: 11
+teaches:
+  - 'heat-engine'
+  - 'clausius-entropy'
+  - 'carnot-efficiency'
+  - 'second-law-of-thermodynamics'
+  - 'heat-pump'
+requires:
+  - 'statistical-entropy'
+  - 'first-law-of-thermodynamics'
+  - 'thermodynamic-cycle'
+  - 'temperature'
+  - 'specific-heat'
+status: 'live'
+updated: 2026-09-25
+---
+
+<Step>
+
+An engine takes 1000 J of heat from a boiler at 600 K each cycle, and a river at 300 K is
+there to cool it. It has no friction and no leaks.
+
+<Predict
+  id="up-ch20-perfect-engine"
+  question="How much of the 1000 J can this perfect engine turn into work?"
+  options={[
+    { key: 'all', misconception: 'engine-loss-is-friction', label: 'All 1000 J: with no friction, nothing is lost', why: 'The first law allows it, but the heat leaving the boiler carries entropy away from it, and work carries none. Some heat has to go into the river to take that entropy somewhere. Shrink the dump below and watch the engine stall.' },
+    { key: 'most', label: 'Nearly all: a little always leaks away', why: 'There is no leak to blame here. The share that must go to the river is set by the two temperatures, and at 600 K and 300 K it is half.' },
+    { key: 'part', label: 'Only part: some must go into the river, however perfect the engine', why: 'Right. Below, shrink the dump and see where the ledger stops you: at 500 J, half.' },
+    { key: 'gas', misconception: 'efficiency-depends-on-working-substance', label: 'It depends on the gas inside: steam beats air', why: 'The gas ends every cycle exactly where it began, so it cannot appear in the answer. Only the two temperatures do.' },
+  ]}
+  correct="part"
+>
+
+<ShrinkTheDump Th={600} Tc={300} hotLabel="boiler" coldLabel="river" start={800} prompt="Shrink the dump, and watch the ledger under the engine." />
+
+</Predict>
+
+</Step>
+
+<Step>
+
+## The power station's river
+
+A real station's steam arrives at about 800 K, and its cooling water comes from a river at
+290 K.
+
+<ShrinkTheDump
+  id="up-ch20-station-dump"
+  Th={800}
+  Tc={290}
+  hotLabel="steam"
+  coldLabel="river"
+  start={700}
+  prompt="Take all the work the physics allows: shrink the dump to the least that still runs."
+  explanation="365 J to the river and 635 J of work, 63.5%. The steam gives up 1000/800 = 1.25 J/K of entropy, the river must receive at least that, and at 290 K that takes 362.5 J. Even a perfect station warms its river with over a third of its heat; real ones, near 40%, send it 60%."
+/>
+
+</Step>
+
+<Step>
+
+## Name it
+
+Heat $Q$ leaving or entering a bath at temperature $T$ carries entropy $Q/T$, and work
+carries none. The engine ends each cycle as it began, so the baths are the whole ledger, and
+the total may not fall:
+
+$$\frac{Q_c}{T_c} \ge \frac{Q_h}{T_h} \quad\Longrightarrow\quad \eta = \frac{W}{Q_h} \le 1 - \frac{T_c}{T_h}$$
+
+Only the two temperatures enter, in kelvin: that is the Carnot limit, and the engine that
+reaches it adds no entropy at all.
+
+<Recall id="up-ch20-recall-carnot" concept="carnot-efficiency">
+  <div slot="front">Steam at 300 °C, a river at 20 °C. What is the best efficiency any engine between them could reach?</div>
+
+  $1 - 293/573 = 49\%$. The ratio needs kelvin: in Celsius you would get a wrong 93%.
+</Recall>
+
+</Step>
+
+<Step>
+
+## Run it backwards
+
+Reverse every arrow: put work in, pull heat out of the cold side and deliver more heat to the
+hot side. In a kitchen that is a refrigerator; bolted to a house, a heat pump.
+
+<Classify
+  id="up-ch20-allowed-forbidden"
+  prompt="Which of these does the second law allow?"
+  buckets={[
+    { key: 'yes', label: 'Allowed', accent: 'ok' },
+    { key: 'no', label: 'Forbidden', accent: 'magenta' },
+  ]}
+  items={[
+    { key: 'fridge', label: 'A fridge pulls 1000 J from its 3 °C inside with 100 J of electricity and puts 1100 J into the 22 °C kitchen', bucket: 'yes', why: 'The inside loses 1000/276 = 3.62 J/K and the kitchen gains 1100/295 = 3.73 J/K. The total rises.' },
+    { key: 'unplugged', label: 'The same fridge, unplugged, keeps moving heat from its inside into the kitchen', bucket: 'no', why: 'Without the work, 1000 J would bring the kitchen only 3.39 J/K against the 3.62 J/K the inside loses.' },
+    { key: 'pump', label: 'A heat pump puts 4000 J into a 20 °C house for 1000 J of electricity, taking 3000 J from 0 °C air outside', bucket: 'yes', why: 'The air loses 3000/273 = 10.99 J/K and the house gains 4000/293 = 13.65 J/K. Four joules of heat per joule of electricity, well short of the perfect 14.6.' },
+    { key: 'engine', label: 'An engine between 600 K and 300 K turns 600 J of every 1000 J into work', bucket: 'no', why: 'Its 400 J dump brings the cold side 1.33 J/K against the 1.67 J/K the hot side lost. The best is 50%.' },
+    { key: 'tea', label: 'A cup of 70 °C tea in a 20 °C room gets hotter by drawing heat from the room', bucket: 'no', why: '100 J out of the room takes 0.34 J/K from it; into the tea it brings only 0.29 J/K.' },
+  ]}
+  explanation="Every verdict is the same ledger: add Q/T for each place heat leaves or arrives, and the total must not fall. A fridge is allowed because its work lands on the hot side as extra heat."
+/>
+
+<Recall id="up-ch20-recall-heat-pump" concept="heat-pump">
+  <div slot="front">A heat pump puts 4 J of heat into a house for every joule of electricity. Where do the other 3 J come from, and why is that allowed?</div>
+
+  From the cold air outside. The electricity pays the entropy toll: it arrives in the house as
+  heat, so the house gains more entropy than the outside air loses.
+</Recall>
+
+</Step>
+
+<Step>
+
+## Two blocks, one engine
+
+A hot block at 400 K and a cold one at 100 K each take 1 kJ per kelvin. A perfect engine
+runs between them until they share a temperature.
+
+<TwoBlocksOneEngine
+  id="up-ch20-where-they-meet"
+  Th={400}
+  Tc={100}
+  prompt="Drag the mark to where the two will meet, then run the engine."
+  explanation="200 K, the geometric mean √(400 × 100), not the 250 K average. A perfect engine adds no entropy, so the hot block's loss, ln(400/200), must equal the cold block's gain, ln(200/100). Each block ends 50 K short of the average, and those 100 kJ went into the weight. Let them simply touch and they end at 250 K having lifted nothing: the same energy, spent."
+/>
+
+## What to carry forward
+
+- **Heat carries entropy $Q/T$; work carries none.** The total never falls.
+- **Every engine pays the cold side** at least $Q_h T_c/T_h$, so no engine beats $1 - T_c/T_h$.
+- **A fridge is the same ledger run backwards**, paid for with work.
+
+Next: a new kind of source. Charge, and the field it fills space with.
+
+</Step>

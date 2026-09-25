@@ -26,7 +26,7 @@ const ALL = 1 << N;
 const SPEEDUP = 10;
 const DT = 1 / 60;
 const BX = 16, BY = 30, BW = 250, BH = 150;
-const COL_X = 300, COL_W = 66, TILE_H = 26;
+const COL_X = 288, COL_W = 70, TILE_H = 26;
 
 const label = (a: number) => {
   const L: number[] = [], R: number[] = [];
@@ -156,7 +156,7 @@ export default function CountTheWays({ id, prompt, explanation }: CountTheWaysPr
               return <g key={a}>
                 <rect x={x} y={y} width={COL_W - 8} height={TILE_H} rx={3} fill={C.surface}
                   stroke={lit ? C.position : C.rule} strokeWidth={lit ? 2 : 1} />
-                <text x={x + (COL_W - 8) / 2} y={y + 17} textAnchor="middle" fontSize={12} fill={C.ink} fontFamily="var(--font-mono)">{label(a)}</text>
+                <text x={x + (COL_W - 8) / 2} y={y + 17} textAnchor="middle" fontSize={11} fill={C.ink} fontFamily="var(--font-mono)">{label(a)}</text>
                 {running && <rect ref={(el) => { bars.current[a] = el; }} x={x} y={y + TILE_H + 1} height={4} width={0} fill={C.position} />}
               </g>;
             })}
