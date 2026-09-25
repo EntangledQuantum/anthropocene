@@ -1,0 +1,10 @@
+title: 'Elastic limit'
+blurb: 'The stress beyond which a material stops springing back. Below it, stretch is proportional to load and fully returned; past it, the material flows and keeps a permanent stretch.'
+notation: '\sigma \le \sigma_y \;\Rightarrow\; \varepsilon = \sigma / E'
+tags:
+  - 'up-ch11'
+misconceptions:
+  - id: 'metal-always-springs-back'
+    name: 'A metal wire is elastic, so it always returns when you let go.'
+    signal: 'Expects a wire pulled hard, then released, to return to its original length.'
+    correction: 'Only up to the elastic limit. Past it the wire flows, and when the load comes off it comes back down a line parallel to the one it went up, landing longer than it started. A bent paper clip is the everyday version.'

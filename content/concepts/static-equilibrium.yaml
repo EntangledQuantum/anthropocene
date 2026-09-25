@@ -1,0 +1,14 @@
+title: 'Static equilibrium'
+blurb: 'A body stays at rest only if two sums vanish: the forces on it add to zero, and their turning effects add to zero. Either one alone is not enough.'
+notation: '\sum \vec F = 0, \qquad \sum \tau = 0'
+tags:
+  - 'up-ch11'
+misconceptions:
+  - id: 'zero-net-force-is-enough'
+    name: 'If the forces add to zero, nothing happens.'
+    signal: 'Says a plank on ice, pushed one way at one end and the other way at the other end with equal forces, stays still.'
+    correction: 'Zero net force keeps the centre from accelerating. It says nothing about turning. Two equal, opposite pushes on different lines of action make a couple, and a couple spins the plank in place.'
+  - id: 'past-the-support-it-tips'
+    name: 'A load tips a plank the moment it passes the support.'
+    signal: 'Predicts that a painter cannot step past the last trestle of an overhanging plank at all.'
+    correction: 'The plank''s own weight, back on the other side of the trestle, turns it the other way. It tips only when her turning effect about that trestle beats the plank''s, which is exactly when the far trestle''s push has dropped to zero.'

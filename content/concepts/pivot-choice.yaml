@@ -1,0 +1,10 @@
+title: 'Choosing the point for torques'
+blurb: 'For a body in equilibrium, the torques add to zero about every point, so you may pick any. Pick one on the line of an unknown force and that force drops out of the sum.'
+notation: '\sum_i (\vec r_i - \vec r_0) \times \vec F_i = 0 \ \text{for every } \vec r_0'
+tags:
+  - 'up-ch11'
+misconceptions:
+  - id: 'pivot-is-physical'
+    name: 'Torques must be taken about the hinge or the point it would rotate about.'
+    signal: 'Refuses to sum torques about a point in mid-air, or gets a nonzero answer about a second point because the support force was left out.'
+    correction: 'At rest, nothing rotates about anything, so there is no special point. The sum is zero about every point, provided every force is in it, supports included. The support that seems to "not count" about its own point counts everywhere else.'

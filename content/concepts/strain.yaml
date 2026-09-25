@@ -1,0 +1,10 @@
+title: 'Strain'
+blurb: 'Fractional deformation: stretch divided by original length. A wire twice as long stretches twice as many millimetres under the same stress, and exactly the same fraction.'
+notation: '\varepsilon = \frac{\Delta L}{L}'
+tags:
+  - 'up-ch11'
+misconceptions:
+  - id: 'millimetres-compare-materials'
+    name: 'The wire that stretched more millimetres is the softer material.'
+    signal: 'Compares two wires of different length by their extension in millimetres and concludes the longer one is less stiff.'
+    correction: 'Every metre of wire stretches its share, so a longer wire stretches more millimetres at the same stress. Divide by the length and the material''s own answer appears: the same strain.'

@@ -83,7 +83,7 @@ export default function PushTheDoor({
         {graded && <CheckBar verdict={task.verdict} done={task.done}
           onCheck={() => task.check(hit, { s, angle: deg(phi), theta: thetaDeg })} miss={miss} hit={explanation} />}
       </div>}>
-      <Stage x={[-0.5, 1.4]} y={[-0.62, 1.02]} height={380} equal
+      <Stage x={[-0.5, 1.4]} y={[-0.52, 1.06]} height={420} equal
         label={`Door seen from above. Push ${force} newtons, ${s.toFixed(2)} metres from the hinge, lever arm ${arm.toFixed(2)} metres. After one second the door is at ${thetaDeg.toFixed(0)} degrees.`}>
         {(st) => <>
           <Walls st={st} />
@@ -92,7 +92,7 @@ export default function PushTheDoor({
           {/* the door itself, closed */}
           <line x1={st.sx(0)} y1={st.sy(0)} x2={st.sx(L)} y2={st.sy(0)} stroke={C.soft} strokeWidth={9} strokeLinecap="round" />
           <circle cx={st.sx(0)} cy={st.sy(0)} r={7} fill={C.surface} stroke={C.ink} strokeWidth={2} />
-          <text x={st.sx(0) - 12} y={st.sy(0) + 24} textAnchor="end" fontSize={13} fill={C.faint}>hinge</text>
+          <text x={st.sx(0) - 14} y={st.sy(0) - 12} textAnchor="end" fontSize={13} fill={C.faint}>hinge</text>
           <Curl st={st} tau={tau} />
           <LineOfAction st={st} at={contact} F={F} />
           {arm > 0.01 && <>
@@ -101,8 +101,10 @@ export default function PushTheDoor({
               stroke="var(--color-surface)" strokeWidth={4} paintOrder="stroke">r⊥ {arm.toFixed(2)} m</text>
           </>}
           {other && <Arrow s={st} from={[other.at[0] - other.F[0] * PER_N, -other.F[1] * PER_N]} to={other.at}
-            color={C.force} label={`${against!.label ?? 'friend'} ${against!.F} N`} />}
-          <Arrow s={st} from={hand} to={contact} color={C.force} width={4} label={`you ${force} N`} />
+            color={C.force} />}
+          {other && <ForceTag st={st} at={[other.at[0] - other.F[0] * PER_N, -other.F[1] * PER_N]} text={`${against!.label ?? 'friend'} ${against!.F} N`} />}
+          <Arrow s={st} from={hand} to={contact} color={C.force} width={4} />
+          <ForceTag st={st} at={hand} text={`you ${force} N`} />
           <Handle s={st} at={contact} onChange={moveContact} step={0.01} label="Where your push lands on the door" color={C.ink} />
           <Handle s={st} at={hand} onChange={moveHand} step={0.03} label="Your hand: drag to aim the push" color={C.force} />
         </>}
@@ -112,6 +114,11 @@ export default function PushTheDoor({
       </p>
     </SceneCard>
   );
+}
+
+function ForceTag({ st, at, text }: { st: StageApi; at: Vec; text: string }) {
+  return <text x={st.sx(at[0]) + 16} y={st.sy(at[1]) + 5} fontSize={14} fontWeight={600} fill={C.force}
+    stroke="var(--color-surface)" strokeWidth={4} paintOrder="stroke">{text}</text>;
 }
 
 function Walls({ st }: { st: StageApi }) {
@@ -153,7 +160,7 @@ function LineOfAction({ st, at, F }: { st: StageApi; at: Vec; F: Vec }) {
 /** A curl at the hinge: its sweep grows with |τ|, its head shows the sense of twist. */
 function Curl({ st, tau }: { st: StageApi; tau: number }) {
   if (Math.abs(tau) < 0.2) return null;
-  const R = st.len(0.16), cx = st.sx(0), cy = st.sy(0);
+  const R = st.len(0.12), cx = st.sx(0), cy = st.sy(0);
   const sweep = Math.min(Math.abs(tau) / 18, 1) * Math.PI * 1.4 + 0.3;
   const sgn = Math.sign(tau);
   const a0 = -Math.PI * 0.5 - sgn * 0.2; // start below the hinge

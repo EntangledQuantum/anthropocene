@@ -1,0 +1,10 @@
+title: 'Stress'
+blurb: 'Force per area of cross-section. It is what the material itself feels, which is why a wire four times the area needs four times the force for the same effect.'
+notation: '\sigma = \frac{F}{A}'
+tags:
+  - 'up-ch11'
+misconceptions:
+  - id: 'thickness-halves-stretch'
+    name: 'Twice as thick, half the stretch.'
+    signal: 'Predicts that doubling a wire''s diameter halves how far it stretches under the same load.'
+    correction: 'The load spreads over the cross-section, and the area goes as the diameter squared. Twice the diameter is four times the area, a quarter of the stress, and a quarter of the stretch.'
