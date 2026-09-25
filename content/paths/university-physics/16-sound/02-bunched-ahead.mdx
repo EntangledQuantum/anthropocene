@@ -1,0 +1,128 @@
+---
+title: 'Bunched ahead, stretched behind'
+blurb: 'Hear why an approaching whistle is high but steady, drive a train to make a glass ring, and tune a fork until two notes stop throbbing.'
+order: 2
+tier: 'core'
+minutes: 11
+teaches:
+  - 'doppler-effect'
+  - 'beats'
+requires:
+  - 'sound-wave'
+  - 'speed-of-sound'
+  - 'wave-superposition'
+status: 'live'
+updated: 2026-09-25
+---
+
+<Step>
+
+A train drives toward the level crossing where you stand, at a steady 40 m/s, sounding a
+700 Hz whistle. You first hear it 300 m away.
+
+<Predict
+  id="up-ch16-whistle-approach"
+  question="As the train gets nearer, what does the pitch you hear do?"
+  options={[
+    { key: 'a', misconception: 'up-ch16-pitch-rises-as-it-nears', label: 'Climbs steadily, highest just as the train reaches you', why: 'That is the story most people tell, and it mixes up pitch with loudness. Run the train below: the distance shrinks, the pitch trace stays flat until the last few seconds.' },
+    { key: 'b', label: 'Holds one pitch above 700 Hz, then drops as the train passes', why: 'Right. At steady speed every crest arrives equally bunched, about 792 Hz the whole way in. The drop comes as the train swings past you.' },
+    { key: 'c', misconception: 'up-ch16-no-shift-while-still', label: 'Stays at 700 Hz until the train passes, then drops', why: 'The approach bunches the crests just as the retreat stretches them. You hear 792 Hz on the way in, not 700.' },
+  ]}
+  correct="b"
+>
+
+<WhistlePass prompt="Run the train, and compare the distance with the pitch trace on the way in." />
+
+</Predict>
+
+</Step>
+
+<Step>
+
+## Make the glass sing
+
+A wine glass stands on the track ahead of the train. It rings only at 800 Hz, and the
+whistle is 700 Hz.
+
+<RingTheGlass
+  id="up-ch16-ring-glass"
+  prompt="Set the train's speed until the glass rings, then check."
+  start={20}
+  explanation="About 43 m/s. Each crest now leaves from 6 cm nearer the glass than the one before, so the crests reaching the glass are 42.9 cm apart instead of 49, and 800 arrive every second. The glass rings the whole time the train approaches, from any distance."
+/>
+
+</Step>
+
+<Step>
+
+## Name it
+
+A source moving toward you at $v_S$ shortens every wavelength in the air to
+$(v - v_S)/f$. A listener moving toward the source at $v_L$ meets those crests faster. Only
+the speed along the line between them counts, and the distance appears nowhere:
+
+$$f' = f\,\frac{v + v_L}{v - v_S}$$
+
+<Recall id="up-ch16-recall-steady-pitch" concept="doppler-effect">
+  <div slot="front">An ambulance drives straight toward you at a steady speed. Why does its siren not rise in pitch as it gets closer?</div>
+
+  The pitch is set by how bunched the crests are, and at a steady speed every crest is
+  bunched by the same amount. Getting closer makes it louder, not higher. The pitch falls
+  only as it passes, when its velocity stops pointing at you.
+</Recall>
+
+</Step>
+
+<Step>
+
+## Ride instead
+
+Now the train is parked, whistling at 700 Hz. You ride toward it on another train, holding
+the same glass.
+
+<Predict
+  id="up-ch16-ride-to-ring"
+  question="The whistle needed 42.9 m/s to make the glass ring. How fast must you ride?"
+  options={[
+    { key: 'same', misconception: 'up-ch16-doppler-relative-only', label: 'The same 42.9 m/s: only the closing speed matters', why: 'Sound lives in the air, and the air is still next to the parked whistle. Try 43 m/s below: the glass only hums.' },
+    { key: 'slower', label: 'Slower than 42.9 m/s', why: 'Riding toward the whistle helps, but less. You meet the crests faster, and they are no closer together than when you stood still.' },
+    { key: 'faster', label: 'Faster than 42.9 m/s', why: 'Right, 49 m/s. A moving whistle squeezes the crests closer together in the air. Riding leaves them 49 cm apart, so you must meet 100 extra crests a second by speed alone.' },
+  ]}
+  correct="faster"
+>
+
+<RingTheGlass mover="listener" start={43} prompt="Set your speed until the glass rings, and watch the gap between crests." />
+
+</Predict>
+
+</Step>
+
+<Step>
+
+## Stop the throb
+
+A 1% change in pitch is hard to hear on its own. Two notes 1% apart are easy: together they
+swell and fade.
+
+<KillTheThrob
+  id="up-ch16-stop-throb"
+  prompt="Slide the rider along your fork's tine until the throb stops, then check."
+  explanation="About two-thirds of the way up, where your fork drops to 440 Hz. Two tones drift in and out of step once for every hertz between them, so the sound swells |f₁ − f₂| times a second. Slide on past the match and the throb returns: the beat rate says how far apart two notes are, not which is higher."
+/>
+
+<Recall id="up-ch16-recall-beats" concept="beats">
+  <div slot="front">A piano string and a 440 Hz fork sound together and throb 3 times a second. What is the string's frequency, and how do you find out which?</div>
+
+  437 Hz or 443 Hz. Tighten the string slightly: if the throb speeds up, it was already
+  sharp at 443; if it slows, it was flat at 437.
+</Recall>
+
+## What to carry forward
+
+- **A moving source bunches its crests ahead and stretches them behind.** The pitch is shifted and steady; only the velocity along the line to you counts.
+- **The air is the stage.** Moving the whistle and moving the listener are different shifts.
+- **Two close tones throb at their difference**, which is how a small shift becomes easy to hear.
+
+Next: heat, and the jiggling that temperature measures.
+
+</Step>

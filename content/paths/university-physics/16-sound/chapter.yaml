@@ -3,4 +3,4 @@ question: 'In a closed pipe, where is the pressure node?'
 blurb: >-
   Sound is a longitudinal pressure-and-density wave. The displacement picture and the pressure picture are out of step with each other, which is where most of the confusion lives.
 order: 16
-status: 'draft'
+status: 'live'
