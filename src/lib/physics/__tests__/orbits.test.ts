@@ -229,3 +229,44 @@ describe('the chase: speeding up makes you fall behind', () => {
     expect(speedAtInfinity(GM_EARTH, rISS, ve + 100)).toBeGreaterThan(1400);
   });
 });
+
+describe('numbers the chapter 13 lessons quote', () => {
+  it('the comet spends about 70% of its period on the far side of its minor axis', () => {
+    const { a, e } = COMET;
+    const b = a * Math.sqrt(1 - e * e);
+    const thMinor = Math.atan2(b, -a * e); // the end of the minor axis, seen from the Sun
+    const tNear = 2 * timeFromPeriapsis(GM_SUN, a, e, thMinor);
+    const far = 1 - tNear / periodOf(GM_SUN, a);
+    expect(far).toBeGreaterThan(0.68);
+    expect(far).toBeLessThan(0.71);
+  });
+
+  it('a naive equal-arc guess at aphelion lands about 200 days out, not 60', () => {
+    const { a, e } = COMET;
+    const at = (t: number) => { const rr = radiusAt(a, e, t); return [rr * Math.cos(t), rr * Math.sin(t)]; };
+    const arc = (t1: number, t2: number) => { let L = 0; for (let i = 0; i < 400; i++) { const p = at(t1 + ((t2 - t1) * i) / 400), q = at(t1 + ((t2 - t1) * (i + 1)) / 400); L += Math.hypot(q[0] - p[0], q[1] - p[1]); } return L; };
+    const th60 = anomalyAtTime(GM_SUN, a, e, 60 * DAY);
+    const near = arc(0, th60);
+    let t = Math.PI;
+    while (arc(Math.PI, t) < near) t += 1e-3;
+    expect(cometDaysFromAphelion(t)).toBeGreaterThan(180);
+    expect(near / AU).toBeCloseTo(1.33, 2);
+    expect(arc(Math.PI, anomalyAtTime(GM_SUN, a, e, periodOf(GM_SUN, a) / 2 + 60 * DAY)) / AU).toBeCloseTo(0.37, 2);
+  });
+
+  it('a 7.90 km/s burn from the ISS circle: about 870 km higher, 9 min longer, 4,000+ km behind after one lap', () => {
+    const vc = circularSpeed(GM_EARTH, rISS);
+    const el = elementsOf(GM_EARTH, [0, rISS], [7900, 0]);
+    expect((el.ra - rISS) / 1000).toBeCloseTo(867, -1);
+    const dT = periodOf(GM_EARTH, el.a) - periodOf(GM_EARTH, rISS);
+    expect(dT / 60).toBeCloseTo(9, 0);
+    expect(300e3 + dT * vc).toBeGreaterThan(4000e3);
+    expect(300e3 + dT * vc).toBeLessThan(5000e3);
+  });
+
+  it('just above the Moon\'s surface: circular 1.68 km/s, escape 2.38 km/s', () => {
+    const GM_MOON = 4.905e12, R_MOON = 1.737e6;
+    expect(circularSpeed(GM_MOON, R_MOON) / 1000).toBeCloseTo(1.68, 2);
+    expect(escapeSpeed(GM_MOON, R_MOON) / 1000).toBeCloseTo(2.38, 2);
+  });
+});
