@@ -100,7 +100,7 @@ export default function DriveTheString({
         </div>
         {id && <CheckBar verdict={task.verdict} done={task.done} onCheck={() => task.check(hit, { freq })} miss={miss} hit={explanation} />}
       </div>}>
-      <Stage x={[-0.45, length + 0.25]} y={[-0.2, 0.2]} height={250}
+      <Stage x={[-0.45, length + 0.5]} y={[-0.2, 0.2]} height={250}
         label={`A ${length} metre rope shaken at ${freq.toFixed(2)} hertz. Widest swing ${cm(pattern.swing)} centimetres.`}>
         {(s) => {
           api.current = s;
@@ -122,14 +122,14 @@ export default function DriveTheString({
             {shape.still.map((x) => (
               <g key={x}>
                 <circle cx={s.sx(x)} cy={s.sy(0)} r={5} fill={C.ok} />
-                <text x={s.sx(x)} y={s.sy(-0.17)} textAnchor="middle" fontSize={12} fill={C.ok}>still</text>
+                <text x={s.sx(x)} y={s.sy(0) + 24} textAnchor="middle" fontSize={12} fill={C.ok}>still</text>
               </g>
             ))}
             {/* scales: the picture is stretched upward, so both are shown */}
             <line x1={s.sx(0.2)} x2={s.sx(1.2)} y1={s.sy(-0.185)} y2={s.sy(-0.185)} stroke={C.faint} strokeWidth={1.2} />
             <text x={s.sx(0.7)} y={s.sy(-0.185) - 5} textAnchor="middle" fontSize={12} fill={C.faint}>1 m</text>
-            <line x1={s.sx(length + 0.12)} x2={s.sx(length + 0.12)} y1={s.sy(0.05)} y2={s.sy(0.15)} stroke={C.faint} strokeWidth={1.2} />
-            <text x={s.sx(length + 0.12) - 6} y={s.sy(0.1) + 4} textAnchor="end" fontSize={12} fill={C.faint}>10 cm</text>
+            <line x1={s.sx(length + 0.42)} x2={s.sx(length + 0.42)} y1={s.sy(0.05)} y2={s.sy(0.15)} stroke={C.faint} strokeWidth={1.2} />
+            <text x={s.sx(length + 0.42) - 6} y={s.sy(0.1) + 4} textAnchor="end" fontSize={12} fill={C.faint}>10 cm</text>
           </>;
         }}
       </Stage>

@@ -25,7 +25,7 @@ export interface PassThroughProps {
   span?: number;
 }
 
-const X0 = -4, X1 = 4, CELLS = 400, PLAY = 0.5, SHOW: [number, number] = [-3, 3];
+const X0 = -4, X1 = 4, CELLS = 400, PLAY = 0.5, SHOW: [number, number] = [-2.5, 2.5];
 
 export default function PassThrough({ prompt, pulses, tension = 4, mu = 1, span = 2 }: PassThroughProps) {
   const run = useMemo(() => {
@@ -112,7 +112,7 @@ export default function PassThrough({ prompt, pulses, tension = 4, mu = 1, span 
           </span>
         </div>
       </div>}>
-      <Stage x={SHOW} y={[-0.75, 0.75]} height={250} equal
+      <Stage x={SHOW} y={[-0.92, 0.92]} height={250} equal
         label={`Two pulses on a rope at ${(k * run.dt).toFixed(2)} seconds. Motion energy ${en.motion.toFixed(3)} joules, stretch energy ${en.stretch.toFixed(3)} joules.`}>
         {(s) => {
           api.current = s;
@@ -121,8 +121,8 @@ export default function PassThrough({ prompt, pulses, tension = 4, mu = 1, span 
               <polyline key={i} ref={(el) => { els.current.comps[i] = el; }} points={compPts(s, p, 0)} fill="none" stroke={C.faint} strokeWidth={1.5} strokeDasharray="5 5" />
             ))}
             <polyline ref={(el) => { els.current.rope = el; }} points={ropePts(s, 0)} fill="none" stroke={C.ink} strokeWidth={3} strokeLinejoin="round" />
-            <line x1={s.sx(-2.8)} x2={s.sx(-1.8)} y1={s.sy(-0.62)} y2={s.sy(-0.62)} stroke={C.faint} strokeWidth={1.2} />
-            <text x={s.sx(-2.3)} y={s.sy(-0.62) - 6} textAnchor="middle" fontSize={12} fill={C.faint}>1 m</text>
+            <line x1={s.sx(-2.4)} x2={s.sx(-1.4)} y1={s.sy(-0.8)} y2={s.sy(-0.8)} stroke={C.faint} strokeWidth={1.2} />
+            <text x={s.sx(-1.9)} y={s.sy(-0.8) - 6} textAnchor="middle" fontSize={12} fill={C.faint}>1 m</text>
           </>;
         }}
       </Stage>

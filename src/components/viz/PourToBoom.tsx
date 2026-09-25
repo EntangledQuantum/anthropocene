@@ -29,7 +29,7 @@ export interface PourToBoomProps {
 
 const { f: F, v: V, alpha: ALPHA, height, tolerance } = BOOM_TUBE;
 const TUBE = height * 100;   // cm
-const R = 4;                 // tube half-width, cm
+const R = 5;                 // tube half-width, cm
 const WIGGLE = 1.5;          // Hz, drawn oscillation (slowed)
 
 export default function PourToBoom({ id, prompt, start = 66, explanation }: PourToBoomProps) {
@@ -58,7 +58,7 @@ export default function PourToBoom({ id, prompt, start = 66, explanation }: Pour
         const phase = Math.sin(2 * Math.PI * WIGGLE * now / 1000);
         let d = '';
         for (let y = 1; y < a; y += 2) {
-          const amp = Math.min(1.8, 0.16 * closedTubeDisplacement(y / 100, Lm, F, V, ALPHA));
+          const amp = Math.min(2.4, 0.22 * closedTubeDisplacement(y / 100, Lm, F, V, ALPHA));
           const yy = s.sy(water + y + amp * phase);
           d += `M${s.sx(-R + 0.6).toFixed(1)},${yy.toFixed(1)}H${s.sx(R - 0.6).toFixed(1)}`;
         }
@@ -84,8 +84,8 @@ export default function PourToBoom({ id, prompt, start = 66, explanation }: Pour
   const hitNow = Math.abs(L - first) <= tolerance;
   const dbText = `${db >= 0 ? '+' : '−'}${Math.abs(db).toFixed(0)} dB`;
   const miss = Math.abs(L - second) <= 0.03
-    ? `It booms here too, ${dbText}, with ${air.toFixed(1)} cm of air. That is not the shortest column that booms.`
-    : `${air.toFixed(1)} cm of air sings at ${dbText}. A booming column reads above +10 dB.`;
+    ? `It booms, ${dbText}, with ${air.toFixed(1)} cm of air. That is not the shortest column that booms.`
+    : `${air.toFixed(1)} cm of air reads ${dbText}. A booming column reads above +10 dB.`;
   const glow = Math.min(1, Math.max(0, (db - 2) / 16));
   const water = TUBE - air;
 
@@ -110,7 +110,7 @@ export default function PourToBoom({ id, prompt, start = 66, explanation }: Pour
             <line x1={s.sx(R + 1)} x2={s.sx(R + 2.5)} y1={s.sy(TUBE - c)} y2={s.sy(TUBE - c)} stroke={C.faint} />
             <text x={s.sx(R + 3.5)} y={s.sy(TUBE - c) + 4} fontSize={11} fill={C.faint} fontFamily="var(--font-mono)">{c}</text>
           </g>)}
-          <text x={s.sx(R + 3.5)} y={s.sy(-3)} fontSize={12} fill={C.faint}>cm below the mouth</text>
+          <text x={s.sx(R + 9)} y={s.sy(TUBE) + 4} fontSize={12} fill={C.faint}>cm below the mouth</text>
           {/* water */}
           <rect x={s.sx(-R)} y={s.sy(water)} width={s.len(2 * R)} height={s.sy(0) - s.sy(water)} fill={C.soft} opacity={0.2} />
           <line x1={s.sx(-R)} x2={s.sx(R)} y1={s.sy(water)} y2={s.sy(water)} stroke={C.ink} strokeWidth={2} />

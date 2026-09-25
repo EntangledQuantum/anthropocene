@@ -167,8 +167,18 @@ export function cannonShot(GM: number, R: number, r0: number, speed: number, h =
     prev = ang;
     return Math.hypot(s.p[0], s.p[1]) <= R || turned >= 2 * Math.PI;
   });
-  const last = path[path.length - 1];
+  let last = path[path.length - 1];
   const landed = Math.hypot(last.p[0], last.p[1]) <= R;
+  if (landed && path.length > 1) {
+    // put the last sample on the ground itself, not one step below it
+    const prev = path[path.length - 2];
+    const r1 = Math.hypot(prev.p[0], prev.p[1]), r2 = Math.hypot(last.p[0], last.p[1]);
+    const f = (r1 - R) / (r1 - r2);
+    const p: Vec2 = [prev.p[0] + f * (last.p[0] - prev.p[0]), prev.p[1] + f * (last.p[1] - prev.p[1])];
+    const k = R / Math.hypot(p[0], p[1]);
+    last = { t: prev.t + f * (last.t - prev.t), p: [p[0] * k, p[1] * k], v: last.v };
+    path[path.length - 1] = last;
+  }
   return { path, outcome: landed ? 'landed' : 'orbit', time: last.t, downrange: landed ? turned * R : 2 * Math.PI * R };
 }
 

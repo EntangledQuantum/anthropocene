@@ -270,3 +270,12 @@ describe('numbers the chapter 13 lessons quote', () => {
     expect(escapeSpeed(GM_MOON, R_MOON) / 1000).toBeCloseTo(2.38, 2);
   });
 });
+
+describe('the cannon lands on the ground, not below it', () => {
+  it('the last sample of a landed shot sits on the surface, where gravity reads 9.82 m/s²', () => {
+    const shot = cannonShot(GM_EARTH, R_EARTH, rISS, 3000);
+    const last = shot.path[shot.path.length - 1];
+    expect(r(last.p) / R_EARTH).toBeCloseTo(1, 9);
+    expect(gravityAt(GM_EARTH, r(last.p))).toBeCloseTo(9.82, 2);
+  });
+});

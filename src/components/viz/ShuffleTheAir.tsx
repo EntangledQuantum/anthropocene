@@ -23,7 +23,7 @@ export interface ShuffleTheAirProps {
 }
 
 const W = CROWD_WAVE;
-const EXAG = 6000;          // drawn displacement = real × EXAG
+const EXAG = 7000;          // drawn displacement = real × EXAG
 const SLOW = 400;           // playback slower than life
 const T_SNAP = 0.0011;      // s, the frozen instant when graded
 const X_END = 4;            // m of air shown
@@ -32,10 +32,14 @@ const P_TOP = 10;           // Pa, pressure strip half-height
 const HIT = 0.9;            // gauge must read ≥ 90% of the peak squeeze
 const SPECK = 3;            // m, where the dust speck lives
 
-// Dots: fixed, pseudo-random homes, so the air looks like air and not a lattice.
-const DOTS = Array.from({ length: 560 }, (_, i) => {
+// Dots: an even spread with a little jitter, so the air looks like air but a
+// crowd still reads as a crowd.
+const COLS = 100, ROWS = 6;
+const DOTS = Array.from({ length: COLS * ROWS }, (_, i) => {
+  const c = i % COLS, r = Math.floor(i / COLS);
   const a = Math.sin(i * 12.9898) * 43758.5453, b = Math.sin(i * 78.233) * 12345.678;
-  return [((i + 0.5 + (a - Math.floor(a) - 0.5) * 0.9) / 560) * X_END, (b - Math.floor(b)) * 0.9 - 0.45] as const;
+  const ja = a - Math.floor(a) - 0.5, jb = b - Math.floor(b) - 0.5;
+  return [((c + 0.5 + ja * 0.5) / COLS) * X_END, -0.42 + (r / (ROWS - 1)) * 0.84 + jb * 0.1] as const;
 });
 
 export default function ShuffleTheAir({ id, prompt, explanation }: ShuffleTheAirProps) {

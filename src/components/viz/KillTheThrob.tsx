@@ -111,7 +111,7 @@ export default function KillTheThrob({ id, prompt, start = 0.25, tolerance = 0.4
           <text x={s.sx(-0.15)} y={s.sy(0.15)} textAnchor="middle" fontSize={12} fill={C.soft}>loudness at your ear</text>
         </>; }}
       </Stage>
-      <Stage x={[0, WINDOW]} y={[-2.2, 2.2]} height={170} axes={{ x: 'time (s)', y: 'sound at your ear', yTicks: [-2, 0, 2] }}
+      <Stage x={[0, WINDOW]} y={[-2.3, 3]} height={190} axes={{ x: 'time (s)', y: 'sound at your ear', yTicks: [-2, 0, 2] }}
         label="The combined sound at your ear over the last few seconds">
         {(p) => { plot.current = p; return <path ref={band} fill={C.energy} fillOpacity={0.3} stroke={C.energy} strokeWidth={1.5} />; }}
       </Stage>

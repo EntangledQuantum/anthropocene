@@ -75,14 +75,14 @@ export function useSim(step: (dt: number) => boolean, hz = 10) {
   }, [hz]);
 }
 
-/** A flame under a pot, drawn in view px. Lit or not. */
+/** A flame under a pot, drawn in view px. Lit or not. Rose, like the thermometers: it is hot, not a force. */
 export function Burner({ x, y, w, on }: { x: number; y: number; w: number; on: boolean }) {
   const n = 5;
   return <g>
     <rect x={x - w / 2} y={y} width={w} height={8} rx={3} fill={C.surface} stroke={C.soft} strokeWidth={1.5} />
     {on && Array.from({ length: n }, (_, i) => {
       const cx = x - w / 2 + (w * (i + 0.5)) / n;
-      return <path key={i} d={`M${cx - 7},${y}Q${cx},${y - 26} ${cx + 7},${y}Z`} fill={C.force} opacity={0.75} />;
+      return <path key={i} d={`M${cx - 7},${y}Q${cx},${y - 26} ${cx + 7},${y}Z`} fill={HOT} opacity={0.55} stroke={HOT} />;
     })}
   </g>;
 }

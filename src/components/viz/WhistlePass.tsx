@@ -22,7 +22,7 @@ export interface WhistlePassProps {
 const PASS: Pass = { f: WHISTLE.f, v: WHISTLE.v, u: WHISTLE.passSpeed, x0: -300, d: WHISTLE.passDistance };
 const T_END = 15;           // s: from 300 m before the crossing to 300 m after
 const EVERY = 100;          // one drawn crest per 100 whistle periods
-const F_AX: [number, number] = [600, 820];
+const F_AX: [number, number] = [600, 850];
 
 export default function WhistlePass({ prompt }: WhistlePassProps) {
   const world = useRef<StageApi | null>(null);
@@ -101,10 +101,10 @@ export default function WhistlePass({ prompt }: WhistlePassProps) {
             <rect x={s.sx(-12)} y={s.sy(3.5)} width={s.len(24)} height={s.len(7)} rx={3} fill={C.surface} stroke={C.ink} strokeWidth={2} />
             <line x1={s.sx(13)} x2={s.sx(30)} y1={s.sy(-9)} y2={s.sy(-9)} stroke={C.velocity} strokeWidth={3} />
             <path d={`M${s.sx(34)},${s.sy(-9)}l-10,-5v10Z`} fill={C.velocity} />
-            <text x={s.sx(0)} y={s.sy(-13) + 4} textAnchor="middle" fontSize={12} fill={C.velocity}>{PASS.u} m/s</text>
+            <text x={s.sx(0)} y={s.sy(-13) + 4} textAnchor="middle" fontSize={12} fill={C.velocity} stroke={C.surface} strokeWidth={4} paintOrder="stroke">{PASS.u} m/s</text>
           </g>
           <circle cx={s.sx(0)} cy={s.sy(PASS.d)} r={7} fill={C.position} />
-          <text x={s.sx(0) + 12} y={s.sy(PASS.d) + 5} fontSize={13} fill={C.position}>you, {PASS.d} m from the track</text>
+          <text x={s.sx(0) + 12} y={s.sy(PASS.d) + 5} fontSize={13} fill={C.position} stroke={C.surface} strokeWidth={4} paintOrder="stroke">you, {PASS.d} m from the track</text>
         </>; }}
       </Stage>
       <Stage x={[0, T_END]} y={F_AX} height={190} axes={{ x: 'time (s)', y: 'pitch you hear (Hz)', yTicks: [620, 660, 700, 740, 780, 820] }}

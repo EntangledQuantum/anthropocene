@@ -83,7 +83,7 @@ export default function RingTheGlass({ id, prompt, mover = 'source', start = 20,
   };
 
   const gap = EVERY * (mover === 'source' ? wavelengthAhead(F, V, u) : wavelength(F, V));
-  const who = mover === 'source' ? 'the train' : 'you';
+  const who = mover === 'source' ? 'train speed' : 'your speed';
   const glassHome = mover === 'source' ? 0 : X0 + 16;
 
   return (
@@ -91,7 +91,7 @@ export default function RingTheGlass({ id, prompt, mover = 'source', start = 20,
       footer={<div style={{ display: 'grid', gap: 14 }}>
         <div style={{ display: 'flex', gap: 22, justifyContent: 'flex-end', flexWrap: 'wrap' }}>
           <Meter label={mover === 'source' ? 'Train speed' : 'Your speed'} value={u.toFixed(1)} unit="m/s" color={C.velocity} />
-          <Meter label="Gap between drawn crests reaching the glass" value={gap.toFixed(1)} unit="m" color={C.energy} />
+          <Meter label="Crest gap at the glass" value={gap.toFixed(1)} unit="m" color={C.energy} />
           <Meter label="Glass" value={ringing ? 'ringing' : amp > 0.25 ? 'humming' : 'silent'} color={ringing ? C.energy : C.faint} />
         </div>
         {id && <CheckBar verdict={task.verdict} done={task.done}
@@ -107,14 +107,14 @@ export default function RingTheGlass({ id, prompt, mover = 'source', start = 20,
           {/* the parked whistle (listener mode) */}
           {mover === 'listener' && <g>
             <rect x={s.sx(-4)} y={s.sy(4)} width={s.len(8)} height={s.len(8)} rx={2} fill={C.surface} stroke={C.ink} strokeWidth={2} />
-            <text x={s.sx(0)} y={s.sy(-9)} textAnchor="middle" fontSize={12} fill={C.soft}>parked whistle</text>
+            <text x={s.sx(0)} y={s.sy(-9)} textAnchor="middle" fontSize={12} fill={C.soft} stroke={C.surface} strokeWidth={4} paintOrder="stroke">parked whistle</text>
           </g>}
           {/* the mover */}
           <g ref={movingG}>
             <rect x={s.sx(X0 - 12)} y={s.sy(3.5)} width={s.len(24)} height={s.len(7)} rx={3} fill={C.surface} stroke={C.ink} strokeWidth={2} />
             {u > 0 && <><line x1={s.sx(X0 + 14)} x2={s.sx(X0 + 14 + u * 0.9 - 4)} y1={s.sy(-9)} y2={s.sy(-9)} stroke={C.velocity} strokeWidth={3} />
               <path d={`M${s.sx(X0 + 14 + u * 0.9)},${s.sy(-9)}l-10,-5v10Z`} fill={C.velocity} /></>}
-            <text x={s.sx(X0)} y={s.sy(-20)} textAnchor="middle" fontSize={12} fill={C.soft}>{mover === 'source' ? 'whistle, 700 Hz' : 'you'}</text>
+            <text x={s.sx(X0)} y={s.sy(8)} textAnchor="middle" fontSize={12} fill={C.soft} stroke={C.surface} strokeWidth={4} paintOrder="stroke">{mover === 'source' ? 'whistle, 700 Hz' : 'you'}</text>
           </g>
           {/* the glass */}
           <g ref={glassG}>
@@ -122,17 +122,17 @@ export default function RingTheGlass({ id, prompt, mover = 'source', start = 20,
               fill={ringing ? C.energy : C.surface} fillOpacity={ringing ? 0.35 : 1} stroke={ringing ? C.energy : C.ink} strokeWidth={2} />
             <line x1={s.sx(glassHome)} x2={s.sx(glassHome)} y1={s.sy(18)} y2={s.sy(9)} stroke={C.ink} strokeWidth={2} />
             <line x1={s.sx(glassHome - 3.5)} x2={s.sx(glassHome + 3.5)} y1={s.sy(9)} y2={s.sy(9)} stroke={C.ink} strokeWidth={2} />
-            <text x={s.sx(glassHome)} y={s.sy(34)} textAnchor="middle" fontSize={12} fill={ringing ? C.energy : C.soft}>glass, rings at {F_GLASS} Hz</text>
+            <text x={s.sx(glassHome)} y={s.sy(34)} textAnchor="middle" fontSize={12} fill={ringing ? C.energy : C.soft} stroke={C.surface} strokeWidth={4} paintOrder="stroke">glass, rings at {F_GLASS} Hz</text>
           </g>
           {/* throttle */}
-          <line x1={s.sx(RULER[0])} x2={s.sx(RULER[1])} y1={s.sy(55)} y2={s.sy(55)} stroke={C.rule} strokeWidth={2} />
+          <line x1={s.sx(RULER[0])} x2={s.sx(RULER[1])} y1={s.sy(60)} y2={s.sy(60)} stroke={C.rule} strokeWidth={2} />
           {[0, 10, 20, 30, 40, 50, 60].map((k) => { const x = RULER[0] + (k / U_MAX) * (RULER[1] - RULER[0]); return <g key={k}>
-            <line x1={s.sx(x)} x2={s.sx(x)} y1={s.sy(52)} y2={s.sy(58)} stroke={C.faint} />
-            <text x={s.sx(x)} y={s.sy(47) + 4} textAnchor="middle" fontSize={11} fill={C.faint} fontFamily="var(--font-mono)">{k}</text>
+            <line x1={s.sx(x)} x2={s.sx(x)} y1={s.sy(57)} y2={s.sy(63)} stroke={C.faint} />
+            <text x={s.sx(x)} y={s.sy(66)} textAnchor="middle" fontSize={11} fill={C.faint} fontFamily="var(--font-mono)" stroke={C.surface} strokeWidth={4} paintOrder="stroke">{k}</text>
           </g>; })}
-          <text x={s.sx(RULER[1] + 8)} y={s.sy(55) + 4} fontSize={12} fill={C.soft}>speed of {who} (m/s)</text>
-          <Handle s={s} at={[RULER[0] + (u / U_MAX) * (RULER[1] - RULER[0]), 55]} color={C.velocity} step={0.25}
-            label={`Speed of ${who}, metres per second`} onChange={(p) => setSpeed(p[0])} />
+          <text x={s.sx(RULER[1] + 8)} y={s.sy(60) + 4} fontSize={12} fill={C.soft} stroke={C.surface} strokeWidth={4} paintOrder="stroke">{who} (m/s)</text>
+          <Handle s={s} at={[RULER[0] + (u / U_MAX) * (RULER[1] - RULER[0]), 60]} color={C.velocity} step={1}
+            label={`${who === 'train speed' ? 'Train speed' : 'Your speed'}, metres per second`} onChange={(p) => setSpeed(p[0])} />
         </>; }}
       </Stage>
       <p className="hud-label" style={{ margin: '6px 0 0' }}>Real time · every {EVERY}th crest drawn · still air, sound at {V} m/s</p>
