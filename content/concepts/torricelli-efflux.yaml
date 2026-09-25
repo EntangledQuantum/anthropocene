@@ -1,0 +1,10 @@
+title: 'Torricelli''s law'
+blurb: 'Water leaves a hole at the speed a stone would reach falling from the free surface to the hole. Where the jet lands then depends on both the depth of the hole and its height above the floor.'
+notation: 'v = \sqrt{2 g h}'
+tags:
+  - 'up-ch12'
+misconceptions:
+  - id: 'deepest-hole-reaches-farthest'
+    name: 'The lowest hole shoots water the farthest, because it is under the most pressure.'
+    signal: 'Places the hole at the bottom of the tank to hit a distant target.'
+    correction: 'The lowest hole is the fastest, but it has almost no height to fall through, so the jet hits the floor almost at once. The range is 2√(y(H − y)): biggest from halfway down, and the same for two holes mirrored about the middle.'

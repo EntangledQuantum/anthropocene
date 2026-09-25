@@ -1,0 +1,18 @@
+title: 'Pressure at a depth'
+blurb: 'In still water the pressure depends only on how far below the free surface you are, not on the shape of the vessel or how much water it holds, and it pushes on every surface from every side.'
+notation: 'p = p_0 + \rho g h'
+tags:
+  - 'up-ch12'
+misconceptions:
+  - id: 'pressure-follows-amount'
+    name: 'More water above means more pressure, so a wide tank presses harder than a thin tube.'
+    signal: 'Predicts the gauge under a wide tank reads more than the gauge under a thin tube filled to the same depth.'
+    correction: 'Pressure is force per area. A wide tank has more water, but that weight is spread over a proportionally wider floor, so the force on each square metre is the same. Only the depth below the free surface matters: ρ g h.'
+  - id: 'pressure-is-downward'
+    name: 'Pressure is the force of the water pressing down.'
+    signal: 'Draws pressure arrows only pointing down, or says the water cannot push up on a ceiling or sideways on a wall.'
+    correction: 'Pressure has no direction of its own. At any point it pushes equally every way, and on a surface it pushes straight into that surface, whether floor, wall or ceiling. Water under a ceiling pushes the ceiling up.'
+  - id: 'pressure-from-water-directly-above'
+    name: 'The pressure at a point comes from the water directly above it.'
+    signal: 'Under a lid or overhang, measures the depth from the ceiling rather than from the free surface.'
+    correction: 'Walk from the free surface to the point along any path through the water: each metre down adds ρ g, each sideways step adds nothing. The ceiling does not reset the count. That is how a thin tube of water can burst a barrel.'

@@ -104,7 +104,14 @@ export function drawTrack(el: HTMLCanvasElement, s: Track, c: CartSetup, col: Re
     for (let i = 0; i < n; i++) { g.beginPath(); g.roundRect(x - w / 2 + 5, RAIL - 16 - (i + 1) * 9, w - 10, 8, 2); g.fill(); g.stroke(); }
     g.font = '600 13px Inter, sans-serif'; g.fillStyle = col.ink; g.textAlign = 'center';
     g.fillText(`${name} · ${+k.m.toFixed(2)} kg`, x, RAIL + 20);
-    const top = stackTop(k.m) - 12;
+  }
+  // Arrows after both carts, so B's stack never hides A's arrow. A stuck pair
+  // shares one velocity, so it gets one arrow, drawn from the taller stack.
+  const stuck = s.phase === 'latched';
+  for (const { k, name } of carts) {
+    if (stuck && name === (bricks(s.a.m) >= bricks(s.b.m) ? 'B' : 'A')) continue;
+    const x = sx(k.x), n = bricks(k.m);
+    const top = stackTop(stuck ? Math.max(s.a.m, s.b.m) : k.m) - 12;
     arrow(g, x, x + k.v * V_SCALE * m2px, top, col.vel);
     if (Math.abs(k.v) > 0.05) {
       g.font = '600 12px Inter, sans-serif'; g.fillStyle = col.vel;

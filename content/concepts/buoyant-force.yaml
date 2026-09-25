@@ -1,0 +1,18 @@
+title: 'Buoyancy and Archimedes'' principle'
+blurb: 'Buoyancy is the pressure of the water added up over a body''s whole surface. The bottom is deeper than the top, so the sum points up, and it equals the weight of the water the body pushes aside.'
+notation: 'F_B = \rho_{\text{fluid}}\, g\, V_{\text{sub}}'
+tags:
+  - 'up-ch12'
+misconceptions:
+  - id: 'buoyancy-grows-with-depth'
+    name: 'The deeper you push something, the harder the water pushes it back up.'
+    signal: 'Expects a fully submerged block to be buoyed more strongly at the bottom of a pool than just under the surface.'
+    correction: 'Every face is pushed harder at depth, the top as well as the bottom. The difference between them is ρ g times the height of the block, at any depth. Once the block is fully under, the buoyant force stops changing.'
+  - id: 'heavier-always-sinks'
+    name: 'Heavy things sink and light things float.'
+    signal: 'Predicts a steel barge sinks, or that a heavier cargo boat must ride lower than any lighter object.'
+    correction: 'What floats is decided by comparing a body''s weight with the weight of water it can push aside. A 40-tonne steel barge floats because its hull shoves aside 40 tonnes of water before the deck goes under. A 5 g steel ball sinks because it can only push aside 0.6 g.'
+  - id: 'buoyancy-depends-on-material'
+    name: 'The water pushes harder on a heavy object than on a light one of the same size.'
+    signal: 'Ranks the buoyant force on a submerged steel ball above that on a submerged wooden ball of the same size.'
+    correction: 'The water only feels the shape it is pressing on. Two bodies of the same submerged volume get the same buoyant force whatever they are made of. The steel ball sinks because its weight is bigger, not because the water pushes it differently.'

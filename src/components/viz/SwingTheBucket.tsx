@@ -34,7 +34,7 @@ const KF = 0.045; // metres of arrow per newton
 const VMIN = 1, VMAX = 5;
 const GROUND = -1.45;
 
-type Water = { kind: 'in' } | { kind: 'free'; p0: readonly [number, number]; v0: readonly [number, number]; t: number; before: number } | { kind: 'landed'; x: number; before: number };
+type Water = { kind: 'in' } | { kind: 'free'; p0: readonly [number, number]; v0: readonly [number, number]; t: number; before: number; at: number } | { kind: 'landed'; x: number; before: number; at: number };
 
 function cssVar(name: string): string {
   return getComputedStyle(document.documentElement).getPropertyValue(name).trim() || '#ccc';
@@ -47,11 +47,11 @@ export default function SwingTheBucket({ id, prompt, radius = 1, start = 4.5, to
   const psi = useRef(-Math.PI / 2);
   const water = useRef<Water>({ kind: 'in' });
   const [v, setV] = useState(start);
-  const [shown, setShown] = useState<{ kind: Water['kind']; before: number }>({ kind: 'in', before: 0 });
+  const [shown, setShown] = useState<{ kind: Water['kind']; before: number; at: number }>({ kind: 'in', before: 0, at: 0 });
   const R = radius;
   const vMin = minTopSpeed(R);
 
-  const refill = () => { water.current = { kind: 'in' }; setShown({ kind: 'in', before: 0 }); task.touch(); };
+  const refill = () => { water.current = { kind: 'in' }; setShown({ kind: 'in', before: 0, at: 0 }); task.touch(); };
 
   useEffect(() => {
     let raf = 0, last = performance.now(), lastShown = 0;
@@ -71,18 +71,18 @@ export default function SwingTheBucket({ id, prompt, radius = 1, start = 4.5, to
         if (w.kind === 'in' && bucketPush(MASS, speed, R, psi.current - Math.PI / 2, G_EARTH) < 0) {
           // The bottom would have to pull. It cannot: the water is on its own.
           const before = (((Math.PI / 2 - psi.current) % (2 * Math.PI)) + 2 * Math.PI) % (2 * Math.PI);
-          water.current = { kind: 'free', p0: onCircle(R, psi.current), v0: tangentVelocity(speed, psi.current), t: 0, before };
+          water.current = { kind: 'free', p0: onCircle(R, psi.current), v0: tangentVelocity(speed, psi.current), t: 0, before, at: speed };
         } else if (w.kind === 'free') {
           w.t += h;
           const p = ballistic(w.p0, w.v0, w.t);
-          if (p[1] < GROUND) water.current = { kind: 'landed', x: p[0], before: w.before };
+          if (p[1] < GROUND) water.current = { kind: 'landed', x: p[0], before: w.before, at: w.at };
         }
       }
       if (canvas.current) draw(canvas.current, col, speed);
       if (now - lastShown > 120) {
         lastShown = now;
         const w = water.current;
-        setShown({ kind: w.kind, before: w.kind === 'in' ? 0 : w.before });
+        setShown(w.kind === 'in' ? { kind: 'in', before: 0, at: 0 } : { kind: w.kind, before: w.before, at: w.at });
       }
       raf = requestAnimationFrame(frame);
     };
@@ -151,7 +151,7 @@ export default function SwingTheBucket({ id, prompt, radius = 1, start = 4.5, to
   const hitNow = !spilled && v >= vMin - 1e-9 && v <= vMin + tolerance;
   const lost = releaseBeforeTop(v, R);
   const miss = spilled
-    ? `The water left ${((shown.before * 180) / Math.PI).toFixed(0)}° before the top: at that speed the turn needed less than gravity's ${G_EARTH} m/s² alone. Refill and try again.`
+    ? `At ${shown.at.toFixed(2)} m/s the water left ${((shown.before * 180) / Math.PI).toFixed(0)}° before the top, where the turn needed less than gravity alone supplies. Refill and try again.`
     : v < vMin
       ? `At ${v.toFixed(2)} m/s the turn needs only ${aTop.toFixed(2)} m/s² at the top, less than gravity's ${G_EARTH}. It will leave ${lost !== null ? ((lost * 180) / Math.PI).toFixed(0) : 0}° before the top.`
       : `At ${v.toFixed(2)} m/s the bottom still pushes on the water with ${nTop.toFixed(1)} N at the top. You can go slower.`;

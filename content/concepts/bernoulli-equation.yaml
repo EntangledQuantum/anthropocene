@@ -1,0 +1,18 @@
+title: 'Bernoulli''s equation'
+blurb: 'Along one streamline of a steady, frictionless flow, pressure, speed and height trade against each other: where the water runs faster, its pressure is lower, because the pressure difference is what sped it up.'
+notation: 'p + \tfrac12\rho v^2 + \rho g y = \text{const along a streamline}'
+tags:
+  - 'up-ch12'
+misconceptions:
+  - id: 'squeezed-means-higher-pressure'
+    name: 'Where the pipe is squeezed, the water is under more pressure.'
+    signal: 'Predicts the manometer over the narrow waist of a pipe stands highest.'
+    correction: 'The water speeds up as it enters the waist, and something must push it faster: the pressure behind it has to be higher than the pressure ahead. So the pressure falls as the speed rises. The waist is the low-pressure point, which is how a spray bottle or a carburettor sucks liquid in.'
+  - id: 'bernoulli-slogan'
+    name: 'Faster air always has lower pressure.'
+    signal: 'Compares pressures between two unrelated flows, or between moving air and still air, using Bernoulli without a streamline linking them.'
+    correction: 'Bernoulli is an energy budget along one streamline of one steady, frictionless flow. It says nothing about two streams that never shared a starting pressure. The air leaving a fan is fast and at room pressure.'
+  - id: 'equal-transit-time'
+    name: 'A wing lifts because air over the longer top surface must hurry to meet the air underneath at the trailing edge.'
+    signal: 'Explains lift by the two halves of the air having to rejoin at the back of the wing.'
+    correction: 'Nothing requires the two parcels to meet again, and they do not: measured flows show the air over the top arriving well before the air underneath. The wing turns the air downward, and the pressure difference that does that is real, but the equal-time story is invented.'

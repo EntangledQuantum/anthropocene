@@ -1,0 +1,6 @@
+---
+// @graded — with `id`, the scene checks itself: place the sack, let go.
+import Island, { type LevelTheSeesawProps } from '../viz/LevelTheSeesaw.tsx';
+const props = Astro.props as LevelTheSeesawProps;
+---
+<Island client:visible {...props} />

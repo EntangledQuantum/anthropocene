@@ -1,0 +1,6 @@
+---
+// @graded — with `id` and `target`, the door grades itself: push so it reaches the mark in one second.
+import Island, { type PushTheDoorProps } from '../viz/PushTheDoor.tsx';
+const props = Astro.props as PushTheDoorProps;
+---
+<Island client:visible {...props} />

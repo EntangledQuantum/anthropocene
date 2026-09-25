@@ -172,10 +172,11 @@ export function pullInWork(c: Chair, L: number, r0: number, r1: number, n = 4000
  * so r × p cannot change, yet the kinetic energy rises by exactly the work.
  */
 export function reelIn(m: number, r0: number, w0: number, r1: number, T: number, dt = 1e-5) {
-  let x = r0, y = 0, vx = 0, vy = w0 * r0;
+  const rdot = (r1 - r0) / T;
+  // already moving inward at the reel's speed, so no jolt at t = 0
+  let x = r0, y = 0, vx = rdot, vy = w0 * r0;
   const L0 = particleL(m, [x, y], [vx, vy]);
   const K0 = 0.5 * m * (vx * vx + vy * vy);
-  const rdot = (r1 - r0) / T;
   let W = 0;
   for (let t = 0; t < T - 1e-12; t += dt) {
     const r = Math.hypot(x, y);
@@ -243,19 +244,35 @@ export function rideEnergies(ride: Ride, r: number): { K0: number; K1: number } 
  * total angular momentum at the start and end. The friction is internal to
  * ride + child, so it may not change the total, however hard it grips.
  */
+export interface Skid { wd: number; wc: number; slipping: boolean }
+
+/**
+ * One step of the skid: kinetic friction torque τ = μ m g r acts on the child
+ * (forward) and on the deck (back), equal and opposite, until their spins meet.
+ * Both the scene and stepOnSkid run this.
+ */
+export function skidStep(ride: Ride, r: number, s: Skid, dt: number, mu = 0.6): Skid {
+  if (!s.slipping) return s;
+  const I0 = diskAboutAxle(ride.M, ride.R), Ic = ride.child * r * r;
+  const tau = mu * ride.child * 9.81 * r;
+  const wd = s.wd - (tau / I0) * dt, wc = s.wc + (tau / Ic) * dt;
+  if (wd <= wc) { const w = (I0 * s.wd + Ic * s.wc) / (I0 + Ic); return { wd: w, wc: w, slipping: false }; }
+  return { wd, wc, slipping: true };
+}
+
+/**
+ * The step-on, simulated: the child lands at rest and her shoes skid on the
+ * deck until she and the deck move together. Returns the final spin (rpm) and
+ * the total angular momentum at the start and end. The friction is internal
+ * to ride + child, so it may not change the total, however hard it grips.
+ */
 export function stepOnSkid(ride: Ride, r: number, mu = 0.6, dt = 1e-5) {
-  const I0 = diskAboutAxle(ride.M, ride.R);
-  const Ic = ride.child * r * r;
-  let wd = rpmToRad(ride.rpm0), wc = 0;
-  const L0 = I0 * wd + Ic * wc;
-  const tau = mu * ride.child * 9.81 * r; // friction torque, while slipping
+  const I0 = diskAboutAxle(ride.M, ride.R), Ic = ride.child * r * r;
+  let s: Skid = { wd: rpmToRad(ride.rpm0), wc: 0, slipping: true };
+  const L0 = I0 * s.wd + Ic * s.wc;
   let t = 0;
-  while (wd - wc > 1e-9 && t < 60) {
-    const dwd = (-tau / I0) * dt, dwc = (tau / Ic) * dt;
-    if (wd + dwd <= wc + dwc) { const w = (I0 * wd + Ic * wc) / (I0 + Ic); wd = w; wc = w; break; }
-    wd += dwd; wc += dwc; t += dt;
-  }
-  return { rpm: radToRpm(wd), L0, L1: I0 * wd + Ic * wc, skidTime: t };
+  while (s.slipping && t < 60) { s = skidStep(ride, r, s, dt, mu); t += dt; }
+  return { rpm: radToRpm(s.wd), L0, L1: I0 * s.wd + Ic * s.wc, skidTime: t };
 }
 
 /* ── the scenes' fixed props, in one place so the tests pin the lesson ─── */

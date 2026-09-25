@@ -1,0 +1,14 @@
+title: 'Continuity in a pipe'
+blurb: 'Water barely compresses, so the same volume per second passes every cross-section of a pipe. Where the pipe narrows, the water must move faster, in proportion to the area, not the width.'
+notation: 'A_1 v_1 = A_2 v_2'
+tags:
+  - 'up-ch12'
+misconceptions:
+  - id: 'speed-follows-diameter'
+    name: 'Halve the diameter and the water goes twice as fast.'
+    signal: 'Pinches a round pipe to half its width to double the speed.'
+    correction: 'The volume per second is area times speed, and the area of a round pipe goes as the diameter squared. Half the diameter is a quarter of the area, so four times the speed. To double the speed you narrow the diameter by a factor of √2, to 71%.'
+  - id: 'squeezed-water-compresses'
+    name: 'In the narrow part the water gets packed tighter.'
+    signal: 'Explains a pinched pipe by saying the water there is denser or squashed.'
+    correction: 'Water hardly compresses at all: a tonne of pressure per square centimetre changes its density by a few percent. The narrow part carries the same volume per second by moving it faster, not by packing it tighter.'
