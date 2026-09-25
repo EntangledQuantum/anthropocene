@@ -70,9 +70,9 @@ export default function CancelAtTheMark({ id, prompt, markDeg = 30, explanation 
           <text x={s.sx(mark[0]) - 14} y={s.sy(mark[1]) - 12} textAnchor="end" fontSize={13} fill={C.soft}
             stroke="var(--color-surface)" strokeWidth={4} paintOrder="stroke">mark</text>
           {eMag > 0.3 && <Arrow s={s} from={mark} to={[mark[0] + e[0] * PER, mark[1] + e[1] * PER]} color={C.field} width={4} />}
-          <RodDot s={s} at={loose} q={1} label="+1 loose" />
           <Handle s={s} at={loose} step={0.05} r={14} color={C.ink} label="Loose rod: drag it anywhere"
             onChange={(p) => { setLoose([Math.min(2.3, Math.max(-2.3, p[0])), Math.min(2.1, Math.max(-1.3, p[1]))]); task.touch(); }} />
+          <RodDot s={s} at={loose} q={1} label="+1 loose" />
         </>}
       </Stage>
       <p className="hud-label" style={{ margin: '6px 0 0' }}>

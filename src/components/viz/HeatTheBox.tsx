@@ -50,7 +50,7 @@ export default function HeatTheBox({ id, prompt, target, tolerance = 12, explana
   const [, tick] = useTicker();
 
   useGasLoop(gas, {
-    psPerSecond: 40, running,
+    psPerSecond: 60, running,
     maxDt: () => 0.04 * Math.sqrt(B.T / Math.max(B.T, kelvin(dial.current))),
     each: (g, dt) => thermostat(g, kelvin(dial.current), 1 - Math.exp(-dt / 10)),
     frame: (g) => {
@@ -98,7 +98,7 @@ export default function HeatTheBox({ id, prompt, target, tolerance = 12, explana
               const c = Math.round(Math.min(HI, Math.max(LO, cOf(p[1]))));
               dial.current = c; setHeater(c); task.touch();
             }} />
-          <text x={s.sx(0)} y={s.sy(B.h) - 8} fontSize={12} fill={C.faint}>300 molecules of air · 24 nm × 16 nm · played about 25 billion times slower</text>
+          <text x={s.sx(0)} y={s.sy(B.h) - 8} fontSize={12} fill={C.faint}>300 molecules of air · 24 nm × 16 nm · played about 17 billion times slower</text>
         </>; }}
       </Stage>
     </SceneCard>

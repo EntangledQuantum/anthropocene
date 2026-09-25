@@ -91,13 +91,16 @@ export interface GaugeReading {
  *  the gas's tally. */
 export class Gauge {
   private pr = 0; private hr = 0; private ir = 0; private primed = false;
+  /** `tau` for the pressure (all four walls); the piston alone sees fewer
+   *  hits, so its ledger is smoothed twice as long. */
   constructor(private tau: number) {}
   read(g: Gas): void {
     const T = g.tallyTime;
     if (!(T > 0)) return;
     const p = boxPressure(g), h = g.hits[WALL.right] / T, i = g.impulse[WALL.right] / T;
     const a = this.primed ? 1 - Math.exp(-T / this.tau) : 1;
-    this.pr += a * (p - this.pr); this.hr += a * (h - this.hr); this.ir += a * (i - this.ir);
+    const b = this.primed ? 1 - Math.exp(-T / (2 * this.tau)) : 1;
+    this.pr += a * (p - this.pr); this.hr += b * (h - this.hr); this.ir += b * (i - this.ir);
     this.primed = true;
     resetTally(g);
   }

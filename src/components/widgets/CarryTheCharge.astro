@@ -1,0 +1,6 @@
+---
+// @graded — with `id`, the scene checks itself: carry the test charge somewhere new where the field's total work is back to zero.
+import Island, { type CarryTheChargeProps } from '../viz/CarryTheCharge.tsx';
+const props = Astro.props as CarryTheChargeProps;
+---
+<Island client:visible {...props} />

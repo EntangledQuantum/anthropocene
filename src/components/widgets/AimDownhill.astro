@@ -1,0 +1,6 @@
+---
+// @graded — drag the arrow until it points the way the field points at the marked spot.
+import Island, { type AimDownhillProps } from '../viz/AimDownhill.tsx';
+const props = Astro.props as AimDownhillProps;
+---
+<Island client:visible {...props} />

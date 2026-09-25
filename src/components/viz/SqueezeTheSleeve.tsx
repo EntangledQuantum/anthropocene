@@ -2,7 +2,7 @@ import { useMemo, useState } from 'react';
 import { NANO, contains, ellipseLoop, enclosedLambda, fluxThroughLoop, gaussFlux, nearestOnLoop, rodsFromNano } from '../../lib/physics/gauss.ts';
 import type { Vec2 } from '../../lib/physics/vectors.ts';
 import { C, CheckBar, Handle, Meter, SceneCard, Stage, useTask } from './scene.tsx';
-import { FluxTicks, RodDot, RodFieldLines, SleevePath, axesFromRim, fieldRange, fmtRange, rimOf, signed } from './gauss-kit.tsx';
+import { FluxTicks, RodDot, RodFieldLines, SleevePath, SleeveGrab, axesFromRim, fieldRange, fmtRange, rimOf, signed } from './gauss-kit.tsx';
 
 /**
  * Long charged rods seen end-on, and a closed sleeve around some of them,
@@ -68,10 +68,9 @@ export default function SqueezeTheSleeve({ id, prompt, rods: rodsIn, start = { c
         {(s) => <>
           <RodFieldLines s={s} rods={rods} />
           <SleevePath s={s} loop={loop} />
-          <FluxTicks s={s} rods={rods} loop={loop} perNC={0.006} />
+          <FluxTicks s={s} rods={rods} loop={loop} perNC={0.0035} count={30} max={0.3} />
           {rodsIn.map((r, i) => <RodDot key={i} s={s} at={[r.x, r.y]} q={r.q} label={rodsIn.length > 1 ? signed(r.q) : undefined} />)}
-          <Handle s={s} at={c} step={0.05} label="Sleeve centre: drag to move the sleeve" color={C.soft} r={7}
-            onChange={(p) => { setC([Math.min(2.2, Math.max(-2.2, p[0])), Math.min(1.2, Math.max(-1.2, p[1]))]); task.touch(); }} />
+          <SleeveGrab s={s} loop={loop} centre={c} step={0.05} onMove={(p) => { setC([Math.min(2.2, Math.max(-2.2, p[0])), Math.min(1.2, Math.max(-1.2, p[1]))]); task.touch(); }} />
           <Handle s={s} at={rimOf(c[0], c[1], ab[0], ab[1])} step={0.05} label="Sleeve rim: drag to stretch or squash" color={C.ink}
             onChange={(p) => { setAb(axesFromRim(c[0], c[1], p)); task.touch(); }} />
         </>}

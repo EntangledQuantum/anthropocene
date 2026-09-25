@@ -1,0 +1,6 @@
+---
+// @graded — with `id` and `target`, set the voltage so the electron arrives at the target speed.
+import Island, { type FireTheElectronGunProps } from '../viz/FireTheElectronGun.tsx';
+const props = Astro.props as FireTheElectronGunProps;
+---
+<Island client:visible {...props} />

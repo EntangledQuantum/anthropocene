@@ -45,7 +45,7 @@ export default function SqueezeThePiston({ id, prompt, target, tolerance = 0.07,
   const [, tick] = useTicker();
 
   useGasLoop(gas, {
-    psPerSecond: 40, running,
+    psPerSecond: 60, running,
     // denser gas, more collisions per nm travelled: shorter steps
     maxDt: (g) => (g.w < B.w * 0.3 ? 0.02 : 0.04),
     // the room holds the box at 20 °C
@@ -90,7 +90,7 @@ export default function SqueezeThePiston({ id, prompt, target, tolerance = 0.07,
               const nw = Math.min(B.w, Math.max(B.w * minVolume, p[0]));
               setPiston(gas.current, nw); setW(nw); task.touch();
             }} />
-          <text x={s.sx(0)} y={s.sy(B.h) - 8} fontSize={12} fill={C.faint}>300 molecules of air, held at 20 °C · played about 25 billion times slower</text>
+          <text x={s.sx(0)} y={s.sy(B.h) - 8} fontSize={12} fill={C.faint}>300 molecules of air, held at 20 °C · played about 17 billion times slower</text>
         </>; }}
       </Stage>
     </SceneCard>

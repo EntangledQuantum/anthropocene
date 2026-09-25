@@ -7,7 +7,7 @@
  * header of src/lib/physics/gauss.ts. Charge sign colours match chapter 21:
  * rose for +, violet for −.
  */
-import { useMemo } from 'react';
+import { useMemo, useRef } from 'react';
 import { normalFieldAlong, rodField, rodFieldLines, type Loop, type Rod } from '../../lib/physics/gauss.ts';
 import type { Vec2 } from '../../lib/physics/vectors.ts';
 import { Arrow, C, type StageApi } from './scene.tsx';
@@ -138,4 +138,40 @@ export const METAL_LINE = 'color-mix(in srgb, var(--color-amber) 55%, var(--colo
 
 export function metalPath(s: StageApi, poly: Loop): string {
   return poly.map((p, i) => `${i ? 'L' : 'M'}${s.sx(p[0]).toFixed(1)},${s.sy(p[1]).toFixed(1)}`).join('') + 'Z';
+}
+
+/** The sleeve's inside as a grab area: drag anywhere inside it to move the
+ *  whole sleeve, or focus it and use the arrow keys. Keeps the centre free of
+ *  a handle, so a handle never sits on top of a rod. */
+export function SleeveGrab({ s, loop, centre, onMove, step = 0.05, label = 'Sleeve: drag inside it to move it' }: {
+  s: StageApi; loop: Loop; centre: Vec2; onMove: (c: Vec2) => void; step?: number; label?: string;
+}) {
+  const grab = useRef<{ dx: number; dy: number } | null>(null);
+  const toWorld = (el: SVGElement, cx: number, cy: number): Vec2 => {
+    const svg = el.ownerSVGElement!;
+    const p = new DOMPoint(cx, cy).matrixTransform(svg.getScreenCTM()!.inverse());
+    const x0 = s.sx(0), x1 = s.sx(1), y0 = s.sy(0), y1 = s.sy(1);
+    return [(p.x - x0) / (x1 - x0), (p.y - y0) / (y1 - y0)];
+  };
+  const d = loop.map((p, i) => `${i ? 'L' : 'M'}${s.sx(p[0]).toFixed(1)},${s.sy(p[1]).toFixed(1)}`).join('') + 'Z';
+  return <path d={d} fill="transparent" style={{ cursor: 'move' }} tabIndex={0} role="slider" aria-label={label}
+    aria-valuetext={`centre ${centre[0].toFixed(2)}, ${centre[1].toFixed(2)}`}
+    onPointerDown={(e) => {
+      const w = toWorld(e.target as SVGElement, e.clientX, e.clientY);
+      grab.current = { dx: centre[0] - w[0], dy: centre[1] - w[1] };
+      (e.target as Element).setPointerCapture(e.pointerId);
+    }}
+    onPointerMove={(e) => {
+      if (!grab.current) return;
+      const w = toWorld(e.target as SVGElement, e.clientX, e.clientY);
+      onMove([w[0] + grab.current.dx, w[1] + grab.current.dy]);
+    }}
+    onPointerUp={() => { grab.current = null; }}
+    onKeyDown={(e) => {
+      const m: Record<string, Vec2> = { ArrowLeft: [-step, 0], ArrowRight: [step, 0], ArrowUp: [0, step], ArrowDown: [0, -step] };
+      const v = m[e.key];
+      if (!v) return;
+      e.preventDefault();
+      onMove([centre[0] + v[0], centre[1] + v[1]]);
+    }} />;
 }
