@@ -28,7 +28,7 @@ export interface FlickTheRopeProps {
 }
 
 const L = 6, BEAD = 4, MU = 2, CELLS = 240, PLAY = 0.5, REACH = 0.6, MAX_LOAD = 20;
-const BRICK_H = 0.052, HOOK_Y = -0.62, PULLEY_R = 0.2;
+const BRICK_H = 0.04, HOOK_Y = -0.55, PULLEY_R = 0.2;
 
 export default function FlickTheRope({ id, prompt, load: load0 = 4, targetRatio, explanation }: FlickTheRopeProps) {
   const graded = Boolean(id && targetRatio);
@@ -157,7 +157,7 @@ export default function FlickTheRope({ id, prompt, load: load0 = 4, targetRatio,
             : `With ${load} kg the hump reached the bead in ${shown.crossing!.toFixed(2)} s, ${shown.crossing! > target! ? 'slower' : 'faster'} than the ${target!.toFixed(2)} s target.`}
           hit={explanation} />}
       </div>}>
-      <Stage x={[-0.5, 7]} y={[-2.3, 1.06]} height={300} equal
+      <Stage x={[-0.5, 7]} y={[-1.5, 0.84]} height={220} equal
         label={`A rope from your hand over a pulley to a ${load} kilogram hanger, with a painted bead 4 metres along.`}>
         {(s) => {
           api.current = s;
@@ -165,13 +165,12 @@ export default function FlickTheRope({ id, prompt, load: load0 = 4, targetRatio,
           const stackBottom = HOOK_Y - load * BRICK_H;
           return <g ref={svgRef}>
             {/* the bead's floor mark and the path it has traced */}
-            <line x1={s.sx(BEAD)} x2={s.sx(BEAD)} y1={s.sy(-0.75)} y2={s.sy(-0.85)} stroke={C.position} strokeWidth={2} />
-            <text x={s.sx(BEAD)} y={s.sy(-0.85) + 16} textAnchor="middle" fontSize={12} fill={C.faint}>{BEAD} m</text>
+            <line x1={s.sx(BEAD)} x2={s.sx(BEAD)} y1={s.sy(-0.68)} y2={s.sy(-0.78)} stroke={C.position} strokeWidth={2} />
+            <text x={s.sx(BEAD)} y={s.sy(-0.78) + 16} textAnchor="middle" fontSize={12} fill={C.faint}>{BEAD} m</text>
             <line ref={(el) => { els.current.trail = el; }} x1={s.sx(BEAD)} x2={s.sx(BEAD)} y1={s.sy(0)} y2={s.sy(0)}
               stroke={C.position} strokeWidth={6} strokeLinecap="round" opacity={0.35} />
             {/* the pulley, the drop and the hanger */}
             <circle cx={s.sx(L)} cy={s.sy(-PULLEY_R)} r={px(PULLEY_R)} fill="none" stroke={C.soft} strokeWidth={2} />
-            <line x1={s.sx(L)} x2={s.sx(L + 0.35)} y1={s.sy(-PULLEY_R)} y2={s.sy(-1.4)} stroke={C.grid} strokeWidth={3} />
             <line x1={s.sx(L + PULLEY_R)} x2={s.sx(L + PULLEY_R)} y1={s.sy(-PULLEY_R)} y2={s.sy(HOOK_Y)} stroke={C.soft} strokeWidth={2.5} />
             <g tabIndex={graded ? 0 : -1} role={graded ? 'slider' : undefined} aria-label="Hanger load: drag the bottom of the stack, or use the arrow keys"
               aria-valuetext={`${load} kilograms`} style={{ cursor: graded ? 'ns-resize' : 'default' }}
@@ -215,8 +214,8 @@ export default function FlickTheRope({ id, prompt, load: load0 = 4, targetRatio,
               <text x={s.sx(0)} y={s.sy(0) - 18} textAnchor="middle" fontSize={13} fill={C.soft} pointerEvents="none">you</text>
             </g>
             {/* scale */}
-            <line x1={s.sx(0)} x2={s.sx(1)} y1={s.sy(-1.9)} y2={s.sy(-1.9)} stroke={C.faint} strokeWidth={1.2} />
-            <text x={s.sx(0.5)} y={s.sy(-1.9) - 6} textAnchor="middle" fontSize={12} fill={C.faint}>1 m</text>
+            <line x1={s.sx(0)} x2={s.sx(1)} y1={s.sy(-1.3)} y2={s.sy(-1.3)} stroke={C.faint} strokeWidth={1.2} />
+            <text x={s.sx(0.5)} y={s.sy(-1.3) - 6} textAnchor="middle" fontSize={12} fill={C.faint}>1 m</text>
           </g>;
         }}
       </Stage>

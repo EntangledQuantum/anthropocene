@@ -1,0 +1,137 @@
+---
+title: 'Sound is a crowd, not a curve'
+blurb: 'Watch air shuffle in front of a speaker, find where it is squeezed, and pour water into a tube until it booms with a tuning fork.'
+order: 1
+tier: 'foundation'
+minutes: 10
+teaches:
+  - 'sound-wave'
+  - 'speed-of-sound'
+  - 'pipe-harmonics'
+requires:
+  - 'mechanical-wave'
+  - 'standing-wave'
+  - 'simple-harmonic-motion'
+status: 'live'
+updated: 2026-09-25
+---
+
+<Step>
+
+A loudspeaker plays a steady low note. A dust speck hangs in the air three metres in front
+of it.
+
+<Predict
+  id="up-ch16-dust-speck"
+  question="While the note plays, what does the speck do?"
+  options={[
+    { key: 'a', misconception: 'up-ch16-sound-carries-air', label: 'Drifts away from the speaker, carried along by the sound', why: 'Sound carries energy away, not air. Play it below: the speck ends every cycle exactly at its home mark.' },
+    { key: 'b', misconception: 'up-ch16-sound-is-transverse', label: 'Bobs up and down as the wave passes, like a cork on a ripple', why: 'That takes the sine curve on a diagram literally. The air moves along the direction of travel, toward and away from the speaker.' },
+    { key: 'c', label: 'Shuffles toward and away from the speaker, about one spot', why: 'Right. Each bit of air moves about 20 micrometres there and back. What travels outward is the crowding, not the air.' },
+    { key: 'd', misconception: 'up-ch16-only-pressure-travels', label: 'Stays still: only the pressure travels', why: 'Pressure can only rise if air moves and crowds together. The speck moves too, a few hundredths of a millimetre each way.' },
+  ]}
+  correct="c"
+>
+
+<ShuffleTheAir prompt="Watch the speck against its home mark while the crowds sweep past it." />
+
+</Predict>
+
+</Step>
+
+<Step>
+
+## Find the squeeze
+
+Here is one instant of the same note, frozen. The gauge reads how hard the air is squeezed
+where you put it.
+
+<ShuffleTheAir
+  id="up-ch16-place-gauge"
+  prompt="Drag the gauge to where the air is squeezed hardest, then check."
+  explanation="About 0.9 m, or again at 2.9 m: where the displacement strip crosses zero on its way down. Just behind that spot the air has moved forward, and just ahead it has moved back, so both crowd in. Where the air has moved farthest, its neighbours moved just as far, and the pressure there is normal."
+/>
+
+</Step>
+
+<Step>
+
+## Name it
+
+Pressure is the stiffness of the air times how sharply the displacement changes from one
+parcel to the next:
+
+$$p = -B\,\frac{\partial s}{\partial x}$$
+
+So the pressure wave and the displacement wave are the same wave, a quarter-wavelength out
+of step. The crowding moves at a speed set by the air alone, $v = \sqrt{B/\rho} = 343$ m/s,
+and $v = f\lambda$ gives every note its wavelength.
+
+<Recall id="up-ch16-recall-squeeze" concept="sound-wave">
+  <div slot="front">At the instant a sound wave has pushed the air at one spot farthest from home, what is the pressure there?</div>
+
+  Normal. The air on either side has moved just as far the same way, so nothing there is
+  squeezed or stretched. The pressure peaks a quarter-wavelength away, where the
+  displacement passes through zero.
+</Recall>
+
+</Step>
+
+<Step>
+
+## Pour until it booms
+
+A 440 Hz fork hums over a glass tube. Water closes the bottom, and the air between the
+water and the mouth can ring along with the fork.
+
+<PourToBoom
+  id="up-ch16-pour-shortest-boom"
+  prompt="Pour until the tube booms. Find the shortest air column that booms, then check."
+  start={66}
+  explanation="19.5 cm, a quarter of the 78 cm wavelength of 440 Hz. The water is a wall, so the air against it cannot move. The mouth opens to the room, so the air there moves most. The first boom you passed, at 58.5 cm, fits three quarter-waves between the same two ends."
+/>
+
+</Step>
+
+<Step>
+
+## Only odd quarters fit
+
+A tube closed at one end needs still air at the wall and the most motion at the mouth. So it
+fits $\tfrac14$, $\tfrac34$, $\tfrac54$ of a wavelength and nothing in between:
+$f_n = nv/4L$, $n$ odd. Open at both ends, it needs the most motion at each end, and every
+half-wave fits: $f_n = nv/2L$.
+
+<Classify
+  id="up-ch16-clarinet-flute"
+  prompt="A clarinet acts like a pipe closed at the reed. A flute is open at both ends. Both play a lowest note of 150 Hz. Which overtones can each one sound?"
+  buckets={[
+    { key: 'both', label: 'Both can sound it', accent: 'ok' },
+    { key: 'flute', label: 'Only the flute', accent: 'iris' },
+  ]}
+  items={[
+    { key: 'f300', label: '300 Hz', bucket: 'flute', why: 'Twice 150, an even multiple. For the clarinet it would take two quarter-waves, a half-wave, which needs moving air at both ends.' },
+    { key: 'f450', label: '450 Hz', bucket: 'both', why: 'Three times 150: three quarter-waves in the clarinet, three half-waves in the flute.' },
+    { key: 'f600', label: '600 Hz', bucket: 'flute', why: 'Four times 150. Even, so the closed pipe cannot fit it.' },
+    { key: 'f750', label: '750 Hz', bucket: 'both', why: 'Five times 150. Odd, so both.' },
+    { key: 'f900', label: '900 Hz', bucket: 'flute', why: 'Six times 150. Even again.' },
+  ]}
+  explanation="The clarinet's tube is half as long as the flute's for the same lowest note, and it skips every even harmonic. That gap is the hollow sound of a clarinet's low register."
+/>
+
+<Recall id="up-ch16-recall-closed-pipe" concept="pipe-harmonics">
+  <div slot="front">In a pipe closed at one end, where is the pressure node?</div>
+
+  At the open end, which is joined to the room and stays at room pressure. The closed end
+  is where the air cannot move, so it is squeezed and stretched hardest there: a
+  displacement node is a pressure antinode.
+</Recall>
+
+## What to carry forward
+
+- **Sound is air shuffling along its path.** The squeeze sits where the displacement crosses zero, a quarter-wave from where the air moved most.
+- **A tube booms when its ends fit the wave**: still air at a wall, moving air at an opening. Closed at one end, only odd quarter-waves fit.
+
+Next: a whistle on a moving train, and why its pitch does not rise as it comes closer.
+
+</Step>

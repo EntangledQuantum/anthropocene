@@ -124,7 +124,7 @@ export default function FireToEscape({ id, prompt, start = 9, reach = 25, statio
         {!station && <svg viewBox="0 0 124 200" style={{ width: 140, flexShrink: 0 }} role="img"
           aria-label={`Energy per kilogram: kinetic ${K_.toFixed(1)}, potential ${U.toFixed(1)}, total ${E.toFixed(1)} megajoules`}>
           <line x1={10} x2={110} y1={bar(0)} y2={bar(0)} stroke={C.rule} strokeWidth={1.5} />
-          <text x={112} y={bar(0) + 4} fontSize={12} fill={C.faint} textAnchor="end" dy={-8}>zero</text>
+          <text x={8} y={bar(0) + 4} fontSize={12} fill={C.faint} textAnchor="middle">0</text>
           <rect x={22} width={26} y={bar(K_)} height={bar(0) - bar(K_)} fill={C.energy} />
           <rect x={58} width={26} y={bar(0)} height={bar(U) - bar(0)} fill="none" stroke={C.energy} strokeWidth={2} />
           <line x1={14} x2={92} y1={bar(E)} y2={bar(E)} stroke={C.ink} strokeWidth={2.5} />
