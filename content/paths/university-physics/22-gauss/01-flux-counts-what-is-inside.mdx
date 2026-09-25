@@ -1,0 +1,133 @@
+---
+title: 'Flux counts what is inside'
+blurb: 'Stretch, squash and slide a closed sleeve among charged rods, and find the one number that only notices the charge it wraps.'
+order: 1
+tier: 'core'
+minutes: 10
+teaches:
+  - 'electric-flux'
+  - 'gauss-law'
+requires:
+  - 'electric-field'
+  - 'force-superposition'
+status: 'live'
+updated: 2026-09-25
+---
+
+<Step>
+
+A long rod carries 1 nC of charge in every metre. Around it sits an imaginary sleeve, a closed
+tube 1 m long, and its **flux** is the field piercing out through the sleeve, added up over all
+of it.
+
+<Predict
+  id="up-ch22-stretch-the-sleeve"
+  question="You stretch the sleeve to twice its width, round the same rod. What does the flux do?"
+  options={[
+    { key: 'half', misconception: 'flux-is-field', label: 'Halves: the field out there is half as strong', why: 'The field on the sleeve does halve, from 45 to 22 N/C. But now there is twice as much sleeve for it to pierce. Stretch it below and watch the meter.' },
+    { key: 'double', misconception: 'flux-grows-with-area', label: 'Doubles: there is twice as much sleeve to pierce', why: 'Twice the sleeve, yes, but every square metre of it is pierced half as hard. Stretch it below: the meter does not move.' },
+    { key: 'quarter', label: 'Falls to a quarter, as fields fall with distance squared', why: 'A rod''s field falls as 1/r, not 1/r², so twice as far is half the field. Even so, the doubled sleeve makes up for it exactly.' },
+    { key: 'same', label: 'Stays exactly the same', why: 'Right. The field on the sleeve halves and the sleeve''s area doubles. The flux stays 113 N·m²/C, however you stretch it.' },
+  ]}
+  correct="same"
+>
+
+<SqueezeTheSleeve prompt="Drag the rim to stretch or squash the sleeve. Drag its centre to move it." rods={[{ x: 0, y: 0, q: 1 }]} start={{ cx: 0, cy: 0, a: 0.4, b: 0.4 }} />
+
+</Predict>
+
+</Step>
+
+<Step>
+
+## Wrap exactly one nanocoulomb
+
+Three rods now: +3, −2 and +2 nC in every metre. The flux meter is covered.
+
+<SqueezeTheSleeve
+  id="up-ch22-wrap-one"
+  prompt="Shape and place the sleeve so that 113 N·m²/C leaves it, the flux of one lone +1 rod."
+  rods={[{ x: -1.3, y: 0.35, q: 3 }, { x: -0.1, y: -0.35, q: -2 }, { x: 1.2, y: 0.45, q: 2 }]}
+  start={{ cx: -1.3, cy: 0.35, a: 0.45, b: 0.45 }}
+  target={1}
+  covered
+  explanation="Wrap the +3 and the −2 together and leave the +2 out: 3 − 2 = 1 nC in each metre, 113 N·m²/C. The size and shape of the sleeve never entered. A field line running from the +3 to the −2 crosses the sleeve out and back in, or not at all, and one from the +2 outside crosses in and back out. Neither adds anything."
+/>
+
+</Step>
+
+<Step>
+
+## A rod outside still pushes
+
+A +1 rod sits at the centre of a round sleeve, and a second +1 rod lies loose outside it.
+
+<CancelAtTheMark
+  id="up-ch22-cancel-at-mark"
+  prompt="Drag the loose rod until the field at the marked spot on the sleeve is zero."
+  explanation="Two metres from the centre, straight out through the mark. There its inward push matches the inside rod's outward push, 18.0 N/C each. The field on the sleeve now runs from nothing at the mark to over 20 N/C across from it, and the flux never left 113 N·m²/C. A charge outside rearranges where the field pierces the sleeve; it cannot change the total."
+/>
+
+</Step>
+
+<Step>
+
+## Name it
+
+Each patch of the sleeve contributes the part of the field piercing it times its area. Add every
+patch and only the charge inside survives:
+
+$$\Phi_E = \oint \vec E\cdot d\vec A = \frac{Q_{\text{enc}}}{\varepsilon_0}$$
+
+Here $d\vec A$ is a patch of surface drawn as an arrow pointing straight out, and for 1 nC inside,
+$Q/\varepsilon_0$ is the 113 N·m²/C you have been reading.
+
+<Recall id="up-ch22-recall-flux" concept="electric-flux">
+  <div slot="front">A closed surface round a charge is blown up to ten times its size. The field on it is much weaker. Why is the flux unchanged?</div>
+
+  Flux is field times the area it pierces. The surface grows exactly as fast as the field
+  weakens, so the product holds, and it equals $Q_{\text{enc}}/\varepsilon_0$.
+</Recall>
+
+</Step>
+
+<Step>
+
+## Flux is not the field
+
+A round sleeve 1 m across wraps a +1 rod at its centre. You squash it into a flat oval, still
+1 m wide, still round the rod.
+
+<Classify
+  id="up-ch22-squash-classify"
+  prompt="Which of these change when you squash the sleeve?"
+  buckets={[
+    { key: 'same', label: 'Stays the same', accent: 'ok' },
+    { key: 'changes', label: 'Changes', accent: 'magenta' },
+  ]}
+  items={[
+    { key: 'flux', label: 'The flux out of the sleeve', bucket: 'same', why: 'It wraps the same rod, so 113 N·m²/C.' },
+    { key: 'charge', label: 'The charge the sleeve wraps', bucket: 'same', why: 'The rod is still inside and nothing else is.' },
+    { key: 'spot', label: 'The field at a spot 0.3 m from the rod', bucket: 'same', why: 'The sleeve is imaginary. The field at a spot is set by the rods, and drawing a surface does not move them.' },
+    { key: 'near', label: 'The field where the sleeve passes closest to the rod', bucket: 'changes', why: 'The flattened sides now pass much closer to the rod, where its field is stronger.' },
+    { key: 'area', label: 'The sleeve''s area', bucket: 'changes', why: 'A flat oval has less rim than a circle of the same width.' },
+    { key: 'ratio', label: 'The flux divided by the sleeve''s area', bucket: 'changes', why: 'Same flux over less area. That ratio is the field only when the field is the same all over the sleeve.' },
+  ]}
+  explanation="The charge inside pins the flux. The rods and where you stand pin the field. An imaginary sleeve can change neither, which is why Gauss's law is always true but only sometimes tells you the field."
+/>
+
+<Recall id="up-ch22-recall-gauss" concept="gauss-law">
+  <div slot="front">A charge sits just outside a closed surface. The flux through the surface is zero. Is the field on the surface zero?</div>
+
+  No. The field pierces in through the near side and out through the far side, often strongly.
+  Only the total cancels.
+</Recall>
+
+## What to carry forward
+
+- **Flux counts the charge inside**, and nothing else: not the surface's size, shape or position, and not the charges outside.
+- **The field is not the flux.** Outside charges reshape it everywhere on the surface.
+
+Next: pick a surface where symmetry makes the field the same all over it, and the flux hands you the field.
+
+</Step>

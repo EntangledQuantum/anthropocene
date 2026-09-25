@@ -1,0 +1,14 @@
+title: 'A conductor in equilibrium'
+blurb: 'Charge in a metal moves until nothing pushes it: the field inside the metal is zero, all the extra charge sits on the surface, and it crowds toward sharp edges, where the field just outside, σ/ε₀, is strongest.'
+notation: 'E_{\text{inside}} = 0, \qquad E_{\text{just outside}} = \frac{\sigma}{\varepsilon_0}'
+tags:
+  - 'up-ch22'
+misconceptions:
+  - id: 'charge-stays-put'
+    name: 'Charge put into a metal stays where it was put.'
+    signal: 'Expects injected charge to remain as a lump at the injection point.'
+    correction: 'In a metal the charge is free to move, and like charges push each other apart. Nothing holds the lump together, so it flies apart until it can go no farther.'
+  - id: 'charge-fills-conductor'
+    name: 'Charge on a conductor spreads evenly through its whole volume.'
+    signal: 'Expects a charged metal bar to be charged all the way through, like a sponge soaked evenly.'
+    correction: 'Any charge left inside would still be pushed by the rest, and in a metal a push means motion. It only stops when it reaches the surface, so the inside ends up neutral and field-free.'

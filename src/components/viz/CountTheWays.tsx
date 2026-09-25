@@ -23,7 +23,7 @@ export interface CountTheWaysProps {
 
 const N = 4;
 const ALL = 1 << N;
-const SPEEDUP = 10;
+const SPEEDUP = 100;
 const DT = 1 / 60;
 const BX = 16, BY = 30, BW = 250, BH = 150;
 const COL_X = 288, COL_W = 70, TILE_H = 26;
@@ -109,7 +109,7 @@ export default function CountTheWays({ id, prompt, explanation }: CountTheWaysPr
       footer={<div style={{ display: 'grid', gap: 14 }}>
         <div style={{ display: 'flex', gap: 12, alignItems: 'center', flexWrap: 'wrap' }}>
           <span style={{ fontSize: 15, color: C.soft }}>
-            {running ? `Gas running · ${secs.toFixed(0)} s measured` : `${found.length} arrangement${found.length === 1 ? '' : 's'} built · ${twoTwo} with two on each side`}
+            {running ? `Gas running at ×${SPEEDUP} · ${secs.toFixed(0)} s measured` : `${found.length} arrangement${found.length === 1 ? '' : 's'} built · ${twoTwo} with two on each side`}
           </span>
           {(task.done || !id) && (
             <button type="button" className="anth-btn" style={{ marginLeft: 'auto' }} onClick={() => setRunning((r) => !r)}>

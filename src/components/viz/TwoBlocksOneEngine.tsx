@@ -29,7 +29,7 @@ export interface TwoBlocksOneEngineProps {
 const HOT = 'var(--color-rose)';
 const TOL = 8;
 // world: T axis on the right, y = 30 + 0.6 T
-const SX = 600;
+const SX = 500;
 const yOf = (T: number) => 30 + 0.6 * T;
 const TOf = (y: number) => (y - 30) / 0.6;
 
@@ -101,28 +101,28 @@ export default function TwoBlocksOneEngine({ id, prompt, Th = 400, Tc = 100, C: 
       <Stage x={[0, 640]} y={[0, 320]} height={320} label={`Hot block at ${b.Th.toFixed(0)} K, cold block at ${b.Tc.toFixed(0)} K, a perfect engine between them; your mark at ${mark} K.`}>
         {(s) => <>
           {/* blocks */}
-          {([[20, b.Th, 'hot block'], [330, b.Tc, 'cold block']] as const).map(([x, T, name]) => <g key={name}>
-            <rect x={s.sx(x)} y={s.sy(220)} width={s.len(120)} height={s.sy(100) - s.sy(220)} rx={6} fill={tint(T)} stroke={C.soft} strokeWidth={2} />
-            <text x={s.sx(x + 60)} y={s.sy(172)} textAnchor="middle" fontSize={14} fill={C.soft}>{name}</text>
-            <text x={s.sx(x + 60)} y={s.sy(148)} textAnchor="middle" fontSize={18} fontWeight={600} fill={C.ink} fontFamily="var(--font-mono)">{T.toFixed(0)} K</text>
-            <text x={s.sx(x + 60)} y={s.sy(84)} textAnchor="middle" fontSize={12} fill={C.faint}>{cap / 1000} kJ per K</text>
+          {([[10, b.Th, 'hot block'], [290, b.Tc, 'cold block']] as const).map(([x, T, name]) => <g key={name}>
+            <rect x={s.sx(x)} y={s.sy(220)} width={s.len(110)} height={s.sy(100) - s.sy(220)} rx={6} fill={tint(T)} stroke={C.soft} strokeWidth={2} />
+            <text x={s.sx(x + 55)} y={s.sy(172)} textAnchor="middle" fontSize={14} fill={C.soft}>{name}</text>
+            <text x={s.sx(x + 55)} y={s.sy(148)} textAnchor="middle" fontSize={18} fontWeight={600} fill={C.ink} fontFamily="var(--font-mono)">{T.toFixed(0)} K</text>
+            <text x={s.sx(x + 55)} y={s.sy(84)} textAnchor="middle" fontSize={12} fill={C.faint}>{cap / 1000} kJ per K</text>
           </g>)}
           {/* heat flows and work */}
-          <line x1={s.sx(140)} x2={s.sx(197)} y1={s.sy(160)} y2={s.sy(160)} stroke={C.energy} strokeWidth={phase === 'running' ? 6 : 2} />
-          <path d={`M${s.sx(207)},${s.sy(160)}l-12,-7v14z`} fill={C.energy} />
-          <line x1={s.sx(263)} x2={s.sx(318)} y1={s.sy(160)} y2={s.sy(160)} stroke={C.energy} strokeWidth={phase === 'running' ? 3 : 2} />
-          <path d={`M${s.sx(328)},${s.sy(160)}l-12,-7v14z`} fill={C.energy} />
-          <text x={s.sx(170)} y={s.sy(172)} textAnchor="middle" fontSize={12} fill={C.energy}>heat</text>
-          <text x={s.sx(292)} y={s.sy(172)} textAnchor="middle" fontSize={12} fill={C.energy}>dump</text>
+          <line x1={s.sx(120)} x2={s.sx(170)} y1={s.sy(160)} y2={s.sy(160)} stroke={C.energy} strokeWidth={phase === 'running' ? 6 : 2} />
+          <path d={`M${s.sx(180)},${s.sy(160)}l-12,-7v14z`} fill={C.energy} />
+          <line x1={s.sx(233)} x2={s.sx(278)} y1={s.sy(160)} y2={s.sy(160)} stroke={C.energy} strokeWidth={phase === 'running' ? 3 : 2} />
+          <path d={`M${s.sx(288)},${s.sy(160)}l-12,-7v14z`} fill={C.energy} />
+          <text x={s.sx(150)} y={s.sy(172)} textAnchor="middle" fontSize={12} fill={C.energy}>heat</text>
+          <text x={s.sx(258)} y={s.sy(172)} textAnchor="middle" fontSize={12} fill={C.energy}>dump</text>
           {/* the weight on a rope from the flywheel */}
-          <line x1={s.sx(235)} x2={s.sx(235)} y1={s.sy(188)} y2={s.sy(236 + lift)} stroke={C.force} strokeWidth={2} />
-          <rect x={s.sx(217)} y={s.sy(262 + lift)} width={s.len(36)} height={s.len(26)} rx={3} fill={C.surface} stroke={C.force} strokeWidth={2} />
-          <text x={s.sx(263)} y={s.sy(246 + lift)} fontSize={12} fill={C.force}>weight</text>
-          <circle cx={s.sx(235)} cy={s.sy(160)} r={s.len(28)} fill={C.surface} stroke={C.ink} strokeWidth={2.5} />
-          <g transform={`translate(${s.sx(235)},${s.sy(160)})`}><g ref={wheel}>
+          <line x1={s.sx(205)} x2={s.sx(205)} y1={s.sy(188)} y2={s.sy(236 + lift)} stroke={C.force} strokeWidth={2} />
+          <rect x={s.sx(187)} y={s.sy(262 + lift)} width={s.len(36)} height={s.len(26)} rx={3} fill={C.surface} stroke={C.force} strokeWidth={2} />
+          <text x={s.sx(233)} y={s.sy(246 + lift)} fontSize={12} fill={C.force}>weight</text>
+          <circle cx={s.sx(205)} cy={s.sy(160)} r={s.len(28)} fill={C.surface} stroke={C.ink} strokeWidth={2.5} />
+          <g transform={`translate(${s.sx(205)},${s.sy(160)})`}><g ref={wheel}>
             {[0, 60, 120].map((a) => <line key={a} x1={-s.len(22)} x2={s.len(22)} y1={0} y2={0} stroke={C.soft} strokeWidth={2} transform={`rotate(${a})`} />)}
           </g></g>
-          <text x={s.sx(235)} y={s.sy(118)} textAnchor="middle" fontSize={13} fill={C.soft}>perfect engine</text>
+          <text x={s.sx(205)} y={s.sy(118)} textAnchor="middle" fontSize={13} fill={C.soft}>perfect engine</text>
           {/* the temperature scale */}
           <line x1={s.sx(SX)} x2={s.sx(SX)} y1={s.sy(yOf(0))} y2={s.sy(yOf(450))} stroke={C.rule} strokeWidth={2} />
           {[0, 100, 200, 300, 400].map((T) => <g key={T}>
@@ -130,22 +130,22 @@ export default function TwoBlocksOneEngine({ id, prompt, Th = 400, Tc = 100, C: 
             <text x={s.sx(SX + 10)} y={s.sy(yOf(T)) + 4} fontSize={11} fill={C.faint} fontFamily="var(--font-mono)">{T}</text>
           </g>)}
           <text x={s.sx(SX)} y={s.sy(yOf(450)) - 4} textAnchor="middle" fontSize={12} fill={C.faint}>K</text>
-          <circle cx={s.sx(SX - 14)} cy={s.sy(yOf(b.Th))} r={5} fill={HOT} />
-          <circle cx={s.sx(SX - 14)} cy={s.sy(yOf(b.Tc))} r={5} fill={C.soft} />
+          <circle cx={s.sx(SX)} cy={s.sy(yOf(b.Th))} r={5} fill={HOT} />
+          <circle cx={s.sx(SX)} cy={s.sy(yOf(b.Tc))} r={5} fill={C.soft} />
           {phase === 'done' && <g>
-            <line x1={s.sx(SX - 44)} x2={s.sx(SX)} y1={s.sy(yOf(contactTemperature(cap, Th, cap, Tc)))} y2={s.sy(yOf(contactTemperature(cap, Th, cap, Tc)))}
+            <line x1={s.sx(SX)} x2={s.sx(SX + 26)} y1={s.sy(yOf(contactTemperature(cap, Th, cap, Tc)))} y2={s.sy(yOf(contactTemperature(cap, Th, cap, Tc)))}
               stroke={C.faint} strokeDasharray="4 4" />
-            <text x={s.sx(SX - 48)} y={s.sy(yOf(contactTemperature(cap, Th, cap, Tc))) + 4} textAnchor="end" fontSize={12} fill={C.faint}>
-              touching, no engine: {contactTemperature(cap, Th, cap, Tc).toFixed(0)} K
+            <text x={s.sx(SX + 30)} y={s.sy(yOf(contactTemperature(cap, Th, cap, Tc))) + 4} fontSize={12} fill={C.faint}>
+              touching: {contactTemperature(cap, Th, cap, Tc).toFixed(0)} K
             </text>
           </g>}
-          <text x={s.sx(SX + 26)} y={s.sy(yOf(mark)) + 4} fontSize={12} fill={C.position}>mark</text>
+          <text x={s.sx(SX - 16)} y={s.sy(yOf(mark)) + 4} fontSize={12} fill={C.position} textAnchor="end">your mark</text>
           <Handle s={s} at={[SX, yOf(mark)]} color={C.position} step={0.6 * 5} label="Where the two blocks will meet, kelvin"
             onChange={(p) => { if (phase === 'ready') { setMark(Math.round(Math.min(450, Math.max(0, TOf(p[1]))))); task.touch(); } }} />
         </>}
       </Stage>
       <p className="hud-label" style={{ margin: '6px 0 0' }}>
-        Scale: kelvin · rose dot the hot block, grey dot the cold one · the mark is yours
+        Scale: kelvin · rose dot the hot block, grey dot the cold one
       </p>
     </SceneCard>
   );

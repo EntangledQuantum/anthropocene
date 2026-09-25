@@ -1,0 +1,14 @@
+title: 'Choosing a Gaussian surface'
+blurb: 'Gauss''s law always gives the flux. It gives the field only on a surface where symmetry makes the field the same size everywhere and straight through it: a sleeve round a tube, a sphere round a shell. Inside a uniform shell that surface wraps nothing, so the field is zero.'
+notation: 'E \cdot 2\pi r L = \frac{\lambda L}{\varepsilon_0} \;\Rightarrow\; E = \frac{\lambda}{2\pi\varepsilon_0 r}'
+tags:
+  - 'up-ch22'
+misconceptions:
+  - id: 'field-strongest-near-wall'
+    name: 'Inside a charged shell the field is strongest near the wall, where the charge is closest.'
+    signal: 'Expects a probe inside a charged tube or sphere to feel a push that grows toward the wall.'
+    correction: 'The near patch of wall is close but small; the far side is distant but large. Their pushes cancel exactly at every point inside, so the field there is zero.'
+  - id: 'field-strongest-at-centre'
+    name: 'Inside a charged shell the pushes from the wall all meet and add up at the centre.'
+    signal: 'Expects the strongest field at the centre of a charged tube or sphere.'
+    correction: 'At the centre every push from one side has an equal push from the opposite side. They meet and cancel.'

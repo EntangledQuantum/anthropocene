@@ -1,7 +1,7 @@
-import { useMemo, useRef, useState } from 'react';
+import { useRef, useState } from 'react';
 import { AIR_BOX, boyleVolumeFraction, createGas, setPiston, thermostat, type Gas } from '../../lib/physics/gas.ts';
 import { C, CheckBar, Handle, SceneCard, Stage, useTask, type StageApi } from './scene.tsx';
-import { BoxWalls, Gauge, Ledger, dots, reference, ticks, useGasLoop, useTicker } from './gas-kit-ch18.tsx';
+import { BoxWalls, Ledger, dots, ticks, useGasLoop, useGauge, useTicker } from './gas-kit-ch18.tsx';
 
 /**
  * The same box of air, held at 20 °C by the room, and one control: the
@@ -34,10 +34,8 @@ const make = () => createGas({ w: B.w, h: B.h, seed: 18, species: [{ count: B.co
 export default function SqueezeThePiston({ id, prompt, target, tolerance = 0.07, minVolume = 0.25, explanation }: SqueezeThePistonProps) {
   const graded = Boolean(id && target);
   const task = useTask(graded ? id : undefined, 'squeeze-the-piston');
-  const start = useMemo(() => reference(make), []);
+  const { start, gauge } = useGauge(make);
   const gas = useRef<Gas>(make());
-  const gauge = useRef<Gauge | null>(null);
-  if (!gauge.current) { gauge.current = new Gauge(60); gauge.current.prime(start); }
   const running = useRef(true);
   const [w, setW] = useState<number>(B.w);
   const stage = useRef<StageApi | null>(null);
@@ -55,7 +53,7 @@ export default function SqueezeThePiston({ id, prompt, target, tolerance = 0.07,
     frame: (g) => {
       const s = stage.current;
       if (!s) return;
-      gauge.current!.read(g);
+      gauge.current.read(g);
       dotPath.current?.setAttribute('d', dots(g, s));
       tickPath.current?.setAttribute('d', ticks(g, s, recent.current));
     },
@@ -74,11 +72,11 @@ export default function SqueezeThePiston({ id, prompt, target, tolerance = 0.07,
         <Ledger r={r} start={start} />
         {graded && <CheckBar verdict={task.verdict} done={task.done}
           onCheck={() => task.check(hitNow, { volume: frac })}
-          miss={`The box is at ${pct(frac)} of its starting volume and the gauge reads ${(r.p / start.p).toFixed(2)}× the start. ${frac > truth ? 'The molecules still have too much room.' : 'That is past the target.'}`}
+          miss={`The box is at ${pct(frac)} of its starting volume and the gauge reads ${r && start ? (r.p / start.p).toFixed(2) : '…'}× the start. ${frac > truth ? 'The molecules still have too much room.' : 'That is past the target.'}`}
           hit={explanation} />}
       </div>}>
       <Stage x={[-0.6, 27.6]} y={[-1.4, 17.4]} height={380} equal
-        label={`A box of air held at 20 degrees Celsius, squeezed to ${pct(frac)} of its volume. The pressure reads ${r.p.toFixed(0)} kilopascals.`}>
+        label={`A box of air held at 20 degrees Celsius, squeezed to ${pct(frac)} of its volume. ${r ? `The pressure reads ${r.p.toFixed(0)} kilopascals.` : ''}`}>
         {(s) => { stage.current = s; return <>
           <BoxWalls s={s} w={w} h={B.h} />
           {/* the rod and the ghost of where the piston started */}

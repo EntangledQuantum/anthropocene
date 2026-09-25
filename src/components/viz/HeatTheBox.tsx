@@ -1,9 +1,9 @@
-import { useMemo, useRef, useState } from 'react';
+import { useRef, useState } from 'react';
 import {
   AIR_BOX, celsiusForPressureRatio, createGas, heatingPressureRatio, kelvin, thermostat, type Gas,
 } from '../../lib/physics/gas.ts';
 import { C, CheckBar, Handle, SceneCard, Stage, useTask, type StageApi } from './scene.tsx';
-import { BoxWalls, Gauge, Ledger, dots, reference, ticks, useGasLoop, useTicker } from './gas-kit-ch18.tsx';
+import { BoxWalls, Ledger, dots, ticks, useGasLoop, useGauge, useTicker } from './gas-kit-ch18.tsx';
 
 /**
  * A sealed box of air, 300 molecules, and one control: the heater. Drag the
@@ -38,10 +38,8 @@ const make = () => createGas({ w: B.w, h: B.h, seed: 18, species: [{ count: B.co
 export default function HeatTheBox({ id, prompt, target, tolerance = 12, explanation }: HeatTheBoxProps) {
   const graded = Boolean(id && target);
   const task = useTask(graded ? id : undefined, 'heat-the-box');
-  const start = useMemo(() => reference(make), []);
+  const { start, gauge } = useGauge(make);
   const gas = useRef<Gas>(make());
-  const gauge = useRef<Gauge | null>(null);
-  if (!gauge.current) { gauge.current = new Gauge(60); gauge.current.prime(start); }
   const running = useRef(true);
   const dial = useRef(T0C);
   const [heater, setHeater] = useState(T0C);
@@ -58,7 +56,7 @@ export default function HeatTheBox({ id, prompt, target, tolerance = 12, explana
     frame: (g) => {
       const s = stage.current;
       if (!s) return;
-      gauge.current!.read(g);
+      gauge.current.read(g);
       dotPath.current?.setAttribute('d', dots(g, s));
       tickPath.current?.setAttribute('d', ticks(g, s, recent.current));
     },
@@ -80,7 +78,7 @@ export default function HeatTheBox({ id, prompt, target, tolerance = 12, explana
           hit={explanation} />}
       </div>}>
       <Stage x={[-0.6, 31.4]} y={[-1.2, 17.4]} height={380} equal
-        label={`A sealed box of air heated to ${heater.toFixed(0)} degrees Celsius. The pressure reads ${r.p.toFixed(0)} kilopascals.`}>
+        label={`A sealed box of air heated to ${heater.toFixed(0)} degrees Celsius. ${r ? `The pressure reads ${r.p.toFixed(0)} kilopascals.` : ''}`}>
         {(s) => { stage.current = s; return <>
           <BoxWalls s={s} w={B.w} h={B.h} />
           <path ref={dotPath} fill={C.soft} />

@@ -1,0 +1,135 @@
+---
+title: 'The inside goes quiet'
+blurb: 'Fit the one sleeve that turns flux into field, find the dead calm inside a charged tube, and watch charge put into metal run for its surface.'
+order: 2
+tier: 'core'
+minutes: 10
+teaches:
+  - 'gaussian-surface'
+  - 'conductor-in-equilibrium'
+requires:
+  - 'gauss-law'
+  - 'electric-flux'
+  - 'electric-field'
+status: 'live'
+updated: 2026-09-25
+---
+
+<Step>
+
+A long plastic tube carries charge spread evenly over its wall, 3 nC in every metre. You slide a
+small probe inside it.
+
+<Predict
+  id="up-ch22-inside-the-tube"
+  question="Where inside the tube does the probe feel the strongest field?"
+  options={[
+    { key: 'wall', misconception: 'field-strongest-near-wall', label: 'Just inside the wall, nearest the charge', why: 'The near wall is close, but only a small arc of it is. The far side is distant and wide. Slide the probe to the wall below: their pushes cancel there too.' },
+    { key: 'centre', misconception: 'field-strongest-at-centre', label: 'At the centre, where the pushes from all round meet', why: 'They meet, and every push from one side has an equal one from the other. At the centre the field is zero.' },
+    { key: 'even', label: 'The same, nonzero, everywhere inside', why: 'Which way would it point? At the centre every direction is alike, so it cannot point anywhere. Slide the probe below: the meter reads zero all the way to the wall.' },
+    { key: 'none', label: 'Nowhere: the field is zero everywhere inside', why: 'Right. From any point inside, a near arc of wall and the far arc opposite it push equally hard: the near one is closer, the far one carries more charge. Every pair cancels.' },
+  ]}
+  correct="none"
+>
+
+<ProbeTheTube prompt="Drag the probe from inside the tube out through its wall." lambda={3} radius={0.7} />
+
+</Predict>
+
+</Step>
+
+<Step>
+
+## Pick the sleeve
+
+Every sleeve that wraps this tube lets out the same 339 N·m²/C. To turn that into the field at
+the probe, you need a sleeve that the field pierces equally hard everywhere.
+
+<FitTheSleeve
+  id="up-ch22-fit-the-sleeve"
+  prompt="Move and shape the sleeve until the field pierces it evenly all round and it passes through the probe."
+  lambda={3}
+  radius={0.6}
+  probe={[1.0, 0.6]}
+  explanation="A round sleeve on the tube's axis, 1.17 m in radius. Symmetry makes the field the same size all round it and straight out through it, so the flux is just the field times the area: 339 ÷ (2π × 1.17 m × 1 m) = 46.2 N/C, exactly what the probe reads. Any other sleeve gets the same flux and no single field to divide it into."
+/>
+
+</Step>
+
+<Step>
+
+## Name it
+
+Gauss's law hands you the field only when symmetry has already made it one value, pointing straight
+through the surface. For a tube, that surface is a coaxial sleeve of radius $r$ and length $L$:
+
+$$E \cdot 2\pi r L = \frac{\lambda_{\text{enc}} L}{\varepsilon_0}$$
+
+Outside, $\lambda_{\text{enc}}$ is the tube's whole charge and the tube looks exactly like a rod on
+its axis; inside, the sleeve wraps nothing, so $E = 0$.
+
+<Recall id="up-ch22-recall-shell" concept="gaussian-surface">
+  <div slot="front">A thin spherical shell carries charge $Q$ spread evenly. Why is the field outside it the same as a point charge $Q$ at its centre?</div>
+
+  A concentric sphere through your position has the same field all over it, pointing straight
+  out, so $E \cdot 4\pi r^2 = Q/\varepsilon_0$: the point charge's own equation. The shell's radius
+  never enters, and inside it the same sphere wraps nothing.
+</Recall>
+
+</Step>
+
+<Step>
+
+## Squirt it into metal
+
+The tube is now a solid copper bar with a teardrop cross-section. You squirt 6 nC per metre of extra
+charge into the middle of the metal, where charge is free to move.
+
+<Predict
+  id="up-ch22-where-it-settles"
+  question="Once it stops moving, where is that charge?"
+  options={[
+    { key: 'lump', misconception: 'charge-stays-put', label: 'Still in a lump where it went in', why: 'Like charges push each other apart, and in metal nothing holds them. Inject some below and watch the lump burst.' },
+    { key: 'even', misconception: 'charge-fills-conductor', label: 'Spread evenly through the whole bar', why: 'Charge spread through the inside would still push on itself, and in metal a push means motion. It keeps going until it reaches the surface.' },
+    { key: 'surface', label: 'All of it on the outer surface', why: 'Right. It only stops where it cannot go farther, which is the surface. The inside is left neutral, and the field there dies away.' },
+    { key: 'some', label: 'Most on the surface, some left deep inside', why: 'Any charge left inside is pushed by all the rest, with nothing to stop it moving. None stays behind.' },
+  ]}
+  correct="surface"
+>
+
+<InjectTheBar prompt="Drag the nozzle anywhere in the metal, then inject." lambda={6} />
+
+</Predict>
+
+</Step>
+
+<Step>
+
+## Crowded at the edge
+
+With no field inside the metal, a sleeve just under the skin wraps no charge, so it all sits on the
+surface. A flat sleeve straddling the skin shows the field just outside is $\sigma/\varepsilon_0$,
+set by the charge per square metre of surface right there.
+
+<ProbeTheDrop
+  id="up-ch22-strongest-outside"
+  prompt="Drag the probe to where the field just outside the bar is strongest."
+  lambda={6}
+  explanation="Off the sharp edge: 226 N/C there, against 150 off the round end and 110 on the flat flanks. Charge on one flank of the edge faces away from charge on the other, so it barely pushes back, and more crowds in. More charge per square metre means more field just outside, which is why a lightning rod is pointed."
+/>
+
+<Recall id="up-ch22-recall-conductor" concept="conductor-in-equilibrium">
+  <div slot="front">Why must the field inside a piece of metal be zero once its charge has stopped moving?</div>
+
+  Metal is full of charge free to move. Any field inside would push it, so the charge keeps
+  moving until it has arranged itself on the surface to cancel every field inside.
+</Recall>
+
+## What to carry forward
+
+- **Gauss gives the field only with symmetry**: pick the surface where the field is one value, straight through.
+- **Inside a uniform shell, and inside metal at rest, the field is zero.** Extra charge on metal lives on its surface, crowding at sharp edges.
+
+Next: the same fields as a landscape, where charge rolls downhill in potential.
+
+</Step>

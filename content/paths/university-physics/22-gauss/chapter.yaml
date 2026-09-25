@@ -3,4 +3,4 @@ question: 'Squash the surface without changing the enclosed charge. What stays e
 blurb: >-
   Flux counts field through a surface. For inverse-square fields it counts the enclosed source, always. Symmetry decides whether that is a tool or a tautology.
 order: 22
-status: 'draft'
+status: 'live'

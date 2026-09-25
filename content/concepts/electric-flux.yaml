@@ -1,0 +1,14 @@
+title: 'Electric flux'
+blurb: 'How much field pierces a surface, added up over all of it: the outward part of the field at each patch, times the patch''s area. Not the field itself, and not the number of square metres.'
+notation: '\Phi_E = \oint \vec E \cdot d\vec A'
+tags:
+  - 'up-ch22'
+misconceptions:
+  - id: 'flux-is-field'
+    name: 'Flux is the field: where the field is weaker, the flux through a surface there is smaller.'
+    signal: 'Expects the flux through a bigger surface round the same charge to fall, because the field out there is weaker.'
+    correction: 'Flux is field times the area it pierces. Stretch a sleeve round a rod to twice its size and the field on it halves while its area doubles. The product does not move.'
+  - id: 'flux-grows-with-area'
+    name: 'A bigger surface catches more flux, because there is more of it to pierce.'
+    signal: 'Expects the flux to double when the surface doubles in size round the same charge.'
+    correction: 'More surface, but a weaker field on every square metre of it. Round a fixed charge the two changes cancel exactly, so the flux stays put.'

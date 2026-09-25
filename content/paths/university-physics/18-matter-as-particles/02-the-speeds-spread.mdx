@@ -28,7 +28,7 @@ direction. Every collision between them is perfectly elastic.
   options={[
     { key: 'same', misconception: 'elastic-keeps-speeds', label: 'Still all 400 m/s: elastic collisions keep the energy', why: 'They keep the total, not each share. A glancing hit sends one molecule off faster and the other slower, and the spike is gone within a few collisions each.' },
     { key: 'bell', misconception: 'speeds-spread-symmetrically', label: 'A symmetric bell centred on 400 m/s', why: 'Nothing can go slower than zero, but a few can go very fast. The fast tail holds a lot of energy, so the crowd has to sit below 400 to pay for it.' },
-    { key: 'hump', label: 'A lopsided hump, peaked below 400, with a long fast tail', why: 'Yes. Release them below and watch the spike melt into it. The dashed curve is Maxwell and Boltzmann''s prediction; the bars are the molecules.' },
+    { key: 'hump', label: 'A lopsided hump, peaked below 400, with a long fast tail', why: 'Yes. Release them below and watch the spike melt into it. The dashed curve is Maxwell and Boltzmann’s prediction; the bars are the molecules.' },
     { key: 'flat', label: 'Spread evenly from 0 up to 800 m/s', why: 'An even spread would put as many near 800 as near 400. To reach 800 a molecule needs a run of lucky hits, so extreme speeds are rare.' },
   ]}
   correct="hump"
@@ -72,7 +72,7 @@ same hump, whatever the start.
   <div slot="front">Nitrogen at 20 °C has an rms speed of 511 m/s. Is that how fast a typical molecule moves?</div>
 
   No. It is an average over a wide spread. Most molecules are slower, the commonest speed is
-  lower still, and a thin tail runs past twice it. A thermometer reads the average energy,
+  lower still, and a thin tail runs far above it. A thermometer reads the average energy,
   not anyone's speed.
 </Recall>
 
@@ -90,7 +90,7 @@ times heavier.
   question="After many collisions, how do their average speeds compare?"
   options={[
     { key: 'equal', misconception: 'equilibrium-means-equal-speeds', label: 'Equal: they settle to one shared speed', why: 'Collisions share energy, not speed. On the trace below, the lines that meet are kinetic energies, and at equal energy the heavy atoms are slower.' },
-    { key: 'helium', label: 'Helium ends about 3× faster than argon', why: 'Yes, near 830 m/s against 260. Each argon atom started with ten times helium''s energy and gave it away until they matched. At equal energy the speeds differ by √10.' },
+    { key: 'helium', label: 'Helium ends about 3× faster than argon', why: 'Yes, near 830 m/s against 260. Each argon atom started with ten times helium’s energy and gave it away until they matched. At equal energy the speeds differ by √10.' },
     { key: 'unchanged', misconception: 'elastic-keeps-speeds', label: 'Unchanged: both still average 400 m/s', why: 'Argon starts with ten times the energy per atom, and collisions carry energy from the heavy atoms to the light ones until the per-atom energies match.' },
     { key: 'argon', label: 'Argon ends faster: heavy atoms plough through', why: 'Heavy atoms win each shove, which only means they hand energy over. They end holding the same energy as helium, which at ten times the mass is a third of the speed.' },
   ]}

@@ -63,6 +63,11 @@ describe('flux counts what is inside (the hook and the covered meter)', () => {
     expect(big).toBeCloseTo(small, 3);
   });
 
+  it('from 45 N/C on a sleeve of radius 0.4 m to 22 N/C at 0.8 m', () => {
+    expect(normalFieldAlong(one, ellipseLoop(0, 0, 0.4, 0.4))[0].en).toBeCloseTo(44.9, 1);
+    expect(normalFieldAlong(one, ellipseLoop(0, 0, 0.8, 0.8))[0].en).toBeCloseTo(22.5, 1);
+  });
+
   it('while the field on the sleeve halves', () => {
     const near = normalFieldAlong(one, ellipseLoop(0, 0, 0.5, 0.5))[0].en;
     const far = normalFieldAlong(one, ellipseLoop(0, 0, 1, 1))[0].en;
@@ -208,6 +213,12 @@ describe('choosing the Gaussian sleeve', () => {
     expect(mag(rodField(tube, probe[0], probe[1]))).toBeCloseTo(46.2, 1);
   });
 
+  it('the numbers the lesson quotes: 339 N·m²/C, a sleeve of radius 1.17 m, 46.2 N/C', () => {
+    expect(gaussFlux(lambda)).toBeCloseTo(338.8, 1);
+    expect(rp).toBeCloseTo(1.17, 2);
+    expect(gaussFlux(lambda) / (2 * Math.PI * rp)).toBeCloseTo(46.2, 1);
+  });
+
   it('an off-centre sleeve has the same flux but no single field to read off', () => {
     const loop = ellipseLoop(0.3, 0.1, rp, rp);
     const en = normalFieldAlong(tube, loop).map((t) => t.en);
@@ -260,6 +271,18 @@ describe('a conductor: charge put inside ends on the surface', () => {
     // and more charges sit near the sharp edge than near the round end
     const near = (x: number, y: number) => settled.filter((p) => Math.hypot(p[0] - x, p[1] - y) < 0.3).length;
     expect(near(0.85, 0)).toBeGreaterThan(near(-0.95, 0));
+  });
+
+  it('the numbers the lesson quotes: 226 N/C off the edge, 151 off the round end, 111 on a flank', () => {
+    const skin = offsetOutline(metal, 0.06);
+    for (const p of skin) expect(nearestOnLoop(metal, p).d).toBeCloseTo(0.06, 6);
+    const field = skin.map((p) => mag(rodField(rods, p[0], p[1])));
+    const at = (x: number, y: number) => field[skin.reduce((bi, p, i) =>
+      (Math.hypot(p[0] - x, p[1] - y) < Math.hypot(skin[bi][0] - x, skin[bi][1] - y) ? i : bi), 0)];
+    expect(Math.max(...field)).toBeGreaterThan(220);
+    expect(Math.max(...field)).toBeLessThan(232);
+    expect(Math.round(at(-1.01, 0) / 5) * 5).toBe(150);
+    expect(Math.round(at(0.35, 0.33) / 5) * 5).toBe(110);
   });
 
   it('the field just outside is σ/ε₀: the local charge per area of surface', () => {

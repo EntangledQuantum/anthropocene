@@ -57,6 +57,21 @@ export function useGasLoop(gas: MutableRefObject<Gas>, opts: {
   }, [gas]);
 }
 
+/** The starting reading and a live gauge primed with it. The reference is
+ *  measured after mount, not during server rendering: a chaotic gas run on
+ *  two JavaScript engines need not agree to the last digit, and the page
+ *  must hydrate with the text it was served. Until then both are null. */
+export function useGauge(make: () => Gas, tau = 60): { start: StartReading | null; gauge: MutableRefObject<Gauge> } {
+  const gauge = useRef(new Gauge(tau));
+  const [start, setStart] = useState<StartReading | null>(null);
+  useEffect(() => {
+    const r = reference(make);
+    gauge.current.prime(r);
+    setStart(r);
+  }, []);
+  return { start, gauge };
+}
+
 /** Re-render at the loop's ~8 Hz tick. */
 export function useTicker(): [number, () => void] {
   const [n, set] = useState(0);
@@ -86,16 +101,19 @@ export class Gauge {
     this.primed = true;
     resetTally(g);
   }
-  prime(r: GaugeReading & { p2d: number; hr: number; ir: number }): void {
+  prime(r: StartReading): void {
     this.pr = r.p2d; this.hr = r.hr; this.ir = r.ir; this.primed = true;
   }
-  get value(): GaugeReading {
+  get value(): GaugeReading | null {
+    if (!this.primed) return null;
     return { p: toKPa(this.pr), rate: this.hr * 1000, perHit: this.hr > 0 ? momentumSI(this.ir / this.hr) : 0 };
   }
 }
 
+export type StartReading = GaugeReading & { p2d: number; hr: number; ir: number };
+
 /** Read the gauge once, offline: settle for 50 ps, then tally for `span` ps. */
-export function reference(make: () => Gas, span = 150, dt = 0.04) {
+export function reference(make: () => Gas, span = 150, dt = 0.04): StartReading {
   const g = make();
   runGas(g, 50, dt);
   resetTally(g);
@@ -119,7 +137,7 @@ export function dots(g: Gas, s: StageApi, kind?: number): string {
 /** Short amber strokes on the piston's outer face, one per recent hit. */
 export function ticks(g: Gas, s: StageApi, recent: number[][]): string {
   recent.push(g.pistonHitsY.splice(0));
-  while (recent.length > 4) recent.shift();
+  while (recent.length > 24) recent.shift();
   const x = s.sx(g.w) + 5;
   let d = '';
   for (const frame of recent) for (const y of frame) d += `M${x.toFixed(1)},${s.sy(y).toFixed(1)}h9`;
@@ -136,14 +154,14 @@ export function BoxWalls({ s, w, h }: { s: StageApi; w: number; h: number }) {
 
 const sci = (x: number) => (x / 1e-23).toFixed(2);
 
-export function Ledger({ r, start }: { r: GaugeReading; start?: GaugeReading }) {
-  const rel = (a: number, b?: number) => (b ? `${(a / b).toFixed(2)}× the start` : '\u00a0');
+export function Ledger({ r, start }: { r: GaugeReading | null; start?: GaugeReading | null }) {
+  const rel = (a: number | undefined, b?: number) => (a !== undefined && b ? `${(a / b).toFixed(2)}× the start` : '\u00a0');
   const cell = (meter: JSX.Element, note: string) => <div>{meter}<div style={{ fontSize: 13, color: C.faint, marginTop: 2 }}>{note}</div></div>;
   return (
     <div style={{ display: 'flex', gap: 26, flexWrap: 'wrap', alignItems: 'flex-end' }}>
-      {cell(<Meter label="Pressure" value={r.p.toFixed(0)} unit="kPa" />, rel(r.p, start?.p))}
-      {cell(<Meter label="Hits on the piston" value={r.rate.toFixed(0)} unit="per ns" color={C.force} />, rel(r.rate, start?.rate))}
-      {cell(<Meter label="Push per hit" value={sci(r.perHit)} unit="× 10⁻²³ kg·m/s" color={C.force} />, rel(r.perHit, start?.perHit))}
+      {cell(<Meter label="Pressure" value={r ? r.p.toFixed(0) : '…'} unit="kPa" />, rel(r?.p, start?.p))}
+      {cell(<Meter label="Hits on the piston" value={r ? r.rate.toFixed(0) : '…'} unit="per ns" color={C.force} />, rel(r?.rate, start?.rate))}
+      {cell(<Meter label="Push per hit" value={r ? sci(r.perHit) : '…'} unit="× 10⁻²³ kg·m/s" color={C.force} />, rel(r?.perHit, start?.perHit))}
     </div>
   );
 }

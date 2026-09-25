@@ -1,0 +1,14 @@
+title: 'Gauss''s law'
+blurb: 'The flux out of any closed surface equals the charge inside it divided by ε₀. Charge outside changes the field on the surface everywhere, and changes the total not at all.'
+notation: '\oint \vec E \cdot d\vec A = \frac{Q_{\text{enc}}}{\varepsilon_0}'
+tags:
+  - 'up-ch22'
+misconceptions:
+  - id: 'outside-charge-no-field'
+    name: 'Charge outside a closed surface has no effect on the field on it, because it adds no flux.'
+    signal: 'Reads zero flux from an outside charge as zero field from it on the surface.'
+    correction: 'An outside charge pushes field in through the near side and out through the far side. The field on the surface changes everywhere; only the total cancels.'
+  - id: 'gauss-only-symmetric'
+    name: 'Gauss''s law only holds for symmetric arrangements.'
+    signal: 'Refuses to apply the flux count to a lopsided surface or a lopsided set of charges.'
+    correction: 'It holds for every closed surface round every arrangement. Symmetry only decides whether the flux lets you read off the field, which needs the field to be the same all over the surface.'

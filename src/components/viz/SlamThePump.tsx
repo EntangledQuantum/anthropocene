@@ -138,7 +138,7 @@ export default function SlamThePump({ id, prompt, target = 430, explanation }: S
         {[0.1, 0.15, 0.2, 0.25, 0.3].map((V) => (
           <text key={V} x={vx(V * 1e-3)} y={PB + 16} textAnchor="middle" fontSize={11} fill={C.faint} fontFamily="var(--font-mono)">{V}</text>
         ))}
-        <text x={vx(PUMP_V0) + 12} y={PB + 16} fontSize={12} fill={C.soft}>V (L)</text>
+        <text x={vx(PUMP_V0) + 10} y={PB + 32} textAnchor="end" fontSize={12} fill={C.soft}>volume V (L)</text>
         <text x={vx(PUMP_V1) - 44} y={PT - 10} fontSize={12} fill={C.soft}>p (kPa)</text>
         <polyline points={ISO} fill="none" stroke={C.soft} strokeWidth={1.5} strokeDasharray="6 5" />
         <polyline points={ADI} fill="none" stroke={C.soft} strokeWidth={1.5} strokeDasharray="2 4" />
