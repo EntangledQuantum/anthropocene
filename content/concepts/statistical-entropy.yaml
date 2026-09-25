@@ -1,0 +1,10 @@
+title: 'Entropy as a count'
+blurb: 'Entropy is Boltzmann''s constant times the log of the number of arrangements that fit what you see. Counts multiply when systems combine, so entropies add.'
+notation: 'S = k_B \ln W'
+tags:
+  - 'up-ch20'
+misconceptions:
+  - id: 'entropy-is-disorder'
+    name: 'Entropy is disorder.'
+    signal: 'Explains an entropy change by how messy or tidy the picture looks, and gets stuck on cases where the higher-entropy state looks neater.'
+    correction: 'Entropy counts arrangements; it does not judge them. Water freezing into ordered ice in a −10 °C freezer loses entropy, but the heat it gives off raises the freezer''s entropy by more, so the neat crystal is the likelier outcome. Ask how many microscopic arrangements fit, not how tidy it looks.'

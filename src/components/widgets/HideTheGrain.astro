@@ -1,0 +1,6 @@
+---
+// @graded — with `id`, the scene checks itself: drag the small charge until the field at the grain vanishes.
+import Island, { type HideTheGrainProps } from '../viz/HideTheGrain.tsx';
+const props = Astro.props as HideTheGrainProps;
+---
+<Island client:visible {...props} />

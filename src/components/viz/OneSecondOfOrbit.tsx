@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { GM_EARTH, ISS_ALTITUDE, R_EARTH, circularSpeed, fallInTime, gravityAt, sagBelowTangent } from '../../lib/physics/orbits.ts';
 import { C, CheckBar, Handle, Meter, SceneCard, Stage, useTask } from './scene.tsx';
 
@@ -36,6 +36,10 @@ const XMAX = 12;
 
 export default function OneSecondOfOrbit({ id, prompt, start = 5, tolerance = 0.06, explanation }: OneSecondOfOrbitProps) {
   const task = useTask(id, 'one-second-of-orbit');
+  // The saved verdict is read during render; show it only after hydration so the
+  // server's "Check" and the client's first render agree (React #418 otherwise).
+  const [live, setLive] = useState(false);
+  useEffect(() => setLive(true), []);
   const [v, setV] = useState(start); // km/s, which is also km travelled in the second
   const drop = sagBelowTangent(r, v * 1000);
   const gap = drop - FALL; // positive: the ball ends higher than it started
@@ -58,7 +62,7 @@ export default function OneSecondOfOrbit({ id, prompt, start = 5, tolerance = 0.
           <Meter label="Ball fell in 1 s" value={FALL.toFixed(2)} unit="m" color={C.position} />
           <Meter label="Ground dropped" value={drop.toFixed(2)} unit="m" />
         </div>
-        {id && <CheckBar verdict={task.verdict} done={task.done} onCheck={() => task.check(hit, { v })} miss={miss} hit={explanation} />}
+        {id && <CheckBar verdict={task.verdict} done={live && task.done} onCheck={() => task.check(hit, { v })} miss={miss} hit={explanation} />}
       </div>}>
       <Stage x={[0, XMAX]} y={[-8, 1.2]} height={330}
         axes={{ x: 'distance along the straight line (km)', y: 'height compared with the start (m)', yTicks: [-8, -6, -4, -2, 0] }}

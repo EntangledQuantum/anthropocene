@@ -1,0 +1,10 @@
+title: 'Temperature'
+blurb: 'What a thermometer reads, and what two bodies in contact end up sharing. It sets which way heat flows, not how much energy a body holds.'
+notation: 'T'
+tags:
+  - 'up-ch17'
+misconceptions:
+  - id: 'temperature-measures-heat'
+    name: 'Temperature measures how much heat a thing contains.'
+    signal: 'Expects two bodies that touch to meet halfway, or the hotter body to hold more energy.'
+    correction: 'A kilogram of iron at 100 °C dropped into a kilogram of water at 20 °C settles at 28 °C, not 60 °C. The same heat that cooled the iron by 72 °C warmed the water by only 8 °C. Temperature says which way heat will flow; how much it takes to change the temperature is a separate property of the stuff.'

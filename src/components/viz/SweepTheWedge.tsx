@@ -43,6 +43,10 @@ function wedge(s: StageApi, t1: number, t2: number): string {
 
 export default function SweepTheWedge({ id, prompt, tolerance = 12, explanation }: SweepTheWedgeProps) {
   const task = useTask(id, 'sweep-the-wedge');
+  // The saved verdict is read during render; show it only after hydration so the
+  // server's "Check" and the client's first render agree (React #418 otherwise).
+  const [live, setLive] = useState(false);
+  useEffect(() => setLive(true), []);
   const [th, setTh] = useState(Math.PI + 0.02);
   const [dayShown, setDayShown] = useState(0);
   const comet = useRef<SVGCircleElement>(null);
@@ -82,7 +86,7 @@ export default function SweepTheWedge({ id, prompt, tolerance = 12, explanation 
             <Meter label="Each wedge" value={(T / DAY / 12).toFixed(0)} unit="days" color={C.position} />
           </>}
         </div>
-        {id && <CheckBar verdict={task.verdict} done={task.done} onCheck={() => task.check(hit, { days })}
+        {id && <CheckBar verdict={task.verdict} done={live && task.done} onCheck={() => task.check(hit, { days })}
           miss={`The comet takes ${days.toFixed(0)} days to get there, not ${WINDOW}. Your wedge is ${ratio.toFixed(2)} times the shaded one.`}
           hit={explanation} />}
       </div>}>

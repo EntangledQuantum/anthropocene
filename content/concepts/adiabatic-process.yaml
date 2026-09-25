@@ -1,0 +1,14 @@
+title: 'Adiabatic processes'
+blurb: 'A process with no heat crossing the boundary. The work goes entirely into or out of the internal energy, so the gas heats as it is squeezed and follows pV^γ = constant, a curve steeper than the isotherm.'
+notation: 'Q = 0, \quad pV^{\gamma} = \text{const}'
+tags:
+  - 'up-ch19'
+misconceptions:
+  - id: 'adiabatic-means-slow'
+    name: 'Adiabatic means slow and gentle.'
+    signal: 'Expects a careful, slow compression to follow the adiabat.'
+    correction: 'Slow gives heat time to leak through the walls, which pulls the gas toward the isotherm. A process is adiabatic when it is too fast for heat to cross, or when the walls truly block it.'
+  - id: 'adiabatic-means-constant-temperature'
+    name: 'No heat in or out means the temperature cannot change.'
+    signal: 'Says an insulated gas stays at the same temperature however it is compressed.'
+    correction: 'Q = 0 leaves the other door open. Work done on the gas raises its internal energy, and so its temperature: ΔU = −W.'

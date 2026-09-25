@@ -1,0 +1,18 @@
+title: 'The electric field'
+blurb: 'The field at a place is the force a charge would feel there, per unit charge. It belongs to the place and the sources, not to the probe, and the fields of several sources add as vectors.'
+notation: '\vec E = \dfrac{\vec F}{q},\qquad E_{\text{point}} = k\,\dfrac{|Q|}{r^2}'
+tags:
+  - 'up-ch21'
+misconceptions:
+  - id: 'up-ch21-field-needs-a-probe'
+    name: 'A field exists only when a test charge is there to feel it.'
+    signal: 'Says that with the bead removed there is nothing at the spot.'
+    correction: 'The field is set by the sources. Put any charge at the spot and the force on it is already decided, q times the field there. The field is the thing that decides it.'
+  - id: 'up-ch21-field-is-the-force'
+    name: 'The field at a place is a force of fixed size waiting for whatever arrives.'
+    signal: 'Expects a −3 nC bead to get the same push, same way, as a +1 nC bead at the same spot.'
+    correction: 'The field is force per coulomb. A bead with three times the charge gets three times the force, and a negative bead is pushed the opposite way. F/q is what stays the same.'
+  - id: 'up-ch21-field-lines-are-flow'
+    name: 'Field lines are streams of charge flowing out of the source.'
+    signal: 'Describes the field as the source''s charge spreading through space.'
+    correction: 'Nothing moves along a field line. It is a drawing: its direction is the way a positive charge would be pushed and its crowding shows how strong the field is.'

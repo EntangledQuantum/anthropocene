@@ -1,0 +1,10 @@
+title: 'Cycles: the enclosed area is the net work'
+blurb: 'A process that returns the gas to its starting state has ΔU = 0, so the net heat in equals the net work out, and that net work is the area the loop encloses on the p–V plane: positive clockwise, negative anticlockwise.'
+notation: '\oint p\,dV = Q_{\text{net}}'
+tags:
+  - 'up-ch19'
+misconceptions:
+  - id: 'loop-does-nothing'
+    name: 'A gas that ends where it started has done no net work.'
+    signal: 'Says a closed loop gives zero work because the volume ends where it began.'
+    correction: 'The expansion and the compression happen at different pressures. Out at high pressure and back at low pressure, the gas does more work than is done on it, and the difference is the area inside the loop.'

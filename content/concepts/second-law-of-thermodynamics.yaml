@@ -1,0 +1,10 @@
+title: 'The second law of thermodynamics'
+blurb: 'The total entropy of everything involved never falls. Heat does not flow from cold to hot by itself, and no cycle turns heat entirely into work: both are the same ledger.'
+notation: '\Delta S_{\text{universe}} \ge 0'
+tags:
+  - 'up-ch20'
+misconceptions:
+  - id: 'reversible-ignores-surroundings'
+    name: 'A process is reversible if the system can be put back the way it was.'
+    signal: 'Calls a process reversible because the gas returns to its start, without checking what happened to the baths and the surroundings.'
+    correction: 'Every cycle puts the engine back where it began. Reversible means the whole universe could be put back, which happens only when the total entropy did not rise, as in the Carnot engine.'

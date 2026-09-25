@@ -1,0 +1,6 @@
+---
+// Ungraded: the payoff of the dipole prediction. Slide a probe out along the axis.
+import Island, { type WalkFromTheDipoleProps } from '../viz/WalkFromTheDipole.tsx';
+const props = Astro.props as WalkFromTheDipoleProps;
+---
+<Island client:visible {...props} />

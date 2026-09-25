@@ -1,0 +1,14 @@
+title: 'Internal energy is a state function; heat and work are not'
+blurb: 'Internal energy belongs to the state the gas is in, so its change between two states is the same by every route. Heat and work describe the route, so they differ from one route to another.'
+notation: '\Delta U = U(B) - U(A) \quad \text{for every path}'
+tags:
+  - 'up-ch19'
+misconceptions:
+  - id: 'heat-and-work-are-in-the-gas'
+    name: 'A gas contains a certain amount of heat and a certain amount of work.'
+    signal: 'Asks how much heat a gas has, or expects the heat to reach B to be fixed once A and B are fixed.'
+    correction: 'A gas at a given p and V has one internal energy and nothing more. Heat and work are what crossed its boundary on the way there, and a different route crosses different amounts.'
+  - id: 'same-endpoints-same-heat'
+    name: 'Two routes between the same states take the same heat.'
+    signal: 'Predicts equal heat for two processes because they start and end at the same temperatures.'
+    correction: 'Only the change in internal energy is fixed by the endpoints. Q = ΔU + W, and W is the area under the path, so the route with more area under it needs more heat.'

@@ -1,0 +1,10 @@
+title: 'Heat'
+blurb: 'Energy in transit because of a temperature difference. It is something that flows, not something a body contains: once it arrives it is just internal energy.'
+notation: 'Q'
+tags:
+  - 'up-ch17'
+misconceptions:
+  - id: 'heat-is-a-fluid'
+    name: 'Heat is a fluid stored inside a hot object.'
+    signal: 'Talks about how much heat an object has, or expects heat to be used up as it cools.'
+    correction: 'Heat is energy crossing a boundary because of a temperature difference. The iron does not contain heat; it contains internal energy, some of which crosses into the water as heat while the temperatures differ, and none once they match.'

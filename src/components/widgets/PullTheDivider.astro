@@ -1,0 +1,6 @@
+---
+// @graded — with `id`, close the divider at a moment when every particle is on the left.
+import Island, { type PullTheDividerProps } from '../viz/PullTheDivider.tsx';
+const props = Astro.props as PullTheDividerProps;
+---
+<Island client:visible {...props} />

@@ -1,0 +1,14 @@
+title: 'The first law of thermodynamics'
+blurb: 'Draw a boundary around a system. Its internal energy changes only by what crosses that boundary: heat in, minus work the system does on its surroundings.'
+notation: '\Delta U = Q - W'
+tags:
+  - 'up-ch19'
+misconceptions:
+  - id: 'only-heat-warms-a-gas'
+    name: 'The only way to warm a gas is to heat it.'
+    signal: 'Says a gas in an insulated cylinder cannot get warmer, or cannot explain why a bicycle pump gets hot.'
+    correction: 'Heat is one door into the internal energy; work is the other. Squeeze the gas with a piston and the work you do on it becomes internal energy, with no heat at all.'
+  - id: 'first-law-without-a-boundary'
+    name: 'The first law is just "energy is conserved".'
+    signal: 'Applies the law without saying what the system is, and so counts the same joule as heat and as work, or not at all.'
+    correction: 'The first law is a ledger for one named system. Q and W are what crosses its boundary, with signs fixed by that boundary: Q into the gas, W done by the gas. Move the boundary and the entries change.'

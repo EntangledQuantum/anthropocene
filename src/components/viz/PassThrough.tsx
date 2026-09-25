@@ -79,11 +79,12 @@ export default function PassThrough({ prompt, pulses, tension = 4, mu = 1, span 
     let raf = 0, prev = performance.now(), lastShown = 0, acc = 0;
     if (kRef.current >= last) kRef.current = 0;
     const frame = (now: number) => {
-      acc += ((now - prev) / 1000) * PLAY;
+      // A frame's timestamp can precede the performance.now() taken when play began.
+      acc += Math.max(0, (now - prev) / 1000) * PLAY;
       prev = now;
       const n = Math.floor(acc / run.dt);
       acc -= n * run.dt;
-      kRef.current = Math.min(last, kRef.current + n);
+      kRef.current = Math.max(0, Math.min(last, kRef.current + n));
       draw(kRef.current);
       if (now - lastShown > 120) { lastShown = now; setK(kRef.current); }
       if (kRef.current < last) raf = requestAnimationFrame(frame);

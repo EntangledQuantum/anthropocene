@@ -335,11 +335,13 @@ export function widestSwing(d: Drive, samples = 400): number {
   return m;
 }
 
-/** Positions where the settled swing has a local minimum inside the rope: the still points. */
+/** Positions where the settled swing has a local minimum inside the rope: the still points.
+ *  The shaker end and the wall are excluded: they are ends, not points the wave chose. */
 export function stillPoints(d: Drive, samples = 800): number[] {
   const a = Array.from({ length: samples + 1 }, (_, i) => cabs(drivenAmplitude(d, (i / samples) * d.length)));
   const out: number[] = [];
-  for (let i = 1; i < samples; i++) if (a[i] < a[i - 1] && a[i] <= a[i + 1]) out.push((i / samples) * d.length);
+  const edge = Math.ceil(samples * 0.03);
+  for (let i = edge; i < samples - edge; i++) if (a[i] < a[i - 1] && a[i] <= a[i + 1]) out.push((i / samples) * d.length);
   return out;
 }
 

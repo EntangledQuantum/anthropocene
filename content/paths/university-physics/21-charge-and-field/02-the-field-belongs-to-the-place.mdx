@@ -1,0 +1,126 @@
+---
+title: 'The field belongs to the place'
+blurb: 'Draw the force on any charge from the field at its spot, move a source until two fields cancel on a target, and say why a neutral pair still has a field that fades as 1/r³.'
+order: 2
+tier: 'foundation'
+minutes: 10
+teaches:
+  - 'electric-field'
+  - 'electric-dipole'
+requires:
+  - 'coulombs-law'
+  - 'force-superposition'
+  - 'vector-components'
+status: 'live'
+updated: 2026-09-25
+---
+
+<Step>
+
+A +2 µC sphere sits on a stand. A +1 nC bead held at a spot 15 cm away is pushed 0.80 mN
+straight away from it, and then you take the bead away.
+
+<Predict
+  id="up-ch21-empty-spot"
+  question="What is at that spot now?"
+  options={[
+    { key: 'nothing', misconception: 'up-ch21-field-needs-a-probe', label: 'Nothing: with no bead there, there is no force', why: 'No force, yes, but the next bead’s force is already decided before it arrives. Whatever decides it is still there. Take the bead away below: the orchid arrow stays.' },
+    { key: 'push', misconception: 'up-ch21-field-is-the-force', label: 'A 0.80 mN push, waiting for the next bead', why: 'A 2 nC bead there would get 1.6 mN, and a negative one would be pulled. What waits at the spot is not one push, but a push per unit of charge.' },
+    { key: 'per-nc', label: 'A push of 0.80 mN for each nC of whatever arrives', why: 'Right. The spot carries a rule, force per unit charge, and every bead reads the same rule. Try each bead below and watch F/q.' },
+    { key: 'stream', misconception: 'up-ch21-field-lines-are-flow', label: 'Some of the sphere’s charge, streaming out through the spot', why: 'The sphere keeps all its charge; a charge meter on it would not budge. Nothing flows out. The influence is there without anything moving.' },
+  ]}
+  correct="per-nc"
+>
+
+<SwapTheProbe prompt="Put each bead on the spot, then take them all away." />
+
+</Predict>
+
+</Step>
+
+<Step>
+
+## Draw it before you drop it
+
+A −3 nC bead is about to go on the same spot. Its force arrow is hidden.
+
+<SwapTheProbe
+  id="up-ch21-draw-the-force"
+  prompt="Drag the tip of the white arrow to the force you expect on the −3 nC bead."
+  guess={-3}
+  explanation="2.4 mN, straight toward the sphere. The field says 0.80 mN per nC, pointing away; three nC is three times that, and a negative charge is pushed against the field. The amber arrow is now on the stage. It is −3 times the orchid one."
+/>
+
+</Step>
+
+<Step>
+
+## Name it
+
+Every bead read the same thing off the spot: 0.80 mN per nC, which is $8.0\times10^{5}$ N/C.
+That is the **electric field**, and a point charge sets it at every place around itself:
+
+$$\vec E = \dfrac{\vec F}{q}, \qquad E = k\,\dfrac{|Q|}{r^{2}}$$
+
+<Recall id="up-ch21-recall-field" concept="electric-field">
+  <div slot="front">At some point the field is 500 N/C pointing east. What is the force on an electron there?</div>
+
+  $8.0\times10^{-17}$ N pointing west. $\vec F = q\vec E$ with $q = -1.6\times10^{-19}$ C: the
+  size is $qE$, and the minus sign turns it around.
+</Recall>
+
+</Step>
+
+<Step>
+
+## Two fields, one map
+
+A +9 nC charge fills the space around it with field, and a dust grain sits in it. You hold a
+−1 nC charge, whose field adds to the other at every point.
+
+<HideTheGrain
+  id="up-ch21-hide-the-grain"
+  prompt="Drag the −1 nC charge until the field at the dust grain is zero."
+  explanation="Two thirds of the way from the +9 nC to the grain, on the line between them. There the grain is three times closer to the −1 nC, which makes its field nine times stronger per nC: exactly enough. Its field points toward it, against the +9's, and the dark pinhole in the map now sits on the grain. You never touched the grain; you moved the place where the field is zero."
+/>
+
+</Step>
+
+<Step>
+
+## A pair with no charge
+
+Put +1 nC and −1 nC just 2 cm apart. Together they carry no charge at all: a **dipole**.
+
+<Predict
+  id="up-ch21-dipole-falloff"
+  question="Walk from 10 cm to 20 cm out along its axis. What does the field drop to?"
+  options={[
+    { key: 'half', label: 'A half', why: 'That is how the field of a long line of charge falls off. A dipole falls off much faster: slide the probe below from 10 to 20 cm and count the contours.' },
+    { key: 'quarter', misconception: 'up-ch21-dipole-inverse-square', label: 'A quarter: each charge falls as 1/r²', why: 'Each one alone does. But their fields nearly cancel, and what is left is the difference, which shrinks faster. Press "Remove the − charge" below to see the quarter.' },
+    { key: 'eighth', label: 'An eighth', why: 'Right. The two 1/r² fields cancel almost exactly, and what is left over falls as 1/r³: three contours between 10 and 20 cm, not two.' },
+    { key: 'zero', misconception: 'up-ch21-neutral-means-no-field', label: 'It was zero to begin with: the charges add to nothing', why: 'The totals cancel, not the fields. The + charge is slightly nearer the probe, so its field wins by a little, and that little is the dipole field.' },
+  ]}
+  correct="eighth"
+>
+
+<WalkFromTheDipole prompt="Slide the probe out along the axis, then take the − charge away." />
+
+</Predict>
+
+<Recall id="up-ch21-recall-dipole" concept="electric-dipole">
+  <div slot="front">A water molecule is neutral. Why does it still attract charged things?</div>
+
+  It is a dipole: its + and − charge sit in slightly different places, so their fields do not
+  quite cancel. The leftover field is strong close by and falls as $1/r^3$.
+</Recall>
+
+## What to carry forward
+
+- **The field is force per charge, and it belongs to the place.** $\vec F = q\vec E$ for any charge you put there.
+- **Fields add as arrows at every point**, and where they cancel the map goes dark.
+- **Neutral is not fieldless.** A dipole's field falls as $1/r^3$.
+
+Next: count the field through a closed surface, and find it counts the charge inside.
+
+</Step>

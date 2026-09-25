@@ -1,0 +1,10 @@
+title: 'Specific heat'
+blurb: 'The heat needed to warm one kilogram of a substance by one kelvin. Water needs about nine times what iron does, so the same heat barely warms water and sends iron soaring.'
+notation: 'Q = mc\,\Delta T'
+tags:
+  - 'up-ch17'
+misconceptions:
+  - id: 'equal-mass-equal-share'
+    name: 'Equal masses that touch meet halfway in temperature.'
+    signal: 'Predicts 60 °C for a kilogram of iron at 100 °C in a kilogram of water at 20 °C.'
+    correction: 'They meet at the heat-capacity-weighted mean. Water''s specific heat is 4186 J/(kg·K) and iron''s 449, so each kelvin of water is worth over nine kelvin of iron, and the mix lands at 28 °C, close to the water.'

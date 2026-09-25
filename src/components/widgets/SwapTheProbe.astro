@@ -1,0 +1,6 @@
+---
+// @graded — with `id` and `guess`, the scene checks itself: draw the force on the bead before it is shown.
+import Island, { type SwapTheProbeProps } from '../viz/SwapTheProbe.tsx';
+const props = Astro.props as SwapTheProbeProps;
+---
+<Island client:visible {...props} />

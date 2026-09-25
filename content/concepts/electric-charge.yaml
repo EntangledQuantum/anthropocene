@@ -1,0 +1,14 @@
+title: 'Electric charge'
+blurb: 'Charge comes in two kinds that are called + and −. Like kinds repel, unlike attract, and the total is conserved: touching can move charge around but never make or destroy it.'
+notation: 'q_A + q_B = \text{const}'
+tags:
+  - 'up-ch21'
+misconceptions:
+  - id: 'up-ch21-charge-used-up'
+    name: 'When charged things touch, the charge is used up or cancelled away.'
+    signal: 'Expects a +6 µC and a −2 µC sphere to end up neutral, or with no charge left, after touching.'
+    correction: 'The total is conserved. +6 and −2 make +4 µC, and two identical spheres share it: +2 µC each. The charges now repel, although they attracted before.'
+  - id: 'up-ch21-neutral-feels-nothing'
+    name: 'A neutral object cannot feel an electric force.'
+    signal: 'Says a charged comb cannot pick up scraps of uncharged paper.'
+    correction: 'Neutral means the charges add to zero, not that there are none. A nearby charge pulls the unlike charges in the object slightly closer and pushes the like ones slightly away, and the nearer ones win.'

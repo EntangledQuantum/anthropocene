@@ -1,0 +1,6 @@
+---
+// @graded — with `id`, the scene checks itself.
+import Island, { type BoxOrPistonProps } from '../viz/BoxOrPiston.tsx';
+const props = Astro.props as BoxOrPistonProps;
+---
+<Island client:visible {...props} />

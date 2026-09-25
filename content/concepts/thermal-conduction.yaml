@@ -1,0 +1,18 @@
+title: 'Thermal conduction'
+blurb: 'Heat passing through a material from hot to cold. Through a slab it flows at P = kAΔT/L: double the thickness and the leak halves. What your hand feels is this flow, not the temperature.'
+notation: 'P = \dfrac{kA\,\Delta T}{L}'
+tags:
+  - 'up-ch17'
+misconceptions:
+  - id: 'metal-is-colder'
+    name: 'A metal bench outdoors is colder than a wooden one beside it.'
+    signal: 'Explains the cold feel of steel by it being at a lower temperature.'
+    correction: 'Both sit at the air temperature. Steel pulls heat out of your skin so fast that your skin surface drops to about 7 °C on a 5 °C day, while on pine it stays near 27 °C. On a 60 °C day the same steel is the one that burns.'
+  - id: 'cold-is-a-substance'
+    name: 'Cold is something that flows into your hand.'
+    signal: 'Says the bench or the ice gives off cold, or that insulation keeps the cold in.'
+    correction: 'Only heat flows, always from hot to cold. A cool box does not hold cold in; its foam slows the heat leaking in, and the ice spends 334 kJ per kilogram soaking up what gets through.'
+  - id: 'insulation-warms'
+    name: 'Insulation warms things.'
+    signal: 'Expects a thicker wall to add heat, or a coat to make heat.'
+    correction: 'Insulation makes no heat. It only slows the flow across it, in whichever direction the temperatures drive it: the same foam that keeps a house warm keeps a cool box cold.'

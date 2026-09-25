@@ -1,0 +1,147 @@
+---
+title: 'Two doors into a gas'
+blurb: 'Warm a gas with a flame and with your own push, keep its books as ΔU = Q − W, and see why a gas that can expand costs more heat to warm.'
+order: 1
+tier: 'core'
+minutes: 10
+teaches:
+  - 'first-law-of-thermodynamics'
+  - 'cp-minus-cv'
+requires:
+  - 'heat'
+  - 'specific-heat'
+  - 'mechanical-work'
+  - 'ideal-gas-law'
+status: 'live'
+updated: 2026-09-25
+---
+
+<Step>
+
+Two cylinders each hold one mole of air at 300 K. One is bolted shut; the other has a free
+piston carrying a load, so it can rise.
+
+<Predict
+  id="up-ch19-box-or-piston"
+  question="Which needs more heat from its flame to warm by 30 K?"
+  options={[
+    { key: 'same', misconception: 'same-rise-same-heat', label: 'Neither: same gas, same amount, same 30 K', why: 'That would hold if every joule stayed in the gas. Under the piston some of it leaves at once, lifting the load. Hold both flames below and compare the heat meters.' },
+    { key: 'box', misconception: 'pressure-fights-the-flame', label: 'The bolted box: its pressure climbs and pushes back', why: 'The pressure pushes on walls that do not move, so no energy leaves. Every joule the box takes in stays in it: it is the cheapest gas to warm.' },
+    { key: 'piston', label: 'The gas under the piston needs more', why: 'Right. As it warms it pushes the piston and its load up, and that work carries energy out while the heat comes in.' },
+    { key: 'less', label: 'The gas under the piston needs less: it can spread out and relax', why: 'Spreading out is what costs it. Pushing the piston up is work done by the gas, and that energy comes out of the heat before it can warm anything.' },
+  ]}
+  correct="piston"
+>
+
+<BoxOrPiston prompt="Hold each flame for a while. Watch the thermometers and the heat meters." />
+
+</Predict>
+
+</Step>
+
+<Step>
+
+## Thirty kelvin each
+
+Each flame gives 100 J every second. The meters count what went in and what left.
+
+<BoxOrPiston
+  id="up-ch19-warm-both"
+  prompt="Warm both gases by 30 K, then check."
+  explanation="At exactly 30 K the box has taken 624 J and the piston's gas 873 J. The extra 249 J left again as work lifting the load: pΔV, which for an ideal gas is nRΔT, whatever gas it is. Every mole that can push needs R = 8.3 J more per kelvin."
+/>
+
+<Recall id="up-ch19-recall-cp" concept="cp-minus-cv">
+  <div slot="front">Why does warming a gas at constant pressure cost more heat than warming it at constant volume?</div>
+
+  At constant pressure the gas expands as it warms and pushes its surroundings back. That work
+  leaves as fast as part of the heat arrives. For an ideal gas the extra is $nR$ per kelvin:
+  $C_p = C_V + R$.
+</Recall>
+
+</Step>
+
+<Step>
+
+## Name it
+
+The gas's internal energy $U$ has two doors: heat $Q$ coming in, and work $W$ the gas does on
+its surroundings going out. Count them once, with those signs, and the ledger always balances:
+
+$$\Delta U = Q - W$$
+
+For an ideal gas $U$ tracks the temperature alone, so the thermometer reads the balance.
+
+<Recall id="up-ch19-recall-first-law" concept="first-law-of-thermodynamics">
+  <div slot="front">A gas takes in 500 J of heat and pushes a piston out, doing 200 J of work. What happens to its internal energy?</div>
+
+  It rises by 300 J. $\Delta U = Q - W = 500 - 200$. The first law is a ledger for one named
+  system: $Q$ is heat into it, $W$ is work done by it.
+</Recall>
+
+</Step>
+
+<Step>
+
+## No flame at all
+
+This cylinder is insulated and has no flame under it. The only door left is the piston.
+
+<PistonOrFlame
+  id="up-ch19-warm-without-flame"
+  prompt="Drag the piston until the gas is 20 K warmer, at 320 K."
+  target={320}
+  explanation="Squeeze it to about 21.2 L. Q stayed at 0, and the 416 J of work you did on the gas is all in the ΔU meter. That is why a bicycle pump gets hot. Let the piston back out and the gas pays the same joules back as work, cooling to 300 K."
+/>
+
+</Step>
+
+<Step>
+
+## Heat in, temperature flat
+
+Now the flame is back, with a fixed 400 J to give. The piston is still yours.
+
+<PistonOrFlame
+  id="up-ch19-hold-the-temperature"
+  prompt="Light the flame. When it burns out, the gas must be back at 300 K."
+  flame={400}
+  target={300}
+  explanation="Every route that ends at 300 K ends with W = 400 J: all the heat left again as work. You can follow the flame up with the piston or wait and let the piston out afterwards. The ledger does not care, although the piston ends at 29.3 L one way and 29.1 L the other."
+/>
+
+</Step>
+
+<Step>
+
+## Which way did U go?
+
+Draw the boundary around the gas each time, then read the two doors.
+
+<Classify
+  id="up-ch19-classify-ledger"
+  prompt="What happens to the internal energy of the gas?"
+  buckets={[
+    { key: 'up', label: 'U rises', accent: 'ok' },
+    { key: 'down', label: 'U falls', accent: 'magenta' },
+    { key: 'same', label: 'U unchanged', accent: 'iris' },
+  ]}
+  items={[
+    { key: 'pump', label: 'Air in a bicycle pump, squeezed hard with the valve blocked', bucket: 'up', why: 'Work goes in through the plunger and there is no time for heat to leave. It is the cylinder you squeezed with no flame.' },
+    { key: 'spray', label: 'The gas in an aerosol can during ten seconds of spraying', bucket: 'down', why: 'The gas expands and pushes the paint out: work done by the gas, with little time for heat to come in. That is why the can goes cold.' },
+    { key: 'jar', label: 'A sealed glass jar of air left in the sun', bucket: 'up', why: 'Heat in, and the rigid jar cannot move, so no work. The bolted box again.' },
+    { key: 'bath', label: 'Air squeezed slowly in a cylinder standing in cool water, ending at the water’s temperature', bucket: 'same', why: 'Work went in, but the same energy left as heat into the water. It ends at the temperature it started, and for an ideal gas that fixes U.' },
+    { key: 'balloon', label: 'A balloon that takes in 500 J of sunlight while swelling, doing 500 J of work on the air around it', bucket: 'same', why: 'Q = 500 J and W = 500 J. The flame-and-piston balance you just held.' },
+    { key: 'freezer', label: 'A capped plastic bottle of air in a freezer, crumpling as it cools', bucket: 'down', why: 'The crumpling means the air around does some work on it, but far more energy leaves as heat. ΔU = Q − W comes out negative, and the air is colder.' },
+  ]}
+  explanation="Two doors, one ledger. Pumps and sealed jars gain; spraying cans and freezer bottles lose; a gas that ends at its starting temperature has let in exactly as much as it let out."
+/>
+
+## What to carry forward
+
+- **Heat and work are two doors to one account.** $\Delta U = Q - W$, with $Q$ in and $W$ done by the gas.
+- **A gas that can push costs more to warm.** The extra is the work, $nR$ per kelvin: $C_p = C_V + R$.
+
+Next: put the gas on a p–V plane, and the work becomes an area you can see.
+
+</Step>

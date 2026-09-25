@@ -139,7 +139,9 @@ export function createGas({ w, h, species, seed = 1 }: GasSpec): Gas {
     x: new Float64Array(n), y: new Float64Array(n), vx: new Float64Array(n), vy: new Float64Array(n),
     m: new Float64Array(n), r: new Float64Array(n), kind: new Uint8Array(n),
     impulse: new Float64Array(4), hits: new Float64Array(4), tallyTime: 0, pistonHitsY: [], collisions: 0,
-    head: new Int32Array(0), next: new Int32Array(n), cell: 2 * rMax * 1.05,
+    // Cells at least as wide as a collision distance; not so small that
+    // clearing the grid costs more than the particles do.
+    head: new Int32Array(0), next: new Int32Array(n), cell: Math.max(2 * rMax * 1.05, 0.6),
   };
 
   // Positions: a shuffled lattice with a little jitter, so nothing overlaps.
@@ -233,32 +235,36 @@ export function stepGas(g: Gas, dt: number): void {
 
 /** Find touching pairs with a cell list: each disc is compared only with
  *  discs in its own cell and the neighbouring ones. */
+const NB_X = [1, -1, 0, 1], NB_Y = [0, 1, 1, 1]; // half the neighbourhood: each pair of cells once
+
 function collideAll(g: Gas): void {
   const cs = g.cell;
   const nx = Math.max(1, Math.ceil(g.w / cs)), ny = Math.max(1, Math.ceil(g.h / cs));
   if (g.head.length < nx * ny) g.head = new Int32Array(nx * ny);
-  const head = g.head, next = g.next;
+  const { head, next, x, y, r } = g;
   head.fill(-1, 0, nx * ny);
-  const cellOf = (i: number) => {
-    const cx = Math.min(nx - 1, Math.max(0, Math.floor(g.x[i] / cs)));
-    const cy = Math.min(ny - 1, Math.max(0, Math.floor(g.y[i] / cs)));
-    return cy * nx + cx;
-  };
-  for (let i = 0; i < g.n; i++) { const c = cellOf(i); next[i] = head[c]; head[c] = i; }
-  const touching = (i: number, j: number) => {
-    const d = g.r[i] + g.r[j];
-    const dx = g.x[j] - g.x[i], dy = g.y[j] - g.y[i];
-    return dx * dx + dy * dy < d * d;
-  };
-  // Half the neighbourhood, so each pair of cells is visited once.
-  const NB = [[1, 0], [-1, 1], [0, 1], [1, 1]] as const;
+  for (let i = 0; i < g.n; i++) {
+    const cx = Math.min(nx - 1, Math.max(0, Math.floor(x[i] / cs)));
+    const cy = Math.min(ny - 1, Math.max(0, Math.floor(y[i] / cs)));
+    const c = cy * nx + cx;
+    next[i] = head[c]; head[c] = i;
+  }
   for (let cy = 0; cy < ny; cy++) for (let cx = 0; cx < nx; cx++) {
     for (let i = head[cy * nx + cx]; i !== -1; i = next[i]) {
-      for (let j = next[i]; j !== -1; j = next[j]) if (touching(i, j)) collidePair(g, i, j);
-      for (const [ox, oy] of NB) {
-        const qx = cx + ox, qy = cy + oy;
+      const xi = x[i], yi = y[i], ri = r[i];
+      // the rest of this cell
+      for (let j = next[i]; j !== -1; j = next[j]) {
+        const dx = x[j] - xi, dy = y[j] - yi, d = ri + r[j];
+        if (dx * dx + dy * dy < d * d) collidePair(g, i, j);
+      }
+      // four of the eight neighbouring cells
+      for (let k = 0; k < 4; k++) {
+        const qx = cx + NB_X[k], qy = cy + NB_Y[k];
         if (qx < 0 || qx >= nx || qy >= ny) continue;
-        for (let j = head[qy * nx + qx]; j !== -1; j = next[j]) if (touching(i, j)) collidePair(g, i, j);
+        for (let j = head[qy * nx + qx]; j !== -1; j = next[j]) {
+          const dx = x[j] - xi, dy = y[j] - yi, d = ri + r[j];
+          if (dx * dx + dy * dy < d * d) collidePair(g, i, j);
+        }
       }
     }
   }

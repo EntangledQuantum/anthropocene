@@ -1,0 +1,10 @@
+title: 'Work on a p–V diagram'
+blurb: 'A gas does work p dV each time its volume grows by dV, so the work along a process is the area under its path on the p–V plane: positive while the gas expands, negative while it is squeezed.'
+notation: 'W = \int_{V_1}^{V_2} p\,dV'
+tags:
+  - 'up-ch19'
+misconceptions:
+  - id: 'work-from-endpoints'
+    name: 'The work a gas does is fixed by where it starts and where it ends.'
+    signal: 'Expects two routes between the same two states to do the same work, as a conservative force would.'
+    correction: 'The work is the area under the path, and two paths between the same points enclose different areas. A route that expands at high pressure does more work than one that expands at low pressure.'

@@ -1,0 +1,6 @@
+---
+// @graded — with `id`, shrink the heat dumped to the least that still lets the engine run.
+import Island, { type ShrinkTheDumpProps } from '../viz/ShrinkTheDump.tsx';
+const props = Astro.props as ShrinkTheDumpProps;
+---
+<Island client:visible {...props} />

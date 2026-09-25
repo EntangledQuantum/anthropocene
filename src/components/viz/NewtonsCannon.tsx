@@ -35,6 +35,10 @@ type Result = { v: number; outcome: CannonShot['outcome']; time: number; downran
 
 export default function NewtonsCannon({ id, prompt, start = 5, explanation }: NewtonsCannonProps) {
   const task = useTask(id, 'newtons-cannon');
+  // The saved verdict is read during render; show it only after hydration so the
+  // server's "Check" and the client's first render agree (React #418 otherwise).
+  const [live, setLive] = useState(false);
+  useEffect(() => setLive(true), []);
   const [v, setV] = useState(start);
   const [ghosts, setGhosts] = useState<string[]>([]);
   const [craters, setCraters] = useState<Vec[]>([]);
@@ -68,7 +72,7 @@ export default function NewtonsCannon({ id, prompt, start = 5, explanation }: Ne
         let p: Vec = rest, t = 0;
         if (sh) {
           const path = sh.s.path;
-          const n = sh.done ? path.length - 1 : Math.min(path.length - 1, Math.floor((((now - sh.t0) / 1000) * WARP) / 2));
+          const n = sh.done ? path.length - 1 : Math.min(path.length - 1, Math.max(0, Math.floor((((now - sh.t0) / 1000) * WARP) / 2)));
           if (!sh.done) {
             let pts = '';
             for (let i = 0; i <= n; i += 6) pts += `${s.sx(path[i].p[0] / MM).toFixed(1)},${s.sy(path[i].p[1] / MM).toFixed(1)} `;
@@ -130,7 +134,7 @@ export default function NewtonsCannon({ id, prompt, start = 5, explanation }: Ne
             <Meter label="Time aloft" value={(tShown / 60).toFixed(0)} unit="min" />
           </span>
         </div>
-        {id && <CheckBar verdict={task.verdict} done={task.done}
+        {id && <CheckBar verdict={task.verdict} done={live && task.done}
           onCheck={() => task.check(!flying && last?.outcome === 'orbit', last ?? undefined)}
           miss={miss} hit={explanation} />}
       </div>}>

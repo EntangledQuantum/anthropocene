@@ -1,0 +1,6 @@
+---
+// @graded — with `id`, mark where the two blocks will meet, then run the perfect engine.
+import Island, { type TwoBlocksOneEngineProps } from '../viz/TwoBlocksOneEngine.tsx';
+const props = Astro.props as TwoBlocksOneEngineProps;
+---
+<Island client:visible {...props} />

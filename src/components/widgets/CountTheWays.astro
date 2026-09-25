@@ -1,0 +1,6 @@
+---
+// @graded — with `id`, build every arrangement of four with two on each side.
+import Island, { type CountTheWaysProps } from '../viz/CountTheWays.tsx';
+const props = Astro.props as CountTheWaysProps;
+---
+<Island client:visible {...props} />

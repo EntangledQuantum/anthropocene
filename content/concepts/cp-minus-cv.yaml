@@ -1,0 +1,14 @@
+title: 'Heat capacity at constant pressure and at constant volume'
+blurb: 'Warming a gas under a free piston costs more heat than warming it in a rigid box, because some of the heat leaves again as the work of pushing the piston out. For an ideal gas the extra is exactly n R per kelvin.'
+notation: 'C_p = C_V + R'
+tags:
+  - 'up-ch19'
+misconceptions:
+  - id: 'same-rise-same-heat'
+    name: 'The same temperature rise of the same gas always takes the same heat.'
+    signal: 'Predicts a gas needs the same heat to warm by 30 K whether it is sealed in a box or free to push a piston.'
+    correction: 'Heat that arrives while the gas is expanding does not all stay. Part of it leaves at once as work on the piston, so the gas needs more heat for the same rise in internal energy.'
+  - id: 'pressure-fights-the-flame'
+    name: 'A gas that cannot expand resists being heated, because its pressure pushes back.'
+    signal: 'Predicts the rigid box needs more heat to warm than the gas under a free piston.'
+    correction: 'Pressure pushes on walls, not on the flame. In a rigid box nothing moves, so no energy leaves as work, and every joule of heat stays as internal energy. The box is the cheapest way to warm a gas.'

@@ -76,7 +76,7 @@ export default function FlickTheRope({ id, prompt, load: load0 = 4, targetRatio,
   useEffect(() => {
     let raf = 0, last = performance.now(), lastShown = 0, acc = 0;
     const frame = (now: number) => {
-      acc += Math.min((now - last) / 1000, 0.05) * PLAY;
+      acc += Math.max(0, Math.min((now - last) / 1000, 0.05)) * PLAY;
       last = now;
       const r = rope.current, h = hand.current, dt = ropeDt(r);
       const n = Math.floor(acc / dt);

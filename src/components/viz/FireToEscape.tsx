@@ -41,6 +41,10 @@ const EMAX = 70; // MJ/kg on the energy bar
 
 export default function FireToEscape({ id, prompt, start = 9, reach = 25, station, tolerance = 0.1, explanation }: FireToEscapeProps) {
   const task = useTask(id, 'fire-to-escape');
+  // The saved verdict is read during render; show it only after hydration so the
+  // server's "Check" and the client's first render agree (React #418 otherwise).
+  const [live, setLive] = useState(false);
+  useEffect(() => setLive(true), []);
   const [v, setV] = useState(start);
   const [fired, setFired] = useState<number | null>(null);
   const [lead, setLead] = useState(LEAD);
@@ -62,7 +66,7 @@ export default function FireToEscape({ id, prompt, start = 9, reach = 25, statio
     let raf = 0, lastShown = 0;
     const frame = (now: number) => {
       const s = api.current;
-      const n = Math.min(flight.path.length - 1, Math.floor(((now - t0.current) / 1000) * warp / 10));
+      const n = Math.min(flight.path.length - 1, Math.max(0, Math.floor(((now - t0.current) / 1000) * warp / 10)));
       const st = flight.path[n];
       if (s && probe.current) { probe.current.setAttribute('cx', String(s.sx(st.p[0] / MM))); probe.current.setAttribute('cy', String(s.sy(st.p[1] / MM))); }
       // the station keeps circling at circular speed, clockwise from 300 km ahead
@@ -99,7 +103,7 @@ export default function FireToEscape({ id, prompt, start = 9, reach = 25, statio
               : <Meter label="Total energy" value={E.toFixed(2)} unit="MJ/kg" color={C.energy} />}
           </span>
         </div>
-        {id && <CheckBar verdict={task.verdict} done={task.done} onCheck={() => task.check(hit, { v: fired })} miss={miss} hit={explanation} />}
+        {id && <CheckBar verdict={task.verdict} done={live && task.done} onCheck={() => task.check(hit, { v: fired })} miss={miss} hit={explanation} />}
       </div>}>
       <div style={{ display: 'flex', alignItems: 'stretch', gap: 8 }}>
         <div style={{ flex: 1, minWidth: 0 }}>

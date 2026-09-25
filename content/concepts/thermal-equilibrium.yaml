@@ -1,0 +1,10 @@
+title: 'Thermal equilibrium and the zeroth law'
+blurb: 'Two bodies in contact stop exchanging heat when, and only when, their temperatures match. Two bodies each in equilibrium with a third are in equilibrium with each other, which is why a thermometer works.'
+notation: 'T_A = T_B \;\Rightarrow\; \text{no net heat}'
+tags:
+  - 'up-ch17'
+misconceptions:
+  - id: 'energy-equalizes'
+    name: 'When two bodies stop exchanging heat, they hold equal energy.'
+    signal: 'Says the iron and the water end with the same heat or the same energy.'
+    correction: 'At the end the iron and the water share a temperature and nothing else. The water gained about 32 kJ and the iron lost the same 32 kJ; their energies were never equal and did not become equal.'

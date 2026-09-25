@@ -1,0 +1,18 @@
+title: 'Irreversibility'
+blurb: 'Nothing in the laws of motion forbids a spread gas from gathering back into one corner. It is simply one arrangement among 2^N, so for any real number of molecules you would wait far longer than the age of the universe.'
+notation: 'P(\text{all } N \text{ on one side}) = 2^{-N}'
+tags:
+  - 'up-ch20'
+misconceptions:
+  - id: 'second-law-forbids-return'
+    name: 'The second law forbids a gas from ever gathering back.'
+    signal: 'Says the particles can never all return to one side, however few there are and however long you wait.'
+    correction: 'Four particles gather on the left about one moment in sixteen. The laws of motion run equally well backwards; what makes the spreading one-way is the count. For forty particles it is one moment in a trillion, and for a real gas the chance is 2 to the minus 10²².'
+  - id: 'second-law-is-mess'
+    name: 'The second law says things get messy.'
+    signal: 'Treats the second law as a tendency toward untidiness rather than a statement about probabilities of macrostates.'
+    correction: 'The second law says an isolated system drifts toward the description with the most arrangements, because it spends its time evenly among arrangements. Whether that looks messy is beside the point.'
+  - id: 'something-pushes-it-back'
+    name: 'A spread gas would gather again only if something pushed it back.'
+    signal: 'Expects a return to need a force, a cooling or an outside agent.'
+    correction: 'Nothing pushes the particles to spread in the first place: they only fly and bounce. Gathering needs no push either, just the rare moment when every particle happens to be on one side at once.'

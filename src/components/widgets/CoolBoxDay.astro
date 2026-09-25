@@ -1,0 +1,6 @@
+---
+// @graded — when given an `id`, the scene checks itself: the thinnest foam wall that keeps enough ice all day.
+import Island, { type CoolBoxDayProps } from '../viz/CoolBoxDay.tsx';
+const props = Astro.props as CoolBoxDayProps;
+---
+<Island client:visible {...props} />

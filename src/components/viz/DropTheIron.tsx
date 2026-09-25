@@ -94,30 +94,30 @@ export default function DropTheIron({
               : `With ${(waterKg * 1000).toFixed(0)} g of water it settled at ${ex.Tf.toFixed(1)} °C, ${Math.abs(off).toFixed(1)} °C ${off > 0 ? 'above' : 'below'} the ${target} °C target.`}
           hit={explanation} />}
       </div>}>
-      <Stage x={[-30, 30]} y={[-3, 34]} height={300} equal
+      <Stage x={[-30, 30]} y={[-3, 30]} height={300} equal
         label={`A ${ironKg} kilogram iron block at ${now.Ta.toFixed(0)} degrees ${dropped ? 'in' : 'above'} ${(waterKg * 1000).toFixed(0)} grams of water at ${now.Tb.toFixed(0)} degrees.`}>
         {(s) => {
           const bx = s.sx(-PLATE_W / 2), bw = s.len(PLATE_W), bh = s.len(plateH);
-          const blockBottom = dropped ? 0.15 : 24;
+          const blockBottom = dropped ? 0.15 : 22;
           return <>
             {/* the water, then the beaker around it */}
             <rect x={s.sx(-5)} y={s.sy(level)} width={s.len(10)} height={s.sy(0) - s.sy(level)} fill="var(--color-cyan)" opacity={0.16} />
             <line x1={s.sx(-5)} x2={s.sx(5)} y1={s.sy(level)} y2={s.sy(level)} stroke="var(--color-cyan)" strokeWidth={1.5} opacity={0.7} />
             <path d={`M${s.sx(-5)},${s.sy(20)}L${s.sx(-5)},${s.sy(0)}L${s.sx(5)},${s.sy(0)}L${s.sx(5)},${s.sy(20)}`} fill="none" stroke={C.soft} strokeWidth={2} />
             {/* the block, on a string until it drops */}
-            {!dropped && <line x1={s.sx(0)} x2={s.sx(0)} y1={s.sy(33)} y2={s.sy(blockBottom + plateH)} stroke={C.faint} />}
+            {!dropped && <line x1={s.sx(0)} x2={s.sx(0)} y1={s.sy(29.5)} y2={s.sy(blockBottom + plateH)} stroke={C.faint} />}
             <rect x={bx} y={s.sy(blockBottom + plateH)} width={bw} height={bh} rx={2}
               fill={C.surface} stroke={C.ink} strokeWidth={2} />
-            <text x={s.sx(0)} y={s.sy(blockBottom + plateH) - 6} textAnchor="middle" fontSize={12} fill={C.soft}>iron, {ironKg} kg</text>
+            {!dropped && <text x={s.sx(PLATE_W / 2 + 1)} y={s.sy(blockBottom + plateH / 2) + 4} fontSize={13} fill={C.soft}>iron, {ironKg} kg</text>}
             {/* heat leaving the block: as thick as the current */}
             {dropped && now.P > P0 * 0.02 && [-2.5, 0, 2.5].map((x) => (
               <Arrow key={x} s={s} from={[x, blockBottom + plateH + 0.3]} to={[x, blockBottom + plateH + 0.8 + 3.2 * Math.sqrt(now.P / P0)]}
                 color={HEAT} width={1.5 + 4 * (now.P / P0)} />
             ))}
-            {dropped && <text x={s.sx(6.5)} y={s.sy(blockBottom + plateH + 2)} fontSize={13} fill={now.P > P0 * 0.02 ? HEAT : C.faint}>
+            {dropped && <text x={s.sx(0)} y={s.sy(23)} textAnchor="middle" fontSize={13} fill={now.P > P0 * 0.02 ? HEAT : C.faint}>
               {now.P > P0 * 0.02 ? `heat ${now.P.toFixed(0)} W` : 'no more heat flows'}
             </text>}
-            <Thermometer x={s.sx(-17)} y={s.sy(1)} h={170} T={now.Ta} lo={0} hi={100} step={20} label="iron" />
+            <Thermometer x={s.sx(-15)} y={s.sy(1)} h={170} T={now.Ta} lo={0} hi={100} step={20} label="iron" />
             <Thermometer x={s.sx(15)} y={s.sy(1)} h={170} T={now.Tb} lo={0} hi={100} step={20} label="water" />
             {graded && !dropped && <Handle s={s} at={[5, waterKg * 1000 / AREA]} color="var(--color-cyan)" step={0.1}
               label="Water level: drag up or down"
@@ -125,7 +125,7 @@ export default function DropTheIron({
           </>;
         }}
       </Stage>
-      <Stage x={[0, T_END]} y={[0, 100]} height={170} axes={{ x: 'time (s)', y: 'temperature (°C)', yTicks: [0, 20, 40, 60, 80, 100] }}
+      <Stage x={[0, T_END]} y={[0, 112]} height={170} axes={{ x: 'time (s)', y: 'temperature (°C)', yTicks: [0, 20, 40, 60, 80, 100] }}
         label="Temperature of the iron and the water against time">
         {(p) => <>
           {target !== undefined && <g>
@@ -134,10 +134,10 @@ export default function DropTheIron({
           </g>}
           <path d={trace('Ta', p.sx, p.sy)} fill="none" stroke={C.ink} strokeWidth={2.5} />
           <path d={trace('Tb', p.sx, p.sy)} fill="none" stroke={C.soft} strokeWidth={2.5} strokeDasharray="6 4" />
-          {dropped && <>
-            <text x={p.sx(t.current) + 6} y={p.sy(now.Ta) - 6} fontSize={12} fill={C.ink}>iron</text>
-            <text x={p.sx(t.current) + 6} y={p.sy(now.Tb) + 14} fontSize={12} fill={C.soft}>water</text>
-          </>}
+          <line x1={p.sx(T_END * 0.55)} x2={p.sx(T_END * 0.6)} y1={p.sy(104)} y2={p.sy(104)} stroke={C.ink} strokeWidth={2.5} />
+          <text x={p.sx(T_END * 0.61)} y={p.sy(104) + 4} fontSize={12} fill={C.ink}>iron</text>
+          <line x1={p.sx(T_END * 0.72)} x2={p.sx(T_END * 0.77)} y1={p.sy(104)} y2={p.sy(104)} stroke={C.soft} strokeWidth={2.5} strokeDasharray="6 4" />
+          <text x={p.sx(T_END * 0.78)} y={p.sy(104) + 4} fontSize={12} fill={C.soft}>water</text>
         </>}
       </Stage>
       <p className="hud-label" style={{ margin: '6px 0 0' }}>

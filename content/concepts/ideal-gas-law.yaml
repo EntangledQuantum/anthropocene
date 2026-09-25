@@ -1,0 +1,5 @@
+title: 'The ideal-gas law'
+blurb: 'For a dilute gas, pressure, volume, temperature and amount are tied by one equation of state, so fixing two of p, V and T fixes the third.'
+notation: 'pV = nRT'
+tags:
+  - 'up-ch18'

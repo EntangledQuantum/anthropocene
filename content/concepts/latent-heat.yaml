@@ -1,0 +1,14 @@
+title: 'Latent heat and phase change'
+blurb: 'Heat that changes a phase instead of a temperature. While ice melts the thermometer sits at 0 °C, and each kilogram soaks up 334 kJ, enough to warm it by 160 °C had it been ice.'
+notation: 'Q = \pm mL, \qquad L_f = 334\ \text{kJ/kg}'
+tags:
+  - 'up-ch17'
+misconceptions:
+  - id: 'heat-always-raises-temperature'
+    name: 'Adding heat always raises the temperature.'
+    signal: 'Expects melting ice to keep warming at the same rate once it reaches 0 °C.'
+    correction: 'At 0 °C the heat goes into breaking the ice apart, not into speeding up molecules, so the thermometer stalls. Ice warmed from −20 °C in 20 seconds sits at 0 °C for another 160 seconds under the same heater.'
+  - id: 'ice-is-just-cold-water'
+    name: 'An ice cube cools a drink only because it is at 0 °C.'
+    signal: 'Mixes ice into a drink as if it were water at 0 °C and so wants dozens of cubes.'
+    correction: 'Most of an ice cube''s cooling is the melting. Melting 20 g of ice takes 6.7 kJ, as much as warming that 20 g of water by 80 °C, so three cubes chill 300 g of drink from 25 °C to under 8 °C.'

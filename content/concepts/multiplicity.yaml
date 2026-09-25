@@ -1,0 +1,10 @@
+title: 'Counting arrangements (multiplicity)'
+blurb: 'A description like "two on each side" is kept by many detailed arrangements. Every arrangement is equally likely, so a description is as likely as the number of arrangements it has.'
+notation: 'W(k \text{ of } N \text{ on the left}) = \binom{N}{k}, \quad \sum_k \binom{N}{k} = 2^N'
+tags:
+  - 'up-ch20'
+misconceptions:
+  - id: 'mixed-arrangement-is-likelier'
+    name: 'A jumbled-looking arrangement is likelier than a tidy one.'
+    signal: 'Rates "particles 1 and 3 left, 2 and 4 right" as more probable than "all four on the left".'
+    correction: 'Each detailed arrangement is exactly as likely as any other: 1 in 16 for four particles. What is likelier is the description "two on each side", because six different arrangements fit it and only one fits "all on the left".'

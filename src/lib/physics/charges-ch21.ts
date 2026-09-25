@@ -160,3 +160,18 @@ export function si(v: number, unit: string, digits = 2): string {
   const shown = Math.abs(n) >= 100 ? n.toFixed(0) : Math.abs(n) >= 10 ? n.toFixed(Math.max(0, digits - 2)) : n.toFixed(digits - 1);
   return `${shown} ${p}${unit}`;
 }
+
+const SUP: Record<string, string> = { '-': '⁻', '0': '⁰', '1': '¹', '2': '²', '3': '³', '4': '⁴', '5': '⁵', '6': '⁶', '7': '⁷', '8': '⁸', '9': '⁹' };
+
+/** Scientific format: 7.99e5 → "8.0 × 10⁵ N/C". */
+export function sci(v: number, unit: string, digits = 2): string {
+  if (v === 0) return `0 ${unit}`;
+  let e = Math.floor(Math.log10(Math.abs(v)));
+  let m = +(v / 10 ** e).toFixed(digits - 1);
+  if (Math.abs(m) >= 10) { m /= 10; e += 1; }
+  const exp = `${e}`.split('').map((c) => SUP[c]).join('');
+  return `${m.toFixed(digits - 1)} × 10${exp} ${unit}`;
+}
+
+/** Millinewtons to two decimals, the unit every chapter 21 bead force is read in. */
+export const mN = (f: number) => `${(f * 1000).toFixed(2)} mN`;

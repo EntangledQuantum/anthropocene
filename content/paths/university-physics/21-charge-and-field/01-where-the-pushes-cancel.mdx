@@ -1,0 +1,142 @@
+---
+title: 'Where the pushes cancel'
+blurb: 'Find the one spot where a charge feels no force, say why it is not halfway, and predict what touching two charged spheres does to the force between them.'
+order: 1
+tier: 'foundation'
+minutes: 10
+teaches:
+  - 'electric-charge'
+  - 'coulombs-law'
+requires:
+  - 'force-superposition'
+  - 'newtons-second-law'
+status: 'live'
+updated: 2026-09-25
+---
+
+<Step>
+
+A charged bead slides on a frictionless wire between two fixed charges, +1 µC and +4 µC,
+30 cm apart. Both push it away.
+
+<Predict
+  id="up-ch21-bead-balance"
+  question="Where on the wire does the bead come to rest?"
+  options={[
+    { key: 'mid', misconception: 'up-ch21-balance-at-midpoint', label: 'Halfway, 15 cm from each', why: 'At equal distances the +4 µC pushes four times harder than the +1 µC. Slide the bead to 15 cm below: the net arrow points firmly toward the +1.' },
+    { key: 'fifth', misconception: 'up-ch21-force-falls-as-distance', label: '6 cm from the +1 µC: four times the charge, four times as far', why: 'That would be right if the push fell off in simple proportion to distance. It falls off faster, so the +1 µC needs less of a head start. At 6 cm it wins, and the bead is pushed back toward the middle.' },
+    { key: 'third', label: '10 cm from the +1 µC, a third of the way along', why: 'Right. The +4 µC is 20 cm away, twice as far, and twice as far cuts its push to a quarter. A quarter of four times as much is the same.' },
+    { key: 'none', misconception: 'biggest-force-wins', label: 'Nowhere: the +4 µC shoves it all the way to the +1 µC', why: 'Close to the +1 µC its push grows without limit, so it always wins near the end. Somewhere between, the two pushes must be equal.' },
+  ]}
+  correct="third"
+>
+
+<BeadBetweenCharges
+  prompt="Slide the bead along the wire and watch the two pushes."
+  charges={[{ x: 0, q: 1 }, { x: 30, q: 4 }]}
+  span={[-5, 35]}
+  start={15}
+  arrowScale={0.07}
+/>
+
+</Predict>
+
+</Step>
+
+<Step>
+
+## Flip one sign
+
+Same wire, same bead, but the far charge is now −4 µC. It pulls the bead instead of pushing it.
+
+<BeadBetweenCharges
+  id="up-ch21-unlike-balance"
+  prompt="Find the one spot on the wire where the bead feels no force."
+  charges={[{ x: 0, q: 1 }, { x: 30, q: -4 }]}
+  span={[-45, 40]}
+  start={12}
+  arrowScale={0.4}
+  explanation="30 cm to the left of the +1 µC, outside the pair. Between the charges the +1 pushes right and the −4 pulls right, so nothing can cancel there. Outside, the push and the pull oppose, and at 30 cm and 60 cm the nearer, smaller charge exactly makes up its factor of four, because 60 is twice 30."
+/>
+
+</Step>
+
+<Step>
+
+## Name it
+
+Each push fell off steeply: halve the distance and it grew fourfold. It also scales with both
+charges, and like signs repel while unlike signs attract. That is **Coulomb's law**:
+
+$$F = k\,\dfrac{|q_1 q_2|}{r^2}, \qquad k = 8.99\times10^{9}\ \mathrm{N\,m^2/C^2}$$
+
+<Recall id="up-ch21-recall-coulomb" concept="coulombs-law">
+  <div slot="front">A charge of +9 µC sits 40 cm from a charge of +1 µC. Where between them does a third charge feel no force?</div>
+
+  10 cm from the +1 µC. The +9 must be three times as far, 30 cm, because $3^2 = 9$. The
+  balance always sits nearer the smaller charge.
+</Recall>
+
+</Step>
+
+<Step>
+
+## Touch, then part
+
+Two identical metal spheres on insulating stands, 30 cm apart, carry +6 µC and −2 µC. They
+pull together with 1.2 N.
+
+<TouchTheSpheres
+  id="up-ch21-touch-and-part"
+  prompt="Touch B to A, then slide B back to where they push apart exactly as hard as they pulled."
+  explanation="About 17.3 cm. Touching shared the total, +6 − 2 = +4 µC, as +2 µC on each: charge moved, none was made or lost. The product of the charges fell from 12 to 4, a third, so the gap had to shrink by √3 to win the force back: 30/√3 = 17.3 cm. The arrows on A and B stayed equal the whole time, whatever each sphere carried."
+/>
+
+<Recall id="up-ch21-recall-conserved" concept="electric-charge">
+  <div slot="front">Identical metal spheres carrying +5 µC and −9 µC touch and separate. What does each carry?</div>
+
+  −2 µC each. The total, −4 µC, is conserved and shared equally. Both are now negative,
+  so they repel.
+</Recall>
+
+</Step>
+
+<Step>
+
+## Take the wire away
+
+The bead rests at the balance point between +1 µC and +4 µC. Now the wire vanishes, and a
+draught nudges the bead 2 mm upward.
+
+<Predict
+  id="up-ch21-no-wire"
+  question="What do the two charges do to it next?"
+  options={[
+    { key: 'back', misconception: 'up-ch21-balanced-means-stable', label: 'Push it back down to the balance point', why: 'Along the wire they do push it back. Off the wire both pushes gain an upward slant, and together they push it further up.' },
+    { key: 'stay', label: 'Nothing: near the balance point the pushes still cancel', why: 'They cancel only exactly on the line. Two millimetres up, both pushes tilt upward and add.' },
+    { key: 'away', label: 'Push it further up and away from the line', why: 'Right. Both charges push away from themselves, so off the axis both pushes gain an upward part. The balance was held by the wire, not by the charges.' },
+    { key: 'plus-one', label: 'Pull it toward the +1 µC', why: 'Both charges are positive and so is the bead, so neither pulls. Drag the bead below to see where the net push points.' },
+  ]}
+  correct="away"
+>
+
+<BeadBetweenCharges
+  prompt="Drag the bead anywhere near the balance point."
+  charges={[{ x: 0, q: 1 }, { x: 30, q: 4 }]}
+  span={[-5, 35]}
+  start={[10, 2]}
+  wire={false}
+  arrowScale={0.07}
+/>
+
+</Predict>
+
+## What to carry forward
+
+- **Coulomb's law is an inverse square.** Twice as far, a quarter the force, so balance points sit nearer the smaller charge, and outside the pair when the signs differ.
+- **Charge is conserved.** Touching moves it around; the total stays put.
+- **Balanced is not stable.** Fixed charges alone cannot hold a charge in place.
+
+Next: take the bead away altogether, and ask what is left at the spot.
+
+</Step>

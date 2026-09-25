@@ -1,0 +1,123 @@
+---
+title: 'The water wins'
+blurb: 'Drop hot iron into water, heat a pot blind, and see why temperature decides which way heat flows while mass and specific heat decide how far each thermometer moves.'
+order: 1
+tier: 'foundation'
+minutes: 10
+teaches:
+  - 'temperature'
+  - 'thermal-equilibrium'
+  - 'heat'
+  - 'specific-heat'
+  - 'calorimetry'
+requires:
+  - 'mechanical-energy-conservation'
+  - 'nonconservative-work'
+status: 'live'
+updated: 2026-09-25
+---
+
+<Step>
+
+A 1 kg iron block straight from boiling water, at 100 °C, is dropped into 1 kg of water at
+20 °C.
+
+<Predict
+  id="up-ch17-iron-into-water"
+  question="Once nothing is changing any more, what do the two thermometers read?"
+  options={[
+    { key: 'mid', misconception: 'equal-mass-equal-share', label: 'About 60 °C: equal masses meet halfway', why: 'Equal masses, but not equal appetites for heat. Drop it below and watch where the thermometers meet.' },
+    { key: 'iron', label: 'About 90 °C: the dense, hot iron wins', why: 'Iron packs a lot of mass into a small block, but each kilogram of it needs very little heat to change temperature. It loses the argument.' },
+    { key: 'water', label: 'About 28 °C, close to where the water started', why: 'Right. The iron falls 72 °C while the water rises only 8 °C, and it is the same 32 kJ of heat both ways.' },
+    { key: 'never', misconception: 'heat-is-a-fluid', label: 'They never agree: the iron holds more heat, so it stays hotter', why: 'Heat keeps flowing for as long as the temperatures differ, so it stops only when they match. Watch the aqua arrows fade to nothing.' },
+  ]}
+  correct="water"
+>
+
+<DropTheIron prompt="Drop the iron and watch both thermometers." />
+
+</Predict>
+
+</Step>
+
+<Step>
+
+## Balance it with water
+
+The same kilogram of iron at 100 °C. This time you choose how much 20 °C water it lands in.
+
+<DropTheIron
+  id="up-ch17-water-for-forty"
+  prompt="Set the water level so the mix settles at 40 °C, drop the iron, then check."
+  waterKg={1}
+  target={40}
+  explanation="About 320 g, a third of the iron's mass. The iron gives up 449 J for every degree it cools, and each kilogram of water takes 4186 J for every degree it warms. The iron falls 60 °C and the water rises 20 °C, so the water needs 449 × 60 / (4186 × 20) = 0.32 kg."
+/>
+
+</Step>
+
+<Step>
+
+## Name it
+
+Heat left the iron, the same heat entered the water, and the flow stopped the moment the
+temperatures matched. How far each temperature moves is set by the mass and the
+**specific heat** $c$: 4186 J/(kg·K) for water, 449 for iron.
+
+$$Q = mc\,\Delta T, \qquad \sum_i m_i c_i\,(T_f - T_i) = 0$$
+
+<Recall id="up-ch17-recall-what-matches" concept="thermal-equilibrium">
+  <div slot="front">A hot iron block and cold water stop exchanging heat. What is now equal between them, and what was never equal?</div>
+
+  Their temperatures, and nothing else. The water gained about 32 kJ and the iron lost the
+  same 32 kJ; their energies were never equal. **Temperature** is what bodies in contact
+  end up sharing. **Heat** is the energy that crossed on the way there.
+</Recall>
+
+</Step>
+
+<Step>
+
+## Heat it blind
+
+2 kg of water at 20 °C sits in a 1.5 kg iron pot on a flame. The thermometer is covered;
+all you can read is the energy the flame has delivered.
+
+<HeatThePot
+  id="up-ch17-pot-to-fifty"
+  prompt="Hold the flame until the water reaches 50 °C, then check."
+  explanation="About 271 kJ. The water needs 2 × 4186 × 30 = 251 kJ, and the pot, warming alongside it, takes another 1.5 × 449 × 30 = 20 kJ. Everything that changes temperature goes in the budget, container included: that is calorimetry."
+/>
+
+</Step>
+
+<Step>
+
+## A degree is a long way up
+
+Rub your hands, brake a bike or churn a bucket, and work becomes warmth. So how much energy
+is a single degree?
+
+<Estimate
+  id="up-ch17-estimate-lift"
+  scenario="up-ch17-lift-for-a-degree"
+  prompt="The energy that warms a litre of water by 1 °C could instead lift that same litre straight up. How high?"
+  explanation="About 430 m. Warming a kilogram of water by one degree takes 4186 J, and lifting it one metre takes 9.8 J. Joule measured exactly this trade in the 1840s, letting falling weights churn water and watching it warm. A little temperature is a lot of energy."
+/>
+
+<Recall id="up-ch17-recall-sparkler" concept="heat">
+  <div slot="front">Sparks from a sparkler are hotter than 1000 °C, yet they land on your hand without burning it. Why?</div>
+
+  Each spark has almost no mass, so $Q = mc\,\Delta T$ is tiny even for a huge $\Delta T$.
+  It gives up a tiny amount of energy and cools to skin temperature before your skin has warmed
+  noticeably. Temperature says which way heat flows; it does not say how much.
+</Recall>
+
+## What to carry forward
+
+- **Temperature sets the direction of heat; $mc$ sets how far each temperature moves.** Water's large $c$ is why it wins.
+- **A mix is an energy budget.** Everything that warms or cools, the pot included, sums to zero.
+
+Next: heat pours in and the thermometer does not move at all.
+
+</Step>

@@ -1,0 +1,14 @@
+title: 'The electric dipole'
+blurb: 'Equal and opposite charges a small distance apart. Overall neutral, so far away their fields nearly cancel, and what is left falls as one over the cube of the distance.'
+notation: 'p = q\,d,\qquad E_{\text{axis}} \approx \dfrac{2kp}{r^3}\ \ (r \gg d)'
+tags:
+  - 'up-ch21'
+misconceptions:
+  - id: 'up-ch21-dipole-inverse-square'
+    name: 'A dipole is made of point charges, so its field falls as an inverse square.'
+    signal: 'Expects the field to drop to a quarter when the distance from a dipole doubles.'
+    correction: 'Each charge alone falls as 1/r², but the two nearly cancel, and the part left over is the small difference between them. That difference shrinks one power faster: doubling the distance cuts the field to an eighth.'
+  - id: 'up-ch21-neutral-means-no-field'
+    name: 'A neutral object has no electric field.'
+    signal: 'Says a dipole has zero field because its total charge is zero.'
+    correction: 'Zero total charge cancels the 1/r² part only. Near the pair the field is strong, and far away a 1/r³ remainder survives. Water molecules attract each other through exactly this.'

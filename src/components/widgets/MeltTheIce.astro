@@ -1,0 +1,6 @@
+---
+// Ungraded picture: ice on a hot plate, the thermometer stalls at 0 °C while it melts.
+import Island, { type MeltTheIceProps } from '../viz/MeltTheIce.tsx';
+const props = Astro.props as MeltTheIceProps;
+---
+<Island client:visible {...props} />

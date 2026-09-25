@@ -1,0 +1,120 @@
+---
+title: 'They never all come back'
+blurb: 'Pull a divider, try to catch a spread gas back on one side, and count why forty particles never gather again.'
+order: 1
+tier: 'core'
+minutes: 10
+teaches:
+  - 'irreversibility'
+  - 'multiplicity'
+  - 'statistical-entropy'
+requires:
+  - 'first-law-of-thermodynamics'
+  - 'ideal-gas-law'
+status: 'live'
+updated: 2026-09-25
+---
+
+<Step>
+
+Forty gas particles sit in the left half of a box, behind a divider. You pull the divider
+out and they spread through the whole box.
+
+<Predict
+  id="up-ch20-all-back-left"
+  question="Nothing pushes them and nothing stops them. Wait as long as you like: will you ever see all forty back on the left?"
+  options={[
+    { key: 'never', misconception: 'second-law-forbids-return', label: 'Never: the second law forbids it', why: 'Nothing forbids it. Each particle only flies and bounces, and any of them can be on the left at any moment. In the next step four of them gather on the left every quarter-minute or so.' },
+    { key: 'often', label: 'Yes, every few minutes: every arrangement comes round in time', why: 'Every arrangement does come round, but all-left is one arrangement out of 2⁴⁰, about a trillion. The strip below hovers near 20 and never climbs anywhere near 40.' },
+    { key: 'rare', label: 'It can happen, but not in any wait you could sit through', why: 'Right. It is allowed, and it is one arrangement in a trillion. Watch the strip: the count jitters around 20 and the most it reaches is in the high twenties.' },
+    { key: 'push', misconception: 'something-pushes-it-back', label: 'Only if something pushes them back, such as cooling the box', why: 'Nothing pushed them out, either. They spread by flying straight and bouncing, and they would gather the same way, if all forty ever happened to be on the left at once.' },
+  ]}
+  correct="rare"
+>
+
+<PullTheDivider n={40} prompt="Pull the divider, then wait as long as you like." />
+
+</Predict>
+
+</Step>
+
+<Step>
+
+## Catch all four
+
+Four particles this time, already spread through the box. When you close the divider, each
+particle stays on whichever side it is on.
+
+<PullTheDivider
+  id="up-ch20-catch-four"
+  n={4}
+  seed={1}
+  spreadFor={20}
+  prompt="Close the divider at a moment when all four are on the left."
+  explanation="Caught. The box spends about one moment in sixteen with all four on the left, so a short wait was enough. Nothing gathered them: they wandered there, and the laws of motion allow it as easily as the spreading."
+/>
+
+</Step>
+
+<Step>
+
+## One ticket per arrangement
+
+Label the particles 1 to 4. Two arrangements are different when a different pair sits on
+the left.
+
+<CountTheWays
+  id="up-ch20-count-two-two"
+  prompt="Tap particles across the divider until you have built every arrangement with two on each side."
+  explanation="Six: 12, 13, 14, 23, 24 and 34 on the left. Now let them fly. The running gas spends the same share of its time, about 1/16, in every one of the 16 arrangements, so two-and-two holds it 6/16 of the time and all-left only 1/16. A description is as likely as the number of arrangements that fit it."
+/>
+
+</Step>
+
+<Step>
+
+## Name it
+
+In the free expansion no heat went in, no work was done and the energy did not change. What
+grew is the count: each particle has twice the room, so the arrangements multiply by $2^N$.
+Entropy is the log of that count,
+
+$$S = k_B \ln W, \qquad \Delta S_{\text{free expansion}} = N k_B \ln 2$$
+
+<Recall id="up-ch20-recall-what-rose" concept="statistical-entropy">
+  <div slot="front">A gas doubles its volume into a vacuum: Q = 0, W = 0, ΔU = 0. What rose, and by how much for one mole?</div>
+
+  The number of arrangements, by a factor $2^N$. Its log, the entropy, rose by
+  $N k_B \ln 2$, which for a mole is $R \ln 2 = 5.76$ J/K.
+</Recall>
+
+</Step>
+
+<Step>
+
+## How many is never?
+
+With $N$ particles, a random look catches them all on the left once in $2^N$ looks.
+
+<Estimate
+  id="up-ch20-estimate-universe"
+  scenario="up-ch20-universe-wait"
+  prompt="You look at the box once a second, and the gas reshuffles between looks. How many particles does it take before you expect to wait longer than the age of the universe to catch them all on the left?"
+  explanation="About 59. You need about 2^N looks, and 2^59 seconds is 18 billion years. A cubic centimetre of air holds 2.5 × 10¹⁹ molecules. Nothing forbids the return; the count alone makes it never."
+/>
+
+<Recall id="up-ch20-recall-never" concept="irreversibility">
+  <div slot="front">The motion of every molecule runs just as well backwards. So why does a spread gas never gather again?</div>
+
+  Gathered is one arrangement; spread is almost all of the $2^N$. The gas visits every
+  arrangement equally, so it spends essentially all its time spread.
+</Recall>
+
+## What to carry forward
+
+- **Irreversible means outnumbered, not forbidden.** All-left is one arrangement of $2^N$.
+- **Entropy is a count, logged:** $S = k_B \ln W$. Doubling the room adds $N k_B \ln 2$.
+
+Next: heat carries entropy too, and that is why every engine has to pay the cold side.
+
+</Step>

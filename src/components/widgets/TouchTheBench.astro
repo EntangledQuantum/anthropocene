@@ -1,0 +1,6 @@
+---
+// @graded — when given an `id`, the scene checks itself: find the day on which steel and pine feel the same.
+import Island, { type TouchTheBenchProps } from '../viz/TouchTheBench.tsx';
+const props = Astro.props as TouchTheBenchProps;
+---
+<Island client:visible {...props} />

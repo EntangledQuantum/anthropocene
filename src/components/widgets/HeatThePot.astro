@@ -1,0 +1,6 @@
+---
+// @graded — when given an `id`, the scene checks itself: hold the flame until the covered thermometer would read the target.
+import Island, { type HeatThePotProps } from '../viz/HeatThePot.tsx';
+const props = Astro.props as HeatThePotProps;
+---
+<Island client:visible {...props} />

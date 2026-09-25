@@ -1,0 +1,10 @@
+title: 'Heat engines must dump heat'
+blurb: 'An engine takes heat from a hot place, turns part of it into work, and must put the rest into a colder place. No engine, however perfect, turns heat entirely into work (the Kelvin statement).'
+notation: 'W = Q_h - Q_c, \quad Q_c > 0'
+tags:
+  - 'up-ch20'
+misconceptions:
+  - id: 'engine-loss-is-friction'
+    name: 'Engines waste heat only because of friction and leaks.'
+    signal: 'Expects a frictionless, leak-free engine to turn all the heat it takes in into work.'
+    correction: 'Heat leaving the hot side carries entropy Q_h/T_h, and work carries none. That entropy has to go somewhere, so a perfect engine must still dump at least Q_h T_c/T_h into the cold side.'

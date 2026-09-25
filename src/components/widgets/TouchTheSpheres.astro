@@ -1,0 +1,6 @@
+---
+// @graded — with `id`, the scene checks itself: touch, then match the starting pull with the new push.
+import Island, { type TouchTheSpheresProps } from '../viz/TouchTheSpheres.tsx';
+const props = Astro.props as TouchTheSpheresProps;
+---
+<Island client:visible {...props} />

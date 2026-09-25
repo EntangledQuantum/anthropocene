@@ -1,0 +1,6 @@
+---
+// @graded — when given an `id`, the scene checks itself: choose how many ice cubes chill a drink into a band.
+import Island, { type ChillTheDrinkProps } from '../viz/ChillTheDrink.tsx';
+const props = Astro.props as ChillTheDrinkProps;
+---
+<Island client:visible {...props} />

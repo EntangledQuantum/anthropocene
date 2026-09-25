@@ -1,0 +1,14 @@
+title: 'Refrigerators and heat pumps'
+blurb: 'Run an engine backwards: put work in, pull heat out of the cold side, and deliver more heat to the hot side. It needs work because the cold side''s entropy must still be paid into the hot side.'
+notation: 'Q_h = Q_c + W, \quad \frac{Q_c}{W} \le \frac{T_c}{T_h - T_c}'
+tags:
+  - 'up-ch20'
+misconceptions:
+  - id: 'fridge-breaks-second-law'
+    name: 'A refrigerator breaks the second law, because heat goes from cold to hot.'
+    signal: 'Thinks a fridge is an exception to the second law, or that it is allowed only because electricity is special.'
+    correction: 'The second law forbids heat going cold to hot by itself. A fridge adds work, which arrives on the hot side as extra heat, so the kitchen gains more entropy than the inside of the fridge loses.'
+  - id: 'heat-pump-cannot-beat-heater'
+    name: 'A heat pump cannot deliver more heat than the electricity it uses.'
+    signal: 'Expects 1 J of electricity to deliver at most 1 J of heat to a house.'
+    correction: 'The electricity only pays the entropy toll; the heat itself is pumped in from outside. Between 0 °C outside and 20 °C inside a perfect heat pump delivers 14.6 J per joule, and real ones manage 3 to 4.'

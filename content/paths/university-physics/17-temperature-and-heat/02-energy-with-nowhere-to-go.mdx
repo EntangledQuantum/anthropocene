@@ -1,0 +1,120 @@
+---
+title: 'Energy with nowhere to go'
+blurb: 'Melt ice on a steady flame, chill a drink with three cubes, and size a cool-box wall, using the heat that changes phase instead of temperature and the rate at which heat gets through.'
+order: 2
+tier: 'foundation'
+minutes: 11
+teaches:
+  - 'latent-heat'
+  - 'thermal-conduction'
+requires:
+  - 'heat'
+  - 'temperature'
+  - 'specific-heat'
+  - 'calorimetry'
+status: 'live'
+updated: 2026-09-25
+---
+
+<Step>
+
+A 1 kg block of ice from a −20 °C freezer sits on a hot plate that delivers a steady power.
+After 20 seconds the thermometer beside it reaches 0 °C.
+
+<Predict
+  id="up-ch17-ice-plateau"
+  question="The plate stays on. How much longer until the thermometer reads +1 °C?"
+  options={[
+    { key: 'one', misconception: 'heat-always-raises-temperature', label: 'About 1 second: the heat keeps coming at the same rate', why: 'The heat does keep coming at the same rate. The temperature stops following it. Switch the plate on below and watch the trace go flat.' },
+    { key: 'ten', label: 'About 10 seconds: melting slows it a little', why: 'Far more than a little. Melting a kilogram of ice takes 334 kJ, eight times the 42 kJ that warmed it by 20 °C.' },
+    { key: 'three', label: 'About 3 minutes', why: 'Right: 160 s of melting at exactly 0 °C, then 2 s to warm the meltwater by a degree. The thermometer sits still for eight times as long as it took to climb.' },
+    { key: 'jump', label: 'It jumps above 0 °C at once, because melting gives off heat', why: 'Melting takes heat in; it is freezing that gives heat out. Watch the energy meter below climb the whole time the thermometer sits at 0 °C.' },
+  ]}
+  correct="three"
+>
+
+<MeltTheIce prompt="Switch the plate on and watch the thermometer and the ice together." />
+
+</Predict>
+
+</Step>
+
+<Step>
+
+## Chill it with ice
+
+300 g of lemonade at 25 °C, and a tray of 20 g ice cubes at 0 °C. You want it between 5
+and 10 °C, with no ice left to water it down later.
+
+<ChillTheDrink
+  id="up-ch17-cubes-for-the-drink"
+  prompt="Choose how many cubes go in, drop them, and let the drink settle before you check."
+  cubes={6}
+  explanation="Three cubes, and it settles at 7.5 °C. Melting each 20 g cube soaks up 6.7 kJ, as much as warming that 20 g of water by 80 °C, so the melting does most of the chilling. Treat the ice as cold water and you would reach for 35 cubes."
+/>
+
+</Step>
+
+<Step>
+
+## Name it
+
+The heat that melts ice changes its phase, not its temperature. Per kilogram it is the
+**latent heat of fusion**, and it enters the budget before any warming does:
+
+$$Q = mL_f, \qquad L_f = 334\ \text{kJ/kg}$$
+
+<Recall id="up-ch17-recall-iced-drink" concept="latent-heat">
+  <div slot="front">A drink with ice still in it sits at 0 °C for a long time, even in a warm room. Why doesn't it warm up?</div>
+
+  Every joule leaking in goes into melting ice instead of warming the drink. The
+  thermometer cannot move until the ice is gone, and that costs 334 kJ per kilogram of ice.
+</Recall>
+
+</Step>
+
+<Step>
+
+## The steel is not colder
+
+A steel bench and a pine bench have stood side by side outdoors all night. They are at the
+same temperature, and the steel feels far colder.
+
+<TouchTheBench
+  id="up-ch17-benches-feel-same"
+  prompt="Drag the air thermometer to the day on which the two benches feel exactly alike, then check."
+  T0={5}
+  explanation="33 °C, your own skin temperature, and no other. Your hand senses how fast heat leaves it, and steel draws heat from skin far faster than pine does. On a cold day that drags your skin down toward the bench's temperature; on a 60 °C day it drags it up, and the steel is the one that burns."
+/>
+
+</Step>
+
+<Step>
+
+## Keep the ice until evening
+
+A cool box holding 3 kg of ice spends a 12-hour day in 30 °C shade, and you need 1 kg left
+at the end. Foam takes up room, so you want the thinnest wall that does the job.
+
+<CoolBoxDay
+  id="up-ch17-thinnest-wall"
+  prompt="Set the wall thickness, run the day, and check once it is over."
+  L0={2}
+  explanation="Just over 3.2 cm. You can afford to melt 2 kg, which is 668 kJ, over 43,200 s: a leak of 15.5 W. Heat conducts through a slab at P = kAΔT/L, so L = 0.033 × 0.5 × 30 / 15.5 = 3.2 cm. The inside never left 0 °C; the ice paid for every joule that got through."
+/>
+
+<Recall id="up-ch17-recall-double-wall" concept="thermal-conduction">
+  <div slot="front">You double the thickness of a cool box's foam. What happens to the heat leaking in, and to the temperature inside while there is ice?</div>
+
+  The leak halves, because $P = kA\,\Delta T/L$. The inside stays at 0 °C either way: the
+  thicker wall only makes the ice last twice as long.
+</Recall>
+
+## What to carry forward
+
+- **While a phase changes, heat goes in and the thermometer holds still.** Melting ice costs 334 kJ per kilogram.
+- **Heat conducts at $P = kA\,\Delta T/L$.** What a surface feels like, and what insulation does, are both about that rate. Nothing carries "cold".
+
+Next: what temperature is, one molecule at a time.
+
+</Step>

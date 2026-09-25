@@ -1,0 +1,14 @@
+title: 'The Carnot limit'
+blurb: 'No engine between a hot bath and a cold bath can beat 1 − T_c/T_h. The engine that reaches it adds no entropy at all, and the limit depends only on the two temperatures, in kelvin.'
+notation: '\eta \le \eta_C = 1 - \frac{T_c}{T_h}'
+tags:
+  - 'up-ch20'
+misconceptions:
+  - id: 'efficiency-depends-on-working-substance'
+    name: 'A better working gas gives a better ideal engine.'
+    signal: 'Expects steam, helium or some special fluid to beat the Carnot limit between the same two temperatures.'
+    correction: 'The limit comes from the entropy ledger of the two baths, and the engine''s working substance ends every cycle where it began. Only T_h and T_c enter.'
+  - id: 'celsius-in-carnot'
+    name: 'Temperatures in the efficiency can be in degrees Celsius.'
+    signal: 'Computes 1 − 20/300 for a boiler at 300 °C and a river at 20 °C.'
+    correction: 'The ratio T_c/T_h needs absolute temperatures. 300 °C to 20 °C is 573 K to 293 K, a limit of 49%, not 93%.'

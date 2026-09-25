@@ -132,7 +132,12 @@ export default function AimTheBead({ id, prompt, pulses, bead, explanation }: Ai
               stroke={C.velocity} strokeWidth={4} strokeLinecap="round" opacity={0.85} />
             <Handle s={s} at={tip} step={0.03} label="The bead's velocity: drag the arrow tip"
               onChange={(p) => { setTip([Math.max(X[0], Math.min(X[1], p[0])), Math.max(-0.9, Math.min(0.9, p[1]))]); task.touch(); }} />
-            {um > 0.05 && <g pointerEvents="none"><Arrow s={s} from={[bead, y0]} to={tip} color={C.ink} width={2.5} label={`${um.toFixed(1)} m/s`} labelSide={-1} /></g>}
+            {um > 0.05 && <g pointerEvents="none">
+              <Arrow s={s} from={[bead, y0]} to={tip} color={C.ink} width={2.5} />
+              {/* the speed sits beside the shaft's middle, clear of the handle at the tip */}
+              <text x={s.sx((bead + tip[0]) / 2) + 16} y={s.sy((y0 + tip[1]) / 2) + 5} fontSize={14} fontWeight={600} fill={C.ink}
+                stroke="var(--color-surface)" strokeWidth={4} paintOrder="stroke">{um.toFixed(1)} m/s</text>
+            </g>}
             <circle ref={(el) => { els.current.bead = el; }} cx={s.sx(bead)} cy={s.sy(y0)} r={6} fill={C.position} pointerEvents="none" />
             <line x1={s.sx(-2.1)} x2={s.sx(-1.1)} y1={s.sy(-0.84)} y2={s.sy(-0.84)} stroke={C.faint} strokeWidth={1.2} />
             <text x={s.sx(-1.6)} y={s.sy(-0.84) - 6} textAnchor="middle" fontSize={12} fill={C.faint}>1 m</text>

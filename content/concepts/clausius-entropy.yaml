@@ -1,0 +1,10 @@
+title: 'Entropy carried by heat'
+blurb: 'Heat Q entering a body at temperature T raises its entropy by Q/T. The same joule changes a cold body''s count of arrangements more than a hot one''s, which is why heat flows from hot to cold by itself.'
+notation: 'dS = \frac{dQ_{\text{rev}}}{T}'
+tags:
+  - 'up-ch20'
+misconceptions:
+  - id: 'heat-carries-fixed-entropy'
+    name: 'A joule of heat carries the same entropy wherever it goes.'
+    signal: 'Expects moving heat from a hot body to a cold one to leave the total entropy unchanged.'
+    correction: 'A joule leaving a 600 K bath takes 1/600 J/K with it; the same joule arriving in a 300 K bath brings 1/300 J/K. Heat flowing downhill in temperature always raises the total.'

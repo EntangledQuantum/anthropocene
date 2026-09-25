@@ -1,0 +1,10 @@
+title: 'Calorimetry'
+blurb: 'Treat a mix as an energy budget: every joule one part loses another part gains, container included, and the final temperature is whatever balances the books.'
+notation: '\textstyle\sum_i m_i c_i\,(T_f - T_i) = 0'
+tags:
+  - 'up-ch17'
+misconceptions:
+  - id: 'container-costs-nothing'
+    name: 'Only the water needs heating; the pot is free.'
+    signal: 'Sizes the heat for a pot of water as m c ΔT of the water alone.'
+    correction: 'The pot warms with the water. A 1.5 kg iron pot takes 20 kJ of the 271 kJ needed to bring 2 kg of water from 20 °C to 50 °C; leave it out and the water stops near 48 °C.'

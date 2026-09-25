@@ -207,6 +207,10 @@ describe('the driven rope', () => {
     expect(pts[0]).toBeCloseTo(2, 1);
   });
 
+  it('one loop: no still point between the ends', () => {
+    expect(stillPoints({ ...DRIVE, freq: 1 })).toEqual([]);
+  });
+
   it('three loops: still points at a third and two thirds', () => {
     const pts = stillPoints({ ...DRIVE, freq: 3 });
     expect(pts.length).toBe(2);

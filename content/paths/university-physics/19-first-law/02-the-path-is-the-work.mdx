@@ -1,0 +1,131 @@
+---
+title: 'The path is the work'
+blurb: 'Drag a gas across the p–V plane and read the work as the area under its path, run it round a loop to make an engine, and push a pump fast enough that no heat can leave.'
+order: 2
+tier: 'core'
+minutes: 11
+teaches:
+  - 'pv-work'
+  - 'state-function'
+  - 'thermodynamic-cycle'
+  - 'adiabatic-process'
+requires:
+  - 'first-law-of-thermodynamics'
+  - 'variable-force-work'
+  - 'ideal-gas-law'
+status: 'live'
+updated: 2026-09-25
+---
+
+<Step>
+
+One mole of air goes from state A to state B, and there are two ways to take it. Route 1 lets
+it expand at 200 kPa first, then cools it at fixed volume; route 2 cools it first, then lets it
+expand at 100 kPa.
+
+<Predict
+  id="up-ch19-two-routes"
+  question="Which route takes more heat from the flame, all told?"
+  options={[
+    { key: 'same', misconception: 'same-endpoints-same-heat', label: 'Neither: same start, same end, same heat', why: 'Same start and end fix the change in internal energy: 2500 J both ways. But the flame also pays for the work, and route 1 pushes the piston out at twice the pressure. Walk both routes below and read Q.' },
+    { key: 'r1', label: 'Route 1', why: 'Right: 6500 J against 4500 J. Both raise U by 2500 J, but route 1 does 4000 J of work on the way and route 2 only 2000 J.' },
+    { key: 'r2', label: 'Route 2: it cools first, so it has more to make back', why: 'Route 1 cools too, just later, and the order does not change U. What differs is the pressure while the piston moves out: 200 kPa on route 1, 100 kPa on route 2.' },
+  ]}
+  correct="r1"
+>
+
+<WalkThePvPlane toB routes prompt="Drag the state from A to B along either dashed route. Watch the flame, the ice and the heat meter." />
+
+</Predict>
+
+</Step>
+
+<Step>
+
+## Five thousand joules
+
+The gas does $p\,dV$ of work each time its volume grows by $dV$. The shading under your path
+adds those up.
+
+<WalkThePvPlane
+  id="up-ch19-five-thousand"
+  toB
+  target={5000}
+  prompt="Take the gas from A to B so that it does 5000 J of work."
+  explanation="Any path with 5000 J under it will do: up to 250 kPa at 10 L, across to 30 L, down to B, for instance. Neither dashed route gets there, because route 1 is the most either gives, 4000 J. And at B the change in U read 2500 J, whatever you drew."
+/>
+
+</Step>
+
+<Step>
+
+## Name it
+
+Work is the area under the path, and heat is whatever the ledger needs besides:
+
+$$W = \int p\,dV \qquad\qquad Q = \Delta U + W$$
+
+Only $\Delta U$ is fixed by the endpoints. $U$ belongs to the state; $Q$ and $W$ belong to the
+route.
+
+<Recall id="up-ch19-recall-state" concept="state-function">
+  <div slot="front">A gas goes from A to B by two different routes. Which of Q, W and ΔU must be the same both times?</div>
+
+  Only $\Delta U$. Internal energy is a property of the state, so its change needs only the
+  two endpoints. $W$ is the area under the route and $Q = \Delta U + W$, so both change with it.
+</Recall>
+
+</Step>
+
+<Step>
+
+## Round the loop
+
+Bring the gas back to A and its internal energy is exactly what it was. The work is not.
+
+<WalkThePvPlane
+  id="up-ch19-loop"
+  loop
+  target={1500}
+  prompt="Take the gas round a loop back to A, with the gas doing 1500 J of net work."
+  explanation="A loop of 1500 J run clockwise: out at high pressure, back at low. Back at A the change in U is 0, so the flame put in 1500 J more than the ice took out, and the piston delivered all of it. That is an engine. Run the same loop anticlockwise and the gas takes in 1500 J of work instead: a refrigerator."
+/>
+
+<Recall id="up-ch19-recall-cycle" concept="thermodynamic-cycle">
+  <div slot="front">A gas runs round a closed loop on the p–V plane. What is its net work, and where did the energy come from?</div>
+
+  The area inside the loop, positive if it runs clockwise. Round a loop $\Delta U = 0$, so the
+  net heat in equals the net work out.
+</Recall>
+
+</Step>
+
+<Step>
+
+## Too fast for heat
+
+A bicycle pump with your thumb on the valve. Its barrel is ordinary metal, so heat can leak out,
+and the plane below shares its volume axis.
+
+<SlamThePump
+  id="up-ch19-slam-the-pump"
+  target={430}
+  prompt="Squeeze the air to the stop and get it hotter than 430 K."
+  explanation="Only a quick stroke, under about 0.85 s, gets there. Heat takes about 1.5 s to leak out, so a fast stroke leaves it no time: Q stays near 0, the work you do stays in the air, and the trace hugs the adiabat, pV^γ = constant. A slow stroke hands the work out through the barrel as it goes and slides toward the isotherm."
+/>
+
+<Recall id="up-ch19-recall-adiabatic" concept="adiabatic-process">
+  <div slot="front">What makes a compression adiabatic: going slowly, or going fast?</div>
+
+  Going too fast for heat to cross, or having walls that block it. With $Q = 0$, all the work
+  goes into $U$, so the gas heats and follows $pV^{\gamma} = \text{const}$.
+</Recall>
+
+## What to carry forward
+
+- **The path is the work.** $W$ is the area under the path on the p–V plane, and a loop's net work is the area it encloses.
+- **$U$ belongs to the state, $Q$ and $W$ to the route.** A fast squeeze with no time for heat follows the adiabat, steeper than the isotherm.
+
+Next: the second law, and why no loop can turn all of its heat into work.
+
+</Step>

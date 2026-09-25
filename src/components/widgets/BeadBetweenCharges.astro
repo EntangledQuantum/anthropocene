@@ -1,0 +1,6 @@
+---
+// @graded — with `id`, the scene checks itself: put the bead where the net force vanishes.
+import Island, { type BeadBetweenChargesProps } from '../viz/BeadBetweenCharges.tsx';
+const props = Astro.props as BeadBetweenChargesProps;
+---
+<Island client:visible {...props} />

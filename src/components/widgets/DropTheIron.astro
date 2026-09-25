@@ -1,0 +1,6 @@
+---
+// @graded — when given an `id`, the scene checks itself: drag the water level, drop the iron, hit a final temperature.
+import Island, { type DropTheIronProps } from '../viz/DropTheIron.tsx';
+const props = Astro.props as DropTheIronProps;
+---
+<Island client:visible {...props} />
