@@ -1,0 +1,18 @@
+title: 'Electric potential'
+blurb: 'A height map for charge. Every place has a potential V, the potential energy per coulomb a charge would have there. The work the field does carrying a charge from A to B is q(V_A − V_B), whatever the path, so around any closed loop it is zero.'
+notation: 'V = \dfrac{U}{q},\qquad W_{A\to B} = q\,(V_A - V_B),\qquad V_{\text{point}} = k\,\dfrac{Q}{r}'
+tags:
+  - 'up-ch23'
+misconceptions:
+  - id: 'up-ch23-loop-work-nonzero'
+    name: 'Carrying a charge round a loop past other charges leaves some net work behind.'
+    signal: 'Predicts positive or negative net work for a closed loop, depending on which charge the loop passes near.'
+    correction: 'The work out and the work back cancel exactly. Electrostatic work depends only on where you start and where you finish, and a loop starts and finishes at the same place.'
+  - id: 'up-ch23-work-depends-on-path'
+    name: 'A longer or more winding path costs the field more work.'
+    signal: 'Expects the work from A to B to grow with the distance walked, or to depend on which side of a charge the path goes.'
+    correction: 'The field''s work is q(V_A − V_B). A long detour gains exactly what it loses; only the heights of the two ends count.'
+  - id: 'up-ch23-loop-direction-matters'
+    name: 'Going round the loop one way gives positive work, the other way negative.'
+    signal: 'Says the answer for a closed loop depends on clockwise versus anticlockwise.'
+    correction: 'Reversing the loop flips the sign of every piece of work, and zero with its sign flipped is still zero.'

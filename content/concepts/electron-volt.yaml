@@ -1,0 +1,18 @@
+title: 'The electron-volt'
+blurb: 'A charge that falls from rest through a potential difference ΔV gains kinetic energy −qΔV. For one elementary charge through one volt that is one electron-volt, 1.6 × 10⁻¹⁹ J: a unit of energy, not of voltage.'
+notation: '\Delta K = -q\,\Delta V,\qquad 1\ \text{eV} = 1.602\times10^{-19}\ \text{J}'
+tags:
+  - 'up-ch23'
+misconceptions:
+  - id: 'up-ch23-heavier-gains-more'
+    name: 'A heavier particle gains more energy falling through the same voltage.'
+    signal: 'Predicts a proton through 100 V ends with more kinetic energy than an electron through 100 V.'
+    correction: 'The energy gained is charge times voltage, and the proton and electron carry the same size of charge. The mass decides only the speed: the proton ends 43 times slower with the same 100 eV.'
+  - id: 'up-ch23-faster-means-more-energy'
+    name: 'The faster particle must have gained more energy.'
+    signal: 'Predicts the electron gains more energy than the proton because it ends up faster.'
+    correction: 'Kinetic energy is ½mv². The electron is 1836 times lighter, so the same energy makes it √1836 ≈ 43 times faster.'
+  - id: 'up-ch23-ev-is-a-voltage'
+    name: 'An electron-volt is a kind of voltage.'
+    signal: 'Adds eV to volts, or quotes a battery in eV.'
+    correction: 'An eV is an energy: one elementary charge times one volt. A voltage is energy per coulomb; an eV is energy.'

@@ -1,0 +1,14 @@
+title: 'Equipotentials'
+blurb: 'Lines (in 3D, surfaces) of equal potential: the contour lines of the height map. Moving a charge along one costs no work, so the field has no component along it: the field crosses every equipotential at right angles, pointing downhill.'
+notation: '\vec E \perp \text{equipotential},\qquad W_{\text{along it}} = 0'
+tags:
+  - 'up-ch23'
+misconceptions:
+  - id: 'up-ch23-field-along-contour'
+    name: 'The field runs along the equipotential lines.'
+    signal: 'Aims the field parallel to the contour through a point.'
+    correction: 'Along a contour V does not change, so the field does no work there and has no component along it. The field crosses the contour square-on.'
+  - id: 'up-ch23-field-away-from-nearest'
+    name: 'The field at a point simply points away from the nearest positive charge.'
+    signal: 'Aims the field straight away from the closest + charge, ignoring the others.'
+    correction: 'Every charge contributes. The contour map already adds them up: the field points straight down its steepest slope.'

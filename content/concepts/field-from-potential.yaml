@@ -1,0 +1,14 @@
+title: 'The field from the potential'
+blurb: 'The field is the downhill slope of V: its strength is how fast V falls per metre, so it is strongest where the contours crowd, and in a uniform gap it is ΔV/d. Height and steepness are different questions: V can be zero where the field is strong, and the field zero where V is high.'
+notation: '\vec E = -\nabla V,\qquad E = \dfrac{\Delta V}{d}\ \text{(uniform gap)}'
+tags:
+  - 'up-ch23'
+misconceptions:
+  - id: 'up-ch23-high-v-strong-field'
+    name: 'Where the potential is high, the field is strong.'
+    signal: 'Looks for the strongest field at the highest ground, next to the biggest positive charge.'
+    correction: 'The field reads the slope, not the height. It is strongest where the contours are packed closest, which can be at the lowest ground on the map.'
+  - id: 'up-ch23-zero-v-zero-field'
+    name: 'Where V is zero, there is no field.'
+    signal: 'Says the field vanishes midway between + and − charges because the potential is zero there.'
+    correction: 'Zero is only a height. Midway between + and − the ground is steep, and the field is strong.'

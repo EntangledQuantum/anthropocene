@@ -1,0 +1,18 @@
+title: 'Electric potential energy'
+blurb: 'A charge q at a place where the potential is V has potential energy U = qV. A positive charge rolls toward lower V; a negative charge rolls toward higher V, because for it the map is upside down.'
+notation: 'U = qV,\qquad W_{\text{field}} = -\Delta U'
+tags:
+  - 'up-ch23'
+misconceptions:
+  - id: 'up-ch23-potential-is-energy'
+    name: 'Potential and potential energy are the same thing.'
+    signal: 'Expects every charge to move toward lower V, or quotes V in joules.'
+    correction: 'V belongs to the place; U = qV belongs to a charge at that place. For a negative charge U is highest where V is lowest, so it rolls uphill on the V map.'
+  - id: 'up-ch23-everything-rolls-downhill'
+    name: 'Any charge let go on the potential map moves toward lower V.'
+    signal: 'Predicts an electron released at rest moves along the field, toward lower potential.'
+    correction: 'The force is qE. For a negative q it points against E, toward higher V. The field does positive work on an electron carried uphill.'
+  - id: 'up-ch23-voltage-flows'
+    name: 'Voltage is a substance that flows through things.'
+    signal: 'Talks about voltage going through a wire or a gap.'
+    correction: 'Voltage is a difference in height between two places. Charge moves; the difference in V is what it falls through.'
