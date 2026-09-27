@@ -1,0 +1,6 @@
+---
+// @graded — with `id` and `target`, the scene checks itself: set the field so the proton lands in the slot.
+import Island, { type BendIntoTheSlotProps } from '../viz/BendIntoTheSlot.tsx';
+const props = Astro.props as BendIntoTheSlotProps;
+---
+<Island client:visible {...props} />

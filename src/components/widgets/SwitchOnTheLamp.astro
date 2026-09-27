@@ -1,0 +1,6 @@
+---
+// Ungraded scene (chapter 25). See src/components/viz/SwitchOnTheLamp.tsx.
+import Island, { type SwitchOnTheLampProps } from '../viz/SwitchOnTheLamp.tsx';
+const props = Astro.props as SwitchOnTheLampProps;
+---
+<Island client:visible {...props} />

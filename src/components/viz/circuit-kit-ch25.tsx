@@ -7,19 +7,21 @@
  *                   darting about at random, and one tagged electron with a
  *                   trail. The drift is to scale against the scale bar; the
  *                   random motion is drawn slowed and shrunk, because at its
- *                   real 1600 km/s it would be a blur.
+ *                   real ~1570 km/s it would be a blur.
  *   CellCutaway     a real cell opened up: an ideal pump (the emf) and a
  *                   small resistor (its internal resistance) inside one case.
  *   Dial            a round meter face with a needle and a digital reading.
  *   Lamp            a bulb whose glow is its share of a maximum power.
+ *   CellLoop        the cell, a voltmeter on its terminals, an ammeter, and
+ *                   two rails for whatever load a scene hangs between them.
  *
  * Colours: charge carriers are iris (position), the field orchid, energy
- * aqua. Heat wasted inside the cell is `warn`, used for nothing else here.
+ * aqua. Heat (in the cell or a heater) is rose, used for nothing else here.
  */
-import { useEffect, useId, useRef, useState, type MutableRefObject } from 'react';
-import { C } from './scene.tsx';
+import { useEffect, useId, useRef, useState, type MutableRefObject, type ReactNode } from 'react';
+import { C, type StageApi } from './scene.tsx';
 
-export const WASTE = C.warn;
+export const WASTE = 'var(--color-rose)';
 
 export function cssVar(name: string): string {
   return getComputedStyle(document.documentElement).getPropertyValue(name).trim() || '#ccc';
@@ -234,4 +236,47 @@ export function Lamp({ cx, cy, glow, r = 18 }: { cx: number; cy: number; glow: n
       fill="none" stroke={k > 0.02 ? C.ink : C.faint} strokeWidth={1.6} />
     <rect x={cx - r * 0.45} y={cy + r * 0.85} width={r * 0.9} height={r * 0.5} fill={C.surface} stroke={C.soft} />
   </g>;
+}
+
+/* ── one cell driving a load, with its meters ───────────────────────────── */
+
+/** A StageApi for a raw 640-wide view in plain view px (y down), so a
+ *  `Handle` can live in a hand-laid circuit drawing. */
+export const viewStage = (H: number): StageApi => ({
+  sx: (v) => v, sy: (v) => v, len: (d) => d, W: 640, H, x: [0, 640], y: [0, H],
+});
+
+/** Rails the load hangs between, view px. */
+export const RAIL = { top: 92, bot: 284, x0: 250, x1: 610 } as const;
+
+/**
+ * The cell (opened up) at the left, a voltmeter across its terminals, an
+ * ammeter in the top rail, and two rails running right. The load goes in
+ * `children`, between RAIL.top and RAIL.bot, from RAIL.x0 to RAIL.x1.
+ */
+export function CellLoop({ cell, I, V, heat, Imax, children, label }: {
+  cell: { emf: number; r: number }; I: number; V: number; heat: number;
+  /** Full scale of the ammeter, A. */
+  Imax: number;
+  children?: ReactNode;
+  label: string;
+}) {
+  const cx = 44, cy = 124;
+  const t = cellTerminals(cx, cy);
+  return (
+    <svg viewBox="0 0 640 300" role="img" aria-label={label}
+      style={{ width: '100%', display: 'block', touchAction: 'none', userSelect: 'none', fontFamily: 'var(--font-sans)' }}>
+      {/* rails: + terminal up to the top rail through the ammeter; − terminal round the back to the bottom rail */}
+      <path d={`M${t.plus[0]},${t.plus[1] - 4} L${t.plus[0]},${RAIL.top} L${190},${RAIL.top} M${250},${RAIL.top} L${RAIL.x1},${RAIL.top}
+        M${t.minus[0]},${t.minus[1] - 4} L${t.minus[0]},${cy - 26} L${18},${cy - 26} L${18},${RAIL.bot} L${RAIL.x1},${RAIL.bot}`}
+        fill="none" stroke={C.soft} strokeWidth={2} />
+      <Dial cx={220} cy={RAIL.top - 8} value={I} max={Imax} unit="A" />
+      {/* voltmeter across the terminals */}
+      <path d={`M${cx + 40},${80} L${t.minus[0] + 4},${t.minus[1] - 4} M${cx + 80},${80} L${t.plus[0] - 4},${t.plus[1] - 4}`}
+        fill="none" stroke={C.faint} strokeWidth={1.2} strokeDasharray="4 3" />
+      <Dial cx={cx + 60} cy={44} value={V} max={cell.emf * 1.2} unit="V" />
+      <CellCutaway x={cx} y={cy} emf={cell.emf} r={cell.r} heat={heat} />
+      {children}
+    </svg>
+  );
 }

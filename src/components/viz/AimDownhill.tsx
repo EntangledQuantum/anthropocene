@@ -37,7 +37,7 @@ const R = 4; // arrow length, cm
 
 export default function AimDownhill({
   id, prompt, charges = [{ x: -11, y: 3, q: 6 }, { x: 10, y: 5, q: 4 }, { x: 2, y: -6, q: -7 }],
-  probe = [-2, 5], startDeg = 100, tolerance = 15, explanation,
+  probe = [12, -3], startDeg = 100, tolerance = 15, explanation,
 }: AimDownhillProps) {
   const task = useTask(id, 'aim-downhill');
   const si = useMemo(() => sceneToSI(charges), [charges]);
@@ -88,9 +88,9 @@ export default function AimDownhill({
             {showContour && <path d={contour.map((t, i) => `${i ? 'L' : 'M'}${s.sx(t[0]).toFixed(1)},${s.sy(t[1]).toFixed(1)}`).join('')}
               fill="none" stroke={C.ink} strokeWidth={2} strokeDasharray="6 5" opacity={0.85} />}
             {charges.map((c, i) => <ChargeDot key={i} s={s} at={[c.x, c.y]} q={c.q} label={`${c.q > 0 ? '+' : '−'}${Math.abs(c.q)} nC`} />)}
-            {task.done && <Arrow s={s} from={probe} to={[probe[0] + (E[0] / Math.hypot(...E)) * R, probe[1] + (E[1] / Math.hypot(...E)) * R]}
+            <Arrow s={s} from={probe} to={tip} color={C.ink} width={3.5} label={task.done ? undefined : 'your guess'} />
+            {task.done && <Arrow s={s} from={probe} to={[probe[0] + (E[0] / Math.hypot(...E)) * R * 1.35, probe[1] + (E[1] / Math.hypot(...E)) * R * 1.35]}
               color={C.field} width={4} label="E" labelSide={-1} />}
-            <Arrow s={s} from={probe} to={tip} color={C.ink} width={3.5} label="your guess" />
             <circle cx={s.sx(probe[0])} cy={s.sy(probe[1])} r={5} fill={C.ink} />
             <circle cx={s.sx(probe[0])} cy={s.sy(probe[1])} r={s.len(R)} fill="none" stroke={C.ghost} strokeDasharray="2 5" />
             <Handle s={s} at={tip} step={0.4} label="Arrow tip: drag it round the spot" onChange={(r) => {

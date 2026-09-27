@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { METALS, resistance, wireArea } from '../../lib/physics/current.ts';
 import { C, CheckBar, Handle, Meter, SceneCard, Stage, useTask, type Vec } from './scene.tsx';
-import { Dial } from './circuit-kit-ch25.tsx';
+import { Dial, WASTE } from './circuit-kit-ch25.tsx';
 
 /**
  * A nichrome heating element strung between two posts on a 12 V supply.
@@ -85,7 +85,7 @@ export default function ReshapeTheWire({
             <rect x={s.sx(L + 0.06) - 8} y={s.sy(WY) - 26} width={16} height={52} rx={3} fill={C.surface} stroke={C.ink} strokeWidth={1.5} />
             {/* the element: glow, then metal */}
             {glow > 0.01 && <rect x={s.sx(-0.02)} y={s.sy(WY) - half - 8} width={s.sx(L + 0.02) - s.sx(-0.02)} height={2 * half + 16} rx={half + 8}
-              fill="var(--color-rose)" opacity={0.08 + 0.4 * glow} />}
+              fill={WASTE} opacity={0.08 + 0.4 * glow} />}
             <rect x={s.sx(-0.06)} y={s.sy(WY) - half} width={s.sx(L + 0.06) - s.sx(-0.06)} height={2 * half}
               fill={C.faint} stroke={C.ink} strokeWidth={1} />
             <text x={s.sx(L / 2) + 16} y={s.sy(yTop) - 12} fontSize={13} fill={C.soft}>{d.toFixed(2)} mm across</text>

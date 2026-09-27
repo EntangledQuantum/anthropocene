@@ -1,0 +1,6 @@
+---
+// Ungraded scene (chapter 25). See src/components/viz/SagTheBattery.tsx.
+import Island, { type SagTheBatteryProps } from '../viz/SagTheBattery.tsx';
+const props = Astro.props as SagTheBatteryProps;
+---
+<Island client:visible {...props} />

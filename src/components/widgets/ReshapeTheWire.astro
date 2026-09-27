@@ -1,0 +1,6 @@
+---
+// @graded — when given `id`, the scene checks itself (chapter 25).
+import Island, { type ReshapeTheWireProps } from '../viz/ReshapeTheWire.tsx';
+const props = Astro.props as ReshapeTheWireProps;
+---
+<Island client:visible {...props} />

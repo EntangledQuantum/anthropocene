@@ -81,7 +81,7 @@ describe('the field is the downhill slope of V', () => {
   });
 
   it('crosses the contours at right angles and points toward lower V', () => {
-    const P = cm(-2, 5);
+    const P = cm(12, -3);
     const c = equipotentialThrough(AIM, P, { ds: 5e-4, steps: 40 });
     const i = c.points.findIndex((q) => q === P);
     const a = c.points[i - 1], b = c.points[i + 1];
@@ -94,9 +94,11 @@ describe('the field is the downhill slope of V', () => {
 
   it('at the aim probe the field is not "away from the nearest +" nor "toward the −"', () => {
     // So aiming by the rule of thumb fails; reading the contours works.
-    const e = field(AIM, -0.02, 0.05);
-    expect(Math.abs(angleBetween([-2 - -11, 5 - 3], e))).toBeGreaterThan(35);
-    expect(Math.abs(angleBetween([2 - -2, -6 - 5], e))).toBeGreaterThan(35);
+    const e = field(AIM, 0.12, -0.03);
+    expect(Math.abs(angleBetween([12 - 10, -3 - 5], e))).toBeGreaterThan(35);
+    expect(Math.abs(angleBetween([2 - 12, -6 - -3], e))).toBeGreaterThan(35);
+    // and it is not a saddle: the field there is a healthy 7.8 kV/m
+    expect(Math.hypot(...e) / 1000).toBeCloseTo(7.8, 0);
   });
 
   it('the field at A in the carry scene is about 12 kV/m, so a charge let go there is pushed', () => {

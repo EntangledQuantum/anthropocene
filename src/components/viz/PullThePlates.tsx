@@ -41,7 +41,7 @@ export interface PullThePlatesProps {
 const AREA = 0.01; // 10 cm × 10 cm
 const MM = 1e-3;
 const LINE_E = 500; // V/m per field line
-const MM_PER_UN = 0.25; // force arrow length, mm per µN
+const MM_PER_UN = 0.5; // force arrow length, mm per µN
 
 export default function PullThePlates({
   id, prompt, volts = 12, gap: gap0 = 2, range = [1, 6], closed: closed0 = true, switchable = false,
@@ -132,11 +132,11 @@ export default function PullThePlates({
             <text x={s.sx(-1.7)} y={s.sy(yRail) - 22} textAnchor="middle" fontSize={13} fill={closed ? C.soft : C.warn}>
               {closed ? 'closed' : 'open'}</text>
             <CapacitorPicture s={s} c={c} lineE={LINE_E} />
-            <GapLabel s={s} gap={gap} y={-0.45} />
+            <GapLabel s={s} gap={gap} y={10.55} above />
             {/* the insulating handle, and the attraction on the plate you hold */}
             <line x1={s.sx(gap) + 4} x2={s.sx(gap) + 4} y1={s.sy(0)} y2={s.sy(-2)} stroke={C.ghost} strokeWidth={5} strokeLinecap="round" />
-            <Arrow s={s} from={[gap, 10.6]} to={[gap - F * 1e6 * MM_PER_UN, 10.6]} color={C.force}
-              label={`attraction ${si(F, 'N')}`} />
+            <Arrow s={s} from={[gap, -0.9]} to={[gap - F * 1e6 * MM_PER_UN, -0.9]} color={C.force}
+              label={`attraction ${si(F, 'N')}`} labelSide={-1} />
             <Handle s={s} at={[gap, -2]} color={C.ink} step={0.1} label="Right plate: drag sideways"
               clamp={(p) => [Math.min(range[1], Math.max(range[0], Math.round(p[0] * 20) / 20)), -2]}
               onChange={(p) => { if (Math.abs(p[0] - gap) > 1e-9) moveTo(p[0]); }} />

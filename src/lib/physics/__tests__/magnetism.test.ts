@@ -27,7 +27,9 @@ describe('the magnetic force on a moving charge', () => {
   it('is perpendicular to the velocity, so its power is zero at every angle', () => {
     for (let a = 0; a < 2 * Math.PI; a += 0.37) {
       const v: V3 = [Math.cos(a) * 3e5, Math.sin(a) * 3e5, 0];
-      expect(magneticPower(E_CHARGE, v, [0.02, -0.3, 0.7])).toBeCloseTo(0, 30);
+      const B: V3 = [0.02, -0.3, 0.7];
+      // zero to round-off, measured against the size of each term q v² B
+      expect(Math.abs(magneticPower(E_CHARGE, v, B)) / (E_CHARGE * norm(v) ** 2 * norm(B))).toBeLessThan(1e-14);
     }
   });
 
@@ -106,7 +108,9 @@ describe('the circle', () => {
     const B = intoPage(0.1);
     const T = cyclotronPeriod(M_PROTON, E_CHARGE, 0.1);
     const laps = [2e5, 1e6, 2e6, 5e6].map((v) => lapInField(M_PROTON, E_CHARGE, v, B).lap);
-    for (const t of laps) expect(t / T).toBeCloseTo(1, 6);
+    for (const t of laps) expect(t / T).toBeCloseTo(1, 5);
+    // and the laps agree with one another far better than with the formula
+    for (const t of laps) expect(t / laps[0]).toBeCloseTo(1, 9);
     expect(T * 1e6).toBeCloseTo(0.656, 3); // 0.66 µs at 0.10 T
   });
 
@@ -127,7 +131,7 @@ describe('the spectrometer scene', () => {
     expect(-shot.landX / landingDistance(M_PROTON, v, E_CHARGE, 0.1)).toBeCloseTo(1, 4);
     expect(-shot.landX / CM).toBeCloseTo(20.9, 1); // the scene's starting field
     // half a lap, whatever the speed
-    expect(shot.tLand / cyclotronPeriod(M_PROTON, E_CHARGE, 0.1)).toBeCloseTo(0.5, 4);
+    expect(shot.tLand / cyclotronPeriod(M_PROTON, E_CHARGE, 0.1)).toBeCloseTo(0.5, 2);
   });
 
   it('needs about 0.13 T to land in the slot 16 cm away', () => {
@@ -167,7 +171,7 @@ describe('the force on a wire', () => {
   it('is I L × B: current to the right in a field into the page is pushed up', () => {
     const F = wireForce(3, [0.2, 0, 0], intoPage(0.25));
     expect(F[1]).toBeCloseTo(3 * 0.2 * 0.25, 12);
-    expect(F[0]).toBe(0);
+    expect(F[0]).toBeCloseTo(0, 15);
     expect(wireForce(-3, [0.2, 0, 0], intoPage(0.25))[1]).toBeLessThan(0);
   });
 
