@@ -1,0 +1,6 @@
+---
+// @graded — wind the outer of two coaxial coils until the field in the core vanishes.
+import Island, { type CancelTheCoreProps } from '../viz/CancelTheCore.tsx';
+const props = Astro.props as CancelTheCoreProps;
+---
+<Island client:visible {...props} />

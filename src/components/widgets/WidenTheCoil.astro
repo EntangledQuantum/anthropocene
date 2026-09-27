@@ -1,0 +1,6 @@
+---
+// Ungraded: widen a coil and watch the field in its middle stay put.
+import Island, { type WidenTheCoilProps } from '../viz/WidenTheCoil.tsx';
+const props = Astro.props as WidenTheCoilProps;
+---
+<Island client:visible {...props} />

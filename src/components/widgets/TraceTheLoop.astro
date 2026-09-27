@@ -1,0 +1,6 @@
+---
+// @graded — with `id` and `target`, draw a loop whose circulation is μ₀ × target.
+import Island, { type TraceTheLoopProps } from '../viz/TraceTheLoop.tsx';
+const props = Astro.props as TraceTheLoopProps;
+---
+<Island client:visible {...props} />

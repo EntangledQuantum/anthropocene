@@ -223,7 +223,7 @@ export function batteryCurrent(net: 'one' | 'two-series' | 'two-parallel' | 'tri
 /* ── chapter 26, lesson 2: charging and emptying a flash capacitor ──────── */
 
 /** The flash of lesson 2: a 300 V supply and a 200 µF capacitor. */
-export const CH26_FLASH = { emf: 300, C: 200e-6, ready: 0.95 } as const;
+export const CH26_FLASH: Readonly<{ emf: number; C: number; ready: number }> = { emf: 300, C: 200e-6, ready: 0.95 };
 /** The lamp the charged capacitor empties through in lesson 2. */
 export const CH26_LAMP_R = 10e3;
 
