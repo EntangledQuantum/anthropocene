@@ -99,7 +99,7 @@ export default function MixTheGases({ id, prompt, argon = 400, tolerance = 15, e
         label={`Start speeds. Helium 400 metres per second; argon ${vAr.toFixed(0)}.`}>
         {(s) => <>
           <circle cx={s.sx(400)} cy={s.sy(0.75)} r={6} fill={HE} />
-          <text x={s.sx(400) + 12} y={s.sy(0.75) + 5} fontSize={13} fill={HE}>helium, 4 u · 400 m/s</text>
+          <text x={s.sx(400) - 12} y={s.sy(0.75) + 5} textAnchor="end" fontSize={13} fill={HE}>helium, 4 u · 400 m/s</text>
           <text x={s.sx(vAr) + (vAr > 300 ? -16 : 16)} y={s.sy(0.25) + 5} textAnchor={vAr > 300 ? 'end' : 'start'} fontSize={13} fill={AR}>argon, 40 u · {vAr.toFixed(0)} m/s</text>
           {released
             ? <circle cx={s.sx(vAr)} cy={s.sy(0.25)} r={7} fill={AR} />

@@ -56,7 +56,7 @@ export default function SlideTheGlass({ id, prompt, volts = 1000, targetShare, e
           miss={`The glass covers ${pct(fill)} of the plates and holds ${pct(share)} of the charge beside it.`}
           hit={explanation} />}
       </div>}>
-      <Stage x={[-4, 5]} y={[-11.6, 12]} height={400}
+      <Stage x={[-2.6, 3.6]} y={[-11.6, 12]} height={400}
         label={`A disconnected capacitor at ${V.toFixed(0)} volts. Glass covers ${pct(fill)} of the plates and ${pct(share)} of the charge sits beside it.`}>
         {(s) => {
           const gapMm = GAP * 1000;
@@ -64,7 +64,7 @@ export default function SlideTheGlass({ id, prompt, volts = 1000, targetShare, e
           return <>
             <CapacitorPicture s={s} c={c} lineE={LINE_E} />
             <GapLabel s={s} gap={gapMm} y={PLATE_H + 0.45} above />
-            <text x={s.sx(gapMm) + 44} y={s.sy(bottom + 1.4)} fontSize={13} fill={C.soft}>glass, κ = {GLASS.kappa}</text>
+            <text x={s.sx(gapMm) + 28} y={s.sy(bottom + 1.4)} fontSize={13} fill={C.soft}>glass, κ = {GLASS.kappa}</text>
             <line x1={s.sx(gapMm / 2)} x2={s.sx(gapMm / 2)} y1={s.sy(bottom)} y2={s.sy(bottom - 0.9)} stroke={C.ghost} strokeWidth={4} />
             <Handle s={s} at={[gapMm / 2, bottom - 0.9]} color={C.ink} step={0.25} label="The glass: drag up into the gap"
               clamp={(p) => [gapMm / 2, Math.min(-0.9, Math.max(-PLATE_H - 0.9, Math.round(p[1] * 4) / 4))]}

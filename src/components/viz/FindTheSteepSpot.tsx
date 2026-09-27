@@ -63,7 +63,7 @@ export default function FindTheSteepSpot({
     <SceneCard id={id} prompt={prompt}
       footer={<div style={{ display: 'grid', gap: 14 }}>
         <div style={{ display: 'flex', gap: 26, flexWrap: 'wrap', alignItems: 'end' }}>
-          <Meter label="Potential at the probe" value={V.toFixed(0)} unit="V" color={C.ink} />
+          <Meter label="Potential at the probe" value={`${V < -0.5 ? '−' : ''}${Math.abs(V).toFixed(0)}`} unit="V" color={C.ink} />
           <Meter label="Field strength at the probe" value={revealed ? fmt(E, 'V/m') : 'hidden'} color={C.field} />
         </div>
         <CheckBar verdict={task.verdict} done={task.done}

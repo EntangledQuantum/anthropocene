@@ -100,7 +100,7 @@ export default function ChargeBeforeTheSpark({ id, prompt, target = 10e-3, glass
           <button type="button" className="anth-btn" onClick={reset}>Start over</button>
           <span style={{ marginLeft: 'auto', display: 'flex', gap: 22, flexWrap: 'wrap' }}>
             <Meter label="Voltage" value={si(V, 'V')} color={C.ink} />
-            <Meter label={`Field (sparks at ${limit / 1e6})`} value={`${(E / 1e6).toFixed(2)}`} unit="MV/m" color={C.field} />
+            <Meter label={`Field, sparks at ${limit / 1e6}`} value={`${(E / 1e6).toFixed(2)}`} unit="MV/m" color={C.field} />
             <Meter label="Stored" value={si(U, 'J')} color={C.energy} />
           </span>
         </div>

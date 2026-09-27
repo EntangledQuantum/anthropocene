@@ -1,0 +1,6 @@
+---
+// @graded — with `id`, the scene checks itself: point the arrow along q v × B, then the charge is let go.
+import Island, { type PointTheMagneticPushProps } from '../viz/PointTheMagneticPush.tsx';
+const props = Astro.props as PointTheMagneticPushProps;
+---
+<Island client:visible {...props} />

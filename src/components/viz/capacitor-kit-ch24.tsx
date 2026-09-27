@@ -66,7 +66,7 @@ export function CapacitorPicture({ s, c, lineE, shade = 0, slabParked }: {
   const nLines = Math.round(Math.abs(E) / lineE);
   const x0 = s.sx(0), x1 = s.sx(gap);
   const plateW = 8;
-  const hasSlab = c.kappa > 1;
+  const hasSlab = c.kappa > 1 && !slabParked;
 
   const slab = (sx0: number, sx1: number, top: number, inField: boolean) => {
     const cols = Math.max(2, Math.min(4, Math.floor((sx1 - sx0) / 26)));
