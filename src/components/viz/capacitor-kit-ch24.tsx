@@ -131,11 +131,3 @@ export function GapLabel({ s, gap, y = -0.55, above }: { s: StageApi; gap: numbe
     <text x={(a + b) / 2} y={above ? yy - 7 : yy + 16} textAnchor="middle" fontSize={13} fill={C.soft} fontFamily="var(--font-mono)">{gap.toFixed(1)} mm</text>
   </g>;
 }
-
-/** Plate labels, "+" over the left plate and "−" over the right. */
-export function PlateSigns({ s, gap }: { s: StageApi; gap: number }) {
-  return <g fontSize={16} fontWeight={700} textAnchor="middle">
-    <text x={s.sx(0) - 4} y={s.sy(PLATE_H) - 8} fill={POS}>+</text>
-    <text x={s.sx(gap) + 4} y={s.sy(PLATE_H) - 8} fill={NEG}>−</text>
-  </g>;
-}
