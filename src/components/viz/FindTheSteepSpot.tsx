@@ -57,7 +57,7 @@ export default function FindTheSteepSpot({
     setT(Math.max(0, Math.min(1, u)));
     task.touch();
   };
-  const L = 4 * Math.min(1, E / scan.eMax) + 1.2;
+  const L = 0.9 + 0.8 * Math.min(1, E / scan.eMax); // cm: short enough never to reach a charge from the track
 
   return (
     <SceneCard id={id} prompt={prompt}
