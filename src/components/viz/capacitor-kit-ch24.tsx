@@ -95,7 +95,7 @@ export function CapacitorPicture({ s, c, lineE, shade = 0, slabParked }: {
 
   return <g>
     {shade > 0 && <rect x={x0} y={s.sy(PLATE_H)} width={x1 - x0} height={s.sy(0) - s.sy(PLATE_H)}
-      fill={C.energy} opacity={Math.min(1, shade) * 0.55} />}
+      fill={C.energy} opacity={Math.min(1, shade) * 0.35} />}
     {hasSlab && slab(x0 + 2, x1 - 2, yGlass, true)}
     {slabParked && slab(x1 + 60, x1 + 60 + Math.max(60, x1 - x0), PLATE_H, false)}
     {/* field lines: evenly spread over the whole plate, the same density beside glass and air */}

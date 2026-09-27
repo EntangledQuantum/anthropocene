@@ -264,3 +264,13 @@ export const capEnergy = (C: number, v: number) => 0.5 * C * v * v;
 
 /** Fraction of the stored energy that has left when the voltage is at v of v0. */
 export const energyGoneAt = (v: number, v0: number) => 1 - (v / v0) ** 2;
+
+/** One exact step of charging (or, with emf = 0, discharging) through R:
+ *  the new voltage, the charge that moved, the energy the source gave and the
+ *  heat the resistor made during the step. Summed over any number of steps, even
+ *  with R changed between them, the heat is exact. */
+export function chargeStep(v: number, dt: number, emf: number, R: number, C: number) {
+  const v1 = chargeV(dt, emf, R, C, v);
+  const dQ = C * (v1 - v);
+  return { v: v1, dQ, source: emf * dQ, heat: 0.5 * C * ((emf - v) ** 2 - (emf - v1) ** 2) };
+}

@@ -1,0 +1,6 @@
+---
+// @graded — with `id` and `target`, the scene checks itself.
+import Island, { type RechargeTheFlashProps } from '../viz/RechargeTheFlash.tsx';
+const props = Astro.props as RechargeTheFlashProps;
+---
+<Island client:visible {...props} />

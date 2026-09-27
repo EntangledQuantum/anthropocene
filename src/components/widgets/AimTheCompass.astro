@@ -1,0 +1,6 @@
+---
+// @graded — turn a compass needle beside a current-carrying wire to the way it will settle.
+import Island, { type AimTheCompassProps } from '../viz/AimTheCompass.tsx';
+const props = Astro.props as AimTheCompassProps;
+---
+<Island client:visible {...props} />

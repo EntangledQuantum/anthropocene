@@ -117,3 +117,31 @@ describe('a real cell: V = ε − Ir', () => {
     expect(s.Pload / loadPower(cell, cell.r)).toBeCloseTo(40 / 121, 12);
   });
 });
+
+describe('the numbers the chapter 25 lessons quote', () => {
+  it('lamp cord: 40 000 times slower than 1 m/s-ish guesses, a lap takes nearly a day, the push 10 ns', () => {
+    const v = driftSpeed(0.5, mm2(0.75));
+    expect(2 / v).toBeGreaterThan(40000);                 // "About a second" is 40 000× too fast
+    expect(driftTime(2, v) / 180).toBeGreaterThan(200);   // "a few minutes" is hundreds of times too fast
+    expect(driftTime(4, v) / 3600).toBeGreaterThan(20);   // a full lap: nearly a day
+    expect(signalTime(2) * 1e9).toBeCloseTo(10, 6);
+  });
+
+  it('a cubic millimetre of copper holds about 85 billion billion free electrons', () => {
+    expect(Cu.n * 1e-9).toBeCloseTo(8.5e19, -18);
+  });
+
+  it('6 Ω of nichrome: 0.69 m of 0.40 mm wire, or 0.39 m of 0.30 mm', () => {
+    const rho = METALS.nichrome.rho;
+    expect(lengthFor(6, rho, wireArea(0.4e-3))).toBeCloseTo(0.69, 2);
+    expect(lengthFor(6, rho, wireArea(0.3e-3))).toBeCloseTo(0.39, 2);
+  });
+
+  it('a car battery with a hundredth of an ohm inside drives over a thousand amps into a short', () => {
+    expect(shortCircuitCurrent({ emf: 12.6, r: 0.01 })).toBeGreaterThan(1000);
+  });
+
+  it('the worn torch cell: 1.125 W at best, into 0.5 Ω', () => {
+    expect(loadPower({ emf: 1.5, r: 0.5 }, 0.5)).toBeCloseTo(1.125, 12);
+  });
+});

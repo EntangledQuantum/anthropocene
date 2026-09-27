@@ -243,9 +243,12 @@ describe('lesson 2: coils in coils', () => {
     expect(Math.abs(core(50)) / alone).toBeGreaterThan(1);
   });
 
-  it('with the core cancelled, the gap between the coils still holds μ₀n₂I₂', () => {
+  it('with the core cancelled, the gap between the coils still holds about μ₀n₂I₂, the outer coil\'s way', () => {
+    // turns 1.5 cm apart seen from 0.75 cm away ripple the field by several
+    // percent, so "about" is the honest word: within 10%
     const gap = biotSavart([...inner, ...outer(20)], [0, 0.0175, 0])[0];
-    expect(rel(Math.abs(gap), idealSolenoidField(20 / 0.3, 3))).toBeLessThan(0.05);
+    expect(gap).toBeLessThan(0);
+    expect(rel(Math.abs(gap), idealSolenoidField(20 / 0.3, 3))).toBeLessThan(0.1);
   });
 });
 

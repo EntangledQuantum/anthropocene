@@ -1,0 +1,125 @@
+---
+title: 'Every cell spends volts on itself'
+blurb: 'Predict how far a battery''s voltage sags under load, find its short-circuit current from a few readings, and choose the load that gets the most power out of it.'
+order: 2
+tier: 'foundation'
+minutes: 10
+teaches:
+  - 'emf'
+  - 'internal-resistance'
+  - 'electrical-power'
+requires:
+  - 'electric-current'
+  - 'resistance'
+  - 'electric-potential'
+  - 'mechanical-work'
+status: 'live'
+updated: 2026-09-27
+---
+
+<Step>
+
+A worn torch cell reads 1.50 V on a voltmeter with nothing attached. You screw a bulb in across it, then another beside the first.
+
+<Predict
+  id="up-ch25-cell-under-load"
+  question="What does the voltmeter on the cell's terminals do?"
+  options={[
+    { key: 'same', misconception: 'up-ch25-battery-fixed-voltage', label: 'Stays at 1.50 V: that is what the cell is', why: 'The 1.50 V is what the cell reads when it delivers no current. Screw the bulbs in below and watch the needle move.' },
+    { key: 'sag', label: 'Drops a little, and further with every bulb', why: 'Right. Every bulb draws more current, and the cell spends part of its 1.5 V pushing that current through itself.' },
+    { key: 'zero', misconception: 'up-ch25-current-used-up', label: 'Falls to zero: the bulbs use it all up', why: 'The bulbs are still lit, so there is still a voltage across them, and it is the voltage across the terminals. Nothing is used up but energy.' },
+    { key: 'up', label: 'Rises, because the cell starts working', why: 'The cell does start working, and that is exactly why it drops: the work of pushing current through its own insides comes out of the 1.5 V.' },
+  ]}
+  correct="sag"
+>
+
+<SagTheBattery prompt="Screw the bulbs in one at a time. Watch the voltmeter and the bulbs already lit." />
+
+</Predict>
+
+</Step>
+
+<Step>
+
+## Short it
+
+Your bulbs left points that fall on a straight line. A thick copper strap across the rails is a load of almost no resistance.
+
+<ShortTheCell
+  id="up-ch25-short-circuit"
+  prompt="Mark the current at which the terminals will read zero, then short the cell."
+  explanation="3.0 A, where the line meets zero volts. The strap has no resistance, but the cell does: its 0.5 Ω lets through ε/r = 3 A, and the whole 1.5 V is spent inside, heating the cell. A car battery, with a hundredth of an ohm inside, would drive over a thousand amps into the same strap."
+/>
+
+</Step>
+
+<Step>
+
+## Name it
+
+The pump inside the cell does 1.5 J of work on every coulomb it lifts: that is its **emf**, $\mathcal E$, in joules per coulomb, or volts. It is not a force. Some of that energy is spent pushing the current through the cell's own resistance $r$, and the terminals get the rest:
+
+$$V_{\text{terminal}} = \mathcal E - I r$$
+
+<Recall id="up-ch25-recall-label-voltage" concept="emf">
+  <div slot="front">A battery is labelled 9 V. When does a voltmeter across its terminals read exactly 9 V?</div>
+
+  Only when it delivers no current. The label is the emf, the work per coulomb its chemistry
+  does. Draw a current $I$ and $Ir$ of it is spent inside, so the terminals read less.
+</Recall>
+
+</Step>
+
+<Step>
+
+## Make it as bright as it goes
+
+The same worn cell drives one lamp, and you choose the lamp's resistance.
+
+<MatchTheLoad
+  id="up-ch25-brightest-lamp"
+  prompt="Slide the contact until the lamp takes the most power it can get, then check."
+  explanation="0.5 Ω, the cell's own resistance, for 1.125 W. Less resistance draws more current, but more of the emf is lost inside and the lamp's voltage falls faster than its current rises. At the peak the cell heats itself exactly as much as it lights the lamp: half the energy stays behind."
+/>
+
+<Recall id="up-ch25-recall-used-up" concept="electrical-power">
+  <div slot="front">A cell lights a lamp. Of current, charge and energy, which does the lamp use up?</div>
+
+  Only energy. The same current enters and leaves the lamp, and no charge is lost. Each
+  coulomb gives up energy as it passes, at a rate $P = IV = I^2R = V^2/R$.
+</Recall>
+
+</Step>
+
+<Step>
+
+## Power or efficiency
+
+At $R = r$ the load gets the most power and the source wastes as much again. Sometimes that is the right trade.
+
+<Classify
+  id="up-ch25-match-or-not"
+  prompt="Which should each of these do?"
+  buckets={[
+    { key: 'match', label: 'Match the load: R = r', accent: 'cyan' },
+    { key: 'high', label: 'Keep the load far above r', accent: 'ok' },
+  ]}
+  items={[
+    { key: 'grid', label: 'A power station feeding a city', bucket: 'high', why: 'Matching would burn half the fuel heating the generators. The grid is built so almost all the energy reaches the loads.' },
+    { key: 'torch', label: 'A torch cell lighting its bulb all evening', bucket: 'high', why: 'You want the cell to last. Energy spent heating the cell is energy that never reaches the bulb.' },
+    { key: 'phone', label: 'A phone battery running the phone', bucket: 'high', why: 'Same reason: every joule wasted inside is battery life lost, and a warm battery ages faster.' },
+    { key: 'aerial', label: 'An aerial passing a faint radio signal to a receiver', bucket: 'match', why: 'The signal is billionths of a watt and costs nothing. What matters is getting as much of it as possible, so aerials are matched.' },
+    { key: 'solar', label: 'A solar panel charging a battery at noon', bucket: 'match', why: 'Sunlight is free, so the charger hunts for the load that pulls the most power out of the panel: its maximum power point.' },
+  ]}
+  explanation="Match when the source is weak and free and every milliwatt counts. Keep the load far above r when you pay for the energy: at R = 10r the load keeps 91% of it, at a third of the peak power."
+/>
+
+## What to carry forward
+
+- **A real cell is a pump plus a resistor.** Its terminals read $\mathcal E - Ir$, sagging along a straight line to zero at $\mathcal E/r$.
+- **A load takes the most power at $R = r$**, and then the source wastes as much as it delivers.
+- **A lamp uses up energy, not current.** $P = IV = I^2R = V^2/R$.
+
+Next: Kirchhoff's rules, which are charge and energy bookkeeping for any network of wires.
+
+</Step>

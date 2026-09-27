@@ -176,8 +176,17 @@ export function connect(c: Cap, V: number): Move {
 /** Does the gap spark? The field has passed the breakdown strength of what fills it.
  *  With a partial slab the bare part (air) goes first, since the field is the same in both. */
 export function sparks(c: Cap): boolean {
-  const limit = c.fill >= 1 ? GLASS.breakdown : AIR_BREAKDOWN;
-  return field(c) > limit;
+  return field(c) > breakdownField(c);
+}
+
+/** The field at which this gap gives way, V/m: glass if it fills the gap, otherwise air. */
+export function breakdownField(c: Cap): number {
+  return c.fill >= 1 ? GLASS.breakdown : AIR_BREAKDOWN;
+}
+
+/** The capacitor at the instant it gives way: charged to exactly the breakdown field. */
+export function atBreakdown(c: Cap): Cap {
+  return atVoltage(c, breakdownField(c) * c.gap);
 }
 
 /** The most energy a gap can hold before it sparks, J: ½ κ ε₀ E_max² × volume. */

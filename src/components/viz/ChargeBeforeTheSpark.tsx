@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from 'react';
 import {
-  AIR_BREAKDOWN, GLASS, cap, energy, energyDensity, field, si, sparks, voltage, type Cap,
+  AIR_BREAKDOWN, GLASS, atBreakdown, cap, energy, energyDensity, field, si, sparks, voltage, type Cap,
 } from '../../lib/physics/capacitor.ts';
 import { C, CheckBar, Meter, SceneCard, Stage, useTask } from './scene.tsx';
 import { CapacitorPicture, GapLabel, PLATE_H } from './capacitor-kit-ch24.tsx';
@@ -32,7 +32,7 @@ export interface ChargeBeforeTheSparkProps {
 const AREA = 0.01;
 const GAP = 1e-3;
 const CURRENT = 0.6e-6; // amperes while held
-const LINE_E = 1e6;
+const LINE_E = 1.5e6;
 
 type Snap = { q: number; glass: boolean; charging: boolean; spark: null | { V: number; U: number; glass: boolean } };
 
@@ -56,7 +56,9 @@ export default function ChargeBeforeTheSpark({ id, prompt, target = 10e-3, glass
         if (s.charging) s.q += CURRENT * dt;
         const c = capOf(s);
         if (sparks(c)) {
-          s.spark = { V: voltage(c), U: energy(c), glass: s.glass };
+          // A frame can overshoot; the gap gave way the instant the field reached its limit.
+          const at = s.charging ? atBreakdown(c) : c;
+          s.spark = { V: voltage(at), U: energy(at), glass: s.glass };
           s.q = 0;
           s.charging = false;
           lastShown = 0;
@@ -107,7 +109,7 @@ export default function ChargeBeforeTheSpark({ id, prompt, target = 10e-3, glass
         {id && <CheckBar verdict={task.verdict} done={live && task.done}
           onCheck={() => task.check(hit, { U, glass: shown.glass, sparked: Boolean(sp) })} miss={miss} hit={explanation} />}
       </div>}>
-      <Stage x={[-4.5, 5.5]} y={[-1.8, 13]} height={320}
+      <Stage x={[-4, 4]} y={[-1.8, 13]} height={320}
         label={`A 1 millimetre gap ${shown.glass ? 'filled with glass' : 'of air'}, at ${si(V, 'V')}, storing ${si(U, 'J')}.${sp ? ' It has sparked.' : ''}`}>
         {(s) => {
           const xb = -3.2, yRail = 12;

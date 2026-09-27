@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import {
-  AIR_BREAKDOWN, EPS0, GLASS, atVoltage, boundCharge, cap, capacitance, chargeSplit, connect,
+  AIR_BREAKDOWN, EPS0, GLASS, atBreakdown, atVoltage, boundCharge, cap, capacitance, chargeSplit, connect,
   energy, energyDensity, field, fieldEnergy, maxEnergy, parallelPlateC, plateForce, pullConnected,
   pullIsolated, si, slideConnected, slideIsolated, sparks, storedEnergy, voltage,
 } from '../capacitor.ts';
@@ -194,6 +194,11 @@ describe('breakdown caps the field', () => {
     const ratio = maxEnergy(A, 1 * MM, GLASS.kappa, GLASS.breakdown) / maxEnergy(A, 1 * MM, 1, AIR_BREAKDOWN);
     expect(ratio).toBeCloseTo(GLASS.kappa * (GLASS.breakdown / AIR_BREAKDOWN) ** 2, 10);
     expect(ratio).toBeGreaterThan(50);
+  });
+  it('at breakdown the air gap holds exactly its maximum energy', () => {
+    const b = atBreakdown(atVoltage(air, 5000));
+    expect(voltage(b)).toBeCloseTo(3000, 6);
+    expect(energy(b) / maxEnergy(A, 1 * MM, 1, AIR_BREAKDOWN)).toBeCloseTo(1, 10);
   });
   it('10 mJ is out of reach with air and within reach with glass', () => {
     expect(maxEnergy(A, 1 * MM, 1, AIR_BREAKDOWN)).toBeLessThan(10e-3);

@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import {
-  CH26_BULB, CH26_EMF, CH26_FLASH, CH26_LAMP_R, TRIO_NODE, batteryCurrent, capEnergy, chargeLedger, chargeV,
+  CH26_BULB, CH26_EMF, CH26_FLASH, CH26_LAMP_R, TRIO_NODE, batteryCurrent, capEnergy, chargeLedger, chargeStep, chargeV,
   dischargeV, energyGoneAt, junctionFlows, nodeImbalance, parallel, readTrio, resistorForTime, series,
   solveCircuit, timeToFraction, type TrioSlot,
 } from '../circuits.ts';
@@ -156,5 +156,22 @@ describe('lesson 2: the energy ledger', () => {
     // the lamp: half the energy leaves at t = ½ RC ln 2
     const t = 0.5 * CH26_LAMP_R * C * Math.LN2;
     expect(dischargeV(t, v0, CH26_LAMP_R, C) / v0).toBeCloseTo(Math.SQRT1_2, 12);
+  });
+});
+
+describe('lesson 2: the step the scenes run', () => {
+  it('summed exact steps reproduce the closed-form ledger', () => {
+    const { emf, C } = CH26_FLASH; const R = 3338;
+    let v = 0, heat = 0, source = 0;
+    for (let n = 0; n < 1000; n++) { const s = chargeStep(v, 1 / 600, emf, R, C); v = s.v; heat += s.heat; source += s.source; }
+    const L = chargeLedger(1000 / 600, emf, R, C);
+    expect(v).toBeCloseTo(chargeV(1000 / 600, emf, R, C), 9);
+    expect(heat).toBeCloseTo(L.heat, 9);
+    expect(source).toBeCloseTo(L.source, 9);
+  });
+  it('with emf 0 it empties the capacitor into the resistor, joule for joule', () => {
+    const { emf, C } = CH26_FLASH; let v = emf, heat = 0;
+    for (let n = 0; n < 2000; n++) { const s = chargeStep(v, 0.01, 0, CH26_LAMP_R, C); v = s.v; heat += s.heat; }
+    expect(heat + capEnergy(C, v)).toBeCloseTo(capEnergy(C, emf), 9);
   });
 });

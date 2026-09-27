@@ -1,0 +1,6 @@
+---
+// @graded — with `id`, the scene checks itself: turn the coil to where it rests stably.
+import Island, { type TurnTheCoilProps } from '../viz/TurnTheCoil.tsx';
+const props = Astro.props as TurnTheCoilProps;
+---
+<Island client:visible {...props} />

@@ -1,0 +1,127 @@
+---
+title: 'The electrons crawl'
+blurb: 'Tell the slow drift of the charge from the fast arrival of the push, work out how fast electrons move in a wire, and shape a wire to the resistance a job needs.'
+order: 1
+tier: 'foundation'
+minutes: 10
+teaches:
+  - 'electric-current'
+  - 'drift-velocity'
+  - 'resistance'
+requires:
+  - 'electric-charge'
+  - 'electric-field'
+  - 'electric-potential'
+status: 'live'
+updated: 2026-09-27
+---
+
+<Step>
+
+A desk lamp sits at the end of 2 m of copper cord. You flip the switch, and it lights at once.
+
+<Predict
+  id="up-ch25-switch-to-lamp"
+  question="How long does an electron that was sitting beside the switch take to reach the lamp?"
+  options={[
+    { key: 'ns', misconception: 'up-ch25-electrons-at-light-speed', label: 'A few billionths of a second: electrons move at nearly light speed', why: 'Something does cross the cord in nanoseconds, but it is not the electron. Flip the switch below and follow the tagged one.' },
+    { key: 's', label: 'About a second', why: 'That would be 2 m/s, forty thousand times faster than the electrons actually drift.' },
+    { key: 'min', label: 'A few minutes', why: 'Still hundreds of times too fast. At 0.05 mm/s, 2 m takes eleven hours.' },
+    { key: 'h', label: 'About half a day', why: 'Right: it drifts at 0.05 mm/s and needs about eleven hours. The lamp lights at once because the cord is already full of electrons, the filament included, and they all start moving together.' },
+  ]}
+  correct="h"
+>
+
+<SwitchOnTheLamp prompt="Flip the switch. Watch the lamp, then follow the tagged electron." />
+
+</Predict>
+
+</Step>
+
+<Step>
+
+## As fast as a snail
+
+A garden snail crawls at about 1 mm/s. This is 1 mm² copper wire, the kind inside a wall.
+
+<KeepPaceWithTheSnail
+  id="up-ch25-snail-pace"
+  prompt="Turn up the current until the tagged electron keeps pace with the snail, then check."
+  explanation="About 14 A, which is what an electric kettle draws. A cubic millimetre of copper holds 85 billion billion free electrons, so even a kettle's current asks each of them to move only a millimetre a second. The current is large because the crowd is huge, not because anyone in it is fast."
+/>
+
+</Step>
+
+<Step>
+
+## Name it
+
+Current is the charge crossing the wire each second. It is the number of carriers per cubic metre, times the charge each carries, times the area they cross, times their drift speed:
+
+$$I = n\,q\,A\,v_d$$
+
+Copper's $n$ is so large that $v_d$ comes out as a crawl for any current you will meet.
+
+<Recall id="up-ch25-recall-instant-lamp" concept="drift-velocity">
+  <div slot="front">If the electrons drift at a fraction of a millimetre per second, why does a lamp light the instant you flip the switch?</div>
+
+  The wire is already full of electrons, including those in the filament. The switch sets up a
+  field along the whole loop in nanoseconds, and every electron starts to drift at once. The
+  push travels fast; the charge does not.
+</Recall>
+
+</Step>
+
+<Step>
+
+## Build a heater
+
+A heating element must draw 2 A from a 12 V supply. You have nichrome wire in any thickness and can cut any length.
+
+<ReshapeTheWire
+  id="up-ch25-heater-shape"
+  prompt="Drag the clamp to set the length and the top edge to set the thickness, until the ammeter reads 2 A."
+  explanation="Any shape that makes 6 Ω works: 0.69 m of 0.40 mm wire, or 0.39 m of 0.30 mm. The supply sees the wire as R = V/I, and the wire gets it from its shape and its metal, R = ρL/A. Twice the length doubles R; twice the diameter gives four times the area and a quarter of the R."
+/>
+
+<Recall id="up-ch25-recall-drawn-wire" concept="resistance">
+  <div slot="front">You draw a copper wire out to twice its length, keeping the same amount of metal. What happens to its resistance?</div>
+
+  It becomes four times as large. Twice the length doubles $R = \rho L/A$, and the same metal
+  spread over twice the length has half the cross-section, which doubles it again.
+</Recall>
+
+</Step>
+
+<Step>
+
+## Two things travel down the cord
+
+The switch sends one thing down the cord fast and one slow.
+
+<Classify
+  id="up-ch25-fast-or-slow"
+  prompt="Sort each of these by how long it takes, for the 2 m lamp cord."
+  buckets={[
+    { key: 'fast', label: 'Nanoseconds', accent: 'cyan' },
+    { key: 'slow', label: 'Hours', accent: 'iris' },
+  ]}
+  items={[
+    { key: 'field', label: 'The field being set up along the cord', bucket: 'fast', why: 'The change in the field spreads along the wire at about two-thirds of light speed: ten nanoseconds for 2 m.' },
+    { key: 'glow', label: 'The lamp starting to glow', bucket: 'fast', why: 'The glow needs only the electrons already in the filament to start moving, and the field reaches them in nanoseconds.' },
+    { key: 'energy', label: 'Energy reaching the filament', bucket: 'fast', why: 'The energy travels with the field around the wire, not inside the crawling electrons.' },
+    { key: 'electron', label: 'The electron from beside the switch arriving at the lamp', bucket: 'slow', why: 'It drifts at 0.05 mm/s: about eleven hours for 2 m.' },
+    { key: 'lap', label: 'One electron making a full lap of the circuit', bucket: 'slow', why: 'Twice the cord, at the same crawl: nearly a day.' },
+  ]}
+  explanation="Two different objects. The push, and the energy it carries, arrive almost at once. The charge itself creeps, and every electron in the loop creeps together."
+/>
+
+## What to carry forward
+
+- **Current is a crowd creeping together.** $I = nqAv_d$; in copper the drift is a fraction of a millimetre per second.
+- **The switch-on push is a different object.** It crosses the wire in nanoseconds and brings the energy with it.
+- **Resistance is shape times metal.** $R = \rho L/A$: longer resists more, thicker less.
+
+Next: a battery is a pump, and it has a resistance of its own.
+
+</Step>

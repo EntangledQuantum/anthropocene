@@ -1,0 +1,6 @@
+---
+// @graded — with `id`, the scene checks itself: reverse the current at the right moments to make three full turns.
+import Island, { type FlipToKeepTurningProps } from '../viz/FlipToKeepTurning.tsx';
+const props = Astro.props as FlipToKeepTurningProps;
+---
+<Island client:visible {...props} />
