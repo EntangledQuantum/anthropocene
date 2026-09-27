@@ -1,0 +1,126 @@
+---
+title: 'Slide in the glass'
+blurb: 'Slide an insulator into a charged gap, explain why the voltage falls without any charge moving across, and find where the energy sits and how much a gap can hold before it sparks.'
+order: 2
+tier: 'core'
+minutes: 10
+teaches:
+  - 'dielectric'
+  - 'electric-field-energy'
+  - 'dielectric-breakdown'
+requires:
+  - 'capacitance'
+  - 'parallel-plate-capacitor'
+  - 'capacitor-energy'
+  - 'electric-dipole'
+status: 'live'
+updated: 2026-09-25
+---
+
+<Step>
+
+The same 10 cm plates, now 1 mm apart, are charged to 1,000 V and disconnected, so their
+charge is trapped. You slide a sheet of glass into the gap until it fills it.
+
+<Predict
+  id="up-ch24-glass-voltage"
+  question="What happens to the voltage, and why?"
+  options={[
+    { key: 'a', label: 'Nothing: no charge can get on or off the plates', why: 'The charge is fixed, yes. But the voltage is E d, and the field in the gap is not only the plates’ doing any more. Slide the glass in below and watch the orchid lines thin out while the charge meter holds still.' },
+    { key: 'b', misconception: 'up-ch24-dielectric-blocks-more', label: 'It rises: glass is an insulator and blocks the field', why: 'Glass blocks current, not field. The field goes through it, weakened, so the same gap has a smaller voltage across it.' },
+    { key: 'c', label: 'It falls: the glass’s molecules turn and cancel part of the field', why: 'Right. Each molecule is a tiny − and + pair that swings to line up with the field. Their ends leave a layer of − charge on the glass beside the + plate, and that layer cancels most of the plate’s field. For glass, all but a fifth: 1,000 V becomes 200 V.' },
+    { key: 'd', misconception: 'up-ch24-dielectric-conducts', label: 'It falls: charge leaks from the plates into the glass', why: 'Nothing crosses glass, and the charge meter below never moves. The voltage falls for another reason: look at what the molecules do as they enter the gap.' },
+  ]}
+  correct="c"
+>
+
+<SlideTheGlass prompt="Drag the glass up into the gap, and back out." />
+
+</Predict>
+
+</Step>
+
+<Step>
+
+## The charge crowds to the glass
+
+Stop with the glass part way in. The plates' charge rearranges itself, but it cannot leave the plates.
+
+<SlideTheGlass
+  id="up-ch24-half-beside-glass"
+  prompt="Slide the glass in until half the plates’ charge sits beside it."
+  targetShare={0.5}
+  explanation="About a sixth of the way in. The field is the same all across the gap, V/d, and beside the glass the plate needs five times the charge to make it, because the glass’s bound charge cancels four fifths. So a sixth covered by glass holds as much as five sixths of bare air. The + plate still holds 88.5 nC; it has only moved along the plate."
+/>
+
+</Step>
+
+<Step>
+
+## Name it
+
+The glass raised the charge the plates hold per volt by its **dielectric constant**, κ = 5:
+
+$$C = \kappa\,\frac{\varepsilon_0 A}{d}$$
+
+From 88.5 pF to 443 pF, without moving a plate. With the battery disconnected, V fell by κ; had it stayed connected, it would have pushed in κ times the charge instead.
+
+<Recall id="up-ch24-recall-dielectric" concept="dielectric">
+  <div slot="front">A capacitor is left connected to its battery while you slide glass into the gap. Its charge goes up five times. Where did the extra charge come from?</div>
+
+  From the battery. The glass makes no charge: it stays neutral, with its molecules only
+  turned. It lowered the voltage the plates' charge produces, so the battery pushed on more
+  until the plates were back at its voltage.
+</Recall>
+
+</Step>
+
+<Step>
+
+## Fill it before it sparks
+
+Every insulator has a field it cannot take: past it, the gap tears open in a spark and dumps
+everything. You have a charger, the same 1 mm gap, and the glass.
+
+<ChargeBeforeTheSpark
+  id="up-ch24-store-ten-millijoules"
+  prompt="Store 10 mJ in the gap without a spark."
+  target={0.01}
+  explanation="Air sparks at 3 MV/m, when the gap holds only 0.40 mJ. Glass stands 10 MV/m and, at any field, stores five times as much per cubic centimetre, so it holds up to 22 mJ: 55 times what air can. With glass in, 10 mJ needs 6.7 kV. The aqua wash was the energy itself, filling the gap."
+/>
+
+</Step>
+
+<Step>
+
+## The energy is in the gap
+
+The wash filled the gap, not the plates: every cubic metre of field holds
+
+$$u = \tfrac12\,\kappa\,\varepsilon_0 E^2$$
+
+Summed over the gap's volume, $Ad$, that is exactly $\tfrac12 CV^2$. The breakdown field caps $E$, and so caps the energy.
+
+<Estimate
+  id="up-ch24-defibrillator"
+  scenario="up-ch24-defibrillator"
+  prompt="A defibrillator charges a 32 µF capacitor to 5,000 V, then dumps it through a chest in about 5 ms. How much energy does it hold?"
+  explanation="400 J: ½ × 32 µF × (5,000 V)². Dumped in 5 ms, that is 80 kW for an instant. Its capacitor is a roll of thin plastic film between foils: a huge area, a tiny gap and a dielectric that stands a strong field, every factor in κε₀A/d at once."
+/>
+
+<Recall id="up-ch24-recall-field-energy" concept="electric-field-energy">
+  <div slot="front">With the charge fixed, you double the gap of a capacitor. The charges on the plates are unchanged. Why does the stored energy double?</div>
+
+  Because the energy is in the field, not on the plates. The field in the gap is unchanged, so
+  each cubic metre still holds ½ε₀E², and there are now twice as many cubic metres of it.
+</Recall>
+
+## What to carry forward
+
+- **A dielectric makes no charge.** Its molecules turn, their bound charge cancels part of the field, and C rises by κ.
+- **The energy lives in the field**, ½κε₀E² per cubic metre. Breakdown caps E, and so caps the energy.
+- **What stays put depends on the wire**: disconnected, Q; connected, V.
+
+Next: let the capacitor empty through a resistor, and it becomes a clock.
+
+</Step>

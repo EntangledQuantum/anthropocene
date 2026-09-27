@@ -2,7 +2,7 @@ import { useMemo, useState } from 'react';
 import { NANO, ellipseLoop, fluxThroughLoop, perimeter, rodField, tubeRods } from '../../lib/physics/gauss.ts';
 import type { Vec2 } from '../../lib/physics/vectors.ts';
 import { C, CheckBar, Handle, Meter, SceneCard, Stage, useTask } from './scene.tsx';
-import { FluxTicks, SleevePath, TubeLines, TubeRing, SleeveGrab, axesFromRim, fieldRange, fmtRange, rimOf } from './gauss-kit.tsx';
+import { FluxTicks, SleevePath, TubeLines, TubeRing, SleeveGrab, axesFromRim, fieldRange, fmtRange, rimOf, fluxText } from './gauss-kit.tsx';
 
 /**
  * The charged tube again, a probe outside it whose reading is hidden, and a
@@ -25,7 +25,7 @@ export interface FitTheSleeveProps {
   explanation?: string;
 }
 
-const TOL = 0.06;
+const TOL = 0.05;
 
 export default function FitTheSleeve({ id, prompt, lambda = 3, radius = 0.6, probe = [1.0, 0.6], explanation }: FitTheSleeveProps) {
   const task = useTask(id, 'fit-the-sleeve');
@@ -43,17 +43,21 @@ export default function FitTheSleeve({ id, prompt, lambda = 3, radius = 0.6, pro
   const hit = off < TOL && round && through;
   const eProbe = Math.hypot(...rodField(tube, probe[0], probe[1]));
 
-  const miss = off >= TOL
-    ? `The sleeve's centre is ${off.toFixed(2)} m off the tube's axis, so the field piercing it runs from ${fmtRange(range)} N/C: no single value to read off.`
-    : !round
-      ? `The sleeve is centred but oval, ${(2 * ab[0]).toFixed(2)} m by ${(2 * ab[1]).toFixed(2)} m, so the field piercing it runs from ${fmtRange(range)} N/C.`
-      : `The field is ${range[1].toFixed(1)} N/C all round this sleeve, but the sleeve passes ${Math.abs(ab[0] - rp).toFixed(2)} m ${ab[0] < rp ? 'inside' : 'outside'} the probe. That is the field there, not at the probe.`;
+  const uniform = fmtRange(range).indexOf(' to ') < 0;
+  const spread = uniform ? `is ${fmtRange(range)} N/C all round it` : `runs from ${fmtRange(range)} N/C`;
+  const miss = Math.abs(flux) < 1 && range[1] < 0.5
+    ? `This sleeve wraps none of the tube's charge: the field ${spread}, and it says nothing about the probe outside.`
+    : off >= TOL
+      ? `The sleeve's centre is ${off.toFixed(2)} m off the tube's axis, so the field piercing it ${spread}: no single value to read off.`
+      : !round
+        ? `The sleeve is centred but oval, ${(2 * ab[0]).toFixed(2)} m by ${(2 * ab[1]).toFixed(2)} m, so the field piercing it ${spread}.`
+        : `The field is ${range[1].toFixed(1)} N/C all round this sleeve, but the sleeve passes ${Math.abs(ab[0] - rp).toFixed(2)} m ${ab[0] < rp ? 'inside' : 'outside'} the probe. That is the field there, not at the probe.`;
 
   return (
     <SceneCard id={id} prompt={prompt}
       footer={<div style={{ display: 'grid', gap: 14 }}>
         <div style={{ display: 'flex', gap: 26, flexWrap: 'wrap' }}>
-          <Meter label="Flux out of the sleeve" value={flux.toFixed(0)} unit="N·m²/C" color={C.field} />
+          <Meter label="Flux out of the sleeve" value={fluxText(flux)} unit="N·m²/C" color={C.field} />
           <Meter label="Field piercing the sleeve" value={fmtRange(range)} unit="N/C" />
           <Meter label="Flux ÷ sleeve area" value={(flux / perimeter(loop)).toFixed(1)} unit="N/C" />
           <Meter label="Probe reads" value={task.done ? eProbe.toFixed(1) : 'covered'} unit={task.done ? 'N/C' : undefined} color={C.field} />

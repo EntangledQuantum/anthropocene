@@ -34,6 +34,8 @@ const BIN = 0.05;           // nm/ps = 50 m/s
 const VMAX = 1.4;           // nm/ps shown
 const NB = Math.round(VMAX / BIN);
 const YMAX = 0.24;          // share of molecules per bin shown
+/** Shares of molecules in 50 m/s bins centred on 0, 50, 100, … m/s. */
+const bin = (g: Gas) => histogram(speeds(g).map((v) => v + BIN / 2), BIN, NB).map((c) => c / g.n);
 
 export default function SpreadTheSpeeds({ id, prompt, start = 400, tolerance = 40, explanation }: SpreadTheSpeedsProps) {
   const graded = Boolean(id);
@@ -41,7 +43,7 @@ export default function SpreadTheSpeeds({ id, prompt, start = 400, tolerance = 4
   const v0 = start / 1000;
   const make = () => createGas({ w: B.w, h: B.h, seed: 21, species: [{ count: B.count, mass: B.mass, radius: B.radius, speed: v0 }] });
   const gas = useRef<Gas>(make());
-  const hist = useRef<number[]>(histogram(speeds(gas.current), BIN, NB).map((c) => c / B.count));
+  const hist = useRef<number[]>(bin(gas.current));
   const running = useRef(false);
   const [released, setReleased] = useState(false);
   const [marker, setMarker] = useState(start);
@@ -55,7 +57,7 @@ export default function SpreadTheSpeeds({ id, prompt, start = 400, tolerance = 4
     let d = '';
     hist.current.forEach((f, k) => {
       if (f < 1e-4) return;
-      const x0 = s.sx(k * BIN * 1000) + 1, x1 = s.sx((k + 1) * BIN * 1000) - 1;
+      const x0 = s.sx((k - 0.5) * BIN * 1000) + 1, x1 = s.sx((k + 0.5) * BIN * 1000) - 1;
       d += `M${x0.toFixed(1)},${s.sy(0).toFixed(1)}V${s.sy(Math.min(f, YMAX)).toFixed(1)}H${x1.toFixed(1)}V${s.sy(0).toFixed(1)}Z`;
     });
     bars.current?.setAttribute('d', d);
@@ -65,10 +67,10 @@ export default function SpreadTheSpeeds({ id, prompt, start = 400, tolerance = 4
     psPerSecond: 15, running, maxDt: () => 0.04,
     frame: (g, ps) => {
       if (ps > 0) {
-        // the bars follow the gas with a 6 ps memory, so they read smoothly
-        const a = 1 - Math.exp(-ps / 6);
-        const now = histogram(speeds(g), BIN, NB);
-        hist.current = hist.current.map((f, k) => f + a * (now[k] / g.n - f));
+        // the bars follow the gas with a 10 ps memory, so they read smoothly
+        const a = 1 - Math.exp(-ps / 10);
+        const now = bin(g);
+        hist.current = hist.current.map((f, k) => f + a * (now[k] - f));
       }
       if (box.current) dotPath.current?.setAttribute('d', dots(g, box.current));
       if (plot.current) drawBars(plot.current);
@@ -81,7 +83,7 @@ export default function SpreadTheSpeeds({ id, prompt, start = 400, tolerance = 4
   const vp = mostProbableSpeed2D(B.mass, T) * 1000;
   const showCurve = released && (!graded || task.done);
   const hitNow = Math.abs(marker - vp) <= tolerance;
-  const reset = () => { gas.current = make(); hist.current = histogram(speeds(gas.current), BIN, NB).map((c) => c / B.count); running.current = false; setReleased(false); task.touch(); };
+  const reset = () => { gas.current = make(); hist.current = bin(gas.current); running.current = false; setReleased(false); task.touch(); };
   const spike = hist.current.some((f) => f > YMAX);
 
   const curve = (s: StageApi) => Array.from({ length: 141 }, (_, i) => (i / 140) * VMAX)
@@ -105,7 +107,6 @@ export default function SpreadTheSpeeds({ id, prompt, start = 400, tolerance = 4
           </span>
         </div>
         {graded && <CheckBar verdict={task.verdict} done={task.done} disabled={!released}
-          label={released ? 'Check' : 'Release first'}
           onCheck={() => task.check(hitNow, { marker })}
           miss={`Your marker is at ${marker.toFixed(0)} m/s. The tallest bars settle near ${vp.toFixed(0)} m/s, ${Math.round((vp / start) * 100)}% of the speed every molecule started with.`}
           hit={explanation} />}
@@ -118,11 +119,15 @@ export default function SpreadTheSpeeds({ id, prompt, start = 400, tolerance = 4
         </>; }}
       </Stage>
       <Stage x={[0, VMAX * 1000]} y={[0, YMAX]} height={250}
-        axes={{ x: 'speed (m/s)', y: 'share of molecules, per 50 m/s', xTicks: [0, 200, 400, 600, 800, 1000, 1200, 1400], yTicks: [0, 0.05, 0.1, 0.15, 0.2] }}
+        axes={{ x: 'speed (m/s)', y: 'share per 50 m/s', xTicks: [], yTicks: [0, 0.05, 0.1, 0.15, 0.2] }}
         label={`Histogram of molecular speeds.${graded ? ` Your marker is at ${marker.toFixed(0)} metres per second.` : ''}`}>
         {(s) => { plot.current = s; return <>
+          {[0, 200, 400, 600, 800, 1000, 1200, 1400].map((v) => <g key={v}>
+            <line x1={s.sx(v)} x2={s.sx(v)} y1={s.sy(0)} y2={s.sy(YMAX)} stroke={C.grid} />
+            <text x={s.sx(v)} y={s.sy(0) + 17} textAnchor="middle" fontSize={12} fill={C.faint} fontFamily="var(--font-mono)">{v}</text>
+          </g>)}
           <path ref={bars} fill={C.velocity} opacity={0.75} />
-          {spike && <text x={s.sx(start) + 10} y={s.sy(YMAX) + 16} fontSize={13} fill={C.velocity}>↑ all {B.count} at {start} m/s</text>}
+          {spike && <text x={s.sx(start) + 22} y={s.sy(YMAX * 0.75)} fontSize={13} fill={C.velocity}>↑ all {B.count} at {start} m/s</text>}
           {showCurve && <>
             <path d={curve(s)} fill="none" stroke={C.ink} strokeWidth={2} strokeDasharray="6 4" />
             {speedsMarked.map(({ v, label }, i) => <g key={label}>
@@ -132,7 +137,7 @@ export default function SpreadTheSpeeds({ id, prompt, start = 400, tolerance = 4
           </>}
           {graded && <>
             <line x1={s.sx(marker)} x2={s.sx(marker)} y1={s.sy(0)} y2={s.sy(YMAX * 0.92)} stroke={"var(--color-accent)"} strokeWidth={2} strokeDasharray="4 4" />
-            <text x={s.sx(marker) - 8} y={s.sy(YMAX * 0.92) + 4} textAnchor="end" fontSize={13} fill={"var(--color-accent)"}>your peak {marker.toFixed(0)}</text>
+            <text x={s.sx(marker) - 14} y={s.sy(YMAX * 0.92) + 4} textAnchor="end" fontSize={13} fill={"var(--color-accent)"}>your peak {marker.toFixed(0)}</text>
             {!released && <Handle s={s} at={[marker, YMAX * 0.92]} color={"var(--color-accent)"} step={10} label="Marker: where the tallest bar will settle, metres per second"
               onChange={(p) => { setMarker(Math.round(Math.min(1300, Math.max(0, p[0])) / 5) * 5); task.touch(); }} />}
           </>}

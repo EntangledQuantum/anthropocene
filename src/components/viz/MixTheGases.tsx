@@ -84,7 +84,6 @@ export default function MixTheGases({ id, prompt, argon = 400, tolerance = 15, e
           </span>
         </div>
         {graded && <CheckBar verdict={task.verdict} done={task.done} disabled={!released}
-          label={released ? 'Check' : 'Release first'}
           onCheck={() => task.check(hitNow, { argon: vAr })}
           miss={`At ${vAr.toFixed(0)} m/s each argon atom starts with ${ratio.toFixed(2)}× the kinetic energy of a helium atom, so energy flows ${ratio > 1 ? 'from argon to helium' : 'from helium to argon'} until the lines meet.`}
           hit={explanation} />}
@@ -96,15 +95,15 @@ export default function MixTheGases({ id, prompt, argon = 400, tolerance = 15, e
           <path ref={he} fill={HE} />
         </>; }}
       </Stage>
-      <Stage x={[0, 500]} y={[0, 1]} height={74} axes={{ x: 'start speed (m/s)', xTicks: [0, 100, 200, 300, 400, 500], yTicks: [] }}
+      <Stage x={[0, 500]} y={[0, 1]} height={96} axes={{ x: 'start speed (m/s)', xTicks: [0, 100, 200, 300, 400, 500], yTicks: [] }}
         label={`Start speeds. Helium 400 metres per second; argon ${vAr.toFixed(0)}.`}>
         {(s) => <>
-          <circle cx={s.sx(400)} cy={s.sy(0.35)} r={6} fill={HE} />
-          <text x={s.sx(400) + 12} y={s.sy(0.35) + 5} fontSize={13} fill={HE}>helium, 4 u</text>
-          <text x={s.sx(vAr) + 14} y={s.sy(0.35) + 5} fontSize={13} fill={AR}>argon, 40 u · {vAr.toFixed(0)} m/s</text>
+          <circle cx={s.sx(400)} cy={s.sy(0.75)} r={6} fill={HE} />
+          <text x={s.sx(400) + 12} y={s.sy(0.75) + 5} fontSize={13} fill={HE}>helium, 4 u · 400 m/s</text>
+          <text x={s.sx(vAr) + (vAr > 300 ? -16 : 16)} y={s.sy(0.25) + 5} textAnchor={vAr > 300 ? 'end' : 'start'} fontSize={13} fill={AR}>argon, 40 u · {vAr.toFixed(0)} m/s</text>
           {released
-            ? <circle cx={s.sx(vAr)} cy={s.sy(0.35)} r={7} fill={AR} />
-            : <Handle s={s} at={[vAr, 0.35]} color={AR} step={5} label="Argon start speed, metres per second"
+            ? <circle cx={s.sx(vAr)} cy={s.sy(0.25)} r={7} fill={AR} />
+            : <Handle s={s} at={[vAr, 0.25]} color={AR} step={5} label="Argon start speed, metres per second"
                 onChange={(p) => { const v = Math.round(Math.min(500, Math.max(20, p[0]))); setVAr(v); reset(v); task.touch(); }} />}
         </>}
       </Stage>

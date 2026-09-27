@@ -1,0 +1,6 @@
+---
+// @graded — with `id`, the scene checks itself: store the target energy without a spark.
+import Island, { type ChargeBeforeTheSparkProps } from '../viz/ChargeBeforeTheSpark.tsx';
+const props = Astro.props as ChargeBeforeTheSparkProps;
+---
+<Island client:visible {...props} />

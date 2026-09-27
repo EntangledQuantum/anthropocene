@@ -83,6 +83,17 @@ describe('connected: the voltage stays put', () => {
   });
 });
 
+describe('the numbers lesson 1 quotes', () => {
+  it('1 mm → 3 mm at 12 V: field 6.4 → 2.1 nJ, you 4.25 nJ, battery takes 8.5 nJ', () => {
+    const c1 = atVoltage(cap(A, 1 * MM), 12);
+    const m = pullConnected(c1, 12, 3 * MM);
+    expect(energy(c1) * 1e9).toBeCloseTo(6.4, 1);
+    expect(energy(m.after) * 1e9).toBeCloseTo(2.1, 1);
+    expect(m.you * 1e9).toBeCloseTo(4.25, 2);
+    expect(-m.battery * 1e9).toBeCloseTo(8.5, 1);
+  });
+});
+
 describe('beat the battery: 30 V from 12 V', () => {
   it('push to 1.2 mm while connected, open the switch, pull to 3 mm', () => {
     const V = 12;
@@ -193,9 +204,20 @@ describe('breakdown caps the field', () => {
   });
 });
 
+describe('the numbers lesson 2 quotes', () => {
+  it('88.5 pF → 443 pF with glass; 88.5 nC at 1,000 V; 10 mJ needs 6.7 kV with glass', () => {
+    expect(parallelPlateC(A, 1 * MM) * 1e12).toBeCloseTo(88.5, 1);
+    expect(parallelPlateC(A, 1 * MM, GLASS.kappa) * 1e12).toBeCloseTo(442.7, 1);
+    expect(atVoltage(cap(A, 1 * MM), 1000).q * 1e9).toBeCloseTo(88.5, 1);
+    const C = parallelPlateC(A, 1 * MM, GLASS.kappa);
+    expect(Math.sqrt((2 * 10e-3) / C) / 1000).toBeCloseTo(6.72, 2);
+  });
+});
+
 describe('defibrillator', () => {
-  it('32 µF at 5 kV stores 400 J', () => {
+  it('32 µF at 5 kV stores 400 J, 80 kW if dumped in 5 ms', () => {
     expect(storedEnergy(32e-6, 5000)).toBeCloseTo(400, 8);
+    expect(storedEnergy(32e-6, 5000) / 5e-3).toBeCloseTo(80e3, 3);
   });
 });
 

@@ -1,0 +1,18 @@
+title: 'Capacitance'
+blurb: 'Two conductors holding +Q and −Q at a voltage V between them. The ratio Q/V is fixed by their shape and what fills the gap, so once C is set, Q and V cannot move independently.'
+notation: 'C = \dfrac{Q}{V}'
+tags:
+  - 'up-ch24'
+misconceptions:
+  - id: 'up-ch24-capacitor-holds-net-charge'
+    name: 'A capacitor fills up with charge, like a bucket fills with water.'
+    signal: 'Says a charged capacitor carries a net charge, or that charging it pumps charge in from the battery.'
+    correction: 'One plate holds +Q and the other −Q, so the device as a whole is neutral. Charging moves charge from one plate to the other, through the battery. What it stores is the separation, and the energy of the field that separation makes.'
+  - id: 'up-ch24-battery-voltage-sticks'
+    name: 'Once charged by a 12 V battery, the capacitor stays at 12 V.'
+    signal: 'Expects the voltage to hold after the battery is disconnected and the plates are moved or the gap is filled.'
+    correction: 'With the battery gone, the charge is what stays put, and the voltage is whatever Q/C now is. Change C, by moving the plates or sliding in glass, and V changes with it.'
+  - id: 'up-ch24-farther-is-weaker'
+    name: 'Pulling the plates apart weakens the field between them, as it weakens the pull between two point charges.'
+    signal: 'Predicts the voltage falls, or the attraction fades, as the gap grows with the charge fixed.'
+    correction: 'A wide charged sheet makes the same field at any distance from it, as long as the distance is small against its width. With the charge fixed, the field in the gap stays the same, so the voltage E d grows with the gap and the attraction does not fade at all.'

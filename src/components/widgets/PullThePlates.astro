@@ -1,0 +1,6 @@
+---
+// @graded — with `id` and `targetQ` or `targetV`, the scene checks itself.
+import Island, { type PullThePlatesProps } from '../viz/PullThePlates.tsx';
+const props = Astro.props as PullThePlatesProps;
+---
+<Island client:visible {...props} />

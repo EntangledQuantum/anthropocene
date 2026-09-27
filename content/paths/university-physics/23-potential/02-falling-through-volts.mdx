@@ -1,0 +1,135 @@
+---
+title: 'Falling through volts'
+blurb: 'Set the voltage that sends an electron out at a chosen speed, count its energy in electron-volts, and find where a map of V hides its strongest field.'
+order: 2
+tier: 'core'
+minutes: 10
+teaches:
+  - 'electron-volt'
+  - 'field-from-potential'
+requires:
+  - 'electric-potential'
+  - 'electric-potential-energy'
+  - 'equipotential'
+  - 'mechanical-energy-conservation'
+  - 'work-energy-theorem'
+  - 'electric-dipole'
+status: 'live'
+updated: 2026-09-25
+---
+
+<Step>
+
+In a vacuum tube an electron leaves a metal plate at rest and falls through 100 V to a second
+plate. In a tube beside it, a proton falls through the same 100 V.
+
+<Predict
+  id="up-ch23-proton-or-electron"
+  question="Which one arrives carrying more kinetic energy?"
+  options={[
+    { key: 'e', misconception: 'up-ch23-faster-means-more-energy', label: 'The electron: it ends up far faster', why: 'It is 43 times faster. But it is 1836 times lighter, and ½mv² comes out the same: 100 eV each. Watch the two aqua bars below end at one length.' },
+    { key: 'p', misconception: 'up-ch23-heavier-gains-more', label: 'The proton: it is 1836 times heavier', why: 'Mass does not enter the energy. The field does work on each in proportion to its charge, and the two charges are the same size.' },
+    { key: 'same', label: 'Neither: they arrive with the same energy', why: 'Right. Each gains its charge times the voltage it fell through. The mass decides only how that energy turns into speed: the proton crawls, 43 times slower.' },
+    { key: 'gap', label: 'It depends how far apart the plates are', why: 'A wider gap weakens the field and lengthens the run by the same factor, so the work is unchanged. Only the charge and the voltage count.' },
+  ]}
+  correct="same"
+>
+
+<FireTheElectronGun particles={['electron', 'proton']} voltage={100} vmax={300}
+  prompt="Watch both fall through the same voltage, then change it." />
+
+</Predict>
+
+</Step>
+
+<Step>
+
+## Set the speed
+
+A beam experiment needs electrons at exactly 1.0 × 10⁷ m/s, a thirtieth of the speed of light.
+Your tube is at 100 V, which gives 5.9 × 10⁶ m/s.
+
+<FireTheElectronGun
+  id="up-ch23-target-speed"
+  prompt="Set the voltage so the electron arrives at 1.0 × 10⁷ m/s."
+  voltage={100}
+  target={10000000}
+  explanation="About 284 V. The speed had to grow 1.69 times, and energy goes as speed squared, so the voltage had to grow 1.69² = 2.84 times. The electron gains 284 eV, which is ½mv² = 4.6 × 10⁻¹⁷ J: its aqua bar ends exactly under the 284 V mark."
+/>
+
+</Step>
+
+<Step>
+
+## Name it
+
+The field's work came out of the height the charge fell through, so kinetic energy plus $qV$
+stayed fixed, as on chapter 7's energy line:
+
+$$\Delta K = -q\,\Delta V$$
+
+One elementary charge through one volt gains one **electron-volt**, $1\ \text{eV} = 1.6\times10^{-19}$ J:
+a unit of energy, not of voltage.
+
+<Recall id="up-ch23-recall-ev" concept="electron-volt">
+  <div slot="front">An alpha particle, charge +2e, falls from rest through 5 kV. What is its kinetic energy?</div>
+
+  10 keV. Charge times voltage: 2 elementary charges times 5000 V. In joules that is
+  $1.6\times10^{-15}$ J, and the alpha's mass never enters.
+</Recall>
+
+</Step>
+
+<Step>
+
+## Where the ground is steepest
+
+Between the plates the contours were evenly spaced, so the field was the same everywhere:
+$E = \Delta V/d$. Around charges the spacing changes from place to place.
+
+<FindTheSteepSpot
+  id="up-ch23-steepest-spot"
+  prompt="Slide the probe to where the field along the track is strongest."
+  explanation="Beside the −3 nC, where V is lowest and the contours are packed tightest: about 42 kV/m, against 15 kV/m on the 880 V high ground near the +8 nC. The field reads the steepness, not the height. Air breaks down near 3 MV/m, so a spark starts wherever contours crowd first, which is why sharp points spark."
+/>
+
+<Recall id="up-ch23-recall-gap" concept="field-from-potential">
+  <div slot="front">Two plates 2 mm apart are held 600 V apart. What is the field between them?</div>
+
+  $3\times10^{5}$ V/m. In a uniform gap the potential falls steadily, so $E = \Delta V/d = 600\ \text{V} / 0.002\ \text{m}$.
+</Recall>
+
+</Step>
+
+<Step>
+
+## Height and steepness are different questions
+
+Each spot below sits on a map made of 5 nC point charges 6 cm apart.
+
+<Classify
+  id="up-ch23-v-or-e-zero"
+  prompt="At each spot, which of V and E is zero?"
+  buckets={[
+    { key: 'v', label: 'V is zero, E is not', accent: 'ok' },
+    { key: 'e', label: 'E is zero, V is not', accent: 'magenta' },
+    { key: 'none', label: 'Neither is zero', accent: 'iris' },
+  ]}
+  items={[
+    { key: 'dip-mid', label: 'Midway between +5 nC and −5 nC', bucket: 'v', why: 'The +5/r and −5/r heights cancel. But both fields point toward the − charge and add: about 100 kV/m, the steepest ground on the axis.' },
+    { key: 'twin-mid', label: 'Midway between two +5 nC charges', bucket: 'e', why: 'The two pushes cancel, so the ground is flat. The two heights add: about 3.0 kV, a flat saddle between two hills.' },
+    { key: 'dip-up', label: '5 cm above the middle of the +5 / −5 pair', bucket: 'v', why: 'Equally far from both, so V cancels exactly. The field there still points parallel to the pair, toward the − charge.' },
+    { key: 'near', label: 'Right beside the +5 nC of the + / − pair', bucket: 'none', why: 'High ground, and steep: close to a charge both V and E are large.' },
+  ]}
+  explanation="V asks how high; E asks how steep. A map can be at sea level on a steep slope, or high up on a flat saddle."
+/>
+
+## What to carry forward
+
+- **ΔK = −qΔV.** Falling through a voltage gives charge × voltage of energy; the gap and the mass change only the time and the speed.
+- **The electron-volt is an energy**: one elementary charge through one volt, $1.6\times10^{-19}$ J.
+- **The field is the steepness, not the height**: strongest where the contours crowd.
+
+Next: hold two plates at a fixed voltage and ask how much charge they store.
+
+</Step>

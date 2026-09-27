@@ -99,6 +99,10 @@ describe('the field is the downhill slope of V', () => {
     expect(Math.abs(angleBetween([2 - -2, -6 - 5], e))).toBeGreaterThan(35);
   });
 
+  it('the field at A in the carry scene is about 12 kV/m, so a charge let go there is pushed', () => {
+    expect(fieldStrength(CARRY, -0.04, 0.06) / 1000).toBeCloseTo(11.8, 0);
+  });
+
   it('a negative charge is pushed uphill: the field does positive work carrying it toward higher V', () => {
     const lo = cm(4, -8), hi = cm(-4, 6);
     expect(potential(CARRY, ...hi)).toBeGreaterThan(potential(CARRY, ...lo));
@@ -132,6 +136,13 @@ describe('falling through a voltage', () => {
     expect(V).toBeGreaterThan(283);
     expect(V).toBeLessThan(285);
     expect(speedAfter(-E_CHARGE, M_ELECTRON, V)).toBeCloseTo(1e7, -1);
+  });
+
+  it('from 100 V the speed must grow 1.69 times, so the voltage 2.84 times', () => {
+    const r = 1e7 / speedAfter(-E_CHARGE, M_ELECTRON, 100);
+    expect(r).toBeCloseTo(1.69, 2);
+    expect(r * r).toBeCloseTo(2.84, 2);
+    expect(voltageForSpeed(M_ELECTRON, E_CHARGE, 1e7) * E_CHARGE).toBeCloseTo(4.55e-17, 18);
   });
 
   it('twice the speed needs four times the voltage', () => {
@@ -178,6 +189,13 @@ describe('the strongest field is where the contours crowd, not where V is high',
     expect(fieldStrength(TRACK, xv, yv)).toBeLessThan(0.5 * scan.eMax);
   });
 
+  it('the numbers the lesson quotes: about 42 kV/m at the low ground, 15 kV/m at the 880 V high ground', () => {
+    expect(scan.eMax / 1000).toBeCloseTo(42.5, 0);
+    const [xv, yv] = along(a, b, scan.tV);
+    expect(scan.vMax).toBeCloseTo(880, -1);
+    expect(fieldStrength(TRACK, xv, yv) / 1000).toBeCloseTo(14.5, 0);
+  });
+
   it('contour spacing there matches 100 V / |E|', () => {
     const [x, y] = along(a, b, scan.tE);
     const e = field(TRACK, x, y);
@@ -207,8 +225,12 @@ describe('V and E are different questions', () => {
     }
   });
 
+  it('midway between the dipole’s charges the field is about 100 kV/m', () => {
+    expect(fieldStrength(dip, 0, 0) / 1000).toBeCloseTo(100, -1);
+  });
+
   it('midway between two equal like charges E = 0 but V is not', () => {
     expect(fieldStrength(twin, 0, 0)).toBeLessThan(1e-6);
-    expect(potential(twin, 0, 0)).toBeGreaterThan(2000);
+    expect(potential(twin, 0, 0) / 1000).toBeCloseTo(3.0, 1);
   });
 });

@@ -66,11 +66,11 @@ export default function AimDownhill({
     return out;
   }, [si, charges]);
 
-  const miss = off > 150
-    ? `Your arrow is ${off.toFixed(0)}° from the field: it points uphill, toward higher V.`
-    : off > 65 && off < 115
-      ? `Your arrow is ${off.toFixed(0)}° from the field: it runs almost along the contour, where V does not change.`
-      : `Your arrow is ${off.toFixed(0)}° from the field.`;
+  const miss = `Your arrow is ${off.toFixed(0)}° from the field: ` + (off > 150
+    ? 'it points uphill, toward higher V.'
+    : off > 115 ? 'it points partly uphill, toward higher V.'
+      : off >= 65 ? 'it runs almost along the contour, where V does not change.'
+        : 'it points downhill, but not straight across the contour.');
   const showContour = task.done || task.verdict === 'miss';
 
   return (

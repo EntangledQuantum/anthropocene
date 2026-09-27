@@ -1,0 +1,14 @@
+title: 'Energy stored in a capacitor'
+blurb: 'Separating charge takes work, and a charged capacitor holds it as energy. With the charge fixed, pulling the plates apart stores exactly the work you do. With the voltage fixed, the battery takes back twice what the field loses.'
+notation: 'U = \tfrac12 QV = \dfrac{Q^2}{2C} = \tfrac12 CV^2'
+tags:
+  - 'up-ch24'
+misconceptions:
+  - id: 'up-ch24-energy-lost-as-heat'
+    name: 'When a connected capacitor loses energy, the energy is lost as heat.'
+    signal: 'Says the field energy lost as the plates move apart is dissipated in the wires.'
+    correction: 'Moved slowly, almost nothing is lost as heat. The charge flows back into the battery against its voltage, and that recharges it: the battery takes the field''s loss and your work together, 2|ΔU|.'
+  - id: 'up-ch24-field-loss-pays-you'
+    name: 'The field''s lost energy is what pulled against your hand.'
+    signal: 'Adds your work and the field''s loss as if one cancels the other.'
+    correction: 'Both are energy leaving: your hand does positive work on the plate, and the field''s energy falls. Something must receive the sum, and that is the battery.'

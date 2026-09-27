@@ -1,0 +1,18 @@
+title: 'Dielectrics'
+blurb: 'An insulator in the gap polarises: its molecules turn and stretch so a layer of bound charge sits on each face, cancelling part of the field. The same free charge then makes a smaller voltage, so the capacitance rises by the dielectric constant κ.'
+notation: 'C = \kappa\,\dfrac{\varepsilon_0 A}{d},\qquad E = \dfrac{E_0}{\kappa}\ \text{(same free charge)}'
+tags:
+  - 'up-ch24'
+misconceptions:
+  - id: 'up-ch24-dielectric-makes-charge'
+    name: 'A dielectric makes more charge.'
+    signal: 'Says the glass adds charge to the plates, or that the extra charge on a connected capacitor comes from the glass.'
+    correction: 'The glass is neutral and stays neutral: each molecule only turns its + end one way and its − end the other. Disconnected, the plates keep exactly the charge they had. Connected, the extra charge comes from the battery, drawn in because the glass has lowered the voltage.'
+  - id: 'up-ch24-dielectric-conducts'
+    name: 'Charge leaks across through the glass.'
+    signal: 'Explains the falling voltage as charge escaping from the plates into or through the slab.'
+    correction: 'Glass is an insulator: nothing crosses it, and the charge on the plates does not change. The voltage falls because the glass''s bound charge cancels most of the field that the plates'' charge makes.'
+  - id: 'up-ch24-dielectric-blocks-more'
+    name: 'An insulator blocks the field, so it must raise the voltage.'
+    signal: 'Predicts the voltage rises when glass goes into the gap.'
+    correction: 'Blocking current is not blocking field. The field goes through the glass, weakened by the molecules that turn to oppose it, so a smaller field across the same gap means a smaller voltage.'

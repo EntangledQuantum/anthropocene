@@ -1,0 +1,10 @@
+title: 'Energy in the electric field'
+blurb: 'The energy of a charged capacitor is not on the plates. It fills the gap, at ½κε₀E² per cubic metre, and adding it up over the gap gives ½CV².'
+notation: 'u = \tfrac12\,\kappa\,\varepsilon_0 E^2'
+tags:
+  - 'up-ch24'
+misconceptions:
+  - id: 'up-ch24-energy-on-the-plates'
+    name: 'The energy is stored in the charges on the plates.'
+    signal: 'Places the energy on the metal rather than in the space between.'
+    correction: 'Double the gap at fixed charge: the charges on the plates are the same, but the energy doubles, because there is twice as much field-filled space. The energy is in the field, ½κε₀E² per cubic metre.'

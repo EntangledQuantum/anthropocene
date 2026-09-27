@@ -2,7 +2,7 @@ import { useMemo, useState } from 'react';
 import { NANO, contains, ellipseLoop, enclosedLambda, fluxThroughLoop, gaussFlux, nearestOnLoop, rodsFromNano } from '../../lib/physics/gauss.ts';
 import type { Vec2 } from '../../lib/physics/vectors.ts';
 import { C, CheckBar, Handle, Meter, SceneCard, Stage, useTask } from './scene.tsx';
-import { FluxTicks, RodDot, RodFieldLines, SleevePath, SleeveGrab, axesFromRim, fieldRange, fmtRange, rimOf, signed } from './gauss-kit.tsx';
+import { FluxTicks, RodDot, RodFieldLines, SleevePath, SleeveGrab, axesFromRim, fieldRange, fmtRange, rimOf, signed, fluxText } from './gauss-kit.tsx';
 
 /**
  * Long charged rods seen end-on, and a closed sleeve around some of them,
@@ -50,21 +50,21 @@ export default function SqueezeTheSleeve({ id, prompt, rods: rodsIn, start = { c
   const show = !covered || task.done;
 
   const miss = straddling
-    ? `A rod sits on the sleeve itself, so only part of its field is counted: ${flux.toFixed(0)} N·m²/C.`
-    : `${flux.toFixed(0)} N·m²/C leaves this sleeve: it wraps ${wraps}, ${signed(+enc.toFixed(2))} nC in each metre.`;
+    ? `A rod sits on the sleeve itself, so only part of its field is counted: ${fluxText(flux)} N·m²/C.`
+    : `${fluxText(flux)} N·m²/C leaves this sleeve: it wraps ${wraps}, ${signed(+enc.toFixed(2))} nC in each metre.`;
 
   return (
     <SceneCard id={graded ? id : undefined} prompt={prompt}
       footer={<div style={{ display: 'grid', gap: 14 }}>
         <div style={{ display: 'flex', gap: 26, flexWrap: 'wrap' }}>
-          <Meter label="Flux out of the sleeve" value={show ? flux.toFixed(0) : 'covered'} unit={show ? 'N·m²/C' : undefined} color={C.field} />
+          <Meter label="Flux out of the sleeve" value={show ? fluxText(flux) : 'covered'} unit={show ? 'N·m²/C' : undefined} color={C.field} />
           <Meter label="Field piercing the sleeve" value={fmtRange(range)} unit="N/C" />
         </div>
         {graded && <CheckBar verdict={task.verdict} done={task.done}
           onCheck={() => task.check(hit, { c, ab, flux })} miss={miss} hit={explanation} />}
       </div>}>
       <Stage x={X} y={Y} height={330} equal
-        label={`Rods seen end-on and a sleeve around ${wraps}. Flux ${show ? flux.toFixed(0) : 'hidden'}.`}>
+        label={`Rods seen end-on and a sleeve around ${wraps}. Flux ${show ? fluxText(flux) : 'hidden'}.`}>
         {(s) => <>
           <RodFieldLines s={s} rods={rods} />
           <SleevePath s={s} loop={loop} />

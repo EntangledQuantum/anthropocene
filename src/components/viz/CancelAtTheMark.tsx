@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { contains, ellipseLoop, fluxThroughLoop, rodField, rodsFromNano } from '../../lib/physics/gauss.ts';
 import type { Vec2 } from '../../lib/physics/vectors.ts';
 import { Arrow, C, CheckBar, Handle, Meter, SceneCard, Stage, useTask } from './scene.tsx';
-import { FluxTicks, RodDot, RodFieldLines, SleevePath } from './gauss-kit.tsx';
+import { FluxTicks, RodDot, RodFieldLines, SleevePath, fluxText } from './gauss-kit.tsx';
 
 /**
  * A round sleeve around a +1 nC/m rod, a marked spot on the sleeve, and a
@@ -45,7 +45,7 @@ export default function CancelAtTheMark({ id, prompt, markDeg = 30, explanation 
 
   const way = Math.abs(en) > 0.7 * eMag ? (en > 0 ? 'mostly out of the sleeve' : 'mostly into the sleeve') : 'mostly along the sleeve';
   const miss = looseIn
-    ? `The loose rod is inside the sleeve: the flux jumped to ${flux.toFixed(0)} N·m²/C, and the field at the mark is ${eMag.toFixed(1)} N/C.`
+    ? `The loose rod is inside the sleeve: the flux jumped to ${fluxText(flux)} N·m²/C, and the field at the mark is ${eMag.toFixed(1)} N/C.`
     : `The field at the mark is still ${eMag.toFixed(1)} N/C, pointing ${way}.`;
   const PER = 0.03; // metres of arrow per N/C
 
@@ -54,7 +54,7 @@ export default function CancelAtTheMark({ id, prompt, markDeg = 30, explanation 
       footer={<div style={{ display: 'grid', gap: 14 }}>
         <div style={{ display: 'flex', gap: 26, flexWrap: 'wrap' }}>
           <Meter label="Field at the mark" value={eMag.toFixed(1)} unit="N/C" color={C.field} />
-          <Meter label="Flux out of the sleeve" value={flux.toFixed(0)} unit="N·m²/C" color={C.field} />
+          <Meter label="Flux out of the sleeve" value={fluxText(flux)} unit="N·m²/C" color={C.field} />
         </div>
         {id && <CheckBar verdict={task.verdict} done={task.done}
           onCheck={() => task.check(hit, { loose })} miss={miss} hit={explanation} />}

@@ -1,0 +1,5 @@
+title: 'Dielectric breakdown'
+blurb: 'Every insulator has a largest field it can stand before it tears and sparks: about 3 MV/m for air, about 10 MV/m for glass. That ceiling on the field is the ceiling on the energy a gap can hold.'
+notation: 'U_{\max} = \tfrac12\,\kappa\,\varepsilon_0 E_{\max}^2\,(A d)'
+tags:
+  - 'up-ch24'

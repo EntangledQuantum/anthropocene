@@ -1,0 +1,130 @@
+---
+title: 'Every road costs the same'
+blurb: 'Read a potential map as a landscape: find where carrying a charge costs nothing, aim the field straight downhill, and say which way a negative charge rolls.'
+order: 1
+tier: 'core'
+minutes: 10
+teaches:
+  - 'electric-potential'
+  - 'electric-potential-energy'
+  - 'equipotential'
+requires:
+  - 'potential-force-slope'
+  - 'mechanical-energy-conservation'
+  - 'work-energy-theorem'
+  - 'electric-field'
+  - 'coulombs-law'
+status: 'live'
+updated: 2026-09-25
+---
+
+<Step>
+
+Two charges are fixed on a bench, +8 nC and −5 nC. You carry a small +1 nC charge slowly
+round a loop that swings close to both, and set it down exactly where it started.
+
+<Predict
+  id="up-ch23-loop-work"
+  question="Over the whole loop, how much work does the field do on the small charge?"
+  options={[
+    { key: 'pos', misconception: 'up-ch23-loop-work-nonzero', label: 'Some positive work: the charges push it round', why: 'They push it along on some stretches and against it on others. Carry it round below and watch the meter: whatever it gained, it hands back on the way home.' },
+    { key: 'neg', misconception: 'up-ch23-work-depends-on-path', label: 'Some negative work: you fought the +8 nC on the way past', why: 'You did fight it going in. Coming away, it pushed you by exactly as much. The meter below lands on zero however close you pass.' },
+    { key: 'zero', label: 'Zero, whatever the loop', why: 'Right. The field’s work depends only on where the charge starts and ends, and a loop ends where it started.' },
+    { key: 'dir', misconception: 'up-ch23-loop-direction-matters', label: 'It depends which way round you go', why: 'Reversing the loop flips the sign of every piece of work. Zero with its sign flipped is still zero, which the meter shows either way round.' },
+  ]}
+  correct="zero"
+>
+
+<CarryTheCharge prompt="Carry the charge anywhere you like, then bring it back to A." />
+
+</Predict>
+
+</Step>
+
+<Step>
+
+## Somewhere else that costs nothing
+
+The meter only cares where the charge ends up. So there must be other spots, away from A,
+where it reads zero too.
+
+<CarryTheCharge
+  id="up-ch23-zero-work-spot"
+  prompt="Carry the charge at least 6 cm from A and set it down where the field’s total work is zero."
+  explanation="Every such spot lies on one closed line round the +8 nC, now dashed: the contour through A. Walk along it and the meter never moves. Zero work means the same height on the map, and the shading was the map all along."
+/>
+
+</Step>
+
+<Step>
+
+## Name it
+
+The meter was reading a drop in height. Every place has a **potential** $V$, the potential
+energy per coulomb a charge would have there, and the field's work is the charge times the drop:
+
+$$W_{A\to B} = q\,(V_A - V_B), \qquad U = qV, \qquad V_{\text{point}} = k\,\frac{Q}{r}$$
+
+It is chapter 7's landscape in new clothes: a height map for charge, measured in volts, where 1 V is 1 J/C.
+
+<Recall id="up-ch23-recall-path" concept="electric-potential">
+  <div slot="front">You carry 2 nC from a spot at 300 V to a spot at 100 V, by a long winding road. How much work does the field do?</div>
+
+  +0.4 µJ, which is $2\,\text{nC} \times 200\,\text{V}$. The road does not enter: only the
+  heights of the two ends.
+</Recall>
+
+</Step>
+
+<Step>
+
+## Ski straight downhill
+
+A new map, and only the map. The field at a spot is the push per coulomb on a + charge there.
+
+<AimDownhill
+  id="up-ch23-aim-the-field"
+  prompt="Drag the arrow to point the way the field points at the white dot."
+  explanation="Straight across the contour, toward lower ground. Along the contour V is flat, so the field does no work that way and has no part along it. Every orchid arrow now on the map crosses its contour square-on and runs downhill: E is the downhill slope of V, as the force was the downhill slope of U in chapter 7."
+/>
+
+<Recall id="up-ch23-recall-contour" concept="equipotential">
+  <div slot="front">Why can a field line never run along an equipotential?</div>
+
+  Moving a charge along an equipotential costs no work, so the field can have no component
+  along it. The field always crosses equipotentials at right angles, pointing toward lower V.
+</Recall>
+
+</Step>
+
+<Step>
+
+## Negative charges roll uphill
+
+Back on the first map. Swap the small charge for a −1 nC bead and let it go, at rest, at A.
+
+<Predict
+  id="up-ch23-negative-release"
+  question="Which way does it start to move?"
+  options={[
+    { key: 'down', misconception: 'up-ch23-everything-rolls-downhill', label: 'Downhill, toward the −5 nC: everything rolls to lower V', why: 'That is the landscape for a + charge. The bead’s energy is qV with q negative, so its map is upside down. Carry it below toward the +8 nC and watch the meter climb.' },
+    { key: 'up', label: 'Uphill, toward the +8 nC', why: 'Right. U = qV, and with q negative the high ground is its low ground. The field does positive work on it going uphill.' },
+    { key: 'along', misconception: 'up-ch23-field-along-contour', label: 'Along the contour through A, where no height changes', why: 'Along the contour its energy does not change, so nothing pushes it that way. The push is across the contour.' },
+    { key: 'stay', misconception: 'up-ch23-potential-is-energy', label: 'Nowhere: V at A is just a number, not a push', why: 'V alone does not push, but its slope does. The field at A is about 12 kV/m, and it pushes on any charge put there.' },
+  ]}
+  correct="up"
+>
+
+<CarryTheCharge q={-1} prompt="Carry the −1 nC bead from A toward the +8 nC, then toward the −5 nC." />
+
+</Predict>
+
+## What to carry forward
+
+- **V is a height map for charge.** The field's work is $q$ times the drop in $V$, whatever the road; round a loop it is zero.
+- **Contours are equipotentials**, and the field crosses them square-on, pointing downhill.
+- **U = qV.** A negative charge sees the map upside down, and rolls uphill.
+
+Next: let a charge fall through a voltage, and count its energy in electron-volts.
+
+</Step>

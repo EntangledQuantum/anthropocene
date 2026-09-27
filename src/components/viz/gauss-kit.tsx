@@ -36,6 +36,9 @@ export function ChargeSpeck({ x, y }: { x: number; y: number }) {
   </g>;
 }
 
+/** A flux reading, whole N·m²/C, never "-0". */
+export const fluxText = (phi: number) => { const r = Math.round(phi); return `${r === 0 ? 0 : r}`; };
+
 export const signed = (q: number) => `${q > 0 ? '+' : q < 0 ? '−' : ''}${Math.abs(q)}`;
 
 /** Field lines from the positive rods, 6 per nC/m. Memoised on the rods. */

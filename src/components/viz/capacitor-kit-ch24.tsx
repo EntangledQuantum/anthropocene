@@ -122,13 +122,13 @@ export function CapacitorPicture({ s, c, lineE, shade = 0, slabParked }: {
 }
 
 /** A dimension line under the gap: "2.0 mm". */
-export function GapLabel({ s, gap, y = -0.55 }: { s: StageApi; gap: number; y?: number }) {
+export function GapLabel({ s, gap, y = -0.55, above }: { s: StageApi; gap: number; y?: number; above?: boolean }) {
   const a = s.sx(0), b = s.sx(gap), yy = s.sy(y);
   return <g>
     <line x1={a} x2={b} y1={yy} y2={yy} stroke={C.faint} strokeWidth={1} />
     <line x1={a} x2={a} y1={yy - 4} y2={yy + 4} stroke={C.faint} />
     <line x1={b} x2={b} y1={yy - 4} y2={yy + 4} stroke={C.faint} />
-    <text x={(a + b) / 2} y={yy + 16} textAnchor="middle" fontSize={13} fill={C.soft} fontFamily="var(--font-mono)">{gap.toFixed(1)} mm</text>
+    <text x={(a + b) / 2} y={above ? yy - 7 : yy + 16} textAnchor="middle" fontSize={13} fill={C.soft} fontFamily="var(--font-mono)">{gap.toFixed(1)} mm</text>
   </g>;
 }
 

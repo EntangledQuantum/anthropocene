@@ -1,0 +1,136 @@
+---
+title: 'Pull the plates apart'
+blurb: 'Move the plates of a charged capacitor with the battery on and off, and say in advance which of Q and V stays put, where the charge goes, and where the energy goes.'
+order: 1
+tier: 'core'
+minutes: 10
+teaches:
+  - 'capacitance'
+  - 'parallel-plate-capacitor'
+  - 'capacitor-energy'
+requires:
+  - 'electric-field'
+  - 'electric-potential'
+  - 'mechanical-work'
+status: 'live'
+updated: 2026-09-25
+---
+
+<Step>
+
+Two metal plates 10 cm square, 2 mm apart, are charged by a 12 V battery. Then the switch is
+opened and you pull the plates to 4 mm.
+
+<Predict
+  id="up-ch24-pull-isolated"
+  question="What does a voltmeter across the plates read now?"
+  options={[
+    { key: 'a', misconception: 'up-ch24-battery-voltage-sticks', label: 'Still 12 V: the battery set it', why: 'The battery is cut off, so nothing holds the voltage. What cannot change is the charge: it has nowhere to go. Pull the plate below and watch the dots stay put while the voltmeter climbs.' },
+    { key: 'b', misconception: 'up-ch24-farther-is-weaker', label: '6 V: farther apart, weaker', why: 'Point charges weaken with distance, but a wide sheet of charge does not. Same charge, same field in the gap: count the orchid lines as you pull. The same field across twice the gap is twice the voltage.' },
+    { key: 'c', label: '24 V', why: 'Right. The charge is stuck, so the field between the plates is unchanged, and V = Ed doubles with the gap.' },
+    { key: 'd', label: '3 V: the field falls as 1/r²', why: 'That is the rule for a point charge. Between two wide plates the field lines run straight across and do not spread, so the field is the same at any gap.' },
+  ]}
+  correct="c"
+>
+
+<PullThePlates prompt="Drag the right plate by its handle. The switch is open." gap={2} closed={false} />
+
+</Predict>
+
+</Step>
+
+<Step>
+
+## Keep the battery on
+
+Now the switch is closed and stays closed: the battery holds the plates at 12 V whatever you do.
+
+<PullThePlates
+  id="up-ch24-triple-charge"
+  prompt="Move the plate until it holds three times the charge it starts with."
+  gap={3}
+  range={[0.5, 6]}
+  targetQ={3}
+  explanation="A third of the gap, 1 mm. At a fixed 12 V the field is V/d, three times stronger, and a field three times stronger needs three times the charge on the plates. The battery supplied it: the extra charge came off the far plate and round the circuit."
+/>
+
+</Step>
+
+<Step>
+
+## Name it
+
+At any gap, charge and voltage kept a fixed ratio. That ratio is the **capacitance**, and for two flat plates it is set by geometry alone:
+
+$$Q = CV, \qquad C = \frac{\varepsilon_0 A}{d}$$
+
+These plates are 44 pF at 2 mm. Close the gap and $C$ grows; the battery then fixes $V$, or the cut wire fixes $Q$, and the other follows.
+
+<Recall id="up-ch24-recall-q-or-v" concept="capacitance">
+  <div slot="front">A charged capacitor has its gap halved. What happens to Q and V, with the battery connected and with it disconnected?</div>
+
+  Connected: V stays, C doubles, so Q doubles (the battery supplies it). Disconnected: Q
+  stays, C doubles, so V halves. The capacitor itself stays neutral throughout: +Q on one
+  plate, −Q on the other.
+</Recall>
+
+</Step>
+
+<Step>
+
+## Beat the battery
+
+The plates can move between 1 mm and 3 mm, and you have the switch. The battery is only 12 V.
+
+<PullThePlates
+  id="up-ch24-beat-the-battery"
+  prompt="Get the voltmeter to read 30 V."
+  gap={3}
+  range={[1, 3]}
+  switchable
+  targetV={30}
+  explanation="Push the plates close with the switch closed, so the battery loads them with extra charge, then open it and pull them back apart. At 1.2 mm the plates hold 2.5 times their charge at 3 mm; trapped, that charge at 3 mm makes 2.5 × 12 = 30 V. Your pull did the rest, which is how a flash or a spark coil gets high voltage from a small battery."
+/>
+
+</Step>
+
+<Step>
+
+## Where the energy goes
+
+The plates attract, so pulling them apart takes work, and a charged capacitor stores energy
+$U = \tfrac12 QV$. With the battery on, you pull the plates from 1 mm to 3 mm: you do work, and the field loses energy.
+
+<Predict
+  id="up-ch24-energy-ledger"
+  question="Where does all that energy end up?"
+  options={[
+    { key: 'a', misconception: 'up-ch24-energy-lost-as-heat', label: 'As heat in the wires', why: 'Pulled slowly, the current is tiny and so is the heat. The charge is being pushed back into the battery against its 12 V, and pushing charge into a battery that way charges it.' },
+    { key: 'b', misconception: 'up-ch24-field-loss-pays-you', label: 'Nowhere: the field’s loss is what resisted your pull', why: 'Your hand did positive work and the field lost energy. Both left somewhere; neither pays the other. Watch the two meters in the scene: they add.' },
+    { key: 'c', label: 'Into the battery: both your work and the field’s loss', why: 'Right. The battery takes 8.5 nJ: 4.25 nJ the field gave up and 4.25 nJ from your pull. Charge flows back into it against its voltage, recharging it.' },
+    { key: 'd', label: 'Into the field: it gains what you put in', why: 'The field energy falls, from 6.4 nJ to 2.1 nJ. At fixed 12 V the field weakens as the gap grows, and the energy goes with it.' },
+  ]}
+  correct="c"
+>
+
+<PullThePlates prompt="Pull the plate from 1 mm to 3 mm. The switch stays closed." gap={1} range={[1, 4]} ledger />
+
+</Predict>
+
+<Recall id="up-ch24-recall-energy" concept="capacitor-energy">
+  <div slot="front">With the battery disconnected, you pull the plates of a charged capacitor apart. Where does the work you do go?</div>
+
+  Into the field. The charge is fixed, the attraction ½QE never weakens, and the stored energy
+  $Q^2/2C$ rises by exactly your work. Connected, the voltage is fixed instead and the energy
+  falls, so your work and the field's loss both go back into the battery.
+</Recall>
+
+## What to carry forward
+
+- **Once C is set, Q and V are locked together.** A connected battery fixes V; an open switch fixes Q.
+- **C = ε₀A/d is geometry.** Close the gap and the same voltage holds more charge.
+- **Pulling apart costs work**, stored in the field if Q is fixed, returned to the battery if V is.
+
+Next: put something in the gap, and C grows without moving the plates.
+
+</Step>

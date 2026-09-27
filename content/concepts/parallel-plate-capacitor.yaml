@@ -1,0 +1,5 @@
+title: 'The parallel-plate capacitor'
+blurb: 'Two flat plates of area A a gap d apart. Its capacitance grows with the area and shrinks with the gap: closer plates hold more charge at the same voltage.'
+notation: 'C = \dfrac{\varepsilon_0 A}{d},\qquad E = \dfrac{V}{d} = \dfrac{Q}{\varepsilon_0 A}'
+tags:
+  - 'up-ch24'

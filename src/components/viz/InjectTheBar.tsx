@@ -56,8 +56,8 @@ export default function InjectTheBar({ prompt, lambda = 6 }: InjectTheBarProps) 
       if (p.length && s) {
         // Slow at first so the drift can be watched, then faster to finish the slide along the surface.
         const k = frames.current++;
-        const steps = Math.min(24, 1 + Math.floor(k / 40));
-        const cap = k < 90 ? 0.008 : SETTLE_CAP;
+        const steps = k < 150 ? 1 : Math.min(24, 1 + Math.floor((k - 150) / 20));
+        const cap = k < 150 ? 0.005 : SETTLE_CAP;
         for (let j = 0; j < steps; j++) settleStep(p, metal, SETTLE_RATE, cap);
         const g = specks.current;
         if (g) for (let i = 0; i < p.length; i++) {
@@ -95,7 +95,7 @@ export default function InjectTheBar({ prompt, lambda = 6 }: InjectTheBarProps) 
         </>; }}
       </Stage>
       <p className="hud-label" style={{ margin: '6px 0 0' }}>
-        {lambda} nC per metre of bar, as 48 equal charges free to move in the metal · ringed dot: the nozzle
+        {lambda} nC per metre of bar, as 48 equal charges free to move · a real metal's layer is smooth, and the last N/C or two left inside come from using only 48 · ringed dot: the nozzle
       </p>
     </SceneCard>
   );

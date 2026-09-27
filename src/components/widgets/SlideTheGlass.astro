@@ -1,0 +1,6 @@
+---
+// @graded — with `id` and `targetShare`, the scene checks itself.
+import Island, { type SlideTheGlassProps } from '../viz/SlideTheGlass.tsx';
+const props = Astro.props as SlideTheGlassProps;
+---
+<Island client:visible {...props} />

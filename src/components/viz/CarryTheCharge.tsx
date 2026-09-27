@@ -67,8 +67,11 @@ export default function CarryTheCharge({
       const d = Math.hypot(x - c.x, y - c.y);
       if (d < 1.8) { x = c.x + ((x - c.x) / (d || 1)) * 1.8; y = c.y + ((y - c.y) / (d || 1)) * 1.8; }
     }
-    // Home: once you have been somewhere, landing within 0.6 cm of A puts you on A.
-    if (wandered.current && Math.hypot(x - start[0], y - start[1]) < 0.6) return [start[0], start[1]];
+    // Home: once you have been somewhere, arriving within 0.6 cm of A puts you
+    // on A. Only when approaching, so you can always walk away again.
+    const dNew = Math.hypot(x - start[0], y - start[1]);
+    const dOld = Math.hypot(at.current[0] - start[0], at.current[1] - start[1]);
+    if (wandered.current && dNew < 0.6 && dNew < dOld) return [start[0], start[1]];
     return [x, y];
   };
 
