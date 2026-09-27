@@ -1,0 +1,14 @@
+title: 'The magnetic field'
+blurb: 'The magnetic field at a place is defined by what it does to a charge moving through it: a sideways push proportional to the charge, its speed and the field. A charge at rest feels nothing. Drawn into the page as crosses, out of it as dots.'
+notation: '\vec F = q\,\vec v\times\vec B,\qquad 1\ \mathrm{T} = 1\ \mathrm{N\,s/(C\,m)}'
+tags:
+  - 'up-ch27'
+misconceptions:
+  - id: 'up-ch27-b-acts-on-charges-at-rest'
+    name: 'A magnetic field pushes on any charge, moving or not.'
+    signal: 'Expects a charge sitting still between the poles of a magnet to be pulled toward one of them.'
+    correction: 'The magnetic force is q v × B. With v = 0 it is zero. Only an electric field acts on a charge at rest.'
+  - id: 'up-ch27-north-pole-is-magnetic-charge'
+    name: 'A north pole is a lump of positive magnetic charge, like a positive electric charge.'
+    signal: 'Treats the poles of a magnet as sources that push and pull charges the way electric charges do.'
+    correction: 'No magnetic charge has ever been found. A magnet''s field comes from circulating currents, and a bar magnet behaves like a current loop: its moment turns to line up with an outside field.'

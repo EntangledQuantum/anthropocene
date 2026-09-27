@@ -175,3 +175,13 @@ describe('lesson 2: the step the scenes run', () => {
     expect(heat + capEnergy(C, v)).toBeCloseTo(capEnergy(C, emf), 9);
   });
 });
+
+describe('lesson 2: the values the lesson types in', () => {
+  it('7213 Ω on 200 µF reaches half in one second (the opening bet)', () => {
+    expect(Math.round(resistorForTime(1, 0.5, CH26_FLASH.C))).toBe(7213);
+    expect(chargeV(1, 1, 7213, CH26_FLASH.C)).toBeCloseTo(0.5, 4);
+  });
+  it('the lamp keeps half the energy at 212 V', () => {
+    expect(CH26_FLASH.emf * Math.SQRT1_2).toBeCloseTo(212, 0);
+  });
+});

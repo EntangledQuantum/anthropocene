@@ -29,7 +29,7 @@ export interface FloatTheRodProps {
 const IMAX = 8;
 const TRACK: [number, number] = [-12, 12];
 const TRACK_Y = -10.5;
-const PER_N = 22; // cm of arrow per newton
+const PER_N = 16; // cm of arrow per newton
 const CM = 0.01;
 const ROOM = 6; // the rod can travel ±6 cm before it hits the stops
 
@@ -97,7 +97,7 @@ export default function FloatTheRod({
                 y1={s.sy(yy)} y2={s.sy(yy)} stroke={C.faint} strokeWidth={3} />)}
             </g>)}
             <g ref={rod}>
-              <rect x={s.sx(-half)} y={s.sy(0.45)} width={s.len(2 * half)} height={s.len(0.9)} rx={3} fill="#b87333" opacity={0.85} />
+              <rect x={s.sx(-half)} y={s.sy(0.45)} width={s.len(2 * half)} height={s.len(0.9)} rx={3} fill={C.surface} stroke={C.ink} strokeWidth={2} />
               {Math.abs(I) > 0.02 && [-6, 0, 6].map((x) => <Arrow key={x} s={s} from={[x - Math.sign(I) * 1.2, 0]} to={[x + Math.sign(I) * 1.2, 0]}
                 color={C.ink} width={2} />)}
               <Arrow s={s} from={[-2.5, -0.5]} to={[-2.5, -0.5 - W * PER_N]} color={C.force} label={`weight ${W.toFixed(2)} N`} labelSide={1} />

@@ -25,7 +25,7 @@ export interface MatchTheLoadProps {
   explanation?: string;
 }
 
-const R_MAX = 3, R_MIN = 0.05, TX0 = 290, TX1 = 590, TY = 252;
+const R_MAX = 3, R_MIN = 0.05, TX0 = 270, TX1 = 500, TY = 215, LX = 570;
 
 export default function MatchTheLoad({
   id, prompt, emf = 1.5, r = 0.5, R0 = 2.5, tolerance = 0.12, explanation,
@@ -65,10 +65,10 @@ export default function MatchTheLoad({
       </div>}>
       <CellLoop cell={cell} I={s.I} V={s.V} heat={s.Pcell / peak} Imax={4}
         label={`The cell driving a ${R.toFixed(2)} ohm lamp, which takes ${s.Pload.toFixed(2)} watts.`}>
-        <line x1={440} x2={440} y1={RAIL.top} y2={132} stroke={C.soft} strokeWidth={2} />
-        <line x1={440} x2={440} y1={172} y2={RAIL.bot} stroke={C.soft} strokeWidth={2} />
-        <Lamp cx={440} cy={152} glow={s.Pload / peak} r={20} />
-        <text x={470} y={157} fontSize={13} fill={C.soft} fontFamily="var(--font-mono)">R = {R.toFixed(2)} Ω</text>
+        <line x1={LX} x2={LX} y1={RAIL.top} y2={132} stroke={C.soft} strokeWidth={2} />
+        <line x1={LX} x2={LX} y1={172} y2={RAIL.bot} stroke={C.soft} strokeWidth={2} />
+        <Lamp cx={LX} cy={152} glow={s.Pload / peak} r={20} />
+        <text x={LX - 72} y={157} textAnchor="end" fontSize={13} fill={C.soft} fontFamily="var(--font-mono)">lamp, R = {R.toFixed(2)} Ω</text>
         {/* the resistance track */}
         <line x1={TX0} x2={TX1} y1={TY} y2={TY} stroke={C.rule} strokeWidth={6} strokeLinecap="round" />
         {[0, 1, 2, 3].map((v) => <g key={v}>

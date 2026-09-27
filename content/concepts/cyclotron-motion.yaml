@@ -1,0 +1,14 @@
+title: 'Circular motion in a magnetic field'
+blurb: 'A charge moving at right angles to a uniform magnetic field goes round a circle of radius m v / (|q| B). Its lap time 2π m / (|q| B) does not depend on its speed: faster charges run bigger circles in exactly the same time.'
+notation: 'r = \dfrac{m v}{|q| B},\qquad T = \dfrac{2\pi m}{|q| B}'
+tags:
+  - 'up-ch27'
+misconceptions:
+  - id: 'up-ch27-stronger-field-wider-circle'
+    name: 'A stronger field throws the charge round a wider circle.'
+    signal: 'Expects the radius to grow with B, as if a harder push meant a bigger swing.'
+    correction: 'A stronger field pushes harder sideways, so it turns the charge more sharply: r = m v / (|q| B) shrinks as B grows.'
+  - id: 'up-ch27-faster-laps-sooner'
+    name: 'A faster charge comes round sooner.'
+    signal: 'Predicts that of two protons in the same field, the faster one finishes a lap first.'
+    correction: 'The faster one runs a circle bigger in exact proportion to its speed. Distance over speed is the same for both: T = 2π m / (|q| B). This is what lets a cyclotron kick particles at one fixed frequency.'

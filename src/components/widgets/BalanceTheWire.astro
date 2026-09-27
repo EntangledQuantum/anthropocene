@@ -1,0 +1,6 @@
+---
+// @graded — with `id` and `probe`, slide (and reverse) one wire until the probe wire feels no force.
+import Island, { type BalanceTheWireProps } from '../viz/BalanceTheWire.tsx';
+const props = Astro.props as BalanceTheWireProps;
+---
+<Island client:visible {...props} />

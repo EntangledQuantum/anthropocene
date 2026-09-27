@@ -1,0 +1,124 @@
+---
+title: 'The coil that keeps turning'
+blurb: 'Find where a current loop in a field feels the most twist and where it comes to rest, keep one spinning by reversing its current on time, and float a wire on the push that drives it.'
+order: 2
+tier: 'core'
+minutes: 11
+teaches:
+  - 'magnetic-force-on-current'
+  - 'magnetic-dipole-moment'
+requires:
+  - 'magnetic-force-on-charge'
+  - 'torque'
+  - 'electric-current'
+status: 'live'
+updated: 2026-09-27
+---
+
+<Step>
+
+A flat coil of wire sits on an axle between the poles of a magnet, carrying a steady current.
+You turn it slowly round the axle.
+
+<Predict
+  id="up-ch27-most-twist"
+  question="At what angle does the field twist the coil hardest?"
+  options={[
+    { key: 'facing', misconception: 'up-ch27-torque-max-facing-field', label: 'When its face turns squarely toward the poles', why: 'That is where the most field passes through it, but there the forces on its sides point straight along the coil and only stretch it. Turn it there below: the torque reads zero.' },
+    { key: 'edge', label: 'When its face is edge-on to the poles', why: 'Right. The forces on the two sides never change; turning the coil only moves their lines of action apart. Edge-on, they are as far apart as they can be.' },
+    { key: 'same', label: 'Equally hard at every angle: the forces never change', why: 'The forces do stay the same size and direction. What changes is how far apart their lines of action are, and the torque goes with that gap.' },
+    { key: 'never', misconception: 'up-ch27-uniform-field-drags-magnet', label: 'Never: the pushes on opposite sides cancel', why: 'They cancel as a net force: the coil is not dragged anywhere. But they act on different sides of the axle, so they still turn it.' },
+  ]}
+  correct="edge"
+>
+
+<TurnTheCoil prompt="Drag the end of the coil round and watch the torque." start={50} />
+
+</Predict>
+
+</Step>
+
+<Step>
+
+## Where it would rest
+
+The torque vanished at two angles. Only one of them is a place the coil would stay.
+
+<TurnTheCoil
+  id="up-ch27-where-it-rests"
+  prompt="Turn the coil to where it would stay if you let go, even after a nudge."
+  start={130}
+  explanation="With μ pointing along B, the coil's face square to the poles. There the forces lie along the coil and pull it open; nudge it and they turn it back. At 180° the torque is zero too, but the forces squeeze the coil, and a nudge lets them turn it all the way round. A compass needle settles the same way, because a magnet is current loops too."
+/>
+
+</Step>
+
+<Step>
+
+## Keep it turning
+
+Let go of the coil from edge-on and it swings toward upright, overshoots, and rocks back.
+You have one button.
+
+<FlipToKeepTurning
+  id="up-ch27-keep-it-turning"
+  prompt="Reverse the current at the right moments to make three full turns."
+  turns={3}
+  explanation="Reverse it each time the coil swings through upright. There μ lines up with B and the torque falls to zero; just past it, the same current would pull the coil back. Reversing the current flips μ, so the coil is always half a turn from lining up and always driven on. A motor does this with a split ring on its axle, the commutator, which swaps the connections twice a turn."
+/>
+
+</Step>
+
+<Step>
+
+## Name it
+
+Each long side is a straight wire of length $L$ in the field, pushed by $\vec F = I\vec L\times\vec B$:
+here 20 turns × 2 A × 0.05 m × 0.5 T = 1.0 N. Their torque about the axle is
+
+$$\tau = NIAB\sin\theta = |\vec\mu\times\vec B|, \qquad \vec\mu = NIA\,\hat n$$
+
+The coil acts as a magnetic moment $\vec\mu$ out of its face, and the field turns $\vec\mu$ toward
+$\vec B$. The net force is zero, as the meter showed.
+
+<Recall id="up-ch27-recall-torque" concept="magnetic-dipole-moment">
+  <div slot="front">A current loop sits in a uniform field with its face square to the field. What torque and what net force does it feel?</div>
+
+  Neither. Its moment $\vec\mu$ points along $\vec B$, so $\tau = \mu B\sin 0 = 0$, and in a
+  uniform field the forces on opposite sides always cancel. It is at rest, and stably.
+</Recall>
+
+</Step>
+
+<Step>
+
+## One side on its own
+
+Take one side of the coil alone: a 20 g copper rod, 20 cm long, free to slide on upright
+rails in a 0.25 T field into the page. The rails carry current through it.
+
+<FloatTheRod
+  id="up-ch27-float-the-rod"
+  prompt="Set the current so the rod hangs still when you let go."
+  mass={0.02}
+  length={0.2}
+  field={0.25}
+  start={1.5}
+  explanation="About 3.9 A, flowing right. For current to the right in a field into the page, I L × B points up, and it balances the 0.196 N weight when I = mg/(BL) = 0.196/(0.25 × 0.20). Send the current left and the same push points down."
+/>
+
+<Recall id="up-ch27-recall-wire" concept="magnetic-force-on-current">
+  <div slot="front">A copper wire carries current but has no net charge. Why does a magnetic field push it?</div>
+
+  The field pushes moving charge, not net charge. The wire's electrons drift and its ions
+  do not, so the electrons are pushed sideways and drag the wire with them: $\vec F = I\vec L\times\vec B$.
+</Recall>
+
+## What to carry forward
+
+- **A current in a field is pushed sideways:** $\vec F = I\vec L\times\vec B$.
+- **A loop feels a torque, not a net force:** $\tau = NIAB\sin\theta$, turning $\vec\mu$ toward $\vec B$, and a motor reverses the current each half turn to keep it going.
+
+Next: the currents themselves make magnetic fields.
+
+</Step>

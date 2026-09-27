@@ -1,0 +1,10 @@
+title: 'Resistors in series and in parallel'
+blurb: 'Bulbs in line add their resistances. Bulbs side by side give the current more paths, so together they resist less than any one of them. Both follow from Kirchhoff''s two rules.'
+notation: 'R_{\text{series}} = R_1 + R_2, \quad \frac{1}{R_{\parallel}} = \frac{1}{R_1} + \frac{1}{R_2}'
+tags:
+  - 'up-ch26'
+misconceptions:
+  - id: 'more-bulbs-more-resistance'
+    name: 'Adding a bulb always adds resistance, so it dims everything else.'
+    signal: 'Predicts that screwing in another bulb anywhere must make the existing bulbs dimmer.'
+    correction: 'A bulb added in parallel adds a path, not an obstacle. It lowers the total resistance, so the battery supplies more current, and a bulb in line with that group gets brighter.'

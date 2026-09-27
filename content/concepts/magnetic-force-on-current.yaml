@@ -1,0 +1,10 @@
+title: 'The magnetic force on a current'
+blurb: 'A wire carrying current in a magnetic field is pushed sideways, because every drifting charge in it is. The pushes add to I L × B: perpendicular to the wire and to the field, reversing when the current does.'
+notation: '\vec F = I\,\vec L\times\vec B,\qquad F = I L B\sin\phi'
+tags:
+  - 'up-ch27'
+misconceptions:
+  - id: 'up-ch27-neutral-wire-no-force'
+    name: 'A wire is neutral, so a field cannot push it.'
+    signal: 'Expects no magnetic force on a current-carrying wire because its charge adds to zero.'
+    correction: 'The magnetic force acts on moving charge. The wire''s electrons drift and its ions do not, so the electrons are pushed sideways and drag the whole wire with them. Neutral is not motionless.'

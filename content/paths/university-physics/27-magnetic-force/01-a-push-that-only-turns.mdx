@@ -1,0 +1,143 @@
+---
+title: 'A push that only turns'
+blurb: 'Steer a proton into a detector with nothing but a magnetic field, say which way the field pushes any charge, and explain why a faster charge takes no less time to come round.'
+order: 1
+tier: 'core'
+minutes: 10
+teaches:
+  - 'magnetic-field'
+  - 'magnetic-force-on-charge'
+  - 'cyclotron-motion'
+requires:
+  - 'electric-field'
+  - 'circular-motion-dynamics'
+  - 'work-energy-theorem'
+status: 'live'
+updated: 2026-09-27
+---
+
+<Step>
+
+A proton gun fires through a hole in a metal plate into a magnetic field that points into
+the page. The proton curves round and comes back to the plate.
+
+<Predict
+  id="up-ch27-double-the-field"
+  question="You double the field and fire again. What changes?"
+  options={[
+    { key: 'wider', misconception: 'up-ch27-stronger-field-wider-circle', label: 'It swings round a wider circle', why: 'A stronger field pushes harder sideways, and a harder sideways push turns the proton more sharply, not less. Double the field below: the circle halves.' },
+    { key: 'faster', misconception: 'up-ch27-magnetic-force-does-work', label: 'A tighter circle, and it comes out faster', why: 'Tighter, yes. Faster, no: watch the speed meter below. The push is always at right angles to the motion, so it never pushes the proton along.' },
+    { key: 'same-speed', label: 'A tighter circle, at exactly the same speed', why: 'Right. Twice the sideways push turns it twice as sharply, so the circle is half the size. The push never has a part along the motion, so the speed cannot change.' },
+    { key: 'along', misconception: 'up-ch27-force-along-field-lines', label: 'It is pushed along the field, down into the page', why: 'The push is at right angles to the field as well as to the motion, so it stays in the page. A charge moving along the field lines would feel nothing at all.' },
+  ]}
+  correct="same-speed"
+>
+
+<BendIntoTheSlot prompt="Drag the field strength, fire, and watch the speed meter." />
+
+</Predict>
+
+</Step>
+
+<Step>
+
+## Land it in the slot
+
+This is a mass spectrometer. A detector sits in the plate 16 cm from the hole, and the gun
+fires protons at 1.0 × 10⁶ m/s.
+
+<BendIntoTheSlot
+  id="up-ch27-land-in-slot"
+  prompt="Set the field so the proton lands in the detector slot."
+  target={16}
+  explanation="About 0.13 T. The proton lands a full circle's width from the hole, so its radius is 8 cm, and a stronger field would have turned it into a tighter circle short of the slot. A heavier ion at the same speed would need a wider circle, so it lands further out: that is how the instrument sorts atoms by mass."
+/>
+
+</Step>
+
+<Step>
+
+## Name it
+
+The push grew with the field and stayed at right angles to the motion. That push is how the
+**magnetic field** is defined:
+
+$$\vec F = q\,\vec v\times\vec B, \qquad F = |q|\,vB \text{ when } \vec v \perp \vec B$$
+
+It is always perpendicular to $\vec v$, so it does no work and the speed never changes. As
+the push toward the centre it sets the circle: $|q|vB = mv^2/r$, so $r = mv/(|q|B)$.
+
+<Recall id="up-ch27-recall-no-work" concept="magnetic-force-on-charge">
+  <div slot="front">Why can a steady magnetic field never speed up a charged particle?</div>
+
+  Its push $q\vec v\times\vec B$ is always at right angles to the velocity, so it does no
+  work: $\vec F\cdot\vec v = 0$. It turns the velocity and leaves the speed alone.
+</Recall>
+
+<Recall id="up-ch27-recall-at-rest" concept="magnetic-field">
+  <div slot="front">A proton sits at rest between the poles of a strong magnet. What force does the field exert on it?</div>
+
+  None. The magnetic force is $q\vec v\times\vec B$, and with $\vec v = 0$ it vanishes. A
+  magnetic field only acts on charge that moves.
+</Recall>
+
+</Step>
+
+<Step>
+
+## Which way it turns
+
+Now an electron, which is negative, crosses a field pointing out of the page (the dots). Its
+velocity is the cyan arrow.
+
+<PointTheMagneticPush
+  id="up-ch27-point-the-push"
+  prompt="Drag the white arrow to where the magnetic push on the electron points."
+  charge="electron"
+  field="out"
+  angle={30}
+  guess={200}
+  explanation="Up and to the left. Fingers along v, curl them toward B, out of the page: your thumb points down and to the right. That is v × B, and the electron's negative charge turns the push round. The path curves toward the push, counterclockwise, at a speed that never changes."
+/>
+
+</Step>
+
+<Step>
+
+## Faster is not sooner
+
+Two protons leave the same gate together in the same field, one at 1.0 × 10⁶ m/s and one
+at twice that.
+
+<Predict
+  id="up-ch27-race-round"
+  question="Which one gets back to the gate first?"
+  options={[
+    { key: 'fast', misconception: 'up-ch27-faster-laps-sooner', label: 'The faster one', why: 'It is faster, but its circle is bigger in exact proportion to its speed. Race them below: they arrive together.' },
+    { key: 'slow', label: 'The slower one: its circle is smaller', why: 'Its circle is smaller, but it covers it more slowly by the same factor. Race them below.' },
+    { key: 'tie', label: 'They arrive together', why: 'Right. Twice the speed means twice the radius, so twice the distance at twice the speed: the same lap time, 2πm/(|q|B), whatever the speed.' },
+    { key: 'escape', misconception: 'up-ch27-magnetic-force-does-work', label: 'The faster one never comes back: the field cannot hold it', why: 'The push grows with speed, qvB, so the field holds any speed. It only makes the circle bigger.' },
+  ]}
+  correct="tie"
+>
+
+<RaceRoundTheField prompt="Set proton B's speed, then release both." />
+
+</Predict>
+
+<Recall id="up-ch27-recall-lap" concept="cyclotron-motion">
+  <div slot="front">A proton's speed doubles in a uniform field. What happens to its circle and its lap time?</div>
+
+  The radius $r = mv/(|q|B)$ doubles; the lap time $T = 2\pi m/(|q|B)$ stays the same. This
+  is why a cyclotron can kick its particles at one fixed rhythm as they speed up.
+</Recall>
+
+## What to carry forward
+
+- **The magnetic push is sideways.** $\vec F = q\vec v\times\vec B$ turns a velocity and never changes its speed.
+- **Stronger field, tighter circle:** $r = mv/(|q|B)$, and the lap time does not care about speed.
+- **Mind the sign.** The right-hand rule gives $\vec v\times\vec B$; a negative charge is pushed the other way.
+
+Next: a wire is full of moving charges, so the field pushes the wire.
+
+</Step>

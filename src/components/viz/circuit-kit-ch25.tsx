@@ -170,7 +170,7 @@ export function CellCutaway({ x, y, emf, r, heat = 0 }: {
   /** 0..1: how hot the internal resistor is drawn. */
   heat?: number;
 }) {
-  const w = 120, h = 150;
+  const w = 138, h = 150;
   const px = x + 26, py = y + 96;       // pump centre
   const rx0 = x + 44, rx1 = x + 94, ry = y + 34; // internal resistor
   const zig = Array.from({ length: 7 }, (_, i) => `${rx0 + ((i + 0.5) * (rx1 - rx0)) / 7},${ry + (i % 2 ? 7 : -7)}`).join(' ');
@@ -214,7 +214,6 @@ export function Dial({ cx, cy, value, max, unit, digits = 2, color = C.ink }: {
     <text x={cx} y={cy + 26} textAnchor="middle" fontSize={13} fontWeight={600} fill={color} fontFamily="var(--font-mono)">
       {value.toFixed(digits)} {unit}
     </text>
-    <text x={cx} y={cy - 12} textAnchor="middle" fontSize={12} fill={C.faint}>{unit === 'V' ? 'volts' : 'amps'}</text>
   </g>;
 }
 
@@ -267,10 +266,10 @@ export function CellLoop({ cell, I, V, heat, Imax, children, label }: {
     <svg viewBox="0 0 640 300" role="img" aria-label={label}
       style={{ width: '100%', display: 'block', touchAction: 'none', userSelect: 'none', fontFamily: 'var(--font-sans)' }}>
       {/* rails: + terminal up to the top rail through the ammeter; − terminal round the back to the bottom rail */}
-      <path d={`M${t.plus[0]},${t.plus[1] - 4} L${t.plus[0]},${RAIL.top} L${190},${RAIL.top} M${250},${RAIL.top} L${RAIL.x1},${RAIL.top}
+      <path d={`M${t.plus[0]},${t.plus[1] - 4} L${t.plus[0]},${RAIL.top} L${194},${RAIL.top} M${274},${RAIL.top} L${RAIL.x1},${RAIL.top}
         M${t.minus[0]},${t.minus[1] - 4} L${t.minus[0]},${cy - 26} L${18},${cy - 26} L${18},${RAIL.bot} L${RAIL.x1},${RAIL.bot}`}
         fill="none" stroke={C.soft} strokeWidth={2} />
-      <Dial cx={220} cy={RAIL.top - 8} value={I} max={Imax} unit="A" />
+      <Dial cx={234} cy={RAIL.top - 8} value={I} max={Imax} unit="A" />
       {/* voltmeter across the terminals */}
       <path d={`M${cx + 40},${80} L${t.minus[0] + 4},${t.minus[1] - 4} M${cx + 80},${80} L${t.plus[0] - 4},${t.plus[1] - 4}`}
         fill="none" stroke={C.faint} strokeWidth={1.2} strokeDasharray="4 3" />

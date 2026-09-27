@@ -1,0 +1,129 @@
+---
+title: 'Quickly, then slowly'
+blurb: 'Choose the resistor that recharges a camera flash on time, read the time constant RC as the clock of any charging capacitor, and follow its energy out through a lamp.'
+order: 2
+tier: 'core'
+minutes: 10
+teaches:
+  - 'rc-time-constant'
+  - 'rc-circuit'
+requires:
+  - 'kirchhoff-loop-rule'
+  - 'capacitance'
+  - 'capacitor-energy'
+  - 'resistance'
+status: 'live'
+updated: 2026-09-27
+---
+
+<Step>
+
+A camera flash charges its capacitor from a 300 V supply through a resistor. This one reaches
+half charge one second after it fires.
+
+<Predict
+  id="up-ch26-flash-bet"
+  question="How charged is it two seconds after firing?"
+  options={[
+    { key: 'full', misconception: 'capacitor-charges-steadily', label: 'Full: twice the time, twice the charge', why: 'That needs the current to stay at its first value. It falls as the capacitor fills, because the capacitor''s own voltage pushes back against the supply. Watch the dots slow down.' },
+    { key: 'three-quarters', label: 'Three-quarters', why: 'Right. The second second closes half of the gap that is left, as the first one did. Three seconds reaches 87.5 %.' },
+    { key: 'sixty', label: 'A little over half: it is getting hard to fill', why: 'It does get harder, but not that fast. Each second closes the same fraction, half, of what is left: 50 % plus half of the remaining 50 % is 75 %.' },
+    { key: 'half', label: 'Still half: supply and capacitor have balanced', why: 'They balance only when the capacitor reaches the full 300 V. At 150 V there is still 150 V across the resistor, driving current.' },
+  ]}
+  correct="three-quarters"
+>
+
+<RechargeTheFlash adjustable={false} r0={7213} prompt="Fire the flash, then read the trace at 1, 2 and 3 seconds." />
+
+</Predict>
+
+</Step>
+
+<Step>
+
+## Ready in two seconds
+
+The ready lamp lights at 95 %. The sliding contact sets how much of the resistance wire the
+current passes through.
+
+<RechargeTheFlash
+  id="up-ch26-ready-in-two"
+  target={2}
+  r0={6000}
+  prompt="Set R so the flash is ready 2.0 s after it fires."
+  explanation="About 3.3 kΩ. Double the resistance and every stage of the charge takes twice as long, because at each voltage the current is halved. Reaching 95 % always takes three of the same unit, RC: 3 × 3.34 kΩ × 200 µF = 2.0 s."
+/>
+
+</Step>
+
+<Step>
+
+## Name it
+
+Current flows only while voltage is left across the resistor, and that leftover shrinks as the
+capacitor fills. So every stretch of $RC$ seconds closes the same fraction of what is left:
+
+$$V_C = \mathcal{E}\left(1 - e^{-t/RC}\right), \qquad \tau = RC$$
+
+One time constant brings it to 63 %, and three bring it to 95 %. Ohms times farads is seconds.
+
+<Recall id="up-ch26-recall-tau" concept="rc-time-constant">
+  <div slot="front">A capacitor charges through 2 kΩ. How long does a 500 µF capacitor take to reach 63 % of the supply voltage?</div>
+
+  One time constant: $RC = 2000 \times 500\times10^{-6} = 1$ s. The 63 % is $1 - e^{-1}$, and it
+  holds for every R and C.
+</Recall>
+
+</Step>
+
+<Step>
+
+## Where the energy goes
+
+The capacitor is full at 300 V. A switch now lets it empty through a lamp instead of the flash tube.
+
+<DrainTheFlash
+  id="up-ch26-half-the-energy"
+  prompt="Let exactly half the stored energy out through the lamp."
+  explanation="Open the switch near 212 V, 71 % of the voltage. Stored energy is ½CV², so the first 29 % of the voltage carries half the energy, which is why the lamp is brightest at the start. The voltage falls because charge flows through the lamp, and every joule it loses leaves as the lamp's light and heat."
+/>
+
+</Step>
+
+<Step>
+
+## The toll for charging
+
+Charging from empty through 3.3 kΩ warms the resistor. Swap in a resistor ten times smaller.
+
+<Predict
+  id="up-ch26-charging-toll"
+  question="Over a full charge, how much energy does the smaller resistor turn into heat?"
+  options={[
+    { key: 'tenth', misconception: 'smaller-resistor-wastes-less', label: 'A tenth as much: less resistance, less loss', why: 'The current is ten times bigger, and I²R makes the heating rate a hundred times bigger, but for a tenth of the time. The product comes out the same.' },
+    { key: 'same', label: 'The same', why: 'Right. A full charge always ends with ½CE² stored and ½CE² turned into heat: 9 J each. The supply gives CE² = 18 J, whatever resistor it charges through.' },
+    { key: 'more', label: 'Ten times more: the current is ten times bigger', why: 'The bigger current lasts a tenth as long, and the charging ends sooner. The heat still ends at 9 J.' },
+    { key: 'none', label: 'Almost none: it charges almost instantly', why: 'Fast is not free. The current is huge while it lasts, and the heat comes out at 9 J however short the charge.' },
+  ]}
+  correct="same"
+>
+
+<RechargeTheFlash ledger r0={3300} prompt="Fire, wait until it is full, then slide the contact and fire again." />
+
+</Predict>
+
+<Recall id="up-ch26-recall-rc-energy" concept="rc-circuit">
+  <div slot="front">A capacitor discharges until its voltage has halved. What fraction of its energy is left?</div>
+
+  A quarter. Energy is $\tfrac12 CV^2$, so it goes as the square of the voltage. Half the energy is
+  left at $V_0/\sqrt2$, about 71 % of the voltage.
+</Recall>
+
+## What to carry forward
+
+- **Quickly, then slowly.** A capacitor charges through a resistor on a clock set by $\tau = RC$: 63 % at $\tau$, 95 % at $3\tau$.
+- **Energy goes as $V^2$.** Charging through a resistor always costs as much heat as it stores, and a discharge sends all of it into the resistor.
+
+Next: charges in motion feel a second force, and it comes from other moving charges.
+
+</Step>

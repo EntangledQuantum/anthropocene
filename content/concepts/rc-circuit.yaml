@@ -1,0 +1,14 @@
+title: 'Charging and discharging a capacitor through a resistor'
+blurb: 'The first circuit that changes in time. Charging from a battery, the capacitor ends with half the energy the battery gave; the resistor turns the other half into heat, whatever its resistance. Discharging, all the stored energy goes into the resistor.'
+notation: 'V_C = \mathcal{E}\,(1 - e^{-t/RC}), \qquad V_C = V_0\,e^{-t/RC}'
+tags:
+  - 'up-ch26'
+misconceptions:
+  - id: 'smaller-resistor-wastes-less'
+    name: 'A smaller resistor wastes less energy while the capacitor charges.'
+    signal: 'Predicts the heat made during a full charge falls when the charging resistor is made smaller.'
+    correction: 'A smaller resistor carries a bigger current for a shorter time. The two effects cancel exactly: a full charge always turns ½CE² into heat, the same as the capacitor stores.'
+  - id: 'half-voltage-half-energy'
+    name: 'When the voltage has halved, half the energy is gone.'
+    signal: 'Stops a discharge at half the starting voltage to release half the stored energy.'
+    correction: 'Stored energy is ½CV², so it goes as the square of the voltage. At half the voltage a quarter of the energy is left; half is left at V₀/√2, about 71 %.'

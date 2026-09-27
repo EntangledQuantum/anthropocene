@@ -56,8 +56,8 @@ export default function ShortTheCell({
               transform={`rotate(28 456 ${(RAIL.top + RAIL.bot) / 2})`} />}
         <text x={470} y={RAIL.bot - 10} fontSize={13} fill={C.soft}>{shorted ? 'strap across the rails' : 'thick copper strap'}</text>
       </CellLoop>
-      <Stage x={[0, AXIS_I]} y={[0, emf * 1.1]} height={180}
-        axes={{ x: 'current (A)', y: 'terminal voltage (V)', yTicks: [0, 0.5, 1, 1.5].filter((v) => v <= emf * 1.1) }}
+      <Stage x={[0, AXIS_I]} y={[0, emf * 1.4]} height={180}
+        axes={{ x: 'current (A)', y: 'terminal voltage (V)', yTicks: [0, 0.5, 1, 1.5, 2].filter((v) => v <= emf * 1.4) }}
         label={`The points from zero to ${points} bulbs, and your mark at ${mark.toFixed(2)} amps`}>
         {(p) => <>
           {shorted && <line x1={p.sx(0)} y1={p.sy(emf)} x2={p.sx(Isc)} y2={p.sy(0)} stroke={C.soft} strokeDasharray="5 5" />}

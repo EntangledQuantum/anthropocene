@@ -64,8 +64,8 @@ export default function SagTheBattery({ prompt, emf = 1.5, r = 0.5, bulb = 3, sl
         })}
         <text x={RAIL.x1} y={RAIL.bot - 8} textAnchor="end" fontSize={13} fill={C.soft}>{bulb} Ω bulbs, in parallel</text>
       </CellLoop>
-      <Stage x={[0, AXIS_I]} y={[0, emf * 1.1]} height={170}
-        axes={{ x: 'current (A)', y: 'terminal voltage (V)', yTicks: [0, 0.5, 1, 1.5].filter((v) => v <= emf * 1.1) }}
+      <Stage x={[0, AXIS_I]} y={[0, emf * 1.4]} height={170}
+        axes={{ x: 'current (A)', y: 'terminal voltage (V)', yTicks: [0, 0.5, 1, 1.5, 2].filter((v) => v <= emf * 1.4) }}
         label="Terminal voltage against current, one point for every number of bulbs you have tried">
         {(p) => <>
           <line x1={p.sx(0)} x2={p.sx(AXIS_I)} y1={p.sy(emf)} y2={p.sy(emf)} stroke={C.energy} strokeDasharray="5 5" />

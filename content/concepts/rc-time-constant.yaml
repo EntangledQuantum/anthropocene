@@ -1,0 +1,10 @@
+title: 'The RC time constant'
+blurb: 'A capacitor charging through a resistor closes the same fraction of the remaining gap in every equal stretch of time. After one time constant, RC, it has closed 63 % of it; after three, 95 %.'
+notation: '\tau = RC, \qquad V_C(\tau) = (1 - e^{-1})\,\mathcal{E} \approx 0.63\,\mathcal{E}'
+tags:
+  - 'up-ch26'
+misconceptions:
+  - id: 'capacitor-charges-steadily'
+    name: 'A capacitor charges at a steady rate until it is full.'
+    signal: 'Predicts that a capacitor half-charged after one second is full after two, or picks R from t = CE/I with the starting current.'
+    correction: 'The charging current is set by the voltage left across the resistor, E − V_C, and that shrinks as the capacitor fills. Each second closes the same fraction of what is left, so the capacitor approaches full and never quite gets there.'

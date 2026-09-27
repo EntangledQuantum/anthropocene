@@ -1,0 +1,18 @@
+title: 'Torque on a current loop'
+blurb: 'A current loop in a uniform field feels no net force but a torque that turns its face toward the field. The loop acts as a magnetic moment μ = N I A pointing out of its face, and the torque is μ × B: largest when the face is edge-on to the field, zero when it faces it.'
+notation: '\vec\mu = N I A\,\hat n,\qquad \vec\tau = \vec\mu\times\vec B,\qquad \tau = N I A B\sin\theta'
+tags:
+  - 'up-ch27'
+misconceptions:
+  - id: 'up-ch27-torque-max-facing-field'
+    name: 'The twist is strongest when the coil faces the field squarely.'
+    signal: 'Picks the angle of most field through the coil as the angle of most torque.'
+    correction: 'Facing the field, the forces on the two sides point straight along the coil and just stretch it. The torque is N I A B sin θ, largest when the coil''s face is edge-on to the field.'
+  - id: 'up-ch27-uniform-field-drags-magnet'
+    name: 'A uniform field drags a loop or a magnet along as well as turning it.'
+    signal: 'Expects a compass needle or a current loop in a uniform field to drift toward one pole.'
+    correction: 'In a uniform field the forces on opposite sides of a loop are equal and opposite, so the net force is zero. Only the torque is left. A pull needs a field that changes from place to place.'
+  - id: 'up-ch27-zero-torque-means-rest'
+    name: 'Wherever the torque is zero, the coil will stay put.'
+    signal: 'Chooses the orientation with μ pointing against B as a resting position.'
+    correction: 'The torque vanishes both with μ along B and against it. Along B, a nudge brings a restoring torque; against B, a nudge brings a torque that turns it all the way round. Only one is a place to rest.'

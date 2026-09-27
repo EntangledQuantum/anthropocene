@@ -1,0 +1,131 @@
+---
+title: 'Where the current splits'
+blurb: 'Predict which bulbs glow brightest in a series-parallel circuit, find the junction potential that balances the flows, and make a bulb brighter by adding another.'
+order: 1
+tier: 'core'
+minutes: 10
+teaches:
+  - 'kirchhoff-junction-rule'
+  - 'kirchhoff-loop-rule'
+  - 'equivalent-resistance'
+requires:
+  - 'electric-current'
+  - 'resistance'
+  - 'electrical-power'
+  - 'emf'
+  - 'electric-potential'
+status: 'live'
+updated: 2026-09-27
+---
+
+<Step>
+
+Three identical bulbs sit on an ideal 6 V battery. Bulb A is in the main wire; after it the
+wire splits, with B and C side by side.
+
+<Predict
+  id="up-ch26-three-bulbs-bet"
+  question="How bright are they?"
+  options={[
+    { key: 'equal', misconception: 'identical-bulbs-glow-alike', label: 'All three the same: identical bulbs on one battery', why: 'Identical bulbs glow alike only when they get the same voltage. All the current passes through A and then splits between B and C, so A takes the bigger share of the 6 V. Read the watts under each bulb.' },
+    { key: 'half', misconception: 'brightness-tracks-current', label: 'A brightest; B and C equal, each half as bright as A', why: 'The current does halve at the junction: 0.33 A through A, 0.17 A through B and through C. But brightness is power, I²R, and half the current is a quarter of the power: 1.33 W against 0.33 W.' },
+    { key: 'quarter', label: 'A brightest; B and C equal, each a quarter as bright as A', why: 'Right. All the current goes through A and splits in two at the junction. Half the current through the same bulb also means half the voltage across it, so a quarter of the power.' },
+    { key: 'order', misconception: 'first-bulb-gets-current-first', label: 'A, then B, then C: the current reaches them in that order', why: 'B and C are identical and side by side, so nothing makes one of them "first". The dots flow down both branches at the same rate.' },
+    { key: 'pair', label: 'B and C brighter than A: each has a path of its own', why: 'A path of their own means each gets only part of the current. B and C each carry half of what passes through A.' },
+  ]}
+  correct="quarter"
+>
+
+<ThreeBulbs prompt="Watch the dots arrive at the junction after A and split between B and C." />
+
+</Predict>
+
+</Step>
+
+<Step>
+
+## Height is potential
+
+Here is the same circuit with height standing for potential. Every wire is level, the battery
+lifts charge 6 V, and each bulb is a drop.
+
+<LevelTheJunction
+  id="up-ch26-level-the-junction"
+  prompt="Raise or lower the junction wire until as much current leaves it as arrives."
+  explanation="The junction sits at 2 V, a third of the way up, not halfway. A needs a 4 V drop to pass 0.33 A, and B and C each need only 2 V to pass 0.17 A apiece. At any other height the junction would gain or lose charge every second, and that charge would push its potential back until the flows matched."
+/>
+
+</Step>
+
+<Step>
+
+## Name it
+
+The dots obeyed one rule and the heights obeyed another. Charge never piles up at a junction,
+and any trip round a loop climbs exactly as far as it falls:
+
+$$\sum I_{\text{in}} = \sum I_{\text{out}} \qquad\qquad \sum_{\text{loop}} \Delta V = 0$$
+
+Drawing heights makes the loop rule automatic, and the junction rule sets where those heights are.
+
+<Recall id="up-ch26-recall-junction" concept="kirchhoff-junction-rule">
+  <div slot="front">0.33 A flows into a bulb. How much flows out of it?</div>
+
+  0.33 A. Current is not used up: charge that goes in comes out. What the bulb uses is energy,
+  which the charge gives up as it falls through the bulb's voltage.
+</Recall>
+
+</Step>
+
+<Step>
+
+## Add a bulb, get more light
+
+Bulb D is a spare, and the circuit has four empty sockets.
+
+<ThreeBulbs
+  id="up-ch26-brighten-a"
+  spare
+  prompt="Screw D into the socket that makes A brighter."
+  explanation="Beside B and C. A third path at the junction makes that group worth 4 Ω instead of 6 Ω, so the whole circuit falls from 18 Ω to 16 Ω and the battery pushes 0.375 A through A: 1.69 W. Bulbs side by side add paths, so together they resist less than any one of them."
+/>
+
+<Recall id="up-ch26-recall-parallel" concept="equivalent-resistance">
+  <div slot="front">Why does adding a bulb in parallel lower a circuit's resistance?</div>
+
+  It adds a path. The same voltage now drives current through one more route, so more current
+  flows in total, which is what lower resistance means: $1/R_\parallel = 1/R_1 + 1/R_2$.
+</Recall>
+
+</Step>
+
+<Step>
+
+## The battery pays
+
+Every circuit here uses the same ideal 6 V battery and identical 12 Ω bulbs.
+
+<RankOrder
+  id="up-ch26-rank-battery-current"
+  prompt="Rank the circuits by the current the battery supplies."
+  lowLabel="least current"
+  highLabel="most current"
+  items={[
+    { key: 'one', label: 'One bulb alone', why: '12 Ω: 0.50 A.' },
+    { key: 'series', label: 'Two bulbs in line', why: '24 Ω: 0.25 A. Each bulb gets 3 V and a quarter of the power one bulb had alone.' },
+    { key: 'parallel', label: 'Two bulbs side by side', why: '6 Ω: 1.00 A. Each bulb still has the full 6 V and glows exactly as one did alone. The battery does twice the work.' },
+    { key: 'trio', label: 'A in line with B and C side by side', why: '18 Ω: 0.33 A, the circuit you started with.' },
+    { key: 'three', label: 'Three bulbs side by side', why: '4 Ω: 1.50 A. Three paths, three times the current.' },
+  ]}
+  correct={['series', 'trio', 'one', 'parallel', 'three']}
+  explanation="The battery holds 6 V, not a current, and it supplies whatever the circuit draws: 24, 18, 12, 6 and 4 Ω draw 0.25, 0.33, 0.50, 1.00 and 1.50 A. A real battery has some internal resistance, so a bulb added in parallel dims the others slightly. Mains wiring works the same way: turning on the kettle does not dim the lights, but it adds current through the fuse."
+/>
+
+## What to carry forward
+
+- **Current splits and rejoins, and none is used up.** What arrives at a junction leaves it.
+- **Potential is a height.** The battery lifts charge, the bulbs let it fall, and every loop comes back to where it started.
+
+Next: put a capacitor in the loop, and the circuit starts to change with time.
+
+</Step>

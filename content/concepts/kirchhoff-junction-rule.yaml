@@ -1,0 +1,14 @@
+title: 'Kirchhoff''s junction rule'
+blurb: 'Charge does not pile up in a wire. At every junction the current arriving equals the current leaving, so a current splits between branches and rejoins, and none of it is used up on the way.'
+notation: '\sum I_{\text{in}} = \sum I_{\text{out}}'
+tags:
+  - 'up-ch26'
+misconceptions:
+  - id: 'first-bulb-gets-current-first'
+    name: 'The first bulb on the path gets the current first, and the later ones get what is left.'
+    signal: 'Ranks bulbs by their order along the wire, or says the bulb nearest the battery is brightest because the current reaches it first.'
+    correction: 'The current is set everywhere at once by the whole circuit, and none of it is used up. A bulb is brighter because more current passes through it, which depends on how the paths split, not on which bulb comes first.'
+  - id: 'brightness-tracks-current'
+    name: 'Half the current means half the brightness.'
+    signal: 'Predicts that bulbs sharing a current equally each glow half as bright as the bulb that carries all of it.'
+    correction: 'Brightness is power, I²R. Half the current through the same bulb also means half the voltage across it, so the power is a quarter.'

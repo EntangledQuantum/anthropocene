@@ -1,0 +1,14 @@
+title: 'Kirchhoff''s loop rule'
+blurb: 'Every point of a circuit has one potential, like a height. Go round any loop and the climbs and drops add to zero: what the battery lifts, the bulbs let fall.'
+notation: '\sum_{\text{loop}} \Delta V = 0'
+tags:
+  - 'up-ch26'
+misconceptions:
+  - id: 'battery-fixed-current'
+    name: 'A battery always pushes out the same current.'
+    signal: 'Expects adding a bulb anywhere to share a fixed current more thinly, or expects the battery current to stay the same when a bulb is added in parallel.'
+    correction: 'An ideal battery holds a fixed voltage, not a fixed current. The current it supplies is whatever the circuit draws: add a bulb straight across it and it supplies more, and the bulbs already there do not notice.'
+  - id: 'identical-bulbs-glow-alike'
+    name: 'Identical bulbs on one battery glow the same, however they are wired.'
+    signal: 'Predicts all three bulbs of a series-parallel circuit are equally bright because the bulbs are identical.'
+    correction: 'A bulb''s brightness depends on the voltage across it, and the wiring decides how the battery''s voltage is shared. A bulb in line with a pair gets more of the drop than either bulb of the pair.'

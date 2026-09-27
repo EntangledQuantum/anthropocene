@@ -1,0 +1,18 @@
+title: 'The magnetic force on a moving charge'
+blurb: 'A charge moving through a magnetic field is pushed at right angles to both its velocity and the field. Because the push is always sideways it turns the velocity without changing the speed, so a static magnetic field does no work.'
+notation: '\vec F = q\,\vec v\times\vec B,\qquad F = |q|\,v B\sin\phi,\qquad \vec F\cdot\vec v = 0'
+tags:
+  - 'up-ch27'
+misconceptions:
+  - id: 'up-ch27-magnetic-force-does-work'
+    name: 'A stronger magnetic field speeds a charge up.'
+    signal: 'Predicts that turning up the field makes the charge go faster, or that a magnetic field can accelerate particles to high energy on its own.'
+    correction: 'The magnetic push is perpendicular to the velocity at every instant, so its power F · v is zero. It changes the direction of motion only. Particle accelerators get their energy from electric fields; the magnets steer.'
+  - id: 'up-ch27-force-along-field-lines'
+    name: 'A magnetic field pushes charges along its field lines.'
+    signal: 'Draws the force on a moving charge pointing along B, or expects a charge to be dragged toward a pole.'
+    correction: 'The force is q v × B, perpendicular to B as well as to v. A charge moving along the field lines feels no force at all.'
+  - id: 'up-ch27-rhr-ignores-sign'
+    name: 'The right-hand rule gives the force on any charge.'
+    signal: 'Points the push on an electron the same way as on a proton with the same velocity.'
+    correction: 'The rule gives the direction of v × B. The force is q times that, so for a negative charge such as an electron it points the opposite way.'
