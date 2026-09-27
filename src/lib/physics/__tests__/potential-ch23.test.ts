@@ -9,7 +9,7 @@ import type { Vec2 } from '../vectors.ts';
 /* The layouts the chapter's scenes use, in cm and nC. */
 const CARRY = sceneToSI([{ x: -8, y: -1, q: 8 }, { x: 9, y: 2, q: -5 }]);
 const AIM = sceneToSI([{ x: -11, y: 3, q: 6 }, { x: 10, y: 5, q: 4 }, { x: 2, y: -6, q: -7 }]);
-const TRACK = sceneToSI([{ x: -10, y: -4, q: 8 }, { x: 8, y: 0.5, q: -3 }]);
+const TRACK = sceneToSI([{ x: -10, y: -4, q: 8 }, { x: 8, y: 5.5, q: -3 }]);
 const cm = (x: number, y: number): Vec2 => [x / 100, y / 100];
 const Q = 1e-9; // the 1 nC test charge
 
@@ -191,11 +191,11 @@ describe('the strongest field is where the contours crowd, not where V is high',
     expect(fieldStrength(TRACK, xv, yv)).toBeLessThan(0.5 * scan.eMax);
   });
 
-  it('the numbers the lesson quotes: about 42 kV/m at the low ground, 15 kV/m at the 880 V high ground', () => {
-    expect(scan.eMax / 1000).toBeCloseTo(42.5, 0);
+  it('the numbers the lesson quotes: about 44 kV/m at the low ground, 15 kV/m at the 880 V high ground', () => {
+    expect(scan.eMax / 1000).toBeCloseTo(43.9, 0);
     const [xv, yv] = along(a, b, scan.tV);
     expect(scan.vMax).toBeCloseTo(880, -1);
-    expect(fieldStrength(TRACK, xv, yv) / 1000).toBeCloseTo(14.5, 0);
+    expect(fieldStrength(TRACK, xv, yv) / 1000).toBeCloseTo(14.7, 0);
   });
 
   it('contour spacing there matches 100 V / |E|', () => {

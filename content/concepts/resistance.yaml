@@ -1,0 +1,10 @@
+title: 'Resistance and resistivity'
+blurb: 'How strongly a conductor holds back current: the voltage needed per ampere. The metal sets the resistivity; the shape sets the rest, longer resisting more and thicker less.'
+notation: 'R = \dfrac{V}{I} = \dfrac{\rho L}{A}'
+tags:
+  - 'up-ch25'
+misconceptions:
+  - id: 'up-ch25-resistance-is-the-metal'
+    name: 'A metal has a resistance, fixed by what it is made of.'
+    signal: 'Says copper is "low resistance" without asking how long or thick the piece is.'
+    correction: 'The metal fixes the resistivity ρ. The resistance of a piece is ρL/A: a long thin copper wire can out-resist a short thick stub of nichrome.'

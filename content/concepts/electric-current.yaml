@@ -1,0 +1,14 @@
+title: 'Electric current'
+blurb: 'The charge crossing a surface per second. In a metal it is an enormous crowd of free electrons creeping together, and it is the same all the way round a loop: nothing in a lamp uses it up.'
+notation: 'I = \dfrac{dq}{dt} = n\,q\,A\,v_d'
+tags:
+  - 'up-ch25'
+misconceptions:
+  - id: 'up-ch25-current-used-up'
+    name: 'A lamp uses up current, so less comes out than goes in.'
+    signal: 'Expects an ammeter after the lamp to read less than one before it, or the terminals to fall to zero once a lamp is connected.'
+    correction: 'Every electron that enters the lamp leaves it; charge is not destroyed. The current is the same all round a single loop. What the lamp takes is energy, a little from every coulomb that passes.'
+  - id: 'up-ch25-voltage-flows'
+    name: 'Voltage flows through the wire the way current does.'
+    signal: 'Speaks of voltage going through a lamp or running out along a wire.'
+    correction: 'Current flows through things; voltage is across them. It is a difference in potential between two points, energy per coulomb, and it is measured by touching two places.'

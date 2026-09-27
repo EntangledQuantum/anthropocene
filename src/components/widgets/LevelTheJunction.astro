@@ -1,0 +1,6 @@
+---
+// @graded — with `id`, the scene checks itself.
+import Island, { type LevelTheJunctionProps } from '../viz/LevelTheJunction.tsx';
+const props = Astro.props as LevelTheJunctionProps;
+---
+<Island client:visible {...props} />

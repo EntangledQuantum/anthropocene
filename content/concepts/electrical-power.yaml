@@ -1,0 +1,10 @@
+title: 'Electrical power'
+blurb: 'The rate at which a component takes energy from the charge passing through it: the current times the voltage across it, in any of three costumes. A cell delivers the most to a load that matches its own resistance, and then wastes as much as it delivers.'
+notation: 'P = IV = I^2R = \dfrac{V^2}{R}'
+tags:
+  - 'up-ch25'
+misconceptions:
+  - id: 'up-ch25-least-resistance-most-power'
+    name: 'The smaller the load resistance, the more power it gets, because more current flows.'
+    signal: 'Turns the load resistance down toward zero to make a lamp brightest.'
+    correction: 'More current also means more voltage lost inside the cell, and less left across the lamp. The lamp gets the most power when its resistance equals the cell''s, r; below that the extra current mostly heats the cell.'

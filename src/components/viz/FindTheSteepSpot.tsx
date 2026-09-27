@@ -35,7 +35,7 @@ const Y: [number, number] = [-13, 13];
 const CM = 0.01;
 
 export default function FindTheSteepSpot({
-  id, prompt, charges = [{ x: -10, y: -4, q: 8 }, { x: 8, y: 0.5, q: -3 }],
+  id, prompt, charges = [{ x: -10, y: -4, q: 8 }, { x: 8, y: 5.5, q: -3 }],
   track = [[-18, 3], [16, 3]], start = 0.45, tolerance = 0.85, explanation,
 }: FindTheSteepSpotProps) {
   const task = useTask(id, 'find-the-steep-spot');
@@ -57,7 +57,7 @@ export default function FindTheSteepSpot({
     setT(Math.max(0, Math.min(1, u)));
     task.touch();
   };
-  const L = 3 * Math.min(1, E / scan.eMax) + 0.6;
+  const L = 4 * Math.min(1, E / scan.eMax) + 1.2;
 
   return (
     <SceneCard id={id} prompt={prompt}

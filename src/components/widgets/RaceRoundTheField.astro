@@ -1,0 +1,6 @@
+---
+// Ungraded: two protons at different speeds race once round the same field.
+import Island, { type RaceRoundTheFieldProps } from '../viz/RaceRoundTheField.tsx';
+const props = Astro.props as RaceRoundTheFieldProps;
+---
+<Island client:visible {...props} />

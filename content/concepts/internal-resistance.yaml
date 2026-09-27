@@ -1,0 +1,10 @@
+title: 'Internal resistance'
+blurb: 'A real cell is an ideal pump in series with a small resistance of its own. The more current it gives, the more voltage it loses inside, so its terminal voltage sags along a straight line and reaches zero at the short-circuit current.'
+notation: 'V_{\text{terminal}} = \mathcal{E} - I r, \qquad I_{\text{short}} = \mathcal{E}/r'
+tags:
+  - 'up-ch25'
+misconceptions:
+  - id: 'up-ch25-short-is-infinite'
+    name: 'Short a battery with a wire of no resistance and infinite current flows.'
+    signal: 'Divides the emf by zero.'
+    correction: 'The cell''s own resistance is still in the loop. A short draws ε/r, all of the emf is spent inside, and the cell heats. That is dangerous for a car battery with its hundredth of an ohm, but it is finite.'

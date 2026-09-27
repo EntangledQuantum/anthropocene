@@ -1,0 +1,14 @@
+title: 'Electromotive force'
+blurb: 'The work a battery''s chemistry does on each coulomb it lifts from its negative terminal to its positive one. It is a pump for energy, measured in volts, and not a force at all.'
+notation: '\mathcal{E} = \dfrac{W_{\text{pump}}}{q}'
+tags:
+  - 'up-ch25'
+misconceptions:
+  - id: 'up-ch25-emf-is-a-force'
+    name: 'Electromotive force is a force that pushes the electrons round.'
+    signal: 'Gives emf in newtons, or says a bigger battery pushes harder on each electron.'
+    correction: 'Despite its name, emf is work per charge, joules per coulomb, which is volts. It says how much energy each coulomb gains going through the cell, not how hard anything is pushed.'
+  - id: 'up-ch25-battery-fixed-voltage'
+    name: 'A battery always delivers the voltage printed on it.'
+    signal: 'Expects the terminals of a 1.5 V cell to read 1.5 V whatever is connected.'
+    correction: 'The label is the emf, which the terminals read only when no current flows. Draw current and some of the emf is spent inside the cell, so the terminals read ε − Ir.'

@@ -1,0 +1,10 @@
+title: 'Drift velocity'
+blurb: 'The slow average creep of the free electrons along a wire, fractions of a millimetre per second, riding on a random motion a hundred billion times faster. The switch-on signal is a different thing, and travels near light speed.'
+notation: 'v_d = \dfrac{I}{n\,q\,A}'
+tags:
+  - 'up-ch25'
+misconceptions:
+  - id: 'up-ch25-electrons-at-light-speed'
+    name: 'The electrons race round the circuit at the speed of light, which is why the lamp lights at once.'
+    signal: 'Expects an electron from the switch to reach the lamp in a moment.'
+    correction: 'The wire is already full of electrons, including those in the filament. The switch sets up a field along the whole wire in nanoseconds, and every electron starts creeping at once. Each one individually drifts at about 0.05 mm/s and would take hours to cross a lamp cord.'

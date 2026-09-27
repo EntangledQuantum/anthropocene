@@ -47,7 +47,7 @@ const P = {
   proton: { m: M_PROTON, q: E_CHARGE, name: 'Proton', glyph: 'p⁺', color: POS },
 } as const;
 
-const LANE = 5.4;
+const LANE = 6.2;
 const TRACK = 2.4;
 const X0 = 2, X1 = 12, XT0 = 2, XT1 = 18;
 const SHOW = 2.4; // display seconds for the slowest particle to cross at the starting voltage
@@ -186,7 +186,7 @@ export default function FireTheElectronGun({
             <line x1={s.sx(kx(v))} x2={s.sx(kx(v))} y1={s.sy(1.3) - 5} y2={s.sy(1.3) + 5} stroke={C.faint} />
             <text x={s.sx(kx(v))} y={s.sy(1.3) + 20} textAnchor="middle" fontSize={12} fill={C.faint} fontFamily="var(--font-mono)">{v}</text>
           </g>)}
-          <text x={s.sx(XT1) + 8} y={s.sy(1.3) + 20} fontSize={12} fill={C.faint}>V · eV</text>
+          <text x={s.sx(XT1) + 20} y={s.sy(1.3) + 20} fontSize={12} fill={C.faint}>V · eV</text>
           <line x1={s.sx(kx(V))} x2={s.sx(kx(V))} y1={s.sy(1.3)} y2={s.sy(TRACK + 0.2)} stroke={C.ink} strokeDasharray="2 4" opacity={0.6} />
           <text x={s.sx(kx(V))} y={s.sy(1.3) - 16} textAnchor="middle" fontSize={14} fontWeight={600} fill={C.ink}
             stroke="var(--color-surface)" strokeWidth={4} paintOrder="stroke">{V} V</text>
