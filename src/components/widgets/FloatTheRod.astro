@@ -1,0 +1,6 @@
+---
+// @graded — with `id`, the scene checks itself: set the current so the rod hangs still.
+import Island, { type FloatTheRodProps } from '../viz/FloatTheRod.tsx';
+const props = Astro.props as FloatTheRodProps;
+---
+<Island client:visible {...props} />
