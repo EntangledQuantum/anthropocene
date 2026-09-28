@@ -72,7 +72,7 @@ Tick when the chapter has its two flagship lessons live.
 - [ ] 36 Diffraction
 
 ### Modern
-- [ ] 37 Relativity
+- [x] 37 Relativity
 - [x] 38 Photons
 - [x] 39 Particles Behaving as Waves
 - [ ] 40 Quantum Mechanics I: Wave Functions

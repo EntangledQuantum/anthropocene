@@ -78,11 +78,10 @@ export default function CatchTheShell({ id, prompt, n = 1, l = 0, start, explana
             <circle cx={s.sx(0)} cy={s.sy(0)} r={s.len(r)} fill="none" stroke={C.ink} strokeOpacity={0.85}
               strokeWidth={Math.max(2, s.len(dr))} />
             <Nucleus s={s} />
-            <text x={s.sx(-r * 0.7071)} y={s.sy(-r * 0.7071) + 22} textAnchor="middle" fontSize={13} fill={C.ink}
-              stroke="var(--color-surface)" strokeWidth={4} paintOrder="stroke">your shell, {DR_PM} pm thick</text>
             <PmScaleBar s={s} />
             <text x={s.W - 14} y={24} textAnchor="end" fontSize={14} fill={C.soft}>hydrogen, {stateName(n, l)}</text>
-            <Handle s={s} at={[r * DIR[0], r * DIR[1]]} onChange={move} step={0.5 / A0_PM * 2} label="The shell: drag it in or out" />
+            <text x={s.W - 14} y={46} textAnchor="end" fontSize={13} fill={C.faint}>white ring: your shell, {DR_PM} pm thick</text>
+            <Handle s={s} at={[r * DIR[0], r * DIR[1]]} onChange={move} step={half / 60} label="The shell: drag it in or out" />
           </>; }}
         </Stage>} />
       <Stage x={[0, half * A0_PM]} y={[0, pMax * 100]} height={150}

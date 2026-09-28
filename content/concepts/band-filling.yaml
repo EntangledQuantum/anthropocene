@@ -1,0 +1,14 @@
+title: 'Band filling: metals and insulators'
+blurb: 'Every state in a band is a way of moving, and holds two electrons. A push can only shift electrons into empty states, so a half-full band conducts best and a full band carries nothing at all. Where the filling ends decides metal or insulator.'
+notation: 'I \propto \sum_{\text{occupied }k} v(k),\qquad \text{full band: } \sum v(k) = 0'
+tags:
+  - 'up-ch42'
+misconceptions:
+  - id: 'up-ch42-electrons-sit-still'
+    name: 'Electrons in a metal sit still until a voltage is applied.'
+    signal: 'Pictures the free electrons at rest, starting to move when the battery is connected.'
+    correction: 'They are already moving at around 10⁶ m/s, as many one way as the other, so the current is zero. A push does not start them; it tips the balance slightly.'
+  - id: 'up-ch42-more-electrons-more-current'
+    name: 'The more electrons a band holds, the better it conducts.'
+    signal: 'Expects a full band to carry the most current.'
+    correction: 'A push has to move electrons into empty states. A full band has none, so pushing shifts the sea onto itself and the current stays zero. The most current flows near half full.'

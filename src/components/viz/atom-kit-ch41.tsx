@@ -92,7 +92,7 @@ export interface CloudState { n: number; l: number; m?: number }
 /** A stage whose background is the hydrogen cloud for (n, l, m). World units
  *  are Bohr radii; x across, z up. `half` is the half-width the brightness is
  *  normalised over (use the stage's y half-range). */
-export function CloudStage({ state, half, gamma = 0.42, stage }: {
+export function CloudStage({ state, half, gamma = 0.3, stage }: {
   state: CloudState;
   half: number;
   gamma?: number;

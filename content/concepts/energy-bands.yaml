@@ -1,0 +1,14 @@
+title: 'Energy bands'
+blurb: 'Bring N identical atoms together and each atomic level splits into N levels, which crowd into a band. The band’s width is set by how strongly neighbours share electrons (at most 4t for a row), not by how many atoms there are: more atoms pack in more levels, not a wider band.'
+notation: 'E_j = \varepsilon_0 - 2t\cos\frac{j\pi}{N+1},\quad j = 1,\dots,N'
+tags:
+  - 'up-ch42'
+misconceptions:
+  - id: 'up-ch42-band-grows-with-n'
+    name: 'Every atom added widens the band by the same amount.'
+    signal: 'Expects a band from 100 atoms to be 50 times as wide as a pair’s split.'
+    correction: 'Each level couples only to its neighbours, so the band can never be wider than 4t. New atoms add levels mostly inside the band: 9 atoms get to 1.9 times the pair’s split, and a mole of atoms still does not reach 2.'
+  - id: 'up-ch42-levels-stay-put'
+    name: 'An atom’s levels stay the same when other atoms come near.'
+    signal: 'Draws a solid’s energy levels as the single atom’s levels, one per atom stacked on top of each other.'
+    correction: 'Two atoms close enough to share an electron have two different levels where each had one: a lower one and a higher one. The closer they get, the wider the split.'

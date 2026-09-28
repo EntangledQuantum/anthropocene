@@ -1,0 +1,18 @@
+title: 'Band gap and semiconductors'
+blurb: 'An insulator and a semiconductor are the same structure: a full band under an empty one. The only difference is the size of the gap between them. Heat lifts electrons across it in numbers that go as e^{−E_g/2kT}, so silicon’s 1.1 eV gap lets out a few (about tenfold more for every 35 K of warming near room temperature) and diamond’s 5.5 eV gap lets out none.'
+notation: 'n \propto T^{3/2}\,e^{-E_g/2kT}'
+tags:
+  - 'up-ch42'
+misconceptions:
+  - id: 'up-ch42-semiconductor-half-conductor'
+    name: 'A semiconductor is a poor metal: a half-conductor.'
+    signal: 'Expects silicon to behave like a weak copper, conducting less when warmed.'
+    correction: 'Silicon is an insulator with a small gap. Its current comes from electrons heat has lifted across the gap, so warming it frees many more of them and it conducts far better, the opposite of a metal.'
+  - id: 'up-ch42-heat-always-hurts'
+    name: 'Heat always makes conduction worse, because the atoms jostle more.'
+    signal: 'Predicts both copper and silicon conduct worse when hot.'
+    correction: 'Jostling does slow every carrier, which is all that happens in copper, whose carriers are all there already. In silicon heat also creates carriers, and that effect is exponential: from 20 °C to 100 °C, 116 times the current.'
+  - id: 'up-ch42-heat-helps-everything'
+    name: 'Heat gives electrons energy, so everything conducts better hot.'
+    signal: 'Predicts copper conducts better when warmed.'
+    correction: 'Copper’s electrons are already free and already fast. Warming adds nothing they lack; it only makes the lattice vibrate harder and scatter them more, so its resistance climbs.'

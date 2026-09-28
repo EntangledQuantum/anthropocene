@@ -34,6 +34,16 @@ describe('a bond is a spring', () => {
   it('the absorbed line sits below the harmonic one: the well softens as it widens', () => {
     expect(absorptionTHz(HCL, I.H, I.Cl35)).toBeLessThan(harmonicTHz(HCL, I.H, I.Cl35));
   });
+  it('the fit is judgeable: a parabola centred between the walls 0.5 eV up is within 15% of the curvature, one hugging a single wall is not', () => {
+    const k = 2 * HCL.De * HCL.a ** 2;
+    const h = 0.5;
+    const outer = -Math.log(1 - Math.sqrt(h / HCL.De)) / HCL.a;
+    const inner = Math.log(1 + Math.sqrt(h / HCL.De)) / HCL.a;
+    const kOf = (x: number) => (2 * h) / (x * x);
+    expect(Math.abs(kOf((outer + inner) / 2) / k - 1)).toBeLessThan(0.15);
+    expect(Math.abs(kOf(outer) / k - 1)).toBeGreaterThan(0.25);
+    expect(Math.abs(kOf(inner) / k - 1)).toBeGreaterThan(0.25);
+  });
   it('far from the bottom the well flattens toward D_e while the parabola keeps climbing', () => {
     const k = 2 * HCL.De * HCL.a ** 2;
     const s = 1.2;
@@ -182,5 +192,8 @@ describe('warming a semiconductor and a metal', () => {
     expect(v).toBeGreaterThan(1.08e21);
     expect(v).toBeLessThan(1e23);
     expect(volumePerFreeElectron(293.15) / v).toBeLessThan(1e-35);
+  });
+  it('in silicon at 20 °C the same one electron has a speck about 6 µm across to itself', () => {
+    expect(Math.cbrt(volumePerFreeElectron(293.15)) * 1e6).toBeCloseTo(5.8, 0);
   });
 });

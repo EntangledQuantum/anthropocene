@@ -44,7 +44,7 @@ export default function CountTheNodes({ id, prompt, start = [1, 0], maxN = 4, ta
 
   const stepper = (label: string, value: number, dec: () => void, inc: () => void, decOk: boolean, incOk: boolean) => (
     <div style={{ display: 'inline-flex', alignItems: 'center', gap: 8 }}>
-      <span className="hud-label">{label}</span>
+      <span style={{ fontStyle: 'italic', fontFamily: 'var(--font-display)', fontSize: 20, color: C.soft }}>{label}</span>
       <button type="button" className="anth-btn" aria-label={`Lower ${label}`} disabled={!decOk} onClick={dec} style={{ padding: '6px 14px', fontSize: 16 }}>−</button>
       <span className="readout" style={{ fontSize: 20, minWidth: 18, textAlign: 'center' }}>{value}</span>
       <button type="button" className="anth-btn" aria-label={`Raise ${label}`} disabled={!incOk} onClick={inc} style={{ padding: '6px 14px', fontSize: 16 }}>+</button>

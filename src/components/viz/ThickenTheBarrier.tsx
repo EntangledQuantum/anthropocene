@@ -24,9 +24,9 @@ export interface ThickenTheBarrierProps {
 
 const V0 = 2, E = 1, SCALE = 0.28, N_SENT = 10000;
 const X: [number, number] = [-3, 3.4];
-const A_RANGE: [number, number] = [0.1, 1.6];
-const LOG: [number, number] = [-6, 0];
-const TICKS: [number, string][] = [[-6, '0.0001%'], [-4, '0.01%'], [-2, '1%'], [0, '100%']];
+const A_RANGE: [number, number] = [0.1, 1.3];
+const LOG: [number, number] = [-5.5, 0];
+const TICKS: [number, string][] = [[-4, '0.01%'], [-2, '1%'], [0, '100%']];
 
 export default function ThickenTheBarrier({ id, prompt, target = 0.01, start = 0.3, explanation }: ThickenTheBarrierProps) {
   const task = useTask(id, 'thicken-the-barrier');
@@ -92,20 +92,20 @@ export default function ThickenTheBarrier({ id, prompt, target = 0.01, start = 0
           </>;
         }}
       </Stage>
-      <Stage x={[0, 1.7]} y={LOG} height={170} axes={{ x: 'wall thickness (nm)', xTicks: [0, 0.25, 0.5, 0.75, 1, 1.25, 1.5], yTicks: [] }}
+      <Stage x={[0, 1.4]} y={LOG} height={170} axes={{ x: 'wall thickness (nm)', xTicks: [0, 0.25, 0.5, 0.75, 1, 1.25], yTicks: [] }}
         label={`Fraction through against thickness, on a log scale. ${sent.length} sends so far.`}>
         {(s) => <>
           {/* the y axis reads as percentages, not as logs */}
           {TICKS.map(([v, t]) => (
             <g key={v}>
-              <line x1={s.sx(0)} x2={s.sx(1.7)} y1={s.sy(v)} y2={s.sy(v)} stroke={C.grid} />
+              <line x1={s.sx(0)} x2={s.sx(1.4)} y1={s.sy(v)} y2={s.sy(v)} stroke={C.grid} />
               <text x={s.sx(0) - 8} y={s.sy(v) + 4} textAnchor="end" fontSize={11} fill={C.faint} fontFamily="var(--font-mono)">{t}</text>
             </g>
           ))}
-          <line x1={s.sx(0)} x2={s.sx(1.7)} y1={s.sy(Math.log10(target))} y2={s.sy(Math.log10(target))} stroke={C.ink} strokeDasharray="5 5" strokeWidth={1} />
-          <text x={s.sx(1.68)} y={s.sy(Math.log10(target)) - 6} textAnchor="end" fontSize={12} fill={C.ink}>target {pct(target)}</text>
+          <line x1={s.sx(0)} x2={s.sx(1.4)} y1={s.sy(Math.log10(target))} y2={s.sy(Math.log10(target))} stroke={C.ink} strokeDasharray="5 5" strokeWidth={1} />
+          <text x={s.sx(1.38)} y={s.sy(Math.log10(target)) - 6} textAnchor="end" fontSize={12} fill={C.ink}>target {pct(target)}</text>
           {task.done && <polyline fill="none" stroke={C.position} strokeWidth={1.5} opacity={0.7}
-            points={pts(s, Array.from({ length: 61 }, (_, i) => 0.1 + i * 0.025), Array.from({ length: 61 }, (_, i) => Math.max(LOG[0], Math.log10(barrierTransmission(E, V0, 0.1 + i * 0.025)))))} />}
+            points={pts(s, Array.from({ length: 49 }, (_, i) => 0.1 + i * 0.025), Array.from({ length: 49 }, (_, i) => Math.max(LOG[0], Math.log10(barrierTransmission(E, V0, 0.1 + i * 0.025)))))} />}
           {sent.map((p) => (
             <circle key={p.a} cx={s.sx(p.a)} cy={s.sy(Math.max(LOG[0], Math.log10(p.T)))} r={5} fill={C.position} />
           ))}

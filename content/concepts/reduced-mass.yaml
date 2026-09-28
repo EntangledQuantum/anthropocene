@@ -1,0 +1,14 @@
+title: 'Reduced mass'
+blurb: 'Two bodies on one spring vibrate like a single body of mass μ = m₁m₂/(m₁+m₂). μ is always below the lighter mass, so the light partner does the moving and sets the frequency: in H–Cl the hydrogen travels 35 times as far as the chlorine.'
+notation: '\mu = \frac{m_1 m_2}{m_1 + m_2}'
+tags:
+  - 'up-ch42'
+misconceptions:
+  - id: 'up-ch42-frequency-halves'
+    name: 'Double the mass, halve the frequency.'
+    signal: 'Predicts D–Cl vibrates at half the H–Cl frequency.'
+    correction: 'A spring’s frequency goes as 1/√m, not 1/m, and here the mass that counts is μ, which almost doubles. Together: about 1/√2, measured 0.72.'
+  - id: 'up-ch42-both-atoms-count-equally'
+    name: 'Both atoms’ masses matter equally to the vibration.'
+    signal: 'Expects swapping ³⁵Cl for ³⁷Cl to shift H–Cl’s line as much as swapping H for D.'
+    correction: 'μ is dominated by the lighter atom. Changing the chlorine barely changes μ (0.08%), while doubling the hydrogen nearly doubles it.'

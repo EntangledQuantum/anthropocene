@@ -1,0 +1,14 @@
+title: 'Molecular vibration'
+blurb: 'Near the bottom of its well every bond is a spring, with a stiffness set by the curvature there. Two atoms on that spring vibrate at ω = √(k/μ), tens of terahertz, and a gas soaks up infrared light at very nearly that frequency. H–Cl is a 517 N/m spring, and its gas absorbs at 86 THz.'
+notation: 'k = \left.\frac{d^2U}{dr^2}\right|_{r_e},\qquad \omega = \sqrt{k/\mu}'
+tags:
+  - 'up-ch42'
+misconceptions:
+  - id: 'up-ch42-same-bond-same-frequency'
+    name: 'Swapping an atom for a heavier isotope leaves the vibration unchanged, because the bond is the same.'
+    signal: 'Predicts D–Cl absorbs at the same infrared frequency as H–Cl.'
+    correction: 'The bond, and so the spring, is unchanged: isotopes have the same electrons. But the mass on the spring doubles on one end, and a heavier load rings slower. D–Cl vibrates at 0.72 times the H–Cl frequency.'
+  - id: 'up-ch42-deeper-well-faster'
+    name: 'A deeper well means a faster vibration.'
+    signal: 'Reads the frequency off the depth of the well rather than its shape at the bottom.'
+    correction: 'The frequency depends on how sharply the well curves at the bottom, not how deep it goes. A deep, wide well is a soft spring; the depth only decides how much energy breaks the bond.'
