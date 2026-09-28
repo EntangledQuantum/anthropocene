@@ -22,7 +22,7 @@ export interface CrowdIntoBandsProps {
 }
 
 const NMAX = 12;
-const DMIN = 0.22, DMAX = 0.5;
+const DMIN = 0.24, DMAX = 0.5;
 const COLS = { atom: [0.3, 1.5], pair: [2.1, 3.3], row: [4.1, 9.7] } as const;
 
 export default function CrowdIntoBands({ id, prompt, ratio, explanation }: CrowdIntoBandsProps) {
@@ -60,11 +60,11 @@ export default function CrowdIntoBands({ id, prompt, ratio, explanation }: Crowd
           miss={`With ${N} atoms the band is ${r.toFixed(2)} times the pair's split. Each new atom adds a level, mostly inside.`}
           hit={explanation} />}
       </div>}>
-      <Stage x={[0, 10]} y={[-9, 1]} height={340} label={`Energy levels of ${N} atoms spaced ${d.toFixed(2)} nanometres apart`}
+      <Stage x={[0, 10]} y={[-9, 1.4]} height={350} label={`Energy levels of ${N} atoms spaced ${d.toFixed(2)} nanometres apart`}
         axes={{ xTicks: [], yTicks: [-8, -6, -4, -2, 0] }}>
         {(s) => <>
           {[['one atom', COLS.atom], ['two atoms', COLS.pair], [`your row of ${N}`, COLS.row]].map(([t, c]) =>
-            <text key={t as string} x={(s.sx((c as readonly number[])[0]) + s.sx((c as readonly number[])[1])) / 2} y={s.sy(1) + 16}
+            <text key={t as string} x={(s.sx((c as readonly number[])[0]) + s.sx((c as readonly number[])[1])) / 2} y={s.sy(1.4) + 16}
               textAnchor="middle" fontSize={13} fill={C.soft}>{t as string}</text>)}
           <text transform={`translate(14 ${s.sy(-4)}) rotate(-90)`} textAnchor="middle" fontSize={13} fill={C.soft}>energy (eV)</text>
           {levels(s, COLS.atom, MODEL_ATOM.levels.map((l) => l.E), C.energy)}

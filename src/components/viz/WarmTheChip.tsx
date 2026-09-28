@@ -27,10 +27,10 @@ const TY0 = 250, TY1 = 40; // thermometer, screen y at TMIN and TMAX
 const yOfT = (T: number) => TY0 - ((T - TMIN) / (TMAX - TMIN)) * (TY0 - TY1);
 const tOfY = (y: number) => TMIN + ((TY0 - y) / (TY0 - TY1)) * (TMAX - TMIN);
 const api: StageApi = { sx: (x) => x, sy: (y) => 300 - y, len: (d) => d, W: 640, H: 300, x: [0, 640], y: [0, 300] };
-const CAP = 400;
+const CAP = 200;
 const BAR = { x0: 110, x1: 450 };
 const CU = { y0: 44, y1: 110 }, SI = { y0: 164, y1: 230 };
-const N_CU = 70;
+const N_CU = 110;
 
 function rng(seed: number) {
   let s = seed;
