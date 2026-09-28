@@ -174,8 +174,8 @@ export default function ShakeTheCharge({ id, prompt, mode = 'line', detectorAt =
               <path ref={(el) => { els.current.eHead = el; }} fill={C.field} />
               <text x={s.sx(det)} y={s.sy(0) + 30} textAnchor="middle" fontSize={13} fill={C.soft}
                 stroke="var(--color-surface)" strokeWidth={4} paintOrder="stroke">detector · {det.toFixed(1)} m</text>
-              {graded && <Handle s={s} at={[det, -0.9]} r={8} step={0.1} label="Detector position: drag left or right"
-                onChange={(p) => moveDetector(p[0])} clamp={(p) => [p[0], -0.9]} />}
+              {graded && <Handle s={s} at={[det, -1.55]} r={8} step={0.1} label="Detector position: drag left or right"
+                onChange={(p) => moveDetector(p[0])} clamp={(p) => [p[0], -1.55]} />}
             </g>}
             {/* the charge */}
             <g ref={(el) => { els.current.charge = el; }}>

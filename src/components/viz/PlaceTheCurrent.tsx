@@ -26,8 +26,8 @@ export interface PlaceTheCurrentProps {
 }
 
 const PERIOD = 4; // seconds on screen per cycle
-const PC = { x: 330, y: 150, r: 82 }; // phasor circle
-const ST = { x0: 452, x1: 624, y: 150, a: 82 }; // strip
+const PC = { x: 345, y: 160, r: 78 }; // phasor circle
+const ST = { x0: 476, x1: 624, y: 160, a: 78 }; // strip
 
 function cssVar(name: string) { return getComputedStyle(document.documentElement).getPropertyValue(name).trim() || '#ccc'; }
 
@@ -81,32 +81,32 @@ export default function PlaceTheCurrent({ id, prompt, element, start = 0, tolera
     };
 
     // ── the circuit
-    const XS = 44, XE = 196, YT = 60, YB = 250, YM = 155;
+    const XS = 36, XE = 172, YT = 64, YB = 250, YM = 157;
     g.strokeStyle = c.soft; g.lineWidth = 2.5;
     g.beginPath(); g.moveTo(XS, YM - 20); g.lineTo(XS, YT); g.lineTo(XE, YT); g.lineTo(XE, element === 'capacitor' ? YM - 9 : YM - 45); g.stroke();
     g.beginPath(); g.moveTo(XE, element === 'capacitor' ? YM + 9 : YM + 45); g.lineTo(XE, YB); g.lineTo(XS, YB); g.lineTo(XS, YM + 20); g.stroke();
     g.strokeStyle = c.ink; g.lineWidth = 2; g.beginPath(); g.arc(XS, YM, 20, 0, 2 * Math.PI); g.stroke();
     g.beginPath(); for (let k = 0; k <= 20; k++) { const x = XS - 11 + (22 * k) / 20; const y = YM - 6 * Math.sin((2 * Math.PI * k) / 20); if (k) g.lineTo(x, y); else g.moveTo(x, y); } g.stroke();
-    txt('10 V, 50 Hz', XS, YB + 26, c.faint, 'center', 12);
-    txt(`${v >= 0 ? '+' : '−'}${Math.abs(v).toFixed(1)} V`, XE + 14, YT + 30, c.v, 'left', 14, 600);
+    txt('supply: 10 V, 50 Hz', (XS + XE) / 2, YB + 64, c.faint, 'center', 12);
+    txt(`${v >= 0 ? '+' : '−'}${Math.abs(v).toFixed(1)} V`, XE + 12, YM - 50, c.v, 'left', 14, 600);
     if (element === 'capacitor') {
       g.strokeStyle = c.ink; g.lineWidth = 3;
       for (const y of [YM - 9, YM + 9]) { g.beginPath(); g.moveTo(XE - 30, y); g.lineTo(XE + 30, y); g.stroke(); }
       const n = Math.round(Math.abs(v) / SINGLE.V0 * 8), top = v >= 0 ? '+' : '−', bot = v >= 0 ? '−' : '+';
       for (let k = 0; k < n; k++) { txt(top, XE - 26 + k * 7, YM - 15, c.q, 'left', 12); txt(bot, XE - 26 + k * 7, YM + 26, c.q, 'left', 12); }
       txt('10 µF', XE - 36, YM + 4, c.faint, 'right', 12);
-      txt(dv > 0.05 ? (v >= 0 ? 'plates filling' : 'plates emptying') : dv < -0.05 ? (v >= 0 ? 'plates emptying' : 'plates filling') : 'plates full', XE + 36, YM + 4, c.q, 'left', 12);
+      txt(dv > 0.05 ? (v >= 0 ? 'plates filling' : 'plates emptying') : dv < -0.05 ? (v >= 0 ? 'plates emptying' : 'plates filling') : 'plates full', (XS + XE) / 2, YB + 26, c.q, 'center', 12);
     } else {
       g.strokeStyle = c.ink; g.lineWidth = 2.2; g.beginPath(); g.moveTo(XE, YM - 45);
       for (let k = 0; k < 5; k++) g.arc(XE, YM - 36 + k * 18, 9, -Math.PI / 2, Math.PI / 2, false);
       g.lineTo(XE, YM + 45); g.stroke();
       txt('1 H', XE - 18, YM + 4, c.faint, 'right', 12);
-      txt(v > 0.3 ? 'pushes current up' : v < -0.3 ? 'pushes current down' : 'no push', XE + 18, YM + 4, c.v, 'left', 12);
+      txt(v > 0.3 ? 'pushes current up' : v < -0.3 ? 'pushes current down' : 'no push', (XS + XE) / 2, YB + 26, c.v, 'center', 12);
     }
-    const len = (i / I0) * 64;
-    arrow(120 - len / 2, YT - 16, 120 + len / 2, YT - 16, c.i, 3.5);
-    txt(`${i >= 0 ? '+' : '−'}${Math.abs(i).toFixed(1)} mA`, 120, YT - 30, c.i, 'center', 14, 600);
-    txt(Math.abs(di) < 0.05 ? 'current steady' : di > 0 ? 'current rising' : 'current falling', 120, YT + 20, c.i, 'center', 12);
+    const len = (i / I0) * 64, MX = (XS + XE) / 2;
+    arrow(MX - len / 2, YT - 16, MX + len / 2, YT - 16, c.i, 3.5);
+    txt(`${i >= 0 ? '+' : '−'}${Math.abs(i).toFixed(1)} mA`, MX, YT - 30, c.i, 'center', 14, 600);
+    txt(Math.abs(di) < 0.05 ? 'current steady' : di > 0 ? 'current rising' : 'current falling', MX, YB + 44, c.i, 'center', 12);
 
     // ── the phasors
     g.strokeStyle = c.rule; g.setLineDash([3, 5]); g.lineWidth = 1;
@@ -121,9 +121,9 @@ export default function PlaceTheCurrent({ id, prompt, element, start = 0, tolera
     arrow(PC.x, PC.y, tipV[0], tipV[1], c.v, 3.5);
     arrow(PC.x, PC.y, tipI[0], tipI[1], c.i, 3.5);
     txt('voltage', tipV[0] + 10 * Math.cos(th), tipV[1] - 10 * Math.sin(th) + 4, c.v, Math.cos(th) > 0.3 ? 'left' : Math.cos(th) < -0.3 ? 'right' : 'center', 13, 600);
-    txt('current', tipI[0] + 10 * Math.cos(th + of), tipI[1] - 10 * Math.sin(th + of) + 4, c.i, Math.cos(th + of) > 0.3 ? 'left' : Math.cos(th + of) < -0.3 ? 'right' : 'center', 13, 600);
+    if (Math.abs(wrap(of)) > rad(30)) txt('current', tipI[0] + 10 * Math.cos(th + of), tipI[1] - 10 * Math.sin(th + of) + 4, c.i, Math.cos(th + of) > 0.3 ? 'left' : Math.cos(th + of) < -0.3 ? 'right' : 'center', 13, 600);
     if (graded) { g.strokeStyle = c.i; g.lineWidth = 2.5; g.fillStyle = c.surf; g.beginPath(); g.arc(tipI[0], tipI[1], 8, 0, 2 * Math.PI); g.fill(); g.stroke(); }
-    txt('both turn anticlockwise', PC.x, PC.y + PC.r + 26, c.faint, 'center', 12);
+    txt('both turn anticlockwise', PC.x, PC.y - PC.r - 14, c.faint, 'center', 12);
 
     // ── the strip: one cycle of each shadow
     for (const k of [0, 1, 2, 3, 4]) { const x = ST.x0 + (k / 4) * (ST.x1 - ST.x0); g.strokeStyle = c.grid; g.beginPath(); g.moveTo(x, ST.y - ST.a); g.lineTo(x, ST.y + ST.a); g.stroke(); txt(`${k * 5}`, x, ST.y + ST.a + 16, c.faint, 'center', 11); }

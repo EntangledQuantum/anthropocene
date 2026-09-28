@@ -1,0 +1,6 @@
+---
+// Ungraded picture: a straw in water, and an eye you drag. The payoff of a bet.
+import Island, { type BentStrawProps } from '../viz/BentStraw.tsx';
+const props = Astro.props as BentStrawProps;
+---
+<Island client:visible {...props} />

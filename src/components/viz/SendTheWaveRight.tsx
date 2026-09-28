@@ -24,10 +24,10 @@ export interface SendTheWaveRightProps {
   explanation?: string;
 }
 
-const LAMBDA = 2, K = Math.PI, SPAN = 6, N = 25, AMP = 1.05;
-const OX = -0.42, OY = -0.42;   // the z axis (out of the page) drawn down-left
+const LAMBDA = 2, K = Math.PI, SPAN = 6, N = 17, AMP = 1.05;
+const OX = -0.55, OY = -0.34;   // the z axis (out of the page) drawn down-left
 const SPEED = 0.5;              // world units of ct per real second while running
-const S_ROW = -1.95;
+const S_ROW = -1.62;
 
 export default function SendTheWaveRight({ id, prompt, startPhase = 90, explanation }: SendTheWaveRightProps) {
   const task = useTask(id, 'send-the-wave-right');
@@ -59,7 +59,7 @@ export default function SendTheWaveRight({ id, prompt, startPhase = 90, explanat
           const x = (SPAN * i) / (N - 1), f = evolveSnapshot(phi.current, x, K, r.ct);
           place(e.e[i], s.sx(x), s.sy(0), s.sx(x), s.sy(f.E * AMP));
           place(e.b[i], s.sx(x), s.sy(0), s.sx(x + f.cB * AMP * OX), s.sy(f.cB * AMP * OY));
-          const q = poyntingX(f.E, f.cB) * 0.2;
+          const q = poyntingX(f.E, f.cB) * 0.16;
           place(e.s[i], s.sx(x - q), s.sy(S_ROW), s.sx(x + q), s.sy(S_ROW));
         }
       }
@@ -99,15 +99,20 @@ export default function SendTheWaveRight({ id, prompt, startPhase = 90, explanat
             : `B's crests sit ${outBy.toFixed(0)}° out of step with E's, so ${(left * 100).toFixed(0)}% of the energy runs left.`}
           hit={explanation} />}
       </div>}>
-      <Stage x={[-0.9, 7.2]} y={[-2.35, 1.55]} height={330} equal
+      <Stage x={[-0.9, 7.2]} y={[-2.0, 1.4]} height={320} equal
         label={`A frozen electromagnetic wave. B's crests sit ${outBy.toFixed(0)} degrees out of step with E's.`}>
         {(s) => {
           api.current = s;
           return <g>
+            {/* the floor: the plane B swings in, drawn in perspective */}
+            {(() => {
+              const z = 1.25, p = (x: number, zz: number) => `${s.sx(x + zz * OX).toFixed(1)},${s.sy(zz * OY).toFixed(1)}`;
+              return <polygon points={`${p(-0.3, -z)} ${p(SPAN + 0.3, -z)} ${p(SPAN + 0.3, z)} ${p(-0.3, z)}`} fill={C.ink} opacity={0.05} stroke={C.grid} />;
+            })()}
             {/* axes: travel, E, B */}
             <line x1={s.sx(-0.5)} x2={s.sx(SPAN + 0.3)} y1={s.sy(0)} y2={s.sy(0)} stroke={C.rule} strokeWidth={1.5} />
             <text x={s.sx(-0.55)} y={s.sy(AMP) + 5} textAnchor="end" fontSize={15} fontWeight={600} fill={C.field}>E</text>
-            <text x={s.sx(-0.55 + AMP * OX * 0.2)} y={s.sy(AMP * OY) + 4} textAnchor="end" fontSize={15} fontWeight={600} fill={C.ink}>B</text>
+            <text x={s.sx(-0.35 + AMP * OX)} y={s.sy(AMP * OY) + 5} textAnchor="end" fontSize={15} fontWeight={600} fill={C.ink}>B</text>
             <polyline ref={(el) => { els.current.eCurve = el; }} fill="none" stroke={C.field} strokeWidth={1.4} opacity={0.6} />
             <polyline ref={(el) => { els.current.bCurve = el; }} fill="none" stroke={C.ink} strokeWidth={1.4} opacity={0.45} />
             {Array.from({ length: N }, (_, i) => <g key={i}>
@@ -116,7 +121,7 @@ export default function SendTheWaveRight({ id, prompt, startPhase = 90, explanat
               <g ref={(el) => { els.current.s[i] = el; }} style={{ display: 'none' }}><line stroke={C.energy} strokeWidth={2.4} strokeLinecap="round" /><path fill={C.energy} /></g>
             </g>)}
             <line x1={s.sx(-0.5)} x2={s.sx(SPAN + 0.3)} y1={s.sy(S_ROW)} y2={s.sy(S_ROW)} stroke={C.grid} />
-            <text x={s.sx(-0.55)} y={s.sy(S_ROW) + 5} textAnchor="end" fontSize={13} fill={C.energy}>E × B</text>
+            <text x={s.sx(-0.3)} y={s.sy(S_ROW) - 12} fontSize={13} fill={C.energy}>energy flow, E × B</text>
             {/* the receiver */}
             <rect x={s.sx(SPAN + 0.45)} y={s.sy(0.9)} width={s.len(0.28)} height={s.len(1.8)} rx={3} fill={C.surface} stroke={C.soft} strokeWidth={2} />
             <text x={s.sx(SPAN + 0.59)} y={s.sy(1.0)} textAnchor="middle" fontSize={12} fill={C.soft}>receiver</text>

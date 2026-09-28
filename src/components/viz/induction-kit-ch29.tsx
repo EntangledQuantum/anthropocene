@@ -181,7 +181,7 @@ export function drawGalvanometer(g: CanvasRenderingContext2D, cx: number, cy: nu
     const [px, py] = at(peak, r - 4);
     g.beginPath(); g.moveTo(cx, cy); g.lineTo(px, py); g.stroke(); g.setLineDash([]);
   }
-  text(g, `current (${unit})`, cx, cy + 12, c.faint, { size: 11, align: 'center' });
+  text(g, unit, cx - r - 6, cy + 8, c.faint, { size: 11 });
   // needle
   const [nx, ny] = at(value, r - 6);
   g.strokeStyle = c.velocity; g.lineWidth = 2.5; g.lineCap = 'round';

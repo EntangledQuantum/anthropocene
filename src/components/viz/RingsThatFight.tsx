@@ -70,7 +70,7 @@ export default function RingsThatFight({ id, prompt, explanation }: RingsThatFig
     };
     return <g role="button" tabIndex={0} aria-label={`The ${which} ring: click to reverse its current`} style={{ cursor: 'pointer' }}
       onClick={() => flip(which)} onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); flip(which); } }}>
-      <rect x={x0} y={y0} width={x1 - x0} height={y1 - y0} rx={3} fill={C.velocity} fillOpacity={d ? 0.1 : 0.04}
+      <rect x={x0} y={y0} width={x1 - x0} height={y1 - y0} rx={3} fill={C.velocity} fillOpacity={d ? 0.12 : 0.07}
         stroke={C.velocity} strokeOpacity={0.55} strokeDasharray={d ? undefined : '4 4'} />
       {d !== 0 && <>
         {/* +1: field up; the right wall's current goes into the page */}
@@ -80,7 +80,7 @@ export default function RingsThatFight({ id, prompt, explanation }: RingsThatFig
         <text x={s.sx(A + 4.5)} y={s.sy(yc - 2.2) + 5} fontSize={15} fontWeight={700} fill={C.soft}>{d === 1 ? 'S' : 'N'}</text>
       </>}
       {d === 0 && <text x={s.sx(A + 4.5)} y={s.sy(yc) + 5} fontSize={13} fill={C.faint}>click to set</text>}
-      <text x={s.sx(-A - 4.5)} y={s.sy(yc) + 5} fontSize={13} textAnchor="end" fill={C.soft}>{which} ring</text>
+      <text x={s.sx(-A - 3)} y={s.sy(yc) + 5} fontSize={13} textAnchor="end" fill={C.soft}>{which} ring</text>
     </g>;
   };
 
@@ -100,7 +100,8 @@ export default function RingsThatFight({ id, prompt, explanation }: RingsThatFig
           <rect x={s.sx(-6) + 2} y={s.sy(6) + 2} width={s.len(12) - 4} height={s.len(6) - 2} fill={C.grid} />
           <text x={s.sx(0)} y={s.sy(3) + 5} textAnchor="middle" fontSize={15} fontWeight={700} fill={C.soft}>S</text>
           <text x={s.sx(0)} y={s.sy(-3) + 5} textAnchor="middle" fontSize={15} fontWeight={700} fill={C.ink}>N</text>
-          <Arrow s={s} from={[-20, 5]} to={[-20, -5]} color={C.velocity} label={`${(V * 100).toFixed(1)} cm/s`} labelSide={-1} />
+          <Arrow s={s} from={[-24, 4]} to={[-24, -4]} color={C.velocity} />
+          <text x={s.sx(-24)} y={s.sy(-6) + 8} textAnchor="middle" fontSize={14} fontWeight={600} fill={C.velocity}>{`falling ${(V * 100).toFixed(1)} cm/s`}</text>
           {shownForces && (['lower', 'upper'] as const).map((w, i) => {
             const F = force(w, dir[w]);
             if (!F) return null;

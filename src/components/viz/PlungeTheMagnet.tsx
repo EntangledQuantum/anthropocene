@@ -27,16 +27,16 @@ export interface PlungeTheMagnetProps {
   explanation?: string;
 }
 
-const H = 400;
-const X: [number, number] = [-0.42, 0.42];
-const Y: [number, number] = [-0.32, 0.16];
+const H = 440;
+const X: [number, number] = [-0.24, 0.24];
+const Y: [number, number] = [-0.2, 0.12];
 const FULL = 10; // mA full scale
 const PHI_MAX = dipoleFlux(CH29_COIL.m, CH29_COIL.a, 0); // per turn
 const LINES = 10;
 const DPHI = PHI_MAX / 8; // eight lines thread the coil with the magnet at its centre
-const GALV: Px = [320, 352];
+const GALV: Px = [320, 402];
 
-export default function PlungeTheMagnet({ id, prompt, start = -0.3, target, explanation }: PlungeTheMagnetProps) {
+export default function PlungeTheMagnet({ id, prompt, start = -0.18, target, explanation }: PlungeTheMagnetProps) {
   const graded = Boolean(id && target !== undefined);
   const task = useTask(graded ? id : undefined, 'plunge-the-magnet');
   const [live, setLive] = useState(false);
@@ -85,7 +85,7 @@ export default function PlungeTheMagnet({ id, prompt, start = -0.3, target, expl
     const a = CH29_COIL.a, xm = st.x;
     // field lines: r = R sin²θ, each carrying DPHI more than the last
     g.save();
-    g.beginPath(); g.rect(0, 0, 640, s.sy(-0.16)); g.clip();
+    g.beginPath(); g.rect(0, 0, 640, s.sy(-0.11)); g.clip();
     g.strokeStyle = c.field; g.globalAlpha = 0.5; g.lineWidth = 1.3;
     for (let k = 1; k <= LINES; k++) {
       const R = fieldLineRadius(CH29_COIL.m, k * DPHI);
@@ -158,9 +158,9 @@ export default function PlungeTheMagnet({ id, prompt, start = -0.3, target, expl
       </div>}>
       <Layered x={X} y={Y} height={H} equal canvas={canvas} api={api}
         label={`A bar magnet ${Math.abs(hand * 100).toFixed(0)} cm ${hand < 0 ? 'left of' : 'right of'} the centre of a coil wired to a current meter.`}>
-        {(s) => <Handle s={s} at={[hand, 0]} step={0.02} color={C.ink} r={8}
+        {(s) => <Handle s={s} at={[hand, 0]} step={0.01} color={C.ink} r={8}
           label="The magnet: drag it along the coil's axis"
-          clamp={(p) => [Math.max(-0.34, Math.min(0.34, p[0])), 0]}
+          clamp={(p) => [Math.max(-0.2, Math.min(0.2, p[0])), 0]}
           onChange={(p) => { handRef.current = p[0]; setHand(p[0]); task.touch(); }} />}
       </Layered>
       <p className="hud-label" style={{ margin: '6px 0 0' }}>

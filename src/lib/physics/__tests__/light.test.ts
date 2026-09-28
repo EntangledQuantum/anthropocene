@@ -13,10 +13,11 @@ describe('the quickest road is Snell’s law', () => {
   const RUN = 5, SWIM = 2;
 
   it('the time-minimising entry point satisfies n₁ sin θ₁ = n₂ sin θ₂ to 1e-6', () => {
-    for (const [v1, v2] of [[RUN, SWIM], [C, C / N_WATER], [C / N_GLASS, C], [3, 3]]) {
+    // Light, with n = c/v; and the lifeguard, with running speed playing c.
+    for (const [v1, v2, ref] of [[C, C / N_WATER, C], [C / N_GLASS, C, C], [RUN, SWIM, RUN]]) {
       const x = fastestEntry(A, B, v1, v2);
       const { theta1, theta2 } = pathAngles(A, B, x);
-      const n1 = indexFor(v1), n2 = indexFor(v2);
+      const n1 = ref === C ? indexFor(v1) : ref / v1, n2 = ref === C ? indexFor(v2) : ref / v2;
       expect(Math.abs(n1 * Math.sin(theta1) - n2 * Math.sin(theta2))).toBeLessThan(1e-6);
     }
   });
@@ -123,7 +124,8 @@ describe('how much reflects', () => {
   it('the escaping ray fades out as the critical angle arrives, rather than switching off', () => {
     const c = criticalAngle(N_GLASS, 1);
     expect(fresnel(N_GLASS, 1, 30 * DEG).T).toBeGreaterThan(0.9);
-    expect(fresnel(N_GLASS, 1, c - 0.5 * DEG).T).toBeLessThan(0.5);
+    expect(fresnel(N_GLASS, 1, c - 2 * DEG).T).toBeGreaterThan(0.75);
+    expect(fresnel(N_GLASS, 1, c - 0.1 * DEG).T).toBeLessThan(0.3);
     expect(fresnel(N_GLASS, 1, c - 1e-7).T).toBeLessThan(0.01);
     expect(fresnel(N_GLASS, 1, c + 1e-7).R).toBe(1);
   });

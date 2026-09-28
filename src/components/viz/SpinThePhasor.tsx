@@ -27,7 +27,7 @@ export interface SpinThePhasorProps {
 
 const V0 = MAINS.peak, PERIOD_MS = 1000 / MAINS.hz;
 const CX = 150, CY = 160, R = 108;            // the arrow's circle, px; R ↔ 325 V
-const X0 = 330, X1 = 620;                      // the time axis, 0 → 20 ms
+const X0 = 318, X1 = 590;                      // the time axis, 0 → 20 ms
 const BINS = 180;
 const tx = (theta: number) => X0 + (theta / (2 * Math.PI)) * (X1 - X0);
 const vy = (v: number) => CY - (v / V0) * R;
@@ -94,9 +94,9 @@ export default function SpinThePhasor({ id, prompt, target, start = 0, tolerance
         {/* shared voltage scale */}
         {[V0, V0 / 2, 0, -V0 / 2, -V0].map((u) => <g key={u}>
           <line x1={CX - R - 14} x2={X1} y1={vy(u)} y2={vy(u)} stroke={u === 0 ? C.rule : C.grid} />
-          <text x={X0 - 8} y={vy(u) + 4} textAnchor="end" fontSize={12} fill={C.faint} fontFamily="var(--font-mono)">{sgn(u)}</text>
+          <text x={X1 + 6} y={vy(u) + 4} fontSize={12} fill={C.faint} fontFamily="var(--font-mono)">{sgn(u)}</text>
         </g>)}
-        <text x={X0 - 8} y={vy(V0) - 12} textAnchor="end" fontSize={12} fill={C.soft}>volts</text>
+        <text x={X1 + 6} y={vy(V0) - 12} fontSize={12} fill={C.soft}>volts</text>
         {[0, 5, 10, 15, 20].map((t) => <g key={t}>
           <line x1={X0 + (t / PERIOD_MS) * (X1 - X0)} x2={X0 + (t / PERIOD_MS) * (X1 - X0)} y1={vy(V0)} y2={vy(-V0)} stroke={C.grid} />
           <text x={X0 + (t / PERIOD_MS) * (X1 - X0)} y={vy(-V0) + 18} textAnchor="middle" fontSize={12} fill={C.faint} fontFamily="var(--font-mono)">{t}</text>
@@ -116,7 +116,7 @@ export default function SpinThePhasor({ id, prompt, target, start = 0, tolerance
         <line x1={CX} x2={CX} y1={CY} y2={tip[1]} stroke={C.position} strokeWidth={6} strokeOpacity={0.45} strokeLinecap="round" />
         {segs.map((p, k) => <polyline key={k} points={p} fill="none" stroke={C.position} strokeWidth={2.5} />)}
         <circle cx={tx(pos(theta))} cy={tip[1]} r={5} fill={C.position} />
-        {target && <text x={X1} y={vy(V0) - 12} textAnchor="end" fontSize={12} fill={C.ink}>
+        {target && <text x={X0} y={vy(V0) - 12} fontSize={12} fill={C.ink}>
           wanted: {sgn(target.volts)} V, {target.falling ? 'falling' : 'rising'}</text>}
 
         {/* the arrow */}

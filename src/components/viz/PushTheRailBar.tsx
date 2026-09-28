@@ -97,7 +97,7 @@ export default function PushTheRailBar({ id, prompt, target = 4, explanation }: 
     }
     g.fillStyle = c.surface; g.strokeStyle = glow > 0.01 ? c.energy : c.faint; g.lineWidth = 2;
     g.beginPath(); g.arc(bx, by, 15, 0, Math.PI * 2); g.fill(); g.stroke();
-    text(g, `${R.R} Ω`, bx, by + 32, c.faint, { size: 12, align: 'center' });
+    text(g, `${R.R} Ω bulb`, bx, s.sy(0) + 20, c.faint, { size: 12, align: 'center' });
     // current dots, counterclockwise: up the bar, left along the top, down the bulb, right along the bottom
     const loop: Px[] = ([[st.x, 0], [st.x, 1], [0, 1], [BULB[0], 1], [BULB[0], 0], [0, 0], [st.x, 0]] as Px[]).map(([x, y]) => [s.sx(x), s.sy(y)] as Px);
     dotsAlong(g, loop, st.phaseDots, 22, c.velocity, 3);

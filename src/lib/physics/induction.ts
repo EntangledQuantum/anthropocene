@@ -82,8 +82,8 @@ export const fieldLineRadius = (m: number, phi: number) => (MU0 * m) / (2 * phi)
 
 export interface Coil { m: number; a: number; N: number; R: number }
 
-/** A 1 A·m² neodymium magnet and a 500-turn coil of radius 5 cm, 20 Ω with its meter. */
-export const CH29_COIL: Coil = { m: 1.0, a: 0.05, N: 500, R: 20 };
+/** A 1 A·m² neodymium magnet and a 500-turn coil of radius 5 cm, 10 Ω with its meter. */
+export const CH29_COIL: Coil = { m: 1.0, a: 0.05, N: 500, R: 10 };
 
 /** Flux linkage N Φ with the coil at x = 0 and the magnet at x, its north pole
  *  (its moment) pointing +x, toward the coil when x < 0. Wb-turns. */

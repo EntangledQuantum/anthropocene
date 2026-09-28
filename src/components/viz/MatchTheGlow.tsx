@@ -24,7 +24,7 @@ export interface MatchTheGlowProps {
 }
 
 const VMAX = 400, PMAX = 1100;
-const ST = { x0: 70, x1: 620, y0: 318, y1: 196 };
+const ST = { x0: 70, x1: 620, y0: 332, y1: 226 };
 const px = (f: number) => ST.x0 + f * (ST.x1 - ST.x0);
 const py = (p: number) => ST.y0 - (p / PMAX) * (ST.y0 - ST.y1);
 
@@ -74,7 +74,7 @@ export default function MatchTheGlow({ id, prompt, start = 100, explanation }: M
           miss={`At ${V} V the battery heater takes ${pDC.toFixed(0)} W; the mains heater averages ${pAC.toFixed(0)} W. The battery heater is ${pDC > pAC ? 'brighter' : 'dimmer'}.`}
           hit={explanation?.replace('{v}', want.toFixed(0))} />}
       </div>}>
-      <svg viewBox="0 0 640 350" role="img" style={{ width: '100%', display: 'block', fontFamily: 'var(--font-sans)' }}
+      <svg viewBox="0 0 640 370" role="img" style={{ width: '100%', display: 'block', fontFamily: 'var(--font-sans)' }}
         aria-label={`Mains heater averaging ${pAC.toFixed(0)} watts; battery heater at ${V} volts taking ${pDC.toFixed(0)} watts`}>
         {/* the mains loop */}
         <Wire pts={[[70, 110], [70, 40], [190, 40], [190, 74]]} />
@@ -100,9 +100,9 @@ export default function MatchTheGlow({ id, prompt, start = 100, explanation }: M
         <text x={ST.x1} y={ST.y0 + 30} textAnchor="end" fontSize={11} fill={C.faint}>ms</text>
         <polyline points={hump} fill="none" stroke={C.energy} strokeWidth={2.2} />
         <line x1={ST.x0} x2={ST.x1} y1={py(Math.min(pDC, PMAX))} y2={py(Math.min(pDC, PMAX))} stroke={C.energy} strokeWidth={2.5} strokeDasharray="8 5" />
-        <text x={ST.x1 - 4} y={py(Math.min(pDC, PMAX)) - 6} textAnchor="end" fontSize={12} fill={C.energy}
+        <text x={px(0.5)} y={py(Math.min(pDC, PMAX)) - 6} textAnchor="middle" fontSize={12} fill={C.energy}
           stroke="var(--color-surface)" strokeWidth={4} paintOrder="stroke">battery heater</text>
-        <text x={px(0.25)} y={py(1058) - 6} textAnchor="middle" fontSize={12} fill={C.energy}
+        <text x={px(0.5)} y={py(950)} textAnchor="middle" fontSize={12} fill={C.energy}
           stroke="var(--color-surface)" strokeWidth={4} paintOrder="stroke">mains heater</text>
         <line ref={cursor} x1={ST.x0} x2={ST.x0} y1={ST.y1} y2={ST.y0} stroke={C.faint} strokeWidth={1} />
       </svg>

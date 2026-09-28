@@ -48,14 +48,14 @@ describe('lesson 1: magnet and coil', () => {
     expect(Math.sign(coilCurrent(-0.03, -1))).toBe(1);  // out to the left
     expect(Math.sign(coilCurrent(+0.03, +1))).toBe(1);  // out to the right
   });
-  it('the scene numbers: a brisk 1 m/s pull kicks past 5 mA, a slow 0.3 m/s one does not', () => {
+  it('the scene numbers: a brisk 0.5 m/s pull kicks past the 4 mA mark, a slow 0.15 m/s one does not reach 2 mA', () => {
     let peakFast = 0, peakSlow = 0;
-    for (let x = 0; x < 0.3; x += 0.001) {
-      peakFast = Math.max(peakFast, coilCurrent(x, 1));
-      peakSlow = Math.max(peakSlow, coilCurrent(x, 0.3));
+    for (let x = 0; x < 0.2; x += 0.0005) {
+      peakFast = Math.max(peakFast, coilCurrent(x, 0.5));
+      peakSlow = Math.max(peakSlow, coilCurrent(x, 0.15));
     }
-    expect(peakFast).toBeGreaterThan(5e-3);
-    expect(peakSlow).toBeLessThan(2.5e-3);
+    expect(peakFast).toBeGreaterThan(4e-3);
+    expect(peakSlow).toBeLessThan(2e-3);
   });
   it('the charge that flows depends only on the flux change, not on the speed', () => {
     const run = (speed: number) => {
@@ -208,9 +208,9 @@ describe('lesson 2: the bar on rails', () => {
 });
 
 describe('the numbers the lesson text quotes', () => {
-  it('pulling the magnet from the centre to the end of its travel sends 0.31 mC round the coil', () => {
-    expect(chargeThroughCoil(0, 0.34) * 1000).toBeCloseTo(0.31, 2);
-    expect(chargeThroughCoil(0, -0.34)).toBeCloseTo(chargeThroughCoil(0, 0.34), 12);
+  it('pulling the magnet from the centre to the end of its travel sends 0.6 mC round the coil', () => {
+    expect(chargeThroughCoil(0, 0.2) * 1000).toBeCloseTo(0.6, 1);
+    expect(chargeThroughCoil(0, -0.2)).toBeCloseTo(chargeThroughCoil(0, 0.2), 12);
     expect(CH29_COIL.N).toBe(500);
   });
   it('the two frozen rings, one radius either side, brake the magnet with about 25 mN of its 100 mN weight', () => {
