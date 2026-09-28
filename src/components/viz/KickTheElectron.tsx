@@ -67,10 +67,10 @@ export default function KickTheElectron({
         {(s) => <>
           <path d={wiggle(s, [-pIn[0] - 1.5, 0], [-1.2, 0], 7)} fill="none" stroke={C.field} strokeWidth={1.2} opacity={0.5} />
           <path d={wiggle(s, [0, 1.2], [pOut[0], pOut[1] + 1.5], 7 * (ev.lambdaOut / (lambdaPm * 1e-12)) ** -1)} fill="none" stroke={C.field} strokeWidth={1.2} opacity={0.5} />
-          <Arrow s={s} from={[-pIn[0], -1.4]} to={[0, -1.4]} color={C.field} label={`X-ray in, ${lambdaPm.toFixed(1)} pm`} labelSide={-1} />
+          <Arrow s={s} from={[-pIn[0], -1.4]} to={[-0.6, -1.4]} color={C.field} />
+          <text x={s.sx(-pIn[0])} y={s.sy(-1.4) + 24} fontSize={14} fontWeight={600} fill={C.field}>X-ray in, {lambdaPm.toFixed(1)} pm</text>
           <Arrow s={s} from={[1.4, 0]} to={[pOut[0] + 1.4, pOut[1]]} color={C.field} label={`X-ray out, ${(ev.lambdaOut * 1e12).toFixed(1)} pm`} labelSide={-1} />
           <circle cx={s.sx(0)} cy={s.sy(0)} r={7} fill={C.surface} stroke={C.velocity} strokeWidth={2} />
-          <text x={s.sx(0) - 12} y={s.sy(0) + 22} textAnchor="end" fontSize={13} fill={C.soft}>electron</text>
           <Arrow s={s} from={[0, 0]} to={pe} color={C.velocity} width={3.5} label="electron" />
           {task.done && (() => {
             // tip to tail: photon out, then electron, closes onto photon in

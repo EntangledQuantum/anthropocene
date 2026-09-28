@@ -212,6 +212,10 @@ describe('the numbers the chapter 36 lessons quote', () => {
     expect(46 * Math.tan(th)).toBeCloseTo(20.08, 2);
   });
 
+  it('AimTheDark’s window, 0.06 λ either side of the first dark, is under 0.5% bright', () => {
+    for (const pd of [0.94, 1.06]) expect(huygensFarIntensity(2.5, 1, Math.asin(pd / 2.5), 12)).toBeLessThan(0.005);
+  });
+
   it('a 5 cm mirror’s first dark ring is 2.77″ out; 13.8 cm pulls it to 1″', () => {
     const arcsec = Math.PI / 180 / 3600;
     expect(firstRingAngle(0.05, 550e-9) / arcsec).toBeCloseTo(2.77, 2);

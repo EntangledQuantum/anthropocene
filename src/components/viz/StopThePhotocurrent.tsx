@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from 'react';
 import {
-  E_CHARGE, H, MERCURY_LINES, METALS, cutoffHz, emits, frequencyOf, kMaxEv, lineFit, photocurrent,
+  H, MERCURY_LINES, METALS, cutoffHz, emits, frequencyOf, kMaxEv, lineFit, photocurrent,
   planckFromPoints, stoppingVoltage, type Metal,
 } from '../../lib/physics/photons.ts';
 import { C, CheckBar, Meter, SceneCard, Stage, useTask } from './scene.tsx';
@@ -122,25 +122,25 @@ export default function StopThePhotocurrent({ id, prompt, metal = 'sodium', tole
             : `Your points give ${(hFit * 1e34).toFixed(2)} × 10⁻³⁴ J·s. The ${MERCURY_LINES[worst.k].name} point sits ${worst.dv.toFixed(2)} V above where its current first stops.`}
           hit={explanation?.replace('{h}', (hFit * 1e34).toFixed(2))} />}
       </div>}>
-      <svg viewBox="0 0 640 230" role="img" style={{ width: '100%', display: 'block', fontFamily: 'var(--font-sans)' }}
+      <svg viewBox="0 0 640 262" role="img" style={{ width: '100%', display: 'block', fontFamily: 'var(--font-sans)' }}
         aria-label={`${MERCURY_LINES[line].name} light on ${metal}; reverse voltage ${V.toFixed(2)} volts; current ${(I * 1e9).toFixed(2)} nanoamps`}>
-        <rect x={150} y={36} width={360} height={146} rx={40} fill="none" stroke={C.rule} strokeWidth={1.5} />
+        <rect x={150} y={36} width={360} height={164} rx={40} fill="none" stroke={C.rule} strokeWidth={1.5} />
         {/* lamp and beam */}
         <polygon points={`40,34 60,20 ${CATH - 4},70 ${CATH - 4},150`} fill={col} opacity={lit ? 0.4 : 0.25} />
         <circle cx={44} cy={24} r={14} fill={C.surface} stroke={col} strokeWidth={3} />
         {/* plates */}
         <rect x={CATH - 4} y={60} width={10} height={100} rx={2} fill={C.soft} />
         <rect x={ANODE - 3} y={60} width={6} height={100} rx={2} fill={C.soft} />
-        <text x={CATH} y={176} textAnchor="middle" fontSize={13} fill={C.soft}>{metal}</text>
-        <text x={ANODE} y={176} textAnchor="middle" fontSize={13} fill={C.soft}>collector</text>
+        <text x={CATH} y={184} textAnchor="middle" fontSize={13} fill={C.soft}>{metal}</text>
+        <text x={ANODE} y={184} textAnchor="middle" fontSize={13} fill={C.soft}>collector</text>
         {/* wires, battery, ammeter */}
-        <polyline points={`${CATH},160 ${CATH},210 300,210`} fill="none" stroke={C.faint} strokeWidth={1.5} />
-        <polyline points={`340,210 ${ANODE},210 ${ANODE},160`} fill="none" stroke={C.faint} strokeWidth={1.5} />
-        <line x1={306} y1={198} x2={306} y2={222} stroke={C.ink} strokeWidth={2} />
-        <line x1={318} y1={203} x2={318} y2={217} stroke={C.ink} strokeWidth={4} />
-        <line x1={318} y1={210} x2={340} y2={210} stroke={C.faint} strokeWidth={1.5} />
-        <text x={312} y={192} textAnchor="middle" fontSize={13} fill={C.position}>{V.toFixed(2)} V</text>
-        <text x={ANODE + 14} y={206} fontSize={13} fill={C.soft}>collector held negative</text>
+        <polyline points={`${CATH},160 ${CATH},166 ${CATH - 70},166 ${CATH - 70},232 300,232`} fill="none" stroke={C.faint} strokeWidth={1.5} />
+        <polyline points={`340,232 ${ANODE + 70},232 ${ANODE + 70},166 ${ANODE},166 ${ANODE},160`} fill="none" stroke={C.faint} strokeWidth={1.5} />
+        <line x1={306} y1={220} x2={306} y2={244} stroke={C.ink} strokeWidth={2} />
+        <line x1={318} y1={225} x2={318} y2={239} stroke={C.ink} strokeWidth={4} />
+        <line x1={318} y1={232} x2={340} y2={232} stroke={C.faint} strokeWidth={1.5} />
+        <text x={312} y={214} textAnchor="middle" fontSize={13} fill={C.position}>{V.toFixed(2)} V</text>
+        <text x={ANODE + 78} y={206} fontSize={13} fill={C.soft}>collector</text><text x={ANODE + 78} y={222} fontSize={13} fill={C.soft}>held negative</text>
         {Array.from({ length: POOL }, (_, i) => (
           <circle key={i} ref={(el) => { dots.current[i] = el; }} r={3.2} fill={C.velocity} opacity={0} cx={0} cy={0} />
         ))}
@@ -167,7 +167,7 @@ export default function StopThePhotocurrent({ id, prompt, metal = 'sodium', tole
         </>}
       </Stage>
       <p className="hud-label" style={{ margin: '6px 0 0' }}>
-        a colour's point lands at the lowest voltage where its current reads zero · slope in volts per hertz, × e = {E_CHARGE.toExponential(3)} C
+        each point: the lowest voltage at which that colour's current read zero · slope × e is in J·s
       </p>
     </SceneCard>
   );

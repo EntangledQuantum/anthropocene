@@ -90,9 +90,9 @@ export default function LightClockTrain({ id, prompt, ratio = 2, tolerance = 0.0
     const plat = Math.floor(r.t / (2 * lightClockHalfTick(GAP, 0, CS)));
     const train = Math.floor(r.t / (2 * half));
     const tc = el.current.trainCount;
-    if (tc) { tc.textContent = `train clock: ${train} ticks`; tc.setAttribute('x', String(s.sx(X))); }
+    if (tc) { tc.textContent = `train clock: ${train} tick${train === 1 ? '' : 's'}`; tc.setAttribute('x', String(s.sx(X))); }
     const pc = el.current.platCount;
-    if (pc) pc.textContent = `platform clock: ${plat} ticks`;
+    if (pc) pc.textContent = `platform clock: ${plat} tick${plat === 1 ? '' : 's'}`;
     if (now - last.current > 120) { last.current = now; setShown({ plat, train }); }
   });
 

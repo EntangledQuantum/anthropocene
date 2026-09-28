@@ -1,0 +1,132 @@
+---
+title: 'Two flashes, two nows'
+blurb: 'Time two lightning strikes so a moving passenger calls them simultaneous, tilt a spacetime diagram to find her line of now, and say which events no frame can reorder.'
+order: 2
+tier: 'core'
+minutes: 11
+teaches:
+  - 'relativity-of-simultaneity'
+  - 'spacetime-diagram'
+  - 'lorentz-transformation'
+  - 'spacetime-interval'
+requires:
+  - 'time-dilation'
+  - 'worldline'
+status: 'live'
+updated: 2026-09-28
+---
+
+<Step>
+
+Lightning hits both ends of a train doing 0.6c, at the same instant by the platform's
+clocks. A passenger sits exactly halfway along the car.
+
+<Predict
+  id="up-ch37-passenger-now"
+  question="In the passenger's own frame, did the two strikes happen at the same time?"
+  options={[
+    { key: 'same', misconception: 'up-ch37-simultaneity-absolute', label: 'Yes: she sees the front flash first only because she is moving toward it', why: 'That needs her to be the one moving. In her own frame she sits still, 200 m from each end, and both flashes come at c. The front one arrives first, so the front strike happened first. Watch it from the train below.' },
+    { key: 'front', label: 'No: for her the front strike came first', why: 'Right. The front flash reaches her first, which every frame agrees on because it happens at one place. She is at rest, halfway along, and light goes at c both ways, so the front strike came first: 0.80 µs before the rear one.' },
+    { key: 'rear', label: 'No: for her the rear strike came first', why: 'The rear flash reaches her second. It had the same 200 m to cover at the same c, so it must have set off later: the rear strike came second.' },
+    { key: 'delay', misconception: 'up-ch37-just-signal-delay', label: 'Nobody can say: it only depends on when the light arrives', why: 'She can correct for the travel time exactly: both flashes came 200 m at c. After the correction the front strike is still 0.80 µs early. The disagreement is about the events, not about seeing them.' },
+  ]}
+  correct="front"
+>
+
+<FlashesOnTheTrain prompt="Watch it from the platform, then from the train." />
+
+</Predict>
+
+</Step>
+
+<Step>
+
+## Time the strikes
+
+Now make her right to call them simultaneous. You choose when the front strike lands, by
+the platform's clock.
+
+<FlashesOnTheTrain
+  id="up-ch37-time-the-strikes"
+  prompt="Drag the front strike's delay until both flashes reach her together."
+  explanation="1.00 µs. On the platform the front strike now lands a full microsecond after the rear one; on the train they are simultaneous, and in the train's view both bolts land at t = 0. Neither frame is wrong."
+/>
+
+</Step>
+
+<Step>
+
+## Tilt the now
+
+These are the strikes you just timed, on the platform's spacetime diagram: position
+across, time up, light at 45°. A moving train's worldline leans, and so do its lines of now.
+
+<TiltTheNow
+  id="up-ch37-tilt-the-now"
+  pair="strikes"
+  prompt="Drag the top of the train's worldline until both strikes sit on one dashed line of now."
+  explanation="0.60c, the train you were timing for. Its worldline leans toward the light line and its line of now leans up by the same angle, like scissors closing on 45°. Everything on one dashed line happens at the same moment for that train."
+/>
+
+</Step>
+
+<Step>
+
+## Name it
+
+The rule behind the tilt is the Lorentz transformation:
+
+$$ct' = \gamma\,(ct - \beta x), \qquad x' = \gamma\,(x - \beta\,ct), \qquad \beta = v/c$$
+
+Two events simultaneous on the platform are $\Delta t' = -\gamma v\,\Delta x/c^2$ apart on the
+train, so the one ahead happens first. Times and distances change from frame to frame, but
+$(c\Delta t)^2 - \Delta x^2$ does not: that is why the third meter never moved.
+
+<Recall id="up-ch37-recall-simultaneity" concept="relativity-of-simultaneity">
+  <div slot="front">Two strikes are simultaneous on the platform. For a passenger moving forward along the line between them, which comes first?</div>
+
+  The one ahead, in her direction of motion, by $\gamma v\,\Delta x/c^2$. On a spacetime
+  diagram her line of now tilts up toward the light line, so it meets the front event
+  earlier.
+</Recall>
+
+</Step>
+
+<Step>
+
+## Cause comes first
+
+A guard 200 m up the track sees the rear flash and fires a flare 0.33 µs later.
+
+<Predict
+  id="up-ch37-flare-first"
+  question="Is there any train, either direction, any speed below c, on which the flare goes up before the strike?"
+  options={[
+    { key: 'fast', misconception: 'up-ch37-everything-relative', label: 'Yes: a fast enough train reverses any two events', why: 'Tilt as far as you like below: the dashed line through the strike never climbs past the flare. The flare sits inside the strike’s light cone.' },
+    { key: 'none', label: 'No: every train sees the strike first', why: 'Right. The guard saw the flash before firing, so the flare lies inside the strike’s light cone: (cΔt)² − Δx² = 50 × 10³ m², positive in every frame. Only events outside each other’s cones can swap order, and neither of those can cause the other.' },
+    { key: 'left', label: 'Yes: a train going the other way', why: 'Tilting left makes the line of now through the strike dip, which puts the flare even later. Neither direction works.' },
+  ]}
+  correct="none"
+>
+
+<TiltTheNow pair="cause" prompt="Try it: tilt the train as far as it goes, either way." />
+
+</Predict>
+
+<Recall id="up-ch37-recall-interval" concept="spacetime-interval">
+  <div slot="front">Which two events can a moving observer see in the opposite order?</div>
+
+  Only events outside each other's light cones, where $(c\Delta t)^2 - \Delta x^2 < 0$. That
+  number is the same in every frame, so events that one could cause the other keep their order
+  for everyone.
+</Recall>
+
+## What to carry forward
+
+- **Simultaneous belongs to a frame.** For a mover, the event ahead happens first.
+- **On a spacetime diagram a moving frame's worldline and line of now close like scissors** on the 45° light line.
+- **The interval, and the order of events one could cause the other, are the same for everyone.**
+
+Next: light itself, arriving one lump at a time.
+
+</Step>

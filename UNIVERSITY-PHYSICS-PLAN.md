@@ -34,41 +34,41 @@ Tick when the chapter has its two flagship lessons live.
 - [x] 06 Work and Kinetic Energy
 - [x] 07 Potential Energy and Conservation
 - [x] 08 Momentum, Impulse, and Collisions
-- [ ] 09 Rotation of Rigid Bodies
-- [ ] 10 Dynamics of Rotational Motion
-- [ ] 11 Equilibrium and Elasticity
-- [ ] 12 Fluid Mechanics
-- [ ] 13 Gravitation
-- [~] 14 Periodic Motion — *"A bigger swing, the same clock" integrated and browser-tested locally; second flagship still needed*
+- [x] 09 Rotation of Rigid Bodies
+- [x] 10 Dynamics of Rotational Motion
+- [x] 11 Equilibrium and Elasticity
+- [x] 12 Fluid Mechanics
+- [x] 13 Gravitation
+- [x] 14 Periodic Motion
 
 ### Waves and acoustics
-- [ ] 15 Mechanical Waves
-- [ ] 16 Sound and Hearing
+- [x] 15 Mechanical Waves
+- [x] 16 Sound and Hearing
 
 ### Thermodynamics
-- [ ] 17 Temperature and Heat
-- [ ] 18 Thermal Properties of Matter
-- [ ] 19 The First Law
-- [ ] 20 The Second Law
+- [x] 17 Temperature and Heat
+- [x] 18 Thermal Properties of Matter
+- [x] 19 The First Law
+- [x] 20 The Second Law
 
 ### Electromagnetism
-- [ ] 21 Electric Charge and Electric Field
-- [ ] 22 Gauss's Law
-- [ ] 23 Electric Potential
-- [ ] 24 Capacitance and Dielectrics
-- [ ] 25 Current, Resistance, and EMF
-- [ ] 26 Direct-Current Circuits
-- [ ] 27 Magnetic Field and Magnetic Forces
-- [ ] 28 Sources of Magnetic Field
-- [ ] 29 Electromagnetic Induction
-- [ ] 30 Inductance
-- [ ] 31 Alternating Current
-- [ ] 32 Electromagnetic Waves
+- [x] 21 Electric Charge and Electric Field
+- [x] 22 Gauss's Law
+- [x] 23 Electric Potential
+- [x] 24 Capacitance and Dielectrics
+- [x] 25 Current, Resistance, and EMF
+- [x] 26 Direct-Current Circuits
+- [x] 27 Magnetic Field and Magnetic Forces
+- [x] 28 Sources of Magnetic Field
+- [x] 29 Electromagnetic Induction
+- [x] 30 Inductance
+- [x] 31 Alternating Current
+- [x] 32 Electromagnetic Waves
 
 ### Optics
-- [ ] 33 The Nature and Propagation of Light
-- [ ] 34 Geometric Optics
-- [ ] 35 Interference
+- [x] 33 The Nature and Propagation of Light
+- [x] 34 Geometric Optics
+- [x] 35 Interference
 - [ ] 36 Diffraction
 
 ### Modern

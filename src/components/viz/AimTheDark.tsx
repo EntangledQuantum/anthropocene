@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { edgePathDifference, huygensFarIntensity, phasorChain, slitDarkAngle, slitSources } from '../../lib/physics/diffraction.ts';
+import { edgePathDifference, huygensFarIntensity, phasorChain, slitSources } from '../../lib/physics/diffraction.ts';
 import { Arrow, C, CheckBar, Handle, Meter, SceneCard, Stage, useTask, type Vec } from './scene.tsx';
 
 /**
@@ -38,10 +38,10 @@ export default function AimTheDark({ id, prompt, a = 2.5, n = 12, start = 8, exp
   const I = huygensFarIntensity(a, 1, th, n);
   const pd = edgePathDifference(a, th);
   const chain = phasorChain(a, 1, th, n);
-  const th1 = slitDarkAngle(a, 1, 1), th2 = slitDarkAngle(a, 1, 2);
-  const cut = Number.isNaN(th2) ? Infinity : (th1 + th2) / 2;
-  const dark = I <= 0.005;
-  const hitNow = dark && th < cut;
+  // The first dark is a sin θ = λ (slitDarkAngle); within 0.06 λ of it the
+  // far wall gets under 0.5% of the straight-ahead brightness.
+  const hitNow = Math.abs(pd - 1) <= 0.06;
+  const second = !hitNow && Math.abs(pd - 2) <= 0.12;
 
   const top: Vec = [0, a / 2], bot: Vec = [0, -a / 2];
   const foot: Vec = [bot[0] + u[0] * pd, bot[1] + u[1] * pd];
@@ -57,7 +57,7 @@ export default function AimTheDark({ id, prompt, a = 2.5, n = 12, start = 8, exp
         </div>
         {id && <CheckBar verdict={task.verdict} done={task.done}
           onCheck={() => task.check(hitNow, { deg })}
-          miss={dark
+          miss={second
             ? `Dark, but this is the second dark direction: the bottom edge is ${pd.toFixed(2)} λ behind. The first is nearer straight ahead.`
             : `That way the bottom edge’s wavelet goes ${pd.toFixed(2)} λ farther, and the ${n} wavelets still add up to ${(100 * I).toFixed(0)}% of the straight-ahead brightness.`}
           hit={explanation} />}

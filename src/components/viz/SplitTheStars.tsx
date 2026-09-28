@@ -117,7 +117,7 @@ export default function SplitTheStars({ id, prompt, start = 5, zoom, tolerance =
             return <>
               <defs><clipPath id={clip}><rect x={s.sx(EYE.x0)} y={s.sy(EYE.y1)} width={s.len(EYE.x1 - EYE.x0)} height={s.sy(EYE.y0) - s.sy(EYE.y1)} /></clipPath></defs>
               {/* the mirror, face on, to scale */}
-              <ellipse cx={s.sx(MIR.x)} cy={s.sy(MIR.y)} rx={s.len(ry * 0.42)} ry={s.len(ry)} fill="color-mix(in oklab, var(--color-iris) 16%, var(--color-surface))"
+              <ellipse cx={s.sx(MIR.x)} cy={s.sy(MIR.y)} rx={s.len(ry * 0.6)} ry={s.len(ry)} fill="color-mix(in oklab, var(--color-iris) 16%, var(--color-surface))"
                 stroke={C.position} strokeWidth={2.5} />
               <line x1={s.sx(MIR.x - 3.5)} x2={s.sx(MIR.x + 3.5)} y1={s.sy(MIR.y + MIR.k * 30)} y2={s.sy(MIR.y + MIR.k * 30)} stroke={C.grid} strokeDasharray="3 4" />
               <text x={s.sx(MIR.x)} y={s.sy(MIR.y + MIR.k * 30) - 6} textAnchor="middle" fontSize={11} fill={C.faint}>30 cm</text>
@@ -130,9 +130,9 @@ export default function SplitTheStars({ id, prompt, start = 5, zoom, tolerance =
                 fill="none" stroke={C.rule} strokeWidth={1.5} rx={4} />
               <g clipPath={`url(#${clip})`}>
                 <circle cx={s.sx(A)} cy={s.sy(EYE.cy)} r={s.len(ring * scale)} fill="none" stroke={C.soft} strokeWidth={1.8} strokeDasharray="6 5" />
-                <text x={s.sx(A)} y={s.sy(EYE.cy + ring * scale) - 6} textAnchor="middle" fontSize={12} fill={C.soft}
-                  stroke="var(--color-void)" strokeWidth={4} paintOrder="stroke">A’s first dark ring</text>
               </g>
+              <text x={s.sx(EYE.x0) + 8} y={s.sy(EYE.y1) + 16} fontSize={12} fill={C.soft}
+                stroke="var(--color-void)" strokeWidth={4} paintOrder="stroke">dashed: A’s first dark ring</text>
               {[['A', A], ['B', B]].map(([n, x]) => <text key={n as string} x={s.sx(x as number)} y={s.sy(EYE.y0 + 2)} textAnchor="middle"
                 fontSize={13} fontWeight={600} fill={C.ink} stroke="var(--color-void)" strokeWidth={4} paintOrder="stroke">{n}</text>)}
               {[A, B].map((x) => <line key={x} x1={s.sx(x)} x2={s.sx(x)} y1={s.sy(EYE.y0)} y2={s.sy(EYE.y0 + 0.9)} stroke={C.ink} strokeWidth={1.5} />)}

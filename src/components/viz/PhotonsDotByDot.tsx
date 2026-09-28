@@ -83,7 +83,7 @@ export default function PhotonsDotByDot({
       if (running.current) {
         // slow at first, so single photons are visible, then faster
         const n = tally.current.fired;
-        const rate = n < 12 ? 2.5 : n < 60 ? 12 : n < 400 ? 80 : 400;
+        const rate = cover ? 300 : n < 12 ? 2.5 : n < 60 ? 12 : n < 400 ? 80 : 400;
         due += rate * dt;
         while (due >= 1) {
           due -= 1;
@@ -109,7 +109,7 @@ export default function PhotonsDotByDot({
           const u = Math.min(fly, 1);
           // laser (x=20) → slits (x=380) → screen (x=620), in the schematic
           // Seen only up to the slits: which way it went after is not a thing you can draw.
-          const x = 42 + 330 * u;
+          const x = 50 + 322 * u;
           f.setAttribute('cx', x.toFixed(1)); f.setAttribute('cy', '44');
           f.setAttribute('opacity', u < 1 ? '1' : '0');
           if (fly >= 1) fly = -1;
@@ -123,7 +123,7 @@ export default function PhotonsDotByDot({
     };
     raf = requestAnimationFrame(frame);
     return () => cancelAnimationFrame(raf);
-  }, [patterns, preload]);
+  }, [patterns, preload, cover]);
 
   const expected = 1000 * firedShare(patterns.both, cx - HALF_W, cx + HALF_W);
   const laser = spectrumColour(633);
@@ -163,9 +163,9 @@ export default function PhotonsDotByDot({
       {/* the apparatus from above: laser, two slits, screen edge-on */}
       <svg viewBox="0 0 640 92" role="img" aria-label={`Laser, two slits${open !== 'both' ? ' with slit B covered' : ''}, and the screen`}
         style={{ width: '100%', display: 'block', fontFamily: 'var(--font-sans)' }}>
-        <rect x={6} y={34} width={36} height={20} rx={3} fill={C.surface} stroke={laser} strokeWidth={2} />
-        <text x={24} y={72} textAnchor="middle" fontSize={12} fill={C.soft}>dim laser</text>
-        <line x1={42} y1={44} x2={380} y2={44} stroke={laser} strokeWidth={1} opacity={0.35} />
+        <rect x={14} y={34} width={36} height={20} rx={3} fill={C.surface} stroke={laser} strokeWidth={2} />
+        <text x={14} y={72} fontSize={12} fill={C.soft}>dim laser</text>
+        <line x1={50} y1={44} x2={380} y2={44} stroke={laser} strokeWidth={1} opacity={0.35} />
         {/* barrier with two gaps at 40 and 48 */}
         <line x1={380} y1={8} x2={380} y2={38} stroke={C.soft} strokeWidth={4} />
         <line x1={380} y1={41} x2={380} y2={47} stroke={C.soft} strokeWidth={4} />

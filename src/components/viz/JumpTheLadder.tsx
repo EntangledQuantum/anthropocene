@@ -89,7 +89,7 @@ export default function JumpTheLadder({ id, prompt, Z = 1, start = [2, 1], targe
     <SceneCard id={graded ? id : undefined} prompt={prompt}
       footer={graded ? <CheckBar verdict={task.verdict} done={task.done}
         onCheck={() => task.check(hit, { up, low })}
-        miss={!falls ? 'The electron has to land on a lower level to give out light.'
+        miss={!falls ? `The electron ${up === low ? 'stays on' : 'climbs from'} n = ${up}${up === low ? '' : ` to n = ${low}`}; it has to land on a lower level to give out light.`
           : `${up} → ${low} gives a ${nm.toFixed(0)} nm photon${band === 'visible' ? '' : `, ${band}`}, carrying ${ev.toFixed(2)} eV. The line you want carries ${targetEV.toFixed(2)} eV.`}
         hit={explanation} /> : undefined}>
       <svg viewBox={`0 0 ${W} ${HT}`} role="img" style={{ width: '100%', display: 'block', touchAction: 'none', userSelect: 'none', fontFamily: 'var(--font-sans)' }}
@@ -101,7 +101,7 @@ export default function JumpTheLadder({ id, prompt, Z = 1, start = [2, 1], targe
         </g>)}
         <line x1={LAD.x0} x2={LAD.x0} y1={LAD.top} y2={LAD.bot} stroke={C.rule} />
         <text x={LAD.x0 - 40} y={LAD.top - 16} fontSize={12} fill={C.soft}>energy (eV)</text>
-        <text x={LAD.x0 + 6} y={LAD.top - 16} fontSize={12} fill={C.soft}>{Z === 1 ? 'hydrogen' : 'helium ion, He⁺'}</text>
+        <text x={LAD.x0 + 70} y={LAD.top - 16} fontSize={12} fill={C.soft}>{Z === 1 ? 'hydrogen' : 'helium ion, He⁺'}</text>
         <line x1={LAD.x0} x2={LAD.x1} y1={yE(0)} y2={yE(0)} stroke={C.faint} strokeDasharray="3 4" />
         <text x={LAD.x1} y={yE(0) - 6} textAnchor="end" fontSize={11} fill={C.faint}>free</text>
 
@@ -134,7 +134,7 @@ export default function JumpTheLadder({ id, prompt, Z = 1, start = [2, 1], targe
           <path d={wig} fill="none" stroke={rgb(nm)} strokeWidth={2.5} />
           <text x={432} y={206} fontSize={20} fill={band === 'visible' ? rgb(nm) : C.ink} fontFamily="var(--font-mono)">{nm >= 1000 ? nm.toFixed(0) : nm.toFixed(1)} nm</text>
           <text x={432} y={228} fontSize={12} fill={C.faint}>{band === 'visible' ? 'visible' : `${band}: the eye cannot see it`}</text>
-        </> : <text x={432} y={150} fontSize={12} fill={C.faint}>none: a climb takes energy in</text>}
+        </> : <text x={432} y={150} fontSize={12} fill={C.faint}>{up === low ? 'none: the electron has not moved' : 'none: a climb takes energy in'}</text>}
 
         {/* the visible strip */}
         {Array.from({ length: 74 }, (_, k) => SPEC.lo + k * 5).map((l) => (

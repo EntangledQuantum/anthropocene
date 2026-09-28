@@ -1,0 +1,6 @@
+---
+// @graded — drag the wall until the lowest level reaches the target.
+import Island, { type SqueezeTheBoxProps } from '../viz/SqueezeTheBox.tsx';
+const props = Astro.props as SqueezeTheBoxProps;
+---
+<Island client:visible {...props} />

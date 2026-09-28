@@ -25,7 +25,7 @@ export interface WrapTheOrbitProps {
 }
 
 const W = 640, HT = 400;
-const RING = { x: 320, y: 172, R: 118, amp: 26 };
+const RING = { x: 320, y: 176, R: 116, amp: 30 };
 const RULE = { x0: 60, x1: 600, y: 352, max: 0.5 }; // nm
 const K = 12, TOL = 0.04, SAMPLES = 480;
 const rx = (nm: number) => RULE.x0 + (nm / RULE.max) * (RULE.x1 - RULE.x0);
@@ -37,6 +37,7 @@ export default function WrapTheOrbit({ id, prompt, startNm = 0.12, target, expla
   const nmRef = useRef(nm);
   nmRef.current = nm;
   const path = useRef<SVGPathElement>(null);
+  const once = useRef<SVGPathElement>(null);
   const drag = useRef(false);
 
   const r = nm * 1e-9;
@@ -54,21 +55,25 @@ export default function WrapTheOrbit({ id, prompt, startNm = 0.12, target, expla
       const n = wavesPerOrbit(nmRef.current * 1e-9);
       const S = lapSum(n, K);
       const swing = Math.cos(2 * Math.PI * 0.7 * (now / 1000));
-      let d = '';
+      const S1 = lapSum(n, 1);
+      let d = '', d1 = '';
       for (let i = 0; i <= SAMPLES; i++) {
         // φ = 0 at the top, going clockwise; i = SAMPLES is the end of the lap
         const phi = (i / SAMPLES) * 2 * Math.PI - (i === SAMPLES ? 1e-9 : 0);
+        const sx = Math.sin(phi), cy = Math.cos(phi);
         const rr = RING.R + RING.amp * lapWave(n, phi, K, S) * swing;
-        d += `${i ? 'L' : 'M'}${(RING.x + rr * Math.sin(phi)).toFixed(1)},${(RING.y - rr * Math.cos(phi)).toFixed(1)}`;
+        const r1 = RING.R + RING.amp * lapWave(n, phi, 1, S1) * swing;
+        d += `${i ? 'L' : 'M'}${(RING.x + rr * sx).toFixed(1)},${(RING.y - rr * cy).toFixed(1)}`;
+        d1 += `${i ? 'L' : 'M'}${(RING.x + r1 * sx).toFixed(1)},${(RING.y - r1 * cy).toFixed(1)}`;
       }
       path.current?.setAttribute('d', d);
+      once.current?.setAttribute('d', d1);
       raf = requestAnimationFrame(frame);
     };
     raf = requestAnimationFrame(frame);
     return () => cancelAnimationFrame(raf);
   }, []);
 
-  const seamGap = Math.abs(lapWave(nu, 2 * Math.PI - 1e-9, K) - lapWave(nu, 0, K)) * RING.amp;
   const energyEV = orbitEnergy(r) / EV;
 
   return (
@@ -89,15 +94,22 @@ export default function WrapTheOrbit({ id, prompt, startNm = 0.12, target, expla
       <svg viewBox={`0 0 ${W} ${HT}`} role="img" style={{ width: '100%', display: 'block', touchAction: 'none', userSelect: 'none', fontFamily: 'var(--font-sans)' }}
         aria-label={`Orbit of radius ${nm.toFixed(3)} nanometres holding ${nu.toFixed(2)} wavelengths; ${(left * 100).toFixed(0)} percent of the wave survives.`}>
         <circle cx={RING.x} cy={RING.y} r={RING.R} fill="none" stroke={C.rule} strokeDasharray="2 5" />
+        <path ref={once} fill="none" stroke={C.position} strokeWidth={1.2} strokeOpacity={0.35} strokeDasharray="4 3" />
+        {locked && Array.from({ length: 2 * whole }, (_, k) => {
+          const a = ((k + 0.5) * Math.PI) / whole;
+          return <circle key={k} cx={RING.x + RING.R * Math.sin(a)} cy={RING.y - RING.R * Math.cos(a)} r={3.5} fill={C.energy} />;
+        })}
         <path ref={path} fill="none" stroke={locked ? C.energy : C.position} strokeWidth={locked ? 3.2 : 2} strokeOpacity={locked ? 1 : 0.85} />
         <circle cx={RING.x} cy={RING.y} r={7} fill={C.surface} stroke={C.force} strokeWidth={2} />
         <text x={RING.x} y={RING.y + 4} textAnchor="middle" fontSize={11} fill={C.force}>+</text>
         <text x={RING.x} y={RING.y + 24} textAnchor="middle" fontSize={11} fill={C.faint}>proton</text>
         <line x1={RING.x} x2={RING.x} y1={RING.y - RING.R - 34} y2={RING.y - RING.R - 18} stroke={C.faint} />
-        <text x={RING.x + 6} y={RING.y - RING.R - 22} fontSize={11} fill={C.faint}>{seamGap > 2 ? 'the wave misses itself here' : 'start of each trip'}</text>
-        <text x={24} y={26} fontSize={12} fill={C.soft}>the electron's wave after 12 trips round, added up</text>
+        <text x={RING.x + 6} y={RING.y - RING.R - 22} fontSize={11} fill={C.faint}>{locked ? 'start of each trip' : 'each trip starts here and misses'}</text>
+        <text x={24} y={26} fontSize={12} fill={C.soft}>bold: the electron's wave after 12 trips round, added up</text>
+        <text x={24} y={62} fontSize={12} fill={C.faint}>dashed: one trip</text>
         <text x={24} y={44} fontSize={12} fill={C.faint}>λ here = {(orbitWavelength(r) * 1e9).toFixed(3)} nm · ring magnified</text>
-        {locked && <text x={W - 24} y={26} textAnchor="end" fontSize={13} fill={C.energy}>standing wave · {energyEV.toFixed(2)} eV</text>}
+        {locked && <text x={W - 24} y={26} textAnchor="end" fontSize={13} fill={C.energy}>standing wave, {whole} λ · {energyEV.toFixed(2)} eV</text>}
+        {locked && <text x={W - 24} y={44} textAnchor="end" fontSize={11} fill={C.energy}>dots: points that never move</text>}
 
         {/* the ruler, to scale */}
         <line x1={RULE.x0} x2={RULE.x1} y1={RULE.y} y2={RULE.y} stroke={C.rule} strokeWidth={2} />

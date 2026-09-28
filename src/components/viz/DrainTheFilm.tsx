@@ -5,8 +5,9 @@ import {
 import { C, CheckBar, Handle, Meter, SceneCard, Stage, useTask } from './scene.tsx';
 
 /**
- * A soap film standing in a wire ring, lit by white light. It is a wedge:
- * thinnest at the top, where it drains, and 1400 nm thicker at the bottom.
+ * A soap film standing in a wire ring, lit by white light. It drains, so it is
+ * thinnest at the top and thickens downward, quadratically, to 1400 nm more at
+ * the bottom (so the thin bands near the top are wide enough to see).
  * Every band's colour is computed from the full reflectance of that thickness
  * across the visible spectrum (`filmColour`), so the colours are the physics.
  *
@@ -44,7 +45,8 @@ export default function DrainTheFilm({ id, prompt, explanation }: DrainTheFilmPr
   const N = 150;
   const bands = Array.from({ length: N }, (_, i) => {
     const y = top - ((i + 0.5) / N) * (top - bottom);
-    const th = t + FILM.wedge * ((top - y) / (top - bottom));
+    const u = (top - y) / (top - bottom);
+    const th = t + FILM.wedge * u * u;
     return { y, fill: rgb(filmColour(th, FILM.n)) };
   });
   const { front, back } = filmReflections(t, GREEN, FILM.n);
@@ -85,28 +87,28 @@ export default function DrainTheFilm({ id, prompt, explanation }: DrainTheFilmPr
               {bands.map((b, i) => <rect key={i} x={X(RC[0] - R)} width={s.len(2 * R)} y={Y(b.y) - bandH / 2} height={bandH} fill={b.fill} />)}
             </g>
             <circle cx={X(RC[0])} cy={Y(RC[1])} r={s.len(R)} fill="none" stroke={C.soft} strokeWidth={4} />
-            <line x1={X(RC[0] + 30)} y1={Y(top - 8)} x2={X(xf - 6)} y2={Y(330)} stroke={C.faint} strokeDasharray="3 4" />
-            <text x={X(RC[0] + 34)} y={Y(top + 12)} fontSize={12} fill={C.soft}>the top, magnified</text>
 
             {/* cross-section at the top */}
-            <rect x={X(xf)} y={Y(370)} width={Math.max(1.2, X(BACK) - X(xf))} height={Y(215) - Y(370)} fill={C.soft} opacity={0.28} />
-            <line x1={X(BACK)} x2={X(BACK)} y1={Y(370)} y2={Y(215)} stroke={C.soft} strokeWidth={1.5} />
-            <line x1={X(xf)} x2={X(xf)} y1={Y(370)} y2={Y(215)} stroke={C.ink} strokeWidth={1.5} />
-            <line x1={X(372)} y1={Y(356)} x2={X(xf)} y2={Y(330)} stroke={C.ink} strokeWidth={2} />
-            <line x1={X(xf)} y1={Y(330)} x2={X(372)} y2={Y(304)} stroke={C.field} strokeWidth={2} />
+            <line x1={X(RC[0] - 60)} y1={Y(top - 4)} x2={X(xf - 4)} y2={Y(370)} stroke={C.faint} strokeDasharray="3 4" />
+            <text x={X(RC[0] - 60)} y={Y(top + 10)} fontSize={12} fill={C.soft}>the top, magnified</text>
+            <rect x={X(xf)} y={Y(370)} width={Math.max(1.2, X(BACK) - X(xf))} height={Y(240) - Y(370)} fill={C.soft} opacity={0.28} />
+            <line x1={X(BACK)} x2={X(BACK)} y1={Y(370)} y2={Y(240)} stroke={C.soft} strokeWidth={1.5} />
+            <line x1={X(xf)} x2={X(xf)} y1={Y(370)} y2={Y(240)} stroke={C.ink} strokeWidth={1.5} />
+            <line x1={X(400)} y1={Y(362)} x2={X(xf)} y2={Y(322)} stroke={C.ink} strokeWidth={2} />
+            <line x1={X(xf)} y1={Y(322)} x2={X(400)} y2={Y(296)} stroke={C.field} strokeWidth={2} />
             <polyline fill="none" stroke={C.field} strokeWidth={2} strokeDasharray="5 3"
-              points={`${X(xf)},${Y(330)} ${X(BACK)},${Y(318)} ${X(xf)},${Y(306)} ${X(372)},${Y(280)}`} />
-            <text x={X(372)} y={Y(306) - 5} fontSize={12} fill={C.field}>front, flipped</text>
-            <text x={X(372)} y={Y(280) + 15} fontSize={12} fill={C.field}>back</text>
-            <text x={X(372)} y={Y(356) + 15} fontSize={12} fill={C.ink}>white light in</text>
-            <line x1={X(BACK - 20)} x2={X(BACK)} y1={Y(205)} y2={Y(205)} stroke={C.soft} strokeWidth={2} />
-            <text x={X(BACK - 10)} y={Y(205) + 15} textAnchor="middle" fontSize={11} fill={C.soft} fontFamily="var(--font-mono)">100 nm</text>
-            <Handle s={s} at={[xf, 250]} color={C.ink} step={1} r={9} label="The front of the film: drag it to thin the film"
-              clamp={(q) => [Math.max(BACK - T_MAX * PX_NM, Math.min(BACK - FILM.tMin * PX_NM, q[0])), 250]}
+              points={`${X(xf)},${Y(322)} ${X(BACK)},${Y(314)} ${X(xf)},${Y(306)} ${X(400)},${Y(270)}`} />
+            <text x={X(394)} y={Y(362) + 4} textAnchor="end" fontSize={12} fill={C.ink}>light in</text>
+            <text x={X(394)} y={Y(296) + 4} textAnchor="end" fontSize={12} fill={C.field}>front, flipped</text>
+            <text x={X(394)} y={Y(270) + 4} textAnchor="end" fontSize={12} fill={C.field}>back</text>
+            <line x1={X(BACK - 20)} x2={X(BACK)} y1={Y(228)} y2={Y(228)} stroke={C.soft} strokeWidth={2} />
+            <text x={X(BACK - 26)} y={Y(228) + 4} textAnchor="end" fontSize={11} fill={C.soft} fontFamily="var(--font-mono)">100 nm</text>
+            <Handle s={s} at={[xf, 262]} color={C.ink} step={1} r={9} label="The front of the film: drag it to thin the film"
+              clamp={(q) => [Math.max(BACK - T_MAX * PX_NM, Math.min(BACK - FILM.tMin * PX_NM, q[0])), 262]}
               onChange={(q) => { setT(Math.round((BACK - q[0]) / PX_NM)); task.touch(); }} />
 
             {/* the two reflected waves of green light */}
-            <text x={X(372)} y={Y(192)} fontSize={12} fill={C.soft}>Reflected green light, 550 nm, two wavelengths shown</text>
+            <text x={X(338)} y={Y(196)} fontSize={12} fill={C.soft}>Reflected green light (550 nm), two wavelengths</text>
             {[
               ['from the front', front.amp, front.phase, 1.6],
               ['from the back', back.amp, back.phase, 1.6],

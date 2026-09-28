@@ -1,0 +1,6 @@
+---
+// @graded — place detector B where it clicks as often as A, then fire.
+import Island, { type CatchTheElectronProps } from '../viz/CatchTheElectron.tsx';
+const props = Astro.props as CatchTheElectronProps;
+---
+<Island client:visible {...props} />

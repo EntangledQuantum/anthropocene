@@ -70,7 +70,7 @@ export default function LightTheSlits({ id, prompt, start = 2, slack = 0.2, expl
     // ── the wall: the whole pattern
     if (wall.current) {
       const { x, W, H } = prep(wall.current);
-      const L = 10, R = W - 10, top = 18, bot = H - 22, cols = Math.round(R - L);
+      const L = 10, R = W - 10, top = 26, bot = H - 22, cols = Math.round(R - L);
       const v = strip(N, -WALL, WALL, cols, 48);
       for (let c = 0; c < cols; c++) {
         x.fillStyle = `rgba(${r},${g},${b},${Math.pow(v[c], 0.6)})`;
@@ -88,12 +88,12 @@ export default function LightTheSlits({ id, prompt, start = 2, slack = 0.2, expl
       x.beginPath(); x.moveTo(ex - 7, top - 3); x.lineTo(ex - 7, top - 8); x.lineTo(ex + 7, top - 8); x.lineTo(ex + 7, top - 3); x.stroke();
       x.font = '13px Inter, sans-serif'; x.fillStyle = soft; x.textAlign = 'left';
       x.fillText('the wall', L, 12);
-      x.textAlign = 'center'; x.fillText('eyepiece looks here', ex, 12);
+      x.textAlign = 'center'; x.fillText('eyepiece looks here', ex, 13);
     }
     // ── the eyepiece: the first-order line, magnified
     if (eye.current) {
       const { x, W, H } = prep(eye.current);
-      const L = 46, R = W - 12, top = 8, band = 66, ptop = band + 22, pbot = H - 24, cols = Math.round(R - L);
+      const L = 46, R = W - 12, top = 8, band = 66, ptop = band + 40, pbot = H - 24, cols = Math.round(R - L);
       const lo = MID - SPAN, hi = MID + SPAN;
       const v = strip(N, lo, hi, cols, 4);
       const tx = (t: number) => L + ((t - lo) / (hi - lo)) * (R - L);
@@ -120,8 +120,8 @@ export default function LightTheSlits({ id, prompt, start = 2, slack = 0.2, expl
       // where each colour's line must be, and the 577 line's first dark
       x.font = '12px Inter, sans-serif';
       for (const [t, lab] of [[T1, '577.0 nm'], [T2, '579.1 nm']] as const) {
-        x.fillStyle = soft; x.fillRect(tx(t) - 0.5, ptop - 10, 1, 8);
-        x.fillText(lab, tx(t), ptop - 13 + (t === T1 ? 0 : 0));
+        x.fillStyle = soft; x.fillRect(tx(t) - 0.5, ptop - 9, 1, 9);
+        x.fillText(lab, tx(t), ptop - 14);
       }
       const tz = T1 + lineHalfWidth(N, d, l1, 1);
       if (tz < hi) {
@@ -167,9 +167,9 @@ export default function LightTheSlits({ id, prompt, start = 2, slack = 0.2, expl
           </>;
         }}
       </Stage>
-      <canvas ref={wall} style={{ width: '100%', height: 96, display: 'block', marginTop: 6 }}
+      <canvas ref={wall} style={{ width: '100%', height: 104, display: 'block', marginTop: 6 }}
         aria-label={`The wall: yellow lines at 0, plus or minus 20.3 and 43.8 degrees, ${N} slits`} />
-      <canvas ref={eye} style={{ width: '100%', height: 190, display: 'block', marginTop: 8 }}
+      <canvas ref={eye} style={{ width: '100%', height: 210, display: 'block', marginTop: 8 }}
         aria-label={`Eyepiece on the first-order yellow line. Dip between the two lines ${(100 * dip).toFixed(0)} percent.`} />
       <p className="hud-label" style={{ margin: '6px 0 0' }}>
         Mercury lamp through a yellow filter · top: the whole wall · bottom: the eyepiece, the first-order line magnified, with its brightness across · exposure adjusted to the brightest line

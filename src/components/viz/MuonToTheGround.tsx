@@ -62,9 +62,9 @@ export default function MuonToTheGround({ id, prompt, explanation }: MuonToTheGr
     const y = H - vKmUs * r.tg;
     set('muon', { cy: s.sy(y) });
     set('trail', { y2: s.sy(y) });
-    set('vArrow', { transform: `translate(0,${s.sy(y) - s.sy(H)})` });
+    
     const lbl = el.current.muonClock;
-    if (lbl) { lbl.setAttribute('y', String(s.sy(y) + 5)); lbl.textContent = `its clock ${(r.tg / gamma(bb)).toFixed(2)} µs`; }
+    if (lbl) { lbl.setAttribute('y', String(s.sy(y) - 12)); lbl.textContent = `its clock ${(r.tg / gamma(bb)).toFixed(2)} µs`; }
     // the ghost keeps ground time
     const tgG = Math.min(r.tg, TAU_US);
     const yG = H - vKmUs * tgG;
@@ -72,6 +72,7 @@ export default function MuonToTheGround({ id, prompt, explanation }: MuonToTheGr
     set('ghostBurst', { opacity: r.tg >= TAU_US ? 0.6 : 0, transform: `translate(0,${s.sy(yG) - s.sy(H)})` });
     const done = r.on && r.tg >= end - 1e-9;
     const state = !r.on ? 'waiting' : !done ? 'falling' : decay < land ? 'decayed' : 'landed';
+    set('vArrow', { transform: `translate(0,${s.sy(y) - s.sy(H)})`, opacity: done ? 0 : 1 });
     set('burst', { opacity: state === 'decayed' ? 1 : 0, transform: `translate(0,${s.sy(y) - s.sy(H)})` });
     set('muon', { opacity: state === 'decayed' ? 0 : 1 });
     if (now - last.current > 120) { last.current = now; setShown({ tg: r.tg, tm: r.tg / gamma(bb), state }); }
@@ -118,16 +119,17 @@ export default function MuonToTheGround({ id, prompt, explanation }: MuonToTheGr
               <text x={s.sx(1.2)} y={s.sy(k) + 4} textAnchor="end" fontSize={12} fill={C.faint} fontFamily="var(--font-mono)">{k} km</text>
             </g>)}
             <line x1={s.sx(1.6)} x2={s.sx(1.6)} y1={s.sy(0)} y2={s.sy(H)} stroke={C.rule} />
-            <line x1={0} x2={s.W} y1={s.sy(0)} y2={s.sy(0)} stroke={C.rule} strokeWidth={2} />
+            <line x1={s.sx(1.6)} x2={s.W} y1={s.sy(0)} y2={s.sy(0)} stroke={C.rule} strokeWidth={2} />
             <rect x={s.sx(XM) - 22} y={s.sy(0)} width={44} height={8} fill={C.soft} />
-            <text x={s.sx(XM) + 30} y={s.sy(0) + 16} fontSize={13} fill={C.soft}>detector</text>
-            <text x={s.sx(6.6)} y={s.sy(H) + 5} fontSize={13} fill={C.soft}>made here by a cosmic ray, {H} km up</text>
+            <text x={s.sx(XM) - 30} y={s.sy(0) + 16} textAnchor="end" fontSize={13} fill={C.soft}>detector</text>
+            <text x={s.sx(6.6)} y={s.sy(H) + 5} fontSize={13} fill={C.soft}>made here, {H} km up</text>
 
             {/* ghost: same speed, clock on ground time */}
             <line x1={s.sx(XG)} x2={s.sx(XG)} y1={s.sy(H)} y2={s.sy(H - ghostRange)} stroke={C.faint} strokeDasharray="3 4" />
-            <line x1={s.sx(XG) + 10} x2={s.sx(6.5)} y1={s.sy(H - ghostRange)} y2={s.sy(H) + 34} stroke={C.faint} strokeDasharray="2 4" />
-            <text x={s.sx(6.6)} y={s.sy(H) + 30} fontSize={12.5} fill={C.faint}>dimmed ghost: same speed, but a clock on</text>
-            <text x={s.sx(6.6)} y={s.sy(H) + 46} fontSize={12.5} fill={C.faint}>ground time. It dies {(ghostRange * 1000).toFixed(0)} m down.</text>
+            <line x1={s.sx(XG) + 10} x2={s.sx(6.5)} y1={s.sy(H - ghostRange)} y2={s.sy(H) + 26} stroke={C.faint} strokeDasharray="2 4" />
+            <text x={s.sx(6.6)} y={s.sy(H) + 30} fontSize={12.5} fill={C.faint}>ghost: same speed, clock</text>
+            <text x={s.sx(6.6)} y={s.sy(H) + 46} fontSize={12.5} fill={C.faint}>on ground time. Dies</text>
+            <text x={s.sx(6.6)} y={s.sy(H) + 62} fontSize={12.5} fill={C.faint}>{(ghostRange * 1000).toFixed(0)} m down.</text>
             <circle ref={put('ghost')} cx={s.sx(XG)} cy={s.sy(H)} r={7} fill="none" stroke={C.faint} strokeWidth={2} opacity={0.5} />
             <g ref={put('ghostBurst')} opacity={0}>{burst(XG, 12, C.faint)}</g>
 
@@ -139,17 +141,14 @@ export default function MuonToTheGround({ id, prompt, explanation }: MuonToTheGr
             </g>
             <circle ref={put('muon')} cx={s.sx(XM)} cy={s.sy(H)} r={8} fill={C.position} />
             <g ref={put('burst')} opacity={0}>{burst(XM, 16, C.position)}</g>
-            <text ref={put('muonClock')} x={s.sx(XM) + 16} y={s.sy(H) + 5} fontSize={13.5} fill={C.position} fontFamily="var(--font-mono)"
+            <text ref={put('muonClock')} x={s.sx(XM) + 14} y={s.sy(H) - 12} fontSize={13.5} fill={C.position} fontFamily="var(--font-mono)"
               stroke="var(--color-surface)" strokeWidth={4} paintOrder="stroke">its clock 0.00 µs</text>
 
             {finished && <text x={s.sx(6.6)} y={s.sy(8)} fontSize={14} fill={C.ink}>
-              {shown.state === 'decayed'
-                ? `decayed ${(H - range).toFixed(1)} km above the ground`
-                : `reached the ground after ${tEnd.toFixed(1)} µs of ground time`}
+              {shown.state === 'decayed' ? `decayed ${(H - range).toFixed(1)} km up` : 'reached the ground'}
             </text>}
-            {finished && <text x={s.sx(6.6)} y={s.sy(8) + 20} fontSize={13} fill={C.soft}>
-              {`its own clock: ${(tEnd / gamma(b)).toFixed(2)} µs of ${TAU_US.toFixed(1)}`}
-            </text>}
+            {finished && <text x={s.sx(6.6)} y={s.sy(8) + 20} fontSize={13} fill={C.soft}>{`ground clock ${tEnd.toFixed(1)} µs`}</text>}
+            {finished && <text x={s.sx(6.6)} y={s.sy(8) + 38} fontSize={13} fill={C.position}>{`its clock ${(tEnd / gamma(b)).toFixed(2)} µs`}</text>}
           </g>;
         }}
       </Stage>

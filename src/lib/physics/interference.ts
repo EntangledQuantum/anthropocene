@@ -297,5 +297,5 @@ export const SLITS = { lambda: 1, d: 4, mark: 6, lStart: 14, lRange: [8, 34] as 
 /** The laser the learner measures: SI units. */
 export const LASER = { lambda: 632.8e-9, d: 0.25e-3, L: 3.0 } as const;
 
-/** The film scene: soap, and a wedge 1400 nm thicker at the bottom than the top. */
+/** The film scene: soap, thickening downward (quadratically) to 1400 nm more at the bottom. */
 export const FILM = { n: N_SOAP, wedge: 1400, tStart: 600, tMin: 4, dark: 0.03 } as const;

@@ -1,0 +1,6 @@
+---
+// Ungraded: an electron packet at a wall it cannot climb, and the ghost beyond it.
+import Island, { type SendThePacketProps } from '../viz/SendThePacket.tsx';
+const props = Astro.props as SendThePacketProps;
+---
+<Island client:visible {...props} />

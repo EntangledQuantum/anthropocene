@@ -24,9 +24,9 @@ export interface CatchTheEchoProps {
 }
 
 const W = 640, HT = 380;
-const O = { x: 250, y: 322 };      // where the beam lands
+const O = { x: 300, y: 322 };       // centre of the lit patch; the detector arc is centred here
 const R = 250;                      // detector arc
-const PX_NM = 70 / (NICKEL.D * 1e9); // magnification of the atom drawing
+const PX_NM = 120 / (NICKEL.D * 1e9); // magnification of the atom drawing: rows 120 px apart
 const DEG = Math.PI / 180;
 const MIN = 12, MAX = 88;
 
@@ -46,7 +46,7 @@ export default function CatchTheEcho({ id, prompt, startDeg = 30, toleranceDeg =
   const det = { x: O.x + R * Math.sin(phi), y: O.y - R * Math.cos(phi) };
   const ux = Math.sin(phi), uy = -Math.cos(phi);
   const D = NICKEL.D * 1e9 * PX_NM;           // row spacing, px
-  const A = { x: O.x, y: O.y }, B = { x: O.x + D, y: O.y };
+  const A = { x: O.x - D / 2, y: O.y }, B = { x: O.x + D / 2, y: O.y };
   // B's ray is shorter towards the detector; the extra path lies along A's ray
   const ex = extraPath(phi) * 1e9 * PX_NM;
   const foot = { x: A.x + ux * ex, y: A.y + uy * ex };
@@ -74,23 +74,25 @@ export default function CatchTheEcho({ id, prompt, startDeg = 30, toleranceDeg =
         aria-label={`Detector at ${deg.toFixed(1)} degrees from the beam. Extra path ${lags.toFixed(2)} wavelengths.`}>
         {/* the measured pattern, once fired */}
         {fired && <polygon points={lobe} fill={C.velocity} fillOpacity={0.12} stroke={C.velocity} strokeOpacity={0.6} strokeWidth={1.2} />}
-        {fired && <text x={O.x + 230 * Math.sin(peak * DEG) + 8} y={O.y - 230 * Math.cos(peak * DEG)} fontSize={12} fill={C.velocity}>electrons come off here</text>}
+        {fired && <text x={O.x - 215 * Math.sin(peak * DEG)} y={O.y - 215 * Math.cos(peak * DEG) - 10} textAnchor="middle" fontSize={12} fill={C.velocity}>electrons come off here, both sides</text>}
 
         {/* detector arc, with degree marks */}
         <path d={`M${O.x},${O.y - R} A${R},${R} 0 0 1 ${O.x + R},${O.y}`} fill="none" stroke={C.rule} strokeWidth={1.2} strokeDasharray="3 5" />
-        {[0, 30, 60, 90].map((a) => <text key={a} x={O.x + (R + 18) * Math.sin(a * DEG)} y={O.y - (R + 18) * Math.cos(a * DEG) + 4}
+        {[0, 30, 60].map((a) => <text key={a} x={O.x + (R + 18) * Math.sin(a * DEG)} y={O.y - (R + 18) * Math.cos(a * DEG) + 4}
           textAnchor="middle" fontSize={11} fill={C.faint} fontFamily="var(--font-mono)">{a}°</text>)}
 
         {/* incoming beam from the gun */}
         <rect x={O.x - 9} y={O.y - R - 20} width={18} height={24} rx={2} fill={C.surface} stroke={C.soft} />
         <text x={O.x - 16} y={O.y - R - 4} textAnchor="end" fontSize={11} fill={C.faint}>gun, 54 V</text>
-        <line x1={O.x} y1={O.y - R + 4} x2={O.x} y2={O.y - 12} stroke={C.velocity} strokeWidth={2} />
-        <path d={`M${O.x},${O.y - 6} l-6,-11 l12,0 Z`} fill={C.velocity} />
+        <rect x={O.x - D * 1.1} y={O.y - R + 60} width={D * 2.2} height={R - 72} fill={C.velocity} fillOpacity={0.07} />
+        <line x1={O.x} y1={O.y - R + 4} x2={O.x} y2={O.y - R + 70} stroke={C.velocity} strokeWidth={2} />
+        <path d={`M${O.x},${O.y - R + 78} l-6,-11 l12,0 Z`} fill={C.velocity} />
+        <text x={O.x - D * 1.1 + 6} y={O.y - R + 76} fontSize={11} fill={C.velocity}>beam lights every row</text>
 
         {/* the nickel face: rows seen end-on */}
         <rect x={20} y={O.y + 10} width={W - 40} height={40} fill={C.surface} stroke={C.rule} />
-        {Array.from({ length: 9 }, (_, j) => O.x + (j - 3) * D).filter((x) => x > 30 && x < W - 30).map((x) => (
-          <circle key={x} cx={x} cy={O.y} r={9} fill={C.surface} stroke={C.soft} strokeWidth={1.5} />
+        {Array.from({ length: 7 }, (_, j) => A.x + (j - 2) * D).filter((x) => x > 30 && x < W - 30).map((x) => (
+          <circle key={x} cx={x} cy={O.y} r={9} fill={C.surface} stroke={x === A.x || x === B.x ? C.ink : C.soft} strokeWidth={1.5} />
         ))}
         <text x={30} y={O.y + 34} fontSize={11} fill={C.faint}>nickel · rows 0.215 nm apart (magnified)</text>
 
@@ -100,9 +102,10 @@ export default function CatchTheEcho({ id, prompt, startDeg = 30, toleranceDeg =
         <line x1={B.x} y1={B.y} x2={foot.x} y2={foot.y} stroke={C.faint} strokeDasharray="3 3" />
         <line x1={A.x} y1={A.y} x2={foot.x} y2={foot.y} stroke={C.position} strokeWidth={5} strokeLinecap="round" />
         {/* one wavelength, same scale, laid alongside */}
-        <line x1={A.x - uy * 16} y1={A.y + ux * 16} x2={A.x - uy * 16 + ux * lamPx} y2={A.y + ux * 16 + uy * lamPx} stroke={C.ink} strokeWidth={2} />
-        <text x={A.x - uy * 30 + ux * lamPx / 2 - 6} y={A.y + ux * 30 + uy * lamPx / 2 + 4} textAnchor="end" fontSize={12} fill={C.ink}>λ</text>
-        <text x={foot.x + 10} y={foot.y + 16} fontSize={12} fill={C.position}>extra path</text>
+        <line x1={A.x + uy * 18} y1={A.y - ux * 18} x2={A.x + uy * 18 + ux * lamPx} y2={A.y - ux * 18 + uy * lamPx} stroke={C.ink} strokeWidth={2.5} />
+        {[0, lamPx].map((t) => <line key={t} x1={A.x + uy * 12 + ux * t} y1={A.y - ux * 12 + uy * t} x2={A.x + uy * 24 + ux * t} y2={A.y - ux * 24 + uy * t} stroke={C.ink} strokeWidth={1.5} />)}
+        <text x={A.x + uy * 34 + ux * lamPx / 2} y={A.y - ux * 34 + uy * lamPx / 2 + 4} textAnchor="end" fontSize={13} fill={C.ink}>one λ</text>
+        <text x={foot.x + 12} y={foot.y + 4} fontSize={12} fill={C.position} stroke="var(--color-surface)" strokeWidth={4} paintOrder="stroke">extra path</text>
 
         {/* the detector */}
         <g transform={`rotate(${deg} ${det.x} ${det.y})`}>

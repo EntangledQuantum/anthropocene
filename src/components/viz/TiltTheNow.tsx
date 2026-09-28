@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useId, useState } from 'react';
 import { CH37_PAIRS, CH37_TILT_MAX, ctToUs, dctIn, interval, simultaneousBeta, type Ch37Pair } from '../../lib/physics/relativity.ts';
 import { C, CheckBar, Handle, Meter, SceneCard, Stage, useTask, type StageApi } from './scene.tsx';
 import { LIGHT } from './relativity-kit-ch37.tsx';
@@ -39,6 +39,7 @@ function clip(s: StageApi, p: [number, number], d: [number, number]) {
 
 export default function TiltTheNow({ id, prompt, pair = 'strikes', tolerance = 0.015, explanation }: TiltTheNowProps) {
   const task = useTask(id, 'tilt-the-now');
+  const clipId = `tilt-${useId().replace(/:/g, '')}`;
   const P = CH37_PAIRS[pair];
   const [beta, setBeta] = useState(0);
   const target = simultaneousBeta(P.a, P.b);
@@ -52,7 +53,7 @@ export default function TiltTheNow({ id, prompt, pair = 'strikes', tolerance = 0
         <div style={{ display: 'flex', gap: 22, flexWrap: 'wrap' }}>
           <Meter label="Train speed" value={`${beta >= 0 ? '' : '−'}${Math.abs(beta).toFixed(2)}c`} color={C.velocity} />
           <Meter label={`On the train, ${P.bLabel} after ${P.aLabel}`} value={dUs.toFixed(2)} unit="µs" color={C.position} />
-          <Meter label="(cΔt)² − Δx², any frame" value={(s2 / 1000).toFixed(0)} unit="×10³ m²" />
+          <Meter label="Interval (cΔt)² − Δx², any frame" value={(s2 / 1000).toFixed(0)} unit="×10³ m²" />
         </div>
         {id && <CheckBar verdict={task.verdict} done={task.done}
           onCheck={() => task.check(target !== null && Math.abs(beta - target) <= tolerance, { beta, dUs })}
@@ -69,9 +70,10 @@ export default function TiltTheNow({ id, prompt, pair = 'strikes', tolerance = 0
           const top: [number, number] = [A[0] + beta * (TOP - A[1]), TOP];
           const lx = s.sx(s.x[1]) - 6;
           return <g>
+            <defs><clipPath id={clipId}><rect x={s.sx(s.x[0])} y={s.sy(Y[1])} width={s.sx(s.x[1]) - s.sx(s.x[0])} height={s.sy(Y[0]) - s.sy(Y[1])} /></clipPath></defs>
             {/* A's future light cone */}
             <path d={`M${s.sx(A[0])},${s.sy(A[1])}L${s.sx(A[0] + Y[1] - A[1])},${s.sy(Y[1])}L${s.sx(A[0] - (Y[1] - A[1]))},${s.sy(Y[1])}Z`}
-              fill={LIGHT} fillOpacity={0.05} />
+              fill={LIGHT} fillOpacity={0.05} clipPath={`url(#${clipId})`} />
             {seg(A, [1, 1], { stroke: LIGHT, strokeOpacity: 0.55, strokeWidth: 1.5, strokeDasharray: '2 4' })}
             {seg(A, [-1, 1], { stroke: LIGHT, strokeOpacity: 0.55, strokeWidth: 1.5, strokeDasharray: '2 4' })}
             <text x={s.sx(A[0] + 330)} y={s.sy(A[1] + 330) - 8} fontSize={12.5} fill={C.faint} textAnchor="end">light from the {P.aLabel}</text>

@@ -25,7 +25,7 @@ export interface ShrinkTheRingsProps {
 const W = 640, HT = 360;
 const SC = { x: 190, y: 172, R: 150 };           // the screen, face-on
 const PX_MM = SC.R / TUBE.screenMm;
-const SIDE = { x0: 400, x1: 612, y: 172, gun: 368 }; // side view: film at x0, screen at x1
+const SIDE = { x0: 440, x1: 616, y: 172, gun: 372 }; // side view: film at x0, screen at x1
 const MAXDOTS = 4200, RATE = 2600, FADE = 0.9;
 
 function cssVar(n: string) { return getComputedStyle(document.documentElement).getPropertyValue(n).trim() || '#ccc'; }
@@ -132,7 +132,7 @@ export default function ShrinkTheRings({ id, prompt, startV = 2500, halve, expla
           {/* side view */}
           <text x={(SIDE.x0 + SIDE.x1) / 2 - 20} y={16} textAnchor="middle" fontSize={12} fill={C.soft}>side on, angles true</text>
           <rect x={SIDE.gun} y={SIDE.y - 7} width={18} height={14} rx={2} fill={C.surface} stroke={C.soft} />
-          <text x={SIDE.gun + 9} y={SIDE.y + 26} textAnchor="middle" fontSize={11} fill={C.faint}>gun</text>
+          <text x={SIDE.gun + 9} y={SIDE.y - 16} textAnchor="middle" fontSize={11} fill={C.faint}>gun</text>
           <line x1={SIDE.gun + 18} x2={SIDE.x0} y1={SIDE.y} y2={SIDE.y} stroke={C.velocity} strokeWidth={2} />
           <line x1={SIDE.x0} x2={SIDE.x0} y1={SIDE.y - 22} y2={SIDE.y + 22} stroke={C.ink} strokeWidth={3} />
           <text x={SIDE.x0} y={SIDE.y + 40} textAnchor="middle" fontSize={11} fill={C.faint}>graphite</text>

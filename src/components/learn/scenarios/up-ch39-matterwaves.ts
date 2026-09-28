@@ -16,8 +16,7 @@ export const estimate: Record<string, EstimateScenario> = {
     withinFactor: 10,
     truth: () => baseballWavelength(),
     landmarks: [
-      { value: 0.074, label: 'the ball itself' },
-      { value: 5e-7, label: 'visible light' },
+      { value: 8e-5, label: "a hair's width" },
       { value: electronWavelength(54), label: 'a 54 V electron' },
       { value: 1e-15, label: 'a proton' },
     ],

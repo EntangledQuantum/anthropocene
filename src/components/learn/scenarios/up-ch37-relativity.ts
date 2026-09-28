@@ -20,7 +20,6 @@ export const estimate: Record<string, EstimateScenario> = {
     truth: () => atmosphereForMuon(MUON.height, muonReachBeta()),
     landmarks: [
       { value: 15000, label: 'the air, measured from the ground' },
-      { value: 8849, label: 'Everest' },
       { value: 100, label: 'a football pitch' },
     ],
   },

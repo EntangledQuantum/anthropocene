@@ -1,7 +1,61 @@
 # University Physics — how to continue
 
 Handoff note for the next orchestrator or agent picking this up cold. Last rewritten
-2026-09-25, during the focused rewrite.
+2026-09-28, when the first orchestrator wrapped up at chapter 35.
+
+## 0. Where it stands — read this first
+
+| Chapters | State |
+|---|---|
+| **1–35** | **Done.** Two focused lessons each, reviewed and committed one chapter at a time (`git log --oneline \| grep "university-physics ch"`). |
+| **36–39** | **Lessons on disk, not yet reviewed.** Both `.mdx` files exist for each, and they are in `wip:` checkpoint commits. The agents writing them may have been cut off mid-verification. For each: run `npm run content:check`, `npx vitest run src/lib/physics`, and `bash scripts/preview/preview.sh chNN /learn/university-physics/<slug>/<lesson>`, read the screenshots, drive the graded scenes, fix what is broken, set `chapter.yaml` to `status: 'live'` and commit as `university-physics chNN done: …`. |
+| **40–42** | **Started, no lessons yet.** An agent may have left a physics lib or scenes on disk (`git status`, `ls -t src/lib/physics src/components/viz \| head`). Launch a fresh chapter agent and tell it to build on what is there. |
+| **43–44** | **Not started.** Launch a chapter agent for each. |
+
+**Open items for the final pass** (after 36–44 land):
+1. Run the whole gate: `npm run content:check && npm test && npm run build`. Fix any gap
+   where a `requires:` id guessed by an agent does not match the id another chapter created
+   (`content:check` lists them).
+2. Chapter 19's `SlamThePump`: the plunger moves 0.01 L per key press, so the pump step
+   cannot be passed with the keyboard alone. Give it a coarser key step or a "stroke" key.
+3. Spot-check screenshots of a sample of lessons across the path, especially any that lean
+   on graphs, against `AGENTS.md` §2a (including the new "Graphs" rules).
+4. Tick the chapters in `UNIVERSITY-PHYSICS-PLAN.md` and update this table.
+
+**To resume, paste this into a fresh session:**
+
+> Continue the University Physics rewrite in this repo. Read
+> `docs/orchestrator-university/CONTINUE-HERE.md` first: §0 has the exact state. Chapters
+> 1–35 are done. For 36–39, review the lessons already on disk, fix them and commit each
+> chapter. For 40–44, launch one chapter agent each (about eight at a time) using
+> `docs/orchestrator-university/AGENT-BRIEF.md` and the hooks in §0. Review every chapter in
+> a browser with `scripts/preview/preview.sh` before committing it. Then do the final pass
+> in §0. Follow `AGENTS.md` §2a strictly: one decision per screen, act on real objects, no
+> repeated sketch-the-graph, graphs live and secondary. Commit and push to the current
+> branch as you go.
+
+**How each remaining chapter was briefed:** every agent prompt was
+"read `docs/orchestrator-university/AGENT-BRIEF.md` and follow it exactly", plus one
+paragraph naming the chapter directory and slug, two lesson ideas with an opening bet, the
+physics lib to write and the claims its tests must pin, the concept ids to `require`, the
+preview tag `chNN` and widget ids `up-chNN-…`. Copy that shape. Suggested hooks for the
+unfinished ones:
+- **40 Wave functions:** particle in a box (raise the energy line until ψ fits both walls;
+  E₁ > 0; |ψ|² node for n = 2), then tunnelling (thicken a barrier, ln T falls ≈ −2κ;
+  chapter 7's turning point is where the wave starts to decay). Lib: Numerov shooting.
+- **41 Atoms:** hydrogen |ψ|² slices in WebGL (nodes appear with n, l, m; radial
+  probability peaks at a₀ though density peaks at the nucleus), then Pauli filling for
+  Z = 1–20 and the ionisation sawtooth.
+- **42 Molecules and solids:** a bond as a spring in chapter 7's well (H → D frequency
+  × ≈ 0.72), then bands from N atoms (tight binding) and a semiconductor that conducts
+  better when hot while copper conducts worse.
+- **43 Nuclei:** the binding-energy curve as a landscape you roll nuclei down (fusion left,
+  fission right), then half-life: a box of nuclei decaying one at a time, with the learner
+  predicting how many remain after two half-lives, and carbon dating as transfer.
+- **44 Particles and cosmos:** conservation laws as the rule book (sort proposed decays
+  into allowed or forbidden by charge, baryon and lepton number), then the expanding
+  universe: dots on a stretching sheet where every dot sees the others recede at v ∝ d
+  (Hubble), and the learner reads the age of the universe off the slope.
 
 **You are responsible for `content/paths/university-physics/` only.** The
 computational-physics and linear-algebra paths belong to another orchestrator. Do not edit

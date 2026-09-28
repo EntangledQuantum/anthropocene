@@ -17,9 +17,9 @@ export const estimate: Record<string, EstimateScenario> = {
     withinFactor: 1.2,
     truth: () => wavelengthFromFringes(0.0076, LASER.d, LASER.L) * 1e9,
     landmarks: [
-      { value: 400, label: 'violet light' },
-      { value: 700, label: 'deep red light' },
-      { value: 2000, label: 'a bacterium' },
+      { value: 100, label: 'ultraviolet' },
+      { value: 550, label: 'green light' },
+      { value: 3000, label: 'infrared' },
     ],
   },
 };
