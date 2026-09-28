@@ -1,0 +1,18 @@
+title: 'Bohr''s orbits as standing waves'
+blurb: 'Wrap the electron''s wave round a circular orbit and demand that it meets itself: 2πr = nλ. Only orbits of radius n²a₀ qualify, and they carry energies −13.6 eV/n². Useful, and then retired: the real atom''s wave fills three dimensions.'
+notation: '2\pi r = n\lambda \;\Rightarrow\; r_n = n^2 a_0,\qquad E_n = -\frac{13.6\ \text{eV}}{n^2}'
+tags:
+  - 'up-ch39'
+misconceptions:
+  - id: 'up-ch39-any-orbit-fits'
+    name: 'Any orbit is allowed; the wave just stretches to fit.'
+    signal: 'Expects the wave to close on itself at every radius.'
+    correction: 'The wavelength on an orbit is fixed by the speed there, h/μv, so it cannot stretch. Only at radii n²a₀ does a whole number of wavelengths fit; elsewhere the wave cancels itself after a few trips.'
+  - id: 'up-ch39-orbits-evenly-spaced'
+    name: 'The allowed orbits are evenly spaced, like rungs of a ladder.'
+    signal: 'Places the second orbit at twice the first radius.'
+    correction: 'The number of wavelengths round an orbit grows only as √r, because farther out the electron is slower and its wavelength longer. Whole numbers 1, 2, 3 land at radii 1, 4, 9 times a₀.'
+  - id: 'up-ch39-electrons-on-circles'
+    name: 'Electrons really travel round the nucleus on Bohr''s circles.'
+    signal: 'Pictures the atom as a tiny solar system with the electron at a definite point on a ring.'
+    correction: 'Bohr''s circle is a costume that gets the energies right. The electron has no path; its wave fills a three-dimensional cloud, and in hydrogen''s ground state it does not circulate at all (chapter 41).'

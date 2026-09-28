@@ -1,0 +1,10 @@
+title: 'Electron diffraction'
+blurb: 'Rows of atoms in a crystal act as a grating for electrons. The scattered beam is strong only where the echoes from neighbouring rows differ in path by a whole wavelength, and its angle measures the electron''s λ. Davisson and Germer found it in 1927.'
+notation: 'D\sin\varphi = \lambda \quad\text{(surface rows)},\qquad 2d\sin\theta = \lambda \quad\text{(Bragg planes)}'
+tags:
+  - 'up-ch39'
+misconceptions:
+  - id: 'up-ch39-fast-goes-straight'
+    name: 'Fast enough electrons punch straight through the crystal like bullets, and the pattern disappears.'
+    signal: 'Predicts the rings collapse into the central spot at high voltage.'
+    correction: 'The rings tighten as the wavelength shrinks, but they never vanish. Electron microscopes run at 100 kV and more precisely because a short wavelength still diffracts, and resolves finer detail.'

@@ -1,0 +1,125 @@
+---
+title: 'Brightness buys electrons, not speed'
+blurb: 'Free electrons from a metal with light, find that only colour makes them faster, and measure Planck''s constant from where a reverse voltage stops them.'
+order: 1
+tier: 'core'
+minutes: 11
+teaches:
+  - 'photon-energy'
+  - 'photoelectric-effect'
+  - 'stopping-potential'
+requires:
+  - 'em-spectrum'
+  - 'em-intensity'
+  - 'electron-volt'
+  - 'electric-potential'
+status: 'live'
+updated: 2026-09-28
+---
+
+<Step>
+
+A red lamp shines on a clean sodium plate in a vacuum, and not one electron comes off. You
+turn the lamp up ten times brighter.
+
+<Predict
+  id="up-ch38-red-ten-times"
+  question="What comes off the plate now?"
+  options={[
+    { key: 'pour', misconception: 'up-ch38-brightness-frees-electrons', label: 'Electrons, at once: ten times the energy is arriving', why: 'Ten times the energy does arrive, and still nothing leaves. Set the lamp to ×10 below: the plate stays quiet.' },
+    { key: 'soak', misconception: 'up-ch38-energy-soaks-in', label: 'A few slow ones, once the energy has had time to soak in', why: 'That is what a wave spreading its energy evenly would do. Leave the red lamp at ×10 as long as you like: nothing ever comes.' },
+    { key: 'none', label: 'Nothing, however long you wait', why: 'Right. Red light cannot free an electron from sodium at any brightness. Slide toward violet and electrons appear the instant the colour crosses a line, even at ×1.' },
+  ]}
+  correct="none"
+>
+
+<ShineOnTheMetal nm={650} bright={10} prompt="Try both controls. Where do electrons start?" />
+
+</Predict>
+
+</Step>
+
+<Step>
+
+## Buy speed
+
+Blue light frees electrons from sodium, but slowly. You want faster ones.
+
+<ShineOnTheMetal
+  id="up-ch38-fastest-half-ev"
+  nm={500}
+  bright={3}
+  targetEv={0.5}
+  prompt="Make the fastest electron leave with 0.50 eV."
+  explanation="About 434 nm, violet. Brightness never moved the fastest electron; it changed how many leave. Only colour changed how fast. At 434 nm each lump of light brings 2.86 eV, and an electron pays 2.36 eV to get out of sodium."
+/>
+
+</Step>
+
+<Step>
+
+## Name it
+
+Light is absorbed in lumps, **photons**, each carrying $E = hf$. An electron takes one whole
+photon, pays the metal's **work function** $\phi$ to get out, and keeps the rest:
+
+$$K_{\max} = hf - \phi$$
+
+Brightness is photons per second. Sodium's $\phi$ is 2.36 eV, so its cutoff is green light,
+525 nm: the yellow glow of a sodium street lamp cannot free a single electron from sodium.
+
+<Recall id="up-ch38-recall-photon" concept="photon-energy">
+  <div slot="front">A lamp is turned up to twice the brightness, same colour. What happens to each photon's energy, and to the number of photons?</div>
+
+  Each photon's energy stays $hf$, set by the colour. Twice as many photons arrive each
+  second, so twice as many electrons leave, with the same top speed.
+</Recall>
+
+</Step>
+
+<Step>
+
+## Stop them with a voltage
+
+A reverse voltage turns back every electron with less than $eV$ of kinetic energy. The
+voltage that just stops the current measures the fastest one.
+
+<StopThePhotocurrent
+  id="up-ch38-measure-h"
+  prompt="For three colours, raise the voltage until the current just stops."
+  explanation="Your slope times e is {h} × 10⁻³⁴ J·s: Planck's constant, 6.63 × 10⁻³⁴, from a lamp and a voltmeter. The points lie on eV₀ = hf − φ. The green and yellow lines give no point at all: they sit below sodium's cutoff, where the line meets zero."
+/>
+
+<Recall id="up-ch38-recall-stopping" concept="stopping-potential">
+  <div slot="front">You repeat the measurement with a cesium plate (φ = 2.14 eV) instead of sodium (2.36 eV). How does the line change?</div>
+
+  Same slope, $h/e$: that belongs to light, not to the metal. The line moves up by 0.22 V
+  and meets zero at a lower frequency, cesium's cutoff.
+</Recall>
+
+</Step>
+
+<Step>
+
+## The wave's clock
+
+Suppose light were a wave spreading its energy evenly over the plate. Dim light brings
+1 mW to each square metre, and one sodium atom's patch is about 0.3 nm across.
+
+<Estimate
+  id="up-ch38-estimate-soak"
+  scenario="up-ch38-wave-soak-time"
+  prompt="How long until that patch has collected the 2.36 eV that frees an electron?"
+  explanation="About 70 minutes. Switch dim light on in the lab and the first electrons leave within nanoseconds. The energy does not trickle in: it arrives one photon at a time, and one photon above the cutoff is enough."
+/>
+
+## What to carry forward
+
+- **Light is absorbed in lumps of $hf$.** Colour sets the size of each lump; brightness sets
+  how many.
+- **One photon frees one electron, which keeps $hf - \phi$.** Below the cutoff no brightness helps.
+- **Stopping voltage against frequency is a line of slope $h/e$** for every metal.
+
+Next: if light arrives in lumps, what draws the stripes in a two-slit pattern?
+
+</Step>

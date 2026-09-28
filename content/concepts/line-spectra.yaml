@@ -1,0 +1,14 @@
+title: 'Line spectra'
+blurb: 'An atom whose energies come in a ladder can only give out photons that match a gap between two rungs, λ = hc/ΔE. A glowing gas shows sharp lines, not a rainbow, and each line is one gap. Hydrogen''s red 656 nm line is the drop from n = 3 to n = 2.'
+notation: '\lambda = \frac{hc}{E_{\text{upper}} - E_{\text{lower}}}'
+tags:
+  - 'up-ch39'
+misconceptions:
+  - id: 'up-ch39-jump-labels-colour'
+    name: 'The same jump, say 3 → 2, gives the same colour in any atom.'
+    signal: 'Predicts He⁺ 3 → 2 is red like hydrogen''s.'
+    correction: 'The colour is set by the size of the energy gap, not the labels of the levels. In He⁺ every level is four times deeper, so 3 → 2 carries 7.6 eV and is ultraviolet.'
+  - id: 'up-ch39-line-is-a-level'
+    name: 'Each spectral line is the energy of one level.'
+    signal: 'Reads 1.89 eV as the energy of level 3.'
+    correction: 'A line is a difference between two levels. Hydrogen''s n = 3 sits at −1.51 eV and n = 2 at −3.40 eV; the red photon carries the 1.89 eV between them.'

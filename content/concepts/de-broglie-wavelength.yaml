@@ -1,0 +1,18 @@
+title: 'The de Broglie wavelength'
+blurb: 'Anything with momentum p travels as a wave of length h/p. An electron through a few kilovolts has a wavelength of a few hundredths of a nanometre, the size of the gaps in a crystal; a thrown ball''s is 10⁻³⁴ m, which is why the everyday world never shows it.'
+notation: '\lambda = \frac{h}{p} = \frac{h}{\sqrt{2m\,eV}}'
+tags:
+  - 'up-ch39'
+misconceptions:
+  - id: 'up-ch39-faster-scatters-wider'
+    name: 'Faster electrons hit the atoms harder and fly off at wider angles.'
+    signal: 'Predicts the diffraction rings grow when the accelerating voltage is raised.'
+    correction: 'A faster electron has more momentum and so a shorter wavelength, λ = h/p. The same crystal turns a shorter wave through a smaller angle, so the rings shrink.'
+  - id: 'up-ch39-rings-are-crystal'
+    name: 'The rings are a picture of the crystal, fixed by the atoms alone.'
+    signal: 'Predicts the rings stay the same size whatever the voltage.'
+    correction: 'The crystal decides which rings exist, through its plane spacings. The ring sizes are set by the ratio of the electron''s wavelength to those spacings, so they move with the voltage.'
+  - id: 'up-ch39-turn-into-waves'
+    name: 'Particles turn into waves in flight and back into particles when they land.'
+    signal: 'Describes an electron as a wave between gun and screen and a particle only at the screen.'
+    correction: 'Nothing changes into anything. Each electron always lands as one dot, and where the dots may land is always set by a wave. Both descriptions hold all the time; the experiment decides which one you notice.'
