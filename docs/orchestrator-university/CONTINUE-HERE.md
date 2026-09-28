@@ -1,18 +1,17 @@
 # University Physics — how to continue
 
 Handoff note for the next orchestrator or agent picking this up cold. Last rewritten
-2026-09-28, when the first orchestrator wrapped up at chapter 35.
+2026-09-28, when the first orchestrator wrapped up with chapters 1–42 done.
 
 ## 0. Where it stands — read this first
 
 | Chapters | State |
 |---|---|
-| **1–41** | **Done.** Two focused lessons each, reviewed and committed one chapter at a time (`git log --oneline \| grep "university-physics ch"`). |
+| **1–42** | **Done.** Two focused lessons each, reviewed and committed one chapter at a time (`git log --oneline \| grep "university-physics ch"`). |
 | — | (Chapters 35–39 were finished by their agents and committed after this note was first written. The review recipe for any chapter whose agent was cut off: run `npm run content:check`, `npx vitest run src/lib/physics`, and `bash scripts/preview/preview.sh chNN /learn/university-physics/<slug>/<lesson>`, read the screenshots, drive the graded scenes, fix what is broken, set `chapter.yaml` to `status: 'live'` and commit as `university-physics chNN done: …`.) |
-| **42** | **In progress when the first orchestrator stopped** (its agent was still running; check `ls content/paths/university-physics/42-molecules-and-solids` and `git log`). If a chapter has both lessons but no `chNN done` commit, review it with the recipe above. An agent may have left a physics lib or scenes on disk (`git status`, `ls -t src/lib/physics src/components/viz \| head`). Launch a fresh chapter agent and tell it to build on what is there. |
 | **43–44** | **Not started.** Launch a chapter agent for each. |
 
-**Open items for the final pass** (after 42, 43, 44 land):
+**Open items for the final pass** (after 43 and 44 land):
 1. Run the whole gate: `npm run content:check && npm test && npm run build`. Fix any gap
    where a `requires:` id guessed by an agent does not match the id another chapter created
    (`content:check` lists them).
@@ -26,7 +25,7 @@ Handoff note for the next orchestrator or agent picking this up cold. Last rewri
 
 > Continue the University Physics rewrite in this repo. Read
 > `docs/orchestrator-university/CONTINUE-HERE.md` first: §0 has the exact state. Chapters
-> 1–41 are done. Finish and review 42 (its lessons may already be on disk). For 43–44, launch one chapter agent each (about eight at a time) using
+> 1–42 are done. For 43–44, launch one chapter agent each (about eight at a time) using
 > `docs/orchestrator-university/AGENT-BRIEF.md` and the hooks in §0. Review every chapter in
 > a browser with `scripts/preview/preview.sh` before committing it. Then do the final pass
 > in §0. Follow `AGENTS.md` §2a strictly: one decision per screen, act on real objects, no
