@@ -11,6 +11,8 @@ Handoff note for the next orchestrator or agent picking this up cold. Last rewri
 | — | (Chapters 35–39 were finished by their agents and committed after this note was first written. The review recipe for any chapter whose agent was cut off: run `npm run content:check`, `npx vitest run src/lib/physics`, and `bash scripts/preview/preview.sh chNN /learn/university-physics/<slug>/<lesson>`, read the screenshots, drive the graded scenes, fix what is broken, set `chapter.yaml` to `status: 'live'` and commit as `university-physics chNN done: …`.) |
 | **43–44** | **Not started.** Launch a chapter agent for each. |
 
+**Gate at handoff (2026-09-28):** `npm run content:check` 0 errors / 0 gaps, `npm test` 2000 tests in 95 files passing, `npm run build` complete. The only `tsc` error is the known out-of-scope `src/lib/numerics/sph.ts(298)`.
+
 **Open items for the final pass** (after 43 and 44 land):
 1. Run the whole gate: `npm run content:check && npm test && npm run build`. Fix any gap
    where a `requires:` id guessed by an agent does not match the id another chapter created
