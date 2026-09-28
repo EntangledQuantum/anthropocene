@@ -80,10 +80,9 @@ export default function AimTheDark({ id, prompt, a = 2.5, n = 12, start = 8, exp
             stroke="var(--color-surface)" strokeWidth={4} paintOrder="stroke">{pd.toFixed(2)} λ</text>
           <line x1={s.sx(0)} y1={s.sy(0)} x2={s.sx(u[0] * R)} y2={s.sy(u[1] * R)} stroke={C.ink} strokeWidth={1.6} strokeDasharray="2 5" />
           <circle cx={s.sx(u[0] * (R + 0.9))} cy={s.sy(u[1] * (R + 0.9))} r={9} fill={C.energy} opacity={0.08 + 0.92 * Math.sqrt(I)} stroke={C.faint} />
-          <text x={s.sx(u[0] * (R + 0.9)) + 14} y={s.sy(u[1] * (R + 0.9)) + 5} fontSize={12} fill={C.faint}>to the far wall</text>
           {/* scale */}
-          <line x1={s.sx(1)} x2={s.sx(2)} y1={s.sy(-2.4)} y2={s.sy(-2.4)} stroke={C.ink} strokeWidth={2} />
-          <text x={s.sx(2.3)} y={s.sy(-2.4) + 4} fontSize={12} fill={C.faint} fontFamily="var(--font-mono)">1 λ</text>
+          <line x1={s.sx(4)} x2={s.sx(5)} y1={s.sy(-2.4)} y2={s.sy(-2.4)} stroke={C.ink} strokeWidth={2} />
+          <text x={s.sx(5.3)} y={s.sy(-2.4) + 4} fontSize={12} fill={C.faint} fontFamily="var(--font-mono)">1 λ</text>
 
           {/* the same twelve wavelets, as arrows added tip to tail */}
           <text x={s.sx(O[0])} y={s.sy(-1.9)} fontSize={13} fill={C.soft}>the {n} wavelets, tip to tail</text>
@@ -101,7 +100,7 @@ export default function AimTheDark({ id, prompt, a = 2.5, n = 12, start = 8, exp
         </>}
       </Stage>
       <p className="hud-label" style={{ margin: '6px 0 0' }}>
-        Slit {a} λ wide, magnified · white dots: {n} sources across it · iris: the bottom edge’s extra path · aqua: their sum, whose square is the brightness
+        Slit {a} λ wide, magnified · white dots: {n} sources across it · iris: the bottom edge’s extra path · aqua: their sum, whose square is the brightness on the far wall that way, shown by the aqua dot
       </p>
     </SceneCard>
   );

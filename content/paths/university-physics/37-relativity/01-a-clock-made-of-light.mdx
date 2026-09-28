@@ -1,0 +1,123 @@
+---
+title: 'A clock made of light'
+blurb: 'Speed up a light clock on a train until it ticks at half rate, find the slowest cosmic-ray muon that reaches the ground, and say what the muon sees instead.'
+order: 1
+tier: 'core'
+minutes: 10
+teaches:
+  - 'relativity-postulates'
+  - 'time-dilation'
+  - 'proper-time'
+  - 'length-contraction'
+requires:
+  - 'em-wave-speed'
+  - 'relative-velocity'
+status: 'live'
+updated: 2026-09-28
+---
+
+<Step>
+
+Cosmic rays make muons about 15 km up. A muon lives 2.2 µs on its own clock, and in
+2.2 µs even light gets only 660 m.
+
+<Predict
+  id="up-ch37-muons-reach"
+  question="Do muons made 15 km up reach detectors on the ground?"
+  options={[
+    { key: 'none', misconception: 'up-ch37-time-is-universal', label: 'No: they all decay in the first kilometre', why: 'That is the dimmed ghost below: 2.2 µs at nearly c is 660 m, if the muon’s clock keeps ground time. It does not, and detectors at sea level count muons all day.' },
+    { key: 'lucky', label: 'Only a lucky few that live 20 times longer than average', why: 'Decay is random, so some muons do outlive the average. But surviving 23 lifetimes in a row happens to about one muon in ten billion: far too few for the steady stream counted at sea level.' },
+    { key: 'yes', label: 'Yes, lots do: a fast muon’s clock runs slow', why: 'Right. At 0.9995c the muon’s clock runs 32 times slower than the ground’s. The 50 µs trip takes only 1.6 µs on its own clock, and about half the muons make it.' },
+    { key: 'ftl', label: 'Yes: the fastest ones go faster than light', why: 'Nothing with mass reaches c, let alone passes it. The muon below goes at 0.9995c and still needs 50 µs of ground time for 15 km.' },
+  ]}
+  correct="yes"
+>
+
+<MuonToTheGround prompt="Release the muon and read both clocks." />
+
+</Predict>
+
+</Step>
+
+<Step>
+
+## A clock made of light
+
+The simplest clock there is: light bouncing between two mirrors, one tick per round trip.
+One stands on the platform and one rides the train, and both frames measure the light at $c$.
+
+<LightClockTrain
+  id="up-ch37-light-clock"
+  prompt="Drag the train's speed until the platform clock ticks twice for every tick of the train clock."
+  explanation="0.866c. Seen from the platform, the train's light runs a slanted path twice the mirror gap at the same speed c, so each tick takes twice as long. Nothing is wrong with the train's clock: a passenger watching it sees the light go straight up and down, as usual."
+/>
+
+</Step>
+
+<Step>
+
+## Name it
+
+Each leg of the zig-zag is a right triangle: the light goes $ct$ along the slant while it
+climbs the gap $L$ and the train slides $vt$.
+
+$$(ct)^2 = L^2 + (vt)^2 \quad\Longrightarrow\quad t = \frac{L/c}{\sqrt{1 - v^2/c^2}}, \qquad \Delta t = \gamma\,\Delta\tau, \quad \gamma = \frac{1}{\sqrt{1 - v^2/c^2}}$$
+
+$\Delta\tau$ is the **proper time** on the moving clock itself. Physics is the same in every
+frame, so every clock slows by the same $\gamma$: a muon's decay clock included.
+
+<Recall id="up-ch37-recall-dilation" concept="time-dilation">
+  <div slot="front">Why must a light clock moving past you tick slower than yours?</div>
+
+  Its light runs a slanted zig-zag, longer than the straight up-and-down, and still goes at
+  $c$ for you. A longer path at the same speed takes longer: by exactly
+  $\gamma = 1/\sqrt{1 - v^2/c^2}$, from Pythagoras on one leg.
+</Recall>
+
+</Step>
+
+<Step>
+
+## Only just reaches the ground
+
+Cosmic rays make slower muons too, and those decay in the air.
+
+<MuonToTheGround
+  id="up-ch37-slowest-muon"
+  prompt="Set the speed and release. Find the slowest muon that still reaches the ground before its clock reads 2.2 µs."
+  explanation="About 0.99904c, where γ ≈ 23. The trip takes 50 µs of ground time and 2.2 µs on the muon. Notice where the scale spends its length: near c, the last few nines of speed buy almost all of the γ."
+/>
+
+</Step>
+
+<Step>
+
+## Ride with the muon
+
+In its own frame, that slowest muon sits still with a clock running normally, and the
+ground rushes up at 0.99904c.
+
+<Estimate
+  id="up-ch37-muon-air"
+  scenario="up-ch37-muon-air"
+  prompt="How thick is the atmosphere the muon has to cross, measured in its own frame?"
+  explanation="About 660 m: 15 km shrunk by γ ≈ 23, which is exactly how far the ground travels toward it in 2.2 µs. The ground sees a slow clock; the muon sees a short atmosphere. Both agree on the only thing that is an event here: the detector clicks."
+/>
+
+<Recall id="up-ch37-recall-contraction" concept="length-contraction">
+  <div slot="front">In the muon's own frame its clock runs normally. So how does it cross 15 km of air in 2.2 µs?</div>
+
+  In its frame the air is moving, and a moving length is contracted by $\gamma$:
+  15 km becomes about 660 m. The ground explains the same click with a slow clock; the
+  muon explains it with a short atmosphere.
+</Recall>
+
+## What to carry forward
+
+- **A moving clock ticks slow by γ**, because its light runs a longer path at the same $c$.
+- **Every clock does it, muons included**, and no clock ever notices it about itself.
+- **The frame without the slow clock sees a short ruler:** $L = L_0/\gamma$.
+
+Next: the passenger and the platform also disagree about which events happen at the same time.
+
+</Step>

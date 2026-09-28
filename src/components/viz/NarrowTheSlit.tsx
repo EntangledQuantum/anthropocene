@@ -44,8 +44,8 @@ void main() {
   float t = u_t * 0.8;          // wave periods shown per second
   float f, amp2;
   if (p.x < 0.0) {
-    f = cos(TAU * (p.x - t));
-    amp2 = 1.0;
+    f = 0.75 * cos(TAU * (p.x - t));
+    amp2 = 0.56;
   } else {
     vec2 s = vec2(0.0);
     for (int j = 0; j < NS; j++) {
@@ -117,7 +117,7 @@ export default function NarrowTheSlit({
               <path d={wall.map((w, i) => `${i ? 'L' : 'M'}${s.sx(L + 1.8 + 8.5 * (w.I / peak))},${s.sy(w.y)}`).join('')}
                 fill="none" stroke={C.soft} strokeWidth={1.8} />
               <line x1={s.sx(L + 1.8)} x2={s.sx(L + 1.8)} y1={s.sy(-YH)} y2={s.sy(YH)} stroke={C.grid} />
-              <text x={s.sx(L + 0.6)} y={s.sy(YH) + 14} fontSize={12} fill={C.faint}>wall</text>
+              <text x={s.sx(L + 2.2)} y={s.sy(YH) + 14} fontSize={12} fill={C.faint}>wall</text>
               {dark !== null && [dark, -dark].map((y) => <line key={y} x1={s.sx(L - 1.4)} x2={s.sx(L)} y1={s.sy(y)} y2={s.sy(y)}
                 stroke={C.faint} strokeWidth={1.5} />)}
               {markAt !== undefined && [markAt, -markAt].map((y) => <g key={`m${y}`}>

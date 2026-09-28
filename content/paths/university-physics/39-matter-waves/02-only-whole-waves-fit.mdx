@@ -1,0 +1,139 @@
+---
+title: 'Only whole waves fit'
+blurb: 'Wrap an electron''s wave round a hydrogen orbit, find the few radii where it closes on itself, and pick the jump that makes the atom glow red.'
+order: 2
+tier: 'core'
+minutes: 11
+teaches:
+  - 'bohr-model'
+  - 'line-spectra'
+requires:
+  - 'de-broglie-wavelength'
+  - 'standing-wave'
+  - 'normal-modes'
+  - 'coulombs-law'
+  - 'centripetal-acceleration'
+  - 'electron-volt'
+  - 'photon'
+status: 'live'
+updated: 2026-09-28
+---
+
+<Step>
+
+An electron circles a proton, and classically any radius will do. Give it de Broglie's
+wavelength, and demand that the wave meets itself after each trip round.
+
+<Predict
+  id="up-ch39-which-orbits"
+  question="Which orbits can the electron have?"
+  options={[
+    { key: 'any', misconception: 'up-ch39-any-orbit-fits', label: 'Any: the wave stretches to fit whatever ring it is on', why: 'It cannot stretch. The speed on each orbit fixes the wavelength, h/μv. Drag the orbit below: almost everywhere the wave cancels itself.' },
+    { key: 'one', label: 'Just one: only one ring fits the wave', why: 'One ring holds a single wavelength, but others hold two, three, four. The rule picks out a whole ladder.' },
+    { key: 'even', misconception: 'up-ch39-orbits-evenly-spaced', label: 'A ladder of orbits, evenly spaced', why: 'A ladder, but the rungs spread apart. Farther out the electron is slower and its wave longer, so each extra wavelength needs a much bigger ring.' },
+    { key: 'spread', label: 'A ladder of orbits, spreading farther apart going out', why: 'Right. The number of wavelengths round an orbit grows only as the square root of its radius, so 1, 2 and 3 whole waves land at radii 1, 4 and 9.' },
+  ]}
+  correct="spread"
+>
+
+<WrapTheOrbit prompt="Drag the orbit's radius along the ruler and watch the wave." />
+
+</Predict>
+
+</Step>
+
+<Step>
+
+## The next orbit out
+
+The electron starts on the smallest orbit, where exactly one wavelength fits round.
+
+<WrapTheOrbit
+  id="up-ch39-next-orbit"
+  target={2}
+  startNm={0.053}
+  prompt="Drag out to the next orbit where the wave closes on itself."
+  explanation="0.212 nm, four times the first orbit, with two wavelengths round it. At twice the radius the electron is slower, its wave longer, and only 1.41 waves fit, so twelve trips cancel to almost nothing. The allowed radii go as n²: 0.053, 0.212, 0.476 nm."
+/>
+
+</Step>
+
+<Step>
+
+## Name it
+
+A whole number of wavelengths round the ring, $2\pi r = n\lambda$, is chapter 15's
+standing wave on a string with its two ends tied together. With the Coulomb pull setting the
+speed, it allows only
+
+$$r_n = n^2 a_0,\quad a_0 = 0.0529\ \text{nm},\qquad E_n = -\frac{13.6\ \text{eV}}{n^2}$$
+
+Between those energies there is nothing, so the atom can only change its energy by a jump.
+
+<Recall id="up-ch39-recall-bohr" concept="bohr-model">
+  <div slot="front">Why can't hydrogen's electron sit on an orbit of radius 2a₀?</div>
+
+  About 1.41 wavelengths fit round it. The wave cannot join itself, so trip after trip it
+  cancels. Only $a_0$, $4a_0$, $9a_0$, … hold a whole number.
+</Recall>
+
+</Step>
+
+<Step>
+
+## Match the red line
+
+A hydrogen lamp glows at four visible colours, the brightest a red at 656 nm. Each photon is
+one electron dropping between two levels and carrying off the difference.
+
+<JumpTheLadder
+  id="up-ch39-match-the-red-line"
+  targetNm={656.3}
+  start={[2, 1]}
+  prompt="Choose where the electron starts and lands so its photon matches the red line."
+  explanation="3 → 2: a drop of 1.89 eV, giving 656 nm. The first rung, 2 → 1, releases 10.2 eV, a 122 nm photon deep in the ultraviolet. Every drop that lands on n = 2 is visible, and the lamp's four lines are the drops from 3, 4, 5 and 6."
+/>
+
+</Step>
+
+<Step>
+
+## Same line, different atom
+
+Helium that has lost one electron, He⁺, is a one-electron atom whose nucleus has twice the
+charge. Every level is four times deeper: $E_n = -54.4\ \text{eV}/n^2$.
+
+<Predict
+  id="up-ch39-helium-red-line"
+  question="Which He⁺ jump gives the same 656 nm red line as hydrogen's 3 → 2?"
+  options={[
+    { key: 'same', misconception: 'up-ch39-jump-labels-colour', label: '3 → 2, the same jump', why: 'In He⁺ that gap is four times bigger, 7.6 eV: a 164 nm ultraviolet photon. The colour comes from the size of the gap, not the labels.' },
+    { key: 'none', label: 'None: every He⁺ gap is four times hydrogen’s', why: 'Every gap between the same labels is. But He⁺ has more rungs close together, and one pair of them sits exactly as far apart as hydrogen’s 3 and 2.' },
+    { key: 'sixfour', label: '6 → 4', why: 'Right. Doubling both labels quarters 1/n², which undoes the factor of four: 54.4 eV × (1/16 − 1/36) = 1.89 eV. Lines in hot stars once blamed on hydrogen turned out to be He⁺ doing exactly this.' },
+    { key: 'fourtwo', label: '4 → 2', why: 'That gap is 10.2 eV, exactly hydrogen’s 2 → 1: a 122 nm ultraviolet photon.' },
+  ]}
+  correct="sixfour"
+>
+
+<JumpTheLadder Z={2} start={[3, 2]} prompt="Try jumps on He⁺'s ladder against the hydrogen lamp." />
+
+</Predict>
+
+<Recall id="up-ch39-recall-lines" concept="line-spectra">
+  <div slot="front">A gas glows at a few sharp wavelengths instead of a rainbow. What does each line tell you?</div>
+
+  The size of one gap between allowed energies, $\lambda = hc/\Delta E$. Sharp lines mean the
+  energies themselves come only in fixed values.
+</Recall>
+
+## What to carry forward
+
+- **A bound wave has to fit**, so only a ladder of orbits and energies exists:
+  $E_n = -13.6\ \text{eV}/n^2$.
+- **Spectral lines are the gaps**: one photon per drop, $\lambda = hc/\Delta E$.
+- **Bohr's ring is a costume.** The electron does not travel on a circle; its wave fills
+  three dimensions.
+
+Next: the wave itself becomes the state, starting with a wave trapped in a box.
+
+</Step>
