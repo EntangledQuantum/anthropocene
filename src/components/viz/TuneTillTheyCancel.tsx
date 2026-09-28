@@ -28,7 +28,7 @@ export interface TuneTillTheyCancelProps {
   explanation?: string;
 }
 
-const LO = Math.log10(400), HI = Math.log10(6400);
+const LO = 2.6, HI = 3.81; // log10 Hz: about 400 Hz to 6.5 kHz
 const O = { x: 400, y: 200 }, K = 3.4; // phasor origin, px per volt
 
 export default function TuneTillTheyCancel({ id, prompt, start = 700, tolerance = 5, explanation }: TuneTillTheyCancelProps) {
