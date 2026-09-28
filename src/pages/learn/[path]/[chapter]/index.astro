@@ -22,7 +22,7 @@ const TIER: Record<string, string> = {
 <Base
   title={chapter.title}
   description={chapter.blurb}
-  crumbs={[{ label: 'Paths', href: `${base}/learn/` }, { label: path.title, href: path.url }, { label: `Chapter ${chapterNo}` }]}
+  crumbs={[{ label: 'Paths', href: `${base}/learn/` }, { label: path.title, href: path.url }, { label: `${chapterNo}. ${chapter.title}` }]}
 >
   <div style="padding-top:20px;max-width:52rem">
     <span class="eyebrow">Chapter {chapterNo}</span>

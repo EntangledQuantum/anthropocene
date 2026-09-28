@@ -28,8 +28,10 @@ const nextInPath = next ?? inPath[inPath.findIndex((l) => l.id === lesson.id) + 
   title={lesson.title}
   description={lesson.blurb}
   crumbs={[
+    { label: 'Paths', href: `${import.meta.env.BASE_URL.replace(/\/$/, '')}/learn/` },
     { label: path.title, href: path.url },
     { label: `${chapterNo}. ${chapter.title}`, href: chapter.url },
+    { label: lesson.title },
   ]}
 >
   <div class="page-grid" style="padding-top:28px">

@@ -224,6 +224,26 @@ its two scenes `HoldToPush.tsx` and `CancelTheArrow.tsx`. Measure against it:
 | "Sketch the speed over six seconds" | `HoldToPush`: push with your own hand, let go, and watch the trace stay flat |
 | Four paragraphs before the first widget | Two sentences, then a bet |
 
+### Graphs: live, secondary, never the task on repeat
+
+Graphs are good. What is banned is a graph standing alone, or a lesson that keeps asking the
+learner to draw one. The rules:
+
+- **The object comes first; the graph writes itself beside it.** The learner pushes the
+  puck, and the speed trace draws as they push (`HoldToPush`). The learner drives the lift,
+  and its height graph writes itself (chapter 2). The graph is the *record* of an action in
+  the world, never the place the action happens.
+- **A graph must be live.** It updates as the scene moves, it can be scrubbed or hovered to
+  read a value, and its axes carry scales. A static plot is an illustration; ship it as a
+  picture or cut it.
+- **Do not overuse the graph's own interactivity.** Dragging points on a curve, reshaping a
+  line or sketching a shape is at most **one decision per chapter**. The decision should be
+  made on the real thing (aim, release, tilt, place, tune), and the graph shows the
+  consequence.
+- **Show real stuff.** A pendulum, a rope, a lens, a circuit, a cloud of molecules. If the
+  only thing on screen is axes and a line, the scene has failed the "chart standing in for
+  the physics" rule above.
+
 ### Verbs to reach for
 
 Physics is full of actions with a visible consequence. Pick the one that *is* the idea:

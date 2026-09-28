@@ -459,9 +459,18 @@ span.hud-label { display: inline-block; }
   border-radius: 5px; padding: 0 5px;
 }
 
+/* The trail back up: every level but the current one is a link, and looks
+   like one — a learner three levels deep should never need the home button. */
 .crumbs { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; font-size: 14px; color: var(--color-ink-faint); }
-.crumbs a { color: var(--color-ink-faint); text-decoration: none; }
-.crumbs a:hover { color: var(--color-ink); }
+.crumbs a {
+  color: var(--color-ink-soft);
+  text-decoration: underline;
+  text-decoration-color: var(--color-rule-bright);
+  text-underline-offset: 4px;
+  transition: color 120ms ease, text-decoration-color 120ms ease;
+}
+.crumbs a:hover { color: var(--color-accent); text-decoration-color: var(--color-accent); }
+.crumbs [aria-current="page"] { color: var(--color-ink-faint); }
 .crumbs .sep { color: var(--color-ink-ghost); }
 
 .eyebrow {
