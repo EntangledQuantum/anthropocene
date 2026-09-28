@@ -31,8 +31,9 @@ describe('a bond is a spring', () => {
     expect(thzToMicron(absorptionTHz(HCL, I.H, I.Cl35))).toBeCloseTo(3.48, 1);
     expect(thzToMicron(absorptionTHz(HCL, I.D, I.Cl35))).toBeCloseTo(4.80, 1);
   });
-  it('the absorbed line sits below the harmonic one: the well softens as it widens', () => {
+  it('the absorbed line sits about 4% below the harmonic one: the well softens as it widens', () => {
     expect(absorptionTHz(HCL, I.H, I.Cl35)).toBeLessThan(harmonicTHz(HCL, I.H, I.Cl35));
+    expect(harmonicTHz(HCL, I.H, I.Cl35) / absorptionTHz(HCL, I.H, I.Cl35)).toBeCloseTo(1.04, 2);
   });
   it('the fit is judgeable: a parabola centred between the walls 0.5 eV up is within 15% of the curvature, one hugging a single wall is not', () => {
     const k = 2 * HCL.De * HCL.a ** 2;
@@ -78,10 +79,17 @@ describe('the reduced mass', () => {
     expect(isotopeRatio([I.H, I.Cl37], [I.H, I.Cl35])).toBeLessThan(1.001);   // H³⁵Cl → H³⁷Cl
     expect(isotopeRatio([I.C13, I.O16], [I.C12, I.O16])).toBeLessThan(1.03);  // ¹²CO → ¹³CO
   });
-  it('the gas absorbs fully on its line and hardly at all 10% away', () => {
+  it('scaling the H–Cl line by 1/√2 or by the harmonic ratio lands within 2 THz of D–Cl; by 1/2 or by 1 does not', () => {
+    const fh = absorptionTHz(HCL, I.H, I.Cl35), fd = absorptionTHz(HCL, I.D, I.Cl35);
+    expect(Math.abs(fh / Math.SQRT2 - fd)).toBeLessThan(2);
+    expect(Math.abs(fh * isotopeRatio([I.H, I.Cl35], [I.D, I.Cl35]) - fd)).toBeLessThan(2);
+    expect(Math.abs(fh / 2 - fd)).toBeGreaterThan(10);
+    expect(Math.abs(fh - fd)).toBeGreaterThan(10);
+  });
+  it('the gas absorbs fully on its line and hardly at all 15% away', () => {
     const f0 = absorptionTHz(HCL, I.D, I.Cl35);
     expect(absorbed(f0, f0)).toBe(1);
-    expect(absorbed(f0 * 1.1, f0)).toBeLessThan(0.05);
+    expect(absorbed(f0 * 1.15, f0)).toBeLessThan(0.05);
   });
 });
 
@@ -180,6 +188,7 @@ describe('warming a semiconductor and a metal', () => {
     expect(si).toBeGreaterThan(80);
     expect(si).toBeLessThan(160);
     expect(copperConductanceRatio(373.15)).toBeCloseTo(0.786, 3);
+    expect(Math.round(si)).toBe(116);
   });
   it('copper’s resistance rises linearly with T in the simple phonon model', () => {
     const r = [250, 300, 350, 400].map(copperResistivity);
@@ -192,6 +201,10 @@ describe('warming a semiconductor and a metal', () => {
     expect(v).toBeGreaterThan(1.08e21);
     expect(v).toBeLessThan(1e23);
     expect(volumePerFreeElectron(293.15) / v).toBeLessThan(1e-35);
+    expect(v / 1.083e21).toBeCloseTo(4.4, 0); // four Earths
+    const decades = Math.log10(v / volumePerFreeElectron(293.15));
+    expect(decades).toBeGreaterThan(37);
+    expect(decades).toBeLessThan(38);
   });
   it('in silicon at 20 °C the same one electron has a speck about 6 µm across to itself', () => {
     expect(Math.cbrt(volumePerFreeElectron(293.15)) * 1e6).toBeCloseTo(5.8, 0);

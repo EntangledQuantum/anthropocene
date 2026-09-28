@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { SG, countInCup, deflectionMM, fireAtoms, type Beam } from '../../lib/physics/stern-gerlach.ts';
-import { C, CheckBar, Handle, Meter, SceneCard, Stage, useTask, type StageApi, type Vec } from './scene.tsx';
+import { C, CheckBar, Handle, Meter, SceneCard, Stage, useTask, type Vec } from './scene.tsx';
 
 /**
  * Stern–Gerlach. Silver atoms from an oven fly through a magnet whose field is
@@ -74,9 +74,7 @@ export default function SplitTheBeam({ id, prompt, axisDeg = 0, cup, cupStart = 
       </div>}>
       <div style={{ display: 'grid', gridTemplateColumns: 'minmax(0, 1fr) minmax(0, 2.6fr)', gap: 14, alignItems: 'center' }}>
         <div>
-          <Stage x={[-1, 1]} y={[-1.25, 1.25]} height={300} equal label={`The magnet seen from the oven, knife edge at ${axisDeg} degrees`}>
-            {(s) => <Magnet s={s} deg={axisDeg} />}
-          </Stage>
+          <Magnet deg={axisDeg} />
           <p className="hud-label" style={{ margin: '4px 0 0', textAlign: 'center' }}>magnet, seen from the oven</p>
         </div>
         <div>
@@ -107,21 +105,26 @@ export default function SplitTheBeam({ id, prompt, axisDeg = 0, cup, cupStart = 
 }
 
 /** The pole pieces end on: a knife edge (N) over a groove (S), rotated so the
- *  knife edge points along the axis. The field is strongest at the edge. */
-function Magnet({ s, deg }: { s: StageApi; deg: number }) {
+ *  knife edge points along the axis. The field is strongest at the edge. A
+ *  picture, not to scale: its own small SVG, so it stays legible in a narrow column. */
+function Magnet({ deg }: { deg: number }) {
+  const S = 80; // px per unit
+  const cx = 110, cy = 120;
   const a = (deg * Math.PI) / 180;
   const rot = (p: Vec): Vec => [p[0] * Math.cos(a) + p[1] * Math.sin(a), -p[0] * Math.sin(a) + p[1] * Math.cos(a)];
-  const path = (pts: Vec[]) => pts.map((p, i) => { const q = rot(p); return `${i ? 'L' : 'M'}${s.sx(q[0])},${s.sy(q[1])}`; }).join('') + 'Z';
-  const knife: Vec[] = [[-0.75, 1.05], [0.75, 1.05], [0.75, 0.55], [0.08, 0.2], [-0.08, 0.2], [-0.75, 0.55]];
-  const groove: Vec[] = [[-0.75, -1.05], [0.75, -1.05], [0.75, -0.3], [0.25, -0.3], [0, -0.52], [-0.25, -0.3], [-0.75, -0.3]];
-  const nAt = rot([0, 0.72]), sAt = rot([0, -0.8]);
-  const tip = rot([0, 0.17]), tail = rot([0, -0.22]);
-  return <g>
+  const px = (p: Vec): Vec => { const q = rot(p); return [cx + q[0] * S, cy - q[1] * S]; };
+  const path = (pts: Vec[]) => pts.map((p, i) => { const q = px(p); return `${i ? 'L' : 'M'}${q[0]},${q[1]}`; }).join('') + 'Z';
+  const knife: Vec[] = [[-0.75, 1.3], [0.75, 1.3], [0.75, 0.6], [0.08, 0.2], [-0.08, 0.2], [-0.75, 0.6]];
+  const groove: Vec[] = [[-0.75, -1.3], [0.75, -1.3], [0.75, -0.3], [0.25, -0.3], [0, -0.52], [-0.25, -0.3], [-0.75, -0.3]];
+  const nAt = px([0, 0.85]), sAt = px([0, -0.95]);
+  const tip = px([0, 0.17]), tail = px([0, -0.25]);
+  return <svg viewBox="0 0 220 240" role="img" aria-label={`The magnet seen from the oven, knife edge at ${deg} degrees`}
+    style={{ width: '100%', maxWidth: 220, display: 'block', margin: '0 auto', fontFamily: 'var(--font-sans)' }}>
     <path d={path(knife)} fill={C.surface} stroke={C.soft} strokeWidth={2} />
     <path d={path(groove)} fill={C.surface} stroke={C.soft} strokeWidth={2} />
-    <text x={s.sx(nAt[0])} y={s.sy(nAt[1]) + 5} textAnchor="middle" fontSize={14} fontWeight={600} fill={C.soft}>N</text>
-    <text x={s.sx(sAt[0])} y={s.sy(sAt[1]) + 5} textAnchor="middle" fontSize={14} fontWeight={600} fill={C.soft}>S</text>
-    <line x1={s.sx(tail[0])} y1={s.sy(tail[1])} x2={s.sx(tip[0])} y2={s.sy(tip[1])} stroke={C.field} strokeWidth={2} strokeDasharray="3 3" />
-    <circle cx={s.sx(0)} cy={s.sy(0)} r={4} fill={C.position} />
-  </g>;
+    <text x={nAt[0]} y={nAt[1] + 6} textAnchor="middle" fontSize={17} fontWeight={600} fill={C.soft}>N</text>
+    <text x={sAt[0]} y={sAt[1] + 6} textAnchor="middle" fontSize={17} fontWeight={600} fill={C.soft}>S</text>
+    <line x1={tail[0]} y1={tail[1]} x2={tip[0]} y2={tip[1]} stroke={C.field} strokeWidth={2} strokeDasharray="3 3" />
+    <circle cx={cx} cy={cy} r={5} fill={C.position} />
+  </svg>;
 }

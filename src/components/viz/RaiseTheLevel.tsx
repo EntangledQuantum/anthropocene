@@ -1,5 +1,5 @@
 import { useMemo, useRef, useState } from 'react';
-import { INFINITE_WELL, countNodes, eigenEnergies, farWallMiss, normalise, shootBox, tallWallTail } from '../../lib/physics/quantum1d.ts';
+import { INFINITE_WELL, eigenEnergies, farWallMiss, normalise, shootBox, tallWallTail } from '../../lib/physics/quantum1d.ts';
 import { C, CheckBar, Handle, Meter, SceneCard, Stage, useTask } from './scene.tsx';
 import { EnergyLine, Wall, pts, truncateAt, useSvgId } from './quantum-kit.tsx';
 
@@ -43,10 +43,13 @@ export default function RaiseTheLevel({ id, prompt, start = 0, target, explanati
 
   const shot = useMemo(() => {
     const s = shootBox(E, L, 300);
-    return { xs: s.xs, psi: normalise(s.xs, s.psi), miss: farWallMiss(s), nodes: countNodes(s.psi) };
+    return { xs: s.xs, psi: normalise(s.xs, s.psi), miss: farWallMiss(s) };
   }, [E]);
   const fits = Math.abs(shot.miss) < FIT;
-  const level = shot.nodes + 1;
+  // Which level it fits as: the nearest energy at which shooting lands on zero.
+  // (Counting crossings would be fooled by a crossing a hair before the far wall.)
+  const level = levels.reduce((best, El, i) => (Math.abs(El - E) < Math.abs(levels[best] - E) ? i : best), 0) + 1;
+  const crossings = level - 1;
   if (fits) found.current.add(level);
 
   const end = shot.psi[shot.psi.length - 1];
@@ -59,7 +62,7 @@ export default function RaiseTheLevel({ id, prompt, start = 0, target, explanati
   const sign = (v: number) => `${v >= 0 ? '+' : '−'}${Math.abs(v).toFixed(2)}`;
   const miss = !fits
     ? `At ${E.toFixed(2)} eV the wave reaches the far wall at ${sign(shot.miss)} of its peak, not zero, and runs away inside the wall.`
-    : `At ${E.toFixed(2)} eV the wave fits with ${shot.nodes} crossing${shot.nodes === 1 ? '' : 's'}: that is level ${level}. ${level < (target ?? 0) ? 'The next one is higher.' : 'Look lower.'}`;
+    : `At ${E.toFixed(2)} eV the wave fits with ${crossings} crossing${crossings === 1 ? '' : 's'}: that is level ${level}. ${level < (target ?? 0) ? 'The next one is higher.' : 'Look lower.'}`;
 
   return (
     <SceneCard id={graded ? id : undefined} prompt={prompt}

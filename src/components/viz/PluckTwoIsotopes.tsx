@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from 'react';
-import { HCL, ISOTOPES, atomOffsets, harmonicTHz } from '../../lib/physics/solids.ts';
+import { HCL, ISOTOPES, absorptionTHz, atomOffsets } from '../../lib/physics/solids.ts';
 import { C, Meter, SceneCard } from './scene.tsx';
 
 /**
@@ -10,7 +10,8 @@ import { C, Meter, SceneCard } from './scene.tsx';
  * travelling. Counters tally whole vibrations, and the two fall out of step
  * at once.
  *
- * Ungraded: the payoff for the opening bet. Physics: harmonicTHz and
+ * Each rings at the frequency its gas absorbs. Ungraded: the payoff for the
+ * opening bet. Physics: absorptionTHz and
  * atomOffsets in src/lib/physics/solids.ts.
  */
 export interface PluckTwoIsotopesProps {
@@ -27,7 +28,7 @@ const ROWS = [
 ];
 
 export default function PluckTwoIsotopes({ prompt }: PluckTwoIsotopesProps) {
-  const f = ROWS.map((r) => harmonicTHz(HCL, ISOTOPES[r.light], ISOTOPES.Cl35));
+  const f = ROWS.map((r) => absorptionTHz(HCL, ISOTOPES[r.light], ISOTOPES.Cl35));
   const t0 = useRef(performance.now());
   const atoms = useRef<(SVGGElement | null)[]>([]);
   const springs = useRef<(SVGPolylineElement | null)[]>([]);
@@ -65,7 +66,7 @@ export default function PluckTwoIsotopes({ prompt }: PluckTwoIsotopesProps) {
         <span style={{ marginLeft: 'auto', display: 'flex', gap: 22, flexWrap: 'wrap' }}>
           <Meter label="H–Cl rings at" value={f[0].toFixed(1)} unit="THz" color={C.position} />
           <Meter label="D–Cl rings at" value={f[1].toFixed(1)} unit="THz" color={C.position} />
-          <Meter label="D–Cl ÷ H–Cl" value={(f[1] / f[0]).toFixed(3)} />
+          <Meter label="D–Cl ÷ H–Cl" value={(f[1] / f[0]).toFixed(2)} />
         </span>
       </div>}>
       <svg viewBox="0 0 640 250" role="img" aria-label={`Two molecules vibrating. H–Cl has made ${count[0]} vibrations, D–Cl ${count[1]}.`}

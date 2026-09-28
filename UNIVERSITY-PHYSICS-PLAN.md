@@ -69,7 +69,7 @@ Tick when the chapter has its two flagship lessons live.
 - [x] 33 The Nature and Propagation of Light
 - [x] 34 Geometric Optics
 - [x] 35 Interference
-- [ ] 36 Diffraction
+- [x] 36 Diffraction
 
 ### Modern
 - [x] 37 Relativity

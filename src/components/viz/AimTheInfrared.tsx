@@ -25,7 +25,7 @@ const F_DCL = absorptionTHz(HCL, ISOTOPES.D, ISOTOPES.Cl35);
 const XR: [number, number] = [30, 100];
 const MOLS = [[170, 60], [230, 102], [290, 52], [340, 96], [400, 64], [445, 108], [200, 140], [380, 140]];
 
-export default function AimTheInfrared({ id, prompt, tolerance = 1.5, explanation }: AimTheInfraredProps) {
+export default function AimTheInfrared({ id, prompt, tolerance = 2, explanation }: AimTheInfraredProps) {
   const task = useTask(id, 'aim-the-infrared');
   const [f, setF] = useState(45);
   const [lit, setLit] = useState<number | null>(null);

@@ -120,7 +120,7 @@ export const isotopeRatio = (a: [number, number], b: [number, number]) =>
 /** How strongly a gas soaks up light near one of its lines: a resonance
  *  (Lorentzian) of half-width γ. 1 on the line, ½ at f₀ ± γ. The width is a
  *  display choice for a room-temperature gas cell, not a claim. */
-export const absorbed = (f: number, f0: number, gamma = 1.2) => 1 / (1 + ((f - f0) / gamma) ** 2);
+export const absorbed = (f: number, f0: number, gamma = 2) => 1 / (1 + ((f - f0) / gamma) ** 2);
 
 /** Fraction of the lamp's light that gets through a gas cell thick enough
  *  to take 92% at the centre of the line. */

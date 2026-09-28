@@ -1,0 +1,125 @@
+---
+title: 'The bond is a spring'
+blurb: 'Read a molecule''s vibration off the bottom of its energy well, and predict where an isotope swap moves its infrared line.'
+order: 1
+tier: 'core'
+minutes: 9
+teaches:
+  - 'molecular-vibration'
+  - 'reduced-mass'
+requires:
+  - 'simple-harmonic-motion'
+  - 'potential-force-slope'
+  - 'resonance'
+  - 'photon'
+status: 'live'
+updated: 2026-09-28
+---
+
+<Step>
+
+Hydrogen chloride gas soaks up infrared light at one sharp frequency, the frequency its molecules
+vibrate at. Swap every hydrogen for deuterium: the same electrons, so the same bond, but twice the mass.
+
+<Predict
+  id="up-ch42-isotope-bet"
+  question="What happens to the frequency the molecule vibrates at?"
+  options={[
+    { key: 'same', misconception: 'up-ch42-same-bond-same-frequency', label: 'Nothing: same electrons, same bond', why: 'The bond is the same, so the spring is the same. But the load on one end has doubled, and a heavier load swings slower. Watch D–Cl fall behind within a second.' },
+    { key: 'half', misconception: 'up-ch42-frequency-halves', label: 'It halves: twice the mass', why: 'A spring rings as one over the square root of the mass, not one over the mass. D–Cl vibrates at 62.5 THz, not the 43 THz that halving would give.' },
+    { key: 'root', label: 'It drops to about 0.7 of what it was', why: 'Right. Twice the mass on a spring rings 1/√2 as fast, 0.71. Measured, it is 0.73: the chlorine shares a sliver of the motion, and the well is not quite a parabola.' },
+    { key: 'faster', label: 'It rises: the heavier atom stores more energy', why: 'For the same stretch the spring stores the same energy whatever is on the end. The heavier atom just carries it through each swing more slowly.' },
+  ]}
+  correct="root"
+>
+
+<PluckTwoIsotopes prompt="Both molecules were plucked at the same instant. Count the vibrations." />
+
+</Predict>
+
+</Step>
+
+<Step>
+
+## Find the D–Cl line
+
+The H–Cl gas absorbed at 86.1 THz. Now a cell of D–Cl, and a lamp that stays off while you set it.
+
+<AimTheInfrared
+  id="up-ch42-aim-the-infrared"
+  prompt="Set the lamp where D–Cl will absorb, then switch it on."
+  explanation="62.5 THz, 0.73 of the H–Cl line: a wavelength of 4.8 µm instead of 3.5 µm. Chemists use exactly this trick. Put deuterium on one site of a molecule, see which infrared line moves by about 1/√2, and you know which bond that line belonged to."
+/>
+
+</Step>
+
+<Step>
+
+## Hug the bottom
+
+This is the H–Cl bond as chapter 7 drew the argon pair: energy against the distance between the
+atoms. Close to its bottom, every smooth well looks like a spring's parabola.
+
+<HugTheWell
+  id="up-ch42-hug-the-well"
+  prompt="Drag the dashed parabola's wall until it hugs the bottom of the well."
+  explanation="About 517 N/m, a stiff spring. With H–Cl's masses it rings at 89.7 THz, about 4% above the line the gas absorbs; the gap is the well softening as it widens. Further out the two part for good: the parabola climbs forever, while the bond levels off 4.6 eV up. A spring never breaks, and a bond does."
+/>
+
+</Step>
+
+<Step>
+
+## Name it
+
+The stiffness is the curvature at the bottom of the well, and the mass that rings is the reduced mass:
+
+$$k = \left.\frac{d^2U}{dr^2}\right|_{r_e}, \qquad \omega = \sqrt{\frac{k}{\mu}}, \qquad \mu = \frac{m_1 m_2}{m_1 + m_2}$$
+
+For H–Cl, $\mu$ is 0.98 u, less than the hydrogen alone, because the hydrogen does nearly all the moving.
+
+<Recall id="up-ch42-recall-vibration" concept="molecular-vibration">
+  <div slot="front">What sets how fast a bond vibrates: the depth of its well or the shape of its bottom?</div>
+
+  The shape of the bottom. Its curvature is the spring constant, and $\omega = \sqrt{k/\mu}$. The depth
+  only says how much energy breaks the bond.
+</Recall>
+
+</Step>
+
+<Step>
+
+## Only the light atom matters
+
+<Classify
+  id="up-ch42-classify-swaps"
+  prompt="Each swap trades one atom for a heavier isotope. Sort them by what it does to the molecule's infrared line."
+  buckets={[
+    { key: 'big', label: 'Moves it more than 10%', accent: 'magenta' },
+    { key: 'small', label: 'Moves it less than 3%', accent: 'ok' },
+  ]}
+  items={[
+    { key: 'h2d2', label: 'H–H becomes D–D', bucket: 'big', why: 'Both masses double, so μ doubles exactly: the line drops to 1/√2, 29% lower.' },
+    { key: 'h2hd', label: 'H–H becomes H–D', bucket: 'big', why: 'μ goes from 0.50 u to 0.67 u. The line drops 13%.' },
+    { key: 'hidi', label: 'H–I becomes D–I', bucket: 'big', why: 'Iodine is so heavy that μ is almost exactly the hydrogen mass, which doubles: 29% lower.' },
+    { key: 'cl37', label: 'H–³⁵Cl becomes H–³⁷Cl', bucket: 'small', why: 'μ barely notices the chlorine: 0.9796 u becomes 0.9811 u. The line moves by less than 0.1%.' },
+    { key: 'c13o', label: '¹²C–O becomes ¹³C–O', bucket: 'small', why: 'One extra unit on a 12 u atom, with a partner of similar mass: μ rises 5%, the line drops 2%.' },
+  ]}
+  explanation="The reduced mass sits below the lighter atom and follows it. Change the light partner and the line jumps; change the heavy one and it barely stirs."
+/>
+
+<Recall id="up-ch42-recall-reduced-mass" concept="reduced-mass">
+  <div slot="front">Why does swapping ³⁵Cl for ³⁷Cl barely change H–Cl's vibration, when swapping H for D changes it by more than a quarter?</div>
+
+  The frequency depends on $\mu = m_1 m_2/(m_1 + m_2)$, which is close to the lighter mass. The
+  hydrogen does nearly all the moving, so only its mass counts.
+</Recall>
+
+## What to carry forward
+
+- **Near the bottom, every bond is a spring.** Its stiffness is the well's curvature there, and $\omega = \sqrt{k/\mu}$.
+- **The light atom sets the pace.** Doubling it moves the infrared line by about $1/\sqrt2$; changing the heavy one hardly moves it.
+
+Next: bring many atoms together, and each of their levels spreads into a band.
+
+</Step>

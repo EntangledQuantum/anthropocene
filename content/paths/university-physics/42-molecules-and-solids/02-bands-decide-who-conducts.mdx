@@ -1,0 +1,124 @@
+---
+title: 'Bands decide who conducts'
+blurb: 'Watch atomic levels fan into bands, find the filling that carries current, and explain why heat helps silicon and hurts copper.'
+order: 2
+tier: 'core'
+minutes: 11
+teaches:
+  - 'energy-bands'
+  - 'band-filling'
+  - 'band-gap'
+requires:
+  - 'kinetic-temperature'
+  - 'pauli-exclusion'
+  - 'resistance'
+  - 'drift-velocity'
+status: 'live'
+updated: 2026-09-28
+---
+
+<Step>
+
+A copper wire and a pure silicon chip sit on the same battery. You warm both from room temperature to 100 °C.
+
+<Predict
+  id="up-ch42-warm-bet"
+  question="Which one conducts better when it is hot?"
+  options={[
+    { key: 'both-worse', misconception: 'up-ch42-heat-always-hurts', label: 'Both worse: hot atoms jostle and get in the way', why: 'That is the whole story for copper, which drops to 0.79 of its current. In silicon heat also frees electrons, and that wins by a mile: 116 times the current.' },
+    { key: 'both-better', misconception: 'up-ch42-heat-helps-everything', label: 'Both better: heat gives the electrons energy', why: 'Copper’s electrons already have all they need: they are free, and fast. Heat only shakes the lattice harder, and it scatters them more.' },
+    { key: 'split', label: 'Copper worse, silicon far better', why: 'Right. Copper falls to 0.79 of its room-temperature current while silicon climbs 116-fold. The rest of this lesson is why two solids answer heat in opposite directions.' },
+    { key: 'reverse', misconception: 'up-ch42-semiconductor-half-conductor', label: 'Copper better, silicon worse', why: 'Silicon is not a weak copper. It starts with almost no free electrons, and warming it frees them by the billion.' },
+  ]}
+  correct="split"
+>
+
+<WarmTheChip prompt="Drag the thermometer up and watch both samples." />
+
+</Predict>
+
+</Step>
+
+<Step>
+
+## Two atoms, then a crowd
+
+Two identical atoms side by side share their electrons, and each level splits into a pair. Drag
+the second atom to squeeze the row; then bring in more atoms.
+
+<CrowdIntoBands
+  id="up-ch42-crowd-into-bands"
+  ratio={1.9}
+  prompt="Add atoms until the lower band reaches the dashed lines, 1.9 times as wide as the pair's split."
+  explanation="Nine atoms. Each new atom adds one level, but mostly inside the band: the edges creep toward twice the pair's split and never reach it. A real crystal packs 10²³ levels into a band a few eV wide, too close together to tell apart."
+/>
+
+</Step>
+
+<Step>
+
+## Name it
+
+Each atomic level becomes $N$ levels, spread over a band whose width is set by how strongly
+neighbours share an electron, $t$:
+
+$$E_j = \varepsilon_0 - 2t\cos\frac{j\pi}{N+1}, \qquad j = 1, \dots, N$$
+
+A pair splits by $2t$, and no row, however long, gets wider than $4t$.
+
+<Recall id="up-ch42-recall-bands" concept="energy-bands">
+  <div slot="front">Two atoms split a level by 1 eV. Roughly how wide is the band a million of them make?</div>
+
+  Just under 2 eV. The pair's split is $2t$ and a long row's band is $4t$. A million atoms add a
+  million levels, all packed inside.
+</Recall>
+
+</Step>
+
+<Step>
+
+## A full band carries nothing
+
+Each state in a band is a way of moving through the crystal, and it holds two electrons. A push
+from a battery can only move electrons into states that are empty.
+
+<PourTheSea
+  id="up-ch42-pour-the-sea"
+  prompt="Pour in electrons until a push drives the most current."
+  explanation="About one electron per atom: a half-full band, like copper's. The electrons were moving all along, as many left as right; the push tips the balance by moving the top ones into empty states. At two per atom every state is taken, the push shifts the sea onto itself, and nothing flows. That is an insulator, and it is how silicon fills its lower band."
+/>
+
+</Step>
+
+<Step>
+
+## The gap decides
+
+Silicon and diamond are both a full band under an empty one. Only the gap differs: 1.1 eV in
+silicon, 5.5 eV in diamond. Heat lifts electrons across it in numbers that go as
+$e^{-E_g/2kT}$, and at room temperature $kT$ is 0.025 eV.
+
+<Estimate
+  id="up-ch42-diamond-one-electron"
+  scenario="up-ch42-diamond-one-electron"
+  prompt="How big a piece of pure diamond, at 20 °C, holds one electron freed by heat?"
+  explanation="About 5 × 10²¹ m³: four times the volume of the Earth. The extra 4.35 eV of gap, over 2kT = 0.05 eV, is a factor of e⁸⁶, about 10³⁷. A semiconductor is not a half-conductor. It is an insulator whose gap is small enough for heat to leak through, tenfold more for every 35 K or so."
+/>
+
+<Recall id="up-ch42-recall-gap" concept="band-gap">
+  <div slot="front">Warm silicon from 20 °C to 100 °C and its current rises about a hundredfold. Warm copper and it falls. Why the opposite answers?</div>
+
+  Copper's band is half full, so its carriers are all there already; heat only shakes the lattice
+  and scatters them. Silicon's carriers must be lifted across a gap, in numbers that grow as
+  $e^{-E_g/2kT}$, and that swamps the extra scattering.
+</Recall>
+
+## What to carry forward
+
+- **Atoms together make bands.** Each level becomes as many levels as there are atoms, packed into a band about $4t$ wide.
+- **A push needs empty states.** A part-full band conducts; a full one carries nothing, however many electrons it holds.
+- **The gap sets the leak.** Heat frees electrons as $e^{-E_g/2kT}$: a few in silicon, none in diamond.
+
+Next: the nucleus, where a new force keeps its own energy ledger.
+
+</Step>

@@ -68,7 +68,7 @@ export default function CatchTheElectron({ id, prompt, level = 2, shots = 400, e
   const final = { a: dots.filter((d) => Math.abs(d.x - A_AT) <= WIN / 2).length, b: dots.filter((d) => Math.abs(d.x - b) <= WIN / 2).length };
   const miss = !apart
     ? `B is sitting on top of A. Put it somewhere else in the box that clicks as often.`
-    : `B at ${b.toFixed(2)} nm clicked ${final.b} times out of ${shots}; A clicked ${final.a}.`;
+    : `B at ${b.toFixed(2)} nm clicked ${final.b} time${final.b === 1 ? '' : 's'} out of ${shots}; A clicked ${final.a}.`;
 
   const dens = state.psi.map((v) => v * v);
   const densMax = Math.max(...dens);

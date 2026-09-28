@@ -61,11 +61,17 @@ export default function HugTheWell({ id, prompt, tolerance = 0.15, explanation }
           hit={explanation} />}
       </div>}>
       <Stage x={XR} y={YR} height={320} label={`Bond energy of H–Cl and a spring parabola of stiffness ${kSI.toFixed(0)} newtons per metre`}
-        axes={{ x: 'distance between the atoms (Å)', y: 'energy (eV)', xTicks: [1, 1.5, 2], yTicks: [-4.5, -4, -3.5, -3] }}>
+        axes={{ x: 'distance between the atoms (Å)', xTicks: [1, 1.5, 2], yTicks: [-4.5, -4, -3.5, -3] }}>
         {(s) => <>
-          <path d={path(U, XR[0], XR[1], s)} fill="none" stroke={C.energy} strokeWidth={3} />
-          <path d={path((r) => -HCL.De + 0.5 * k * (r - RE) ** 2, XR[0], XR[1], s)} fill="none" stroke={C.position} strokeWidth={2.2} strokeDasharray="7 5" />
+          <clipPath id="ch42-hug-clip">
+            <rect x={s.sx(XR[0])} y={s.sy(YR[1])} width={s.sx(XR[1]) - s.sx(XR[0])} height={s.sy(YR[0]) - s.sy(YR[1])} />
+          </clipPath>
+          <g clipPath="url(#ch42-hug-clip)">
+            <path d={path(U, XR[0], XR[1], s)} fill="none" stroke={C.energy} strokeWidth={3} />
+            <path d={path((r) => -HCL.De + 0.5 * k * (r - RE) ** 2, XR[0], XR[1], s)} fill="none" stroke={C.position} strokeWidth={2.2} strokeDasharray="7 5" />
+          </g>
           <text x={s.sx(2.25)} y={s.sy(U(2.25)) + 22} textAnchor="end" fontSize={13} fill={C.energy}>H–Cl bond</text>
+          <text x={s.sx(XR[1]) - 4} y={s.sy(YR[1]) + 14} textAnchor="end" fontSize={13} fill={C.soft}>energy (eV)</text>
           <text x={s.sx(RE) + 8} y={s.sy(-HCL.De) + 20} fontSize={12} fill={C.faint}>r_e = {RE.toFixed(2)} Å</text>
           <line x1={s.sx(RE)} x2={s.sx(RE)} y1={s.sy(-HCL.De)} y2={s.sy(YR[0])} stroke={C.faint} strokeDasharray="3 4" />
           <Handle s={s} at={[RE + xw, -HCL.De + H_HANDLE]} step={0.01} color={C.position} label="Wall of the spring parabola: drag sideways"
