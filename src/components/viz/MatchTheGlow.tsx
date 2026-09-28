@@ -102,7 +102,7 @@ export default function MatchTheGlow({ id, prompt, start = 100, explanation }: M
         <line x1={ST.x0} x2={ST.x1} y1={py(Math.min(pDC, PMAX))} y2={py(Math.min(pDC, PMAX))} stroke={C.energy} strokeWidth={2.5} strokeDasharray="8 5" />
         <text x={px(0.5)} y={py(Math.min(pDC, PMAX)) - 6} textAnchor="middle" fontSize={12} fill={C.energy}
           stroke="var(--color-surface)" strokeWidth={4} paintOrder="stroke">battery heater</text>
-        <text x={px(0.02)} y={py(1010)} textAnchor="start" fontSize={12} fill={C.energy}
+        <text x={pDC > 850 ? px(0.5) : px(0.02)} y={pDC > 850 ? py(150) : py(1010)} textAnchor={pDC > 850 ? 'middle' : 'start'} fontSize={12} fill={C.energy}
           stroke="var(--color-surface)" strokeWidth={4} paintOrder="stroke">mains heater</text>
         <line ref={cursor} x1={ST.x0} x2={ST.x0} y1={ST.y1} y2={ST.y0} stroke={C.faint} strokeWidth={1} />
       </svg>
