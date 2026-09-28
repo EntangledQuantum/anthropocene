@@ -1,0 +1,132 @@
+---
+title: 'Where the rays meet again'
+blurb: 'Slide a screen until a lens’s image is sharp, find the thin-lens equation in your own measurements, and turn the same lens into a magnifying glass.'
+order: 2
+tier: 'core'
+minutes: 10
+teaches:
+  - 'converging-lens'
+  - 'real-image'
+  - 'thin-lens-equation'
+  - 'lateral-magnification'
+requires:
+  - 'snells-law'
+  - 'virtual-image'
+status: 'live'
+updated: 2026-09-28
+---
+
+<Step>
+
+A candle stands 30 cm from a lens whose focal length is 10 cm. A card on the far side will
+show its image, if you put the card in the right place.
+
+<Predict
+  id="up-ch34-card-bet"
+  question="How far behind the lens must the card be for a sharp image?"
+  options={[
+    { key: 'f', misconception: 'up-ch34-image-at-focal-point', label: '10 cm: at the focal point', why: 'The focal point is where rays arriving level meet, from something very far away. Rays from a candle 30 cm off arrive already spreading, and meet later.' },
+    { key: 'fifteen', label: '15 cm', why: 'Right, and you are about to measure it. Rays from a near candle arrive spreading, so they meet beyond the focal point, not at it.' },
+    { key: 'thirty', label: '30 cm: as far behind as the candle is in front', why: 'That is the flat-mirror rule. For this lens it holds only when the candle is at 20 cm, twice the focal length.' },
+    { key: 'anywhere', label: 'Anywhere past 10 cm: the lens makes it sharp everywhere', why: 'Sharp means every ray from one point of the candle lands on one point of the card. That happens at one distance only; anywhere else each point lands as a blurred spot.' },
+  ]}
+  correct="fifteen"
+/>
+
+</Step>
+
+<Step>
+
+## Drag the screen until it is sharp
+
+The white fan is the light from the candle’s tip, and the aqua bar is where it lands on the
+screen. The card on the right is what the screen shows.
+
+<FocusTheScreen
+  id="up-ch34-focus-screen"
+  prompt="Slide the screen until the image is sharp, then check. Do it for each candle distance."
+  objects={[30, 20, 15]}
+  explanation="15, 20 and 30 cm: the closer the candle, the further away its image, running off toward infinity as the candle nears the focal point. The last column is the same every time, 0.100 per cm, which is 1 over the focal length."
+/>
+
+</Step>
+
+<Step>
+
+## Name it
+
+Your last column is the **thin-lens equation**. The three coloured rays find the same point
+without it: in level and out through F, straight through the centre, in through F and out level.
+
+$$\frac{1}{d_o} + \frac{1}{d_i} = \frac{1}{f} \qquad\qquad m = -\frac{d_i}{d_o}$$
+
+The minus sign in $m$ is the flip you saw: at 15 cm the image was upside down and twice the
+candle’s height, $-30/15$.
+
+<Recall id="up-ch34-recall-lens-equation" concept="thin-lens-equation">
+  <div slot="front">A projector’s lens has f = 10 cm. You move the slide from 12 cm to 11 cm from the lens. Does the screen go nearer or further, and roughly how far?</div>
+
+  Much further. At 12 cm the image forms at 60 cm; at 11 cm, at 110 cm. As the slide nears
+  the focal point the image runs away: $1/d_i = 1/f - 1/d_o$.
+</Recall>
+
+</Step>
+
+<Step>
+
+## Cover half the lens
+
+The image is sharp on the screen. You hold a card over the top half of the lens.
+
+<Predict
+  id="up-ch34-cover-half"
+  question="What happens to the image on the screen?"
+  options={[
+    { key: 'top', misconception: 'up-ch34-cover-half-lens', label: 'The top half of the image disappears', why: 'Every point of the candle sends light through the whole lens. The rays through the bottom half still reach every image point, tip and foot alike.' },
+    { key: 'bottom', misconception: 'up-ch34-cover-half-lens', label: 'The bottom half disappears, because the image is upside down', why: 'A clever flip, and still nothing is cut off. Every image point is made by the whole lens, so any half of the lens makes all of them.' },
+    { key: 'dim', label: 'The whole image stays, only dimmer', why: 'Right: half the rays from every point, so half the light everywhere and nothing missing.' },
+    { key: 'blur', label: 'The whole image stays, but goes blurry', why: 'The rays that remain still meet at the same point, and the screen has not moved. Half a fan is still a fan that closes.' },
+  ]}
+  correct="dim"
+>
+
+<FocusTheScreen
+  prompt="Slide the screen. Wherever it is sharp, the whole candle is there."
+  objects={[20]}
+  screen={20}
+  cover="top"
+/>
+
+</Predict>
+
+<Recall id="up-ch34-recall-real-image" concept="real-image">
+  <div slot="front">What makes an image real, and why does blocking part of the lens not cut a piece out of it?</div>
+
+  The light really meets there, so a screen shows it. Every part of the lens carries light
+  from every point of the object to its image point, so blocking part of the lens only dims
+  the whole image.
+</Recall>
+
+</Step>
+
+<Step>
+
+## Make a magnifying glass
+
+The same lens is now over a postage stamp, with your eye on the far side. A magnifying glass
+shows the stamp bigger and the right way up.
+
+<MakeAMagnifier
+  id="up-ch34-magnifier"
+  prompt="Slide the stamp until its image is upright and twice as tall."
+  explanation="5 cm, half the focal length. Inside f the lens cannot bring the rays together: they leave spreading, and no screen at any distance would catch an image. Your eye traces them straight back to an upright stamp 10 cm from the lens, a virtual image like the one in a mirror, with m = −(−10)/5 = +2."
+/>
+
+## What to carry forward
+
+- **A converging lens brings each point’s rays back to one point**, at $1/d_o + 1/d_i = 1/f$. The closer the object, the further the image.
+- **Outside f the image is real and upside down; inside f it is virtual and upright.** Three rays locate either one without the formula.
+
+Next: stack two lenses, and the first one’s image becomes the second one’s object.
+
+</Step>

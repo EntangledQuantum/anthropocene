@@ -24,7 +24,7 @@ export interface SendTheWaveRightProps {
   explanation?: string;
 }
 
-const LAMBDA = 2, K = Math.PI, SPAN = 6, N = 17, AMP = 0.85;
+const LAMBDA = 2, K = Math.PI, SPAN = 5, N = 15, AMP = 0.85;
 const OX = -0.55, OY = -0.34;   // the z axis (out of the page) drawn down-left
 const SPEED = 0.5;              // world units of ct per real second while running
 const S_ROW = -1.7;
@@ -99,7 +99,7 @@ export default function SendTheWaveRight({ id, prompt, startPhase = 90, explanat
             : `B's crests sit ${outBy.toFixed(0)}° out of step with E's, so ${(left * 100).toFixed(0)}% of the energy runs left.`}
           hit={explanation} />}
       </div>}>
-      <Stage x={[-0.9, 7.2]} y={[-2.15, 1.45]} height={330} equal
+      <Stage x={[-1.0, 6.2]} y={[-2.15, 1.45]} height={330} equal
         label={`A frozen electromagnetic wave. B's crests sit ${outBy.toFixed(0)} degrees out of step with E's.`}>
         {(s) => {
           api.current = s;
@@ -111,8 +111,8 @@ export default function SendTheWaveRight({ id, prompt, startPhase = 90, explanat
             })()}
             {/* axes: travel, E, B */}
             <line x1={s.sx(-0.5)} x2={s.sx(SPAN + 0.3)} y1={s.sy(0)} y2={s.sy(0)} stroke={C.rule} strokeWidth={1.5} />
-            <text x={s.sx(-0.55)} y={s.sy(AMP) + 5} textAnchor="end" fontSize={15} fontWeight={600} fill={C.field}>E</text>
-            <text x={s.sx(-0.35 + AMP * OX)} y={s.sy(AMP * OY) + 5} textAnchor="end" fontSize={15} fontWeight={600} fill={C.ink}>B</text>
+            <text x={s.sx(-0.3)} y={s.sy(AMP) + 5} textAnchor="end" fontSize={15} fontWeight={600} fill={C.field}>E</text>
+            <text x={s.sx(-0.3 + AMP * OX)} y={s.sy(AMP * OY) + 5} textAnchor="end" fontSize={15} fontWeight={600} fill={C.ink}>B</text>
             <polyline ref={(el) => { els.current.eCurve = el; }} fill="none" stroke={C.field} strokeWidth={1.4} opacity={0.6} />
             <polyline ref={(el) => { els.current.bCurve = el; }} fill="none" stroke={C.ink} strokeWidth={1.4} opacity={0.45} />
             {Array.from({ length: N }, (_, i) => <g key={i}>

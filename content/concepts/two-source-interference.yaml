@@ -1,0 +1,14 @@
+title: 'Two-source interference'
+blurb: 'Two sources in step fill space with a fixed pattern: lines where the waves always stack, and lines between where a crest from one always meets a trough from the other and nothing moves at all.'
+notation: 'y = y_1 + y_2,\qquad A_{\text{here}} = 2A\,\bigl|\cos(\pi\,\Delta r/\lambda)\bigr|'
+tags:
+  - 'up-ch35'
+misconceptions:
+  - id: 'up-ch35-two-louder-everywhere'
+    name: 'Two sources playing the same note are louder everywhere than one.'
+    signal: 'Adds loudness like adding lamps: expects no quiet places anywhere.'
+    correction: 'Waves add as heights, which can be negative. Where a crest from one always arrives with a trough from the other, the sum is zero at every instant, and those places join into whole lines.'
+  - id: 'up-ch35-quiet-on-midline'
+    name: 'The quiet place is halfway between the two sources.'
+    signal: 'Picks the centre line as where the waves cancel.'
+    correction: 'On the centre line both waves travel the same distance and arrive crest with crest. It is the loudest line in the pattern. The quiet lines sit to either side, where one path is half a wavelength longer.'

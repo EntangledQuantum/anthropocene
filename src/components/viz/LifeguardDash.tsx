@@ -64,7 +64,7 @@ export default function LifeguardDash({ id, prompt, run = BEACH.run, swim = BEAC
       <Stage x={[-8, 58]} y={[-17, 19]} height={360} equal
         label={`Beach. The lifeguard enters the water ${x.toFixed(1)} metres along and reaches the swimmer in ${T.toFixed(2)} seconds.`}>
         {(s) => <>
-          <rect x={s.sx(s.x[0])} y={s.sy(19)} width={s.sx(s.x[1]) - s.sx(s.x[0])} height={s.sy(0) - s.sy(19)} fill="var(--color-raised)" />
+          <rect x={s.sx(s.x[0])} y={s.sy(19)} width={s.sx(s.x[1]) - s.sx(s.x[0])} height={s.sy(0) - s.sy(19)} fill="color-mix(in oklab, var(--color-amber) 7%, var(--color-surface))" />
           <Medium s={s} x={[s.x[0], s.x[1]]} y={[-17, 0]} fill={WATER_FILL} />
           <text x={s.sx(s.x[1]) - 8} y={s.sy(0) - 8} textAnchor="end" fontSize={13} fill={C.soft}>sand: run at {run} m/s</text>
           <text x={s.sx(s.x[1]) - 8} y={s.sy(0) + 20} textAnchor="end" fontSize={13} fill={C.soft}>water: swim at {swim} m/s</text>
@@ -76,13 +76,13 @@ export default function LifeguardDash({ id, prompt, run = BEACH.run, swim = BEAC
           </>}
           <path d={`M${s.sx(A[0])},${s.sy(A[1])}L${s.sx(x)},${s.sy(0)}L${s.sx(B[0])},${s.sy(B[1])}`} fill="none" stroke={C.position} strokeWidth={3} strokeLinejoin="round" />
           <Body s={s} at={A} w={2.6} round color={C.ink} />
-          <text x={s.sx(A[0]) + 14} y={s.sy(A[1]) + 5} fontSize={13} fill={C.ink}>lifeguard</text>
+          <text x={s.sx(A[0]) + 22} y={s.sy(A[1]) + 5} fontSize={13} fill={C.ink}>lifeguard</text>
           <Body s={s} at={B} w={2.6} round color={C.ink} />
-          <text x={s.sx(B[0]) - 14} y={s.sy(B[1]) + 5} textAnchor="end" fontSize={13} fill={C.ink}>swimmer</text>
+          <text x={s.sx(B[0]) - 22} y={s.sy(B[1]) + 5} textAnchor="end" fontSize={13} fill={C.ink}>swimmer</text>
           <Handle s={s} at={[x, 0]} step={0.5} label="Where you enter the water: drag along the waterline" clamp={(p) => [p[0], 0]} onChange={set} color={C.position} />
         </>}
       </Stage>
-      <Stage x={[0, 54]} y={[Tbest - 0.4, tMax + 0.2]} height={140} axes={{ x: 'where you enter the water (m)', y: 'time (s)' }}
+      <Stage x={[0, 54]} y={[Tbest - 0.6, tMax + 0.2]} height={170} axes={{ x: 'where you enter the water (m)', y: 'time (s)', yTicks: [16, 18, 20, 22, 24], xTicks: [0, 10, 20, 30, 40, 50] }}
         label="Time to the swimmer for every entry point you have tried">
         {(p) => tried.map((v) => <circle key={v} cx={p.sx(v)} cy={p.sy(pathTime(A, B, v, run, swim))} r={v === x ? 6 : 4}
           fill={v === x ? C.position : C.surface} stroke={C.position} strokeWidth={2} />)}

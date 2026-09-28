@@ -25,7 +25,7 @@ export interface StepBackFromMirrorProps {
 
 const EYE_DX = 0.055; // the eye sits a little in front of the body's centre line
 
-export default function StepBackFromMirror({ prompt, bottom = 1.2, top = 1.9, height = 1.8, eye = 1.68 }: StepBackFromMirrorProps) {
+export default function StepBackFromMirror({ prompt, bottom = 1.3, top = 1.9, height = 1.8, eye = 1.68 }: StepBackFromMirrorProps) {
   const [d, setD] = useState(0.8);
   const E: Vec = [-d + EYE_DX, eye];
   const band = visibleBand(E, 0, bottom, top);

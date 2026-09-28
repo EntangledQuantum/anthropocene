@@ -1,0 +1,119 @@
+---
+title: 'Half a mirror is enough'
+blurb: 'Cut a wall mirror down to the least glass that shows you whole, find where a lamp’s reflection really is, and say why stepping back shows you no more of yourself.'
+order: 1
+tier: 'core'
+minutes: 9
+teaches:
+  - 'plane-mirror-image'
+  - 'virtual-image'
+requires:
+  - 'law-of-reflection'
+status: 'live'
+updated: 2026-09-28
+---
+
+<Step>
+
+A mirror on your wall shows you from the hips up when you stand close to it. You want to
+see your shoes.
+
+<Predict
+  id="up-ch34-step-back-bet"
+  question="You walk backward across the room, still facing the mirror. What do you see of yourself?"
+  options={[
+    { key: 'more', misconception: 'up-ch34-step-back-see-more', label: 'More of yourself the further you go', why: 'It feels true because you do see more of the room. Drag yourself back below: the shaded band on your body does not move by a centimetre.' },
+    { key: 'same', label: 'Exactly the same part of yourself', why: 'Right. Your image steps back as far as you do, and the sight lines to the mirror’s edges land on the same heights of you at every distance.' },
+    { key: 'less', label: 'Less of yourself: you look smaller', why: 'You do look smaller, but the mirror looks smaller too, in exact step. The band of you it frames stays the same.' },
+    { key: 'far', label: 'The same at first, then all of you once you are far enough away', why: 'No distance works. The band depends only on the heights of the mirror’s edges and of your eye.' },
+  ]}
+  correct="same"
+>
+
+<StepBackFromMirror prompt="Drag yourself toward the mirror and away from it." />
+
+</Predict>
+
+</Step>
+
+<Step>
+
+## Cut the glass down
+
+You stand 1.2 m from the wall, and the mirror is yours to resize.
+
+<TrimTheMirror
+  id="up-ch34-trim-mirror"
+  prompt="Drag the mirror’s top and bottom edges to the smallest mirror that shows all of you."
+  distance={1.2}
+  explanation="0.90 m of glass, half your height, with its bottom edge 0.84 m up: halfway between the floor and your eye. The light from your toes meets the glass halfway up to your eye, and the light from the top of your head halfway down to it. Neither halfway point cares how far away you stand."
+/>
+
+</Step>
+
+<Step>
+
+## Name it
+
+Every dashed line ran on to a person behind the glass: your **image**, as far behind the
+mirror as you are in front, the same size and the same way up. The light from your toes and
+your head crosses the glass halfway to that image, so the glass need only be half as tall as you.
+
+$$d_\text{image} = d_\text{object} \qquad\qquad \text{least mirror} = \tfrac12\,\text{your height}$$
+
+<Recall id="up-ch34-recall-half-mirror" concept="plane-mirror-image">
+  <div slot="front">A shop fits a 60 cm mirror so a 1.70 m customer sees her whole outfit. Is that enough, and does it help to step back?</div>
+
+  No, and no. She needs 85 cm, half her height, with its bottom edge halfway up to her eye.
+  Stepping back changes nothing: her image steps back with her.
+</Recall>
+
+</Step>
+
+<Step>
+
+## Where the lamp is
+
+Ana and Ben look at one lamp in a long mirror, and each sees it at a different spot on the glass.
+
+<FindTheMirrorImage
+  id="up-ch34-find-image"
+  prompt="Drag the marker to where the lamp’s image is."
+  explanation="1.10 m behind the glass, straight across from the lamp. That is where the light reaching every eye seems to come from, yet no light has ever been there: it is a virtual image. A screen put there, inside the wall, would show nothing."
+/>
+
+<Recall id="up-ch34-recall-virtual" concept="virtual-image">
+  <div slot="front">What makes an image virtual, and could a screen show it?</div>
+
+  The light only seems to come from it: the rays reaching your eye, traced straight back,
+  cross there, but no light ever does. A screen there shows nothing. Your eye and a camera
+  can still use it.
+</Recall>
+
+</Step>
+
+<Step>
+
+## Focus on the reflection
+
+You stand 2 m from a mirror and photograph your reflection with a camera you focus by hand.
+
+<Predict
+  id="up-ch34-focus-reflection"
+  question="What distance do you set the focus to?"
+  options={[
+    { key: 'glass', misconception: 'up-ch34-image-on-mirror-surface', label: '2 m, the distance to the glass', why: 'Focus there and the frame, the smudges and the dust on the glass come out sharp, and you come out soft. The camera sees your light coming from behind the glass.' },
+    { key: 'four', label: '4 m', why: 'Right. Your image stands 2 m behind the glass, so the camera’s light seems to come from 4 m away, and that is what it must focus on.' },
+    { key: 'none', misconception: 'up-ch34-virtual-not-useful', label: 'Nothing works: no light is at a virtual image', why: 'No light is there, but the camera does not need any to be. It only needs the rays to arrive as if from one point, and they do.' },
+  ]}
+  correct="four"
+/>
+
+## What to carry forward
+
+- **A flat mirror puts your image as far behind the glass as you are in front.** It is virtual: light seems to come from it and never reaches it.
+- **Half your height of glass shows all of you**, at any distance.
+
+Next: a lens bends light to a point where a screen *can* catch it.
+
+</Step>

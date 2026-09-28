@@ -1,0 +1,6 @@
+---
+// @graded — with `id`, the scene checks itself: thin the soap film until its top reflects no light.
+import Island, { type DrainTheFilmProps } from '../viz/DrainTheFilm.tsx';
+const props = Astro.props as DrainTheFilmProps;
+---
+<Island client:visible {...props} />

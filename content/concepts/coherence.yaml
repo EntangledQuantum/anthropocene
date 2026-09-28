@@ -1,0 +1,10 @@
+title: 'Coherence'
+blurb: 'Two sources make a steady pattern only if they stay in step. Two separate lamps, or two motors that drift, make a pattern that sweeps away faster than it can be seen, and the average is the plain sum.'
+notation: '\Delta\phi(t) = \text{const}'
+tags:
+  - 'up-ch35'
+misconceptions:
+  - id: 'up-ch35-any-two-sources-interfere'
+    name: 'Any two sources of the same colour make a steady interference pattern.'
+    signal: 'Expects two ordinary lamps side by side to paint stripes on a wall.'
+    correction: 'The quiet lines sit where the waves arrive opposite, which depends on the sources'' timing as well as on distance. If the timing drifts, the lines sweep and every spot averages to the plain sum. Young used one lamp and two slits so both waves came from the same crest.'

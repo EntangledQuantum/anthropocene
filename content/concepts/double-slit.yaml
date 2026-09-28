@@ -1,0 +1,14 @@
+title: 'Double-slit interference'
+blurb: 'Light through two narrow slits paints evenly spaced stripes on a distant wall, a distance λL/d apart. Read backwards, the stripes measure a wavelength far too small to see.'
+notation: 'y_m \approx \frac{m\lambda L}{d},\qquad \Delta y = \frac{\lambda L}{d}'
+tags:
+  - 'up-ch35'
+misconceptions:
+  - id: 'up-ch35-intensities-add'
+    name: 'Blocking one slit can only make every spot on the wall dimmer.'
+    signal: 'Adds brightnesses rather than waves.'
+    correction: 'A dark stripe is dark because two waves cancel there. Take one away and the other arrives unopposed: the dark stripe lights up.'
+  - id: 'up-ch35-interference-destroys-energy'
+    name: 'Interference destroys energy in the dark stripes.'
+    signal: 'Thinks the dark stripes are light lost.'
+    correction: 'The bright stripes are four times one slit, the dark ones zero, and the average over the wall is exactly twice one slit. The light is moved, not destroyed.'

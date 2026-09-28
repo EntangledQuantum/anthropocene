@@ -59,7 +59,7 @@ export default function TrapTheBeam({ id, prompt, n = N_GLASS, tolerance = 0.75,
         {(s) => <>
           {defs}
           <path d={`M${s.sx(-R)},${s.sy(0)}A${s.len(R)},${s.len(R)} 0 0 0 ${s.sx(R)},${s.sy(0)}Z`} fill={GLASS_FILL} stroke={C.soft} strokeWidth={2} />
-          <text x={s.sx(0)} y={s.sy(-R * 0.55)} textAnchor="middle" fontSize={13} fill={C.soft}>glass, n = {n}</text>
+          <text x={s.sx(6.9)} y={s.sy(-6.6)} textAnchor="end" fontSize={13} fill={C.soft}>glass, n = {n}</text>
           <text x={s.sx(-6.8)} y={s.sy(4.6)} fontSize={13} fill={C.soft}>air, n = 1</text>
           <Normal s={s} at={[0, 0]} len={4.6} />
           <AngleArc s={s} at={[0, 0]} a0={-Math.PI / 2 - th} a1={-Math.PI / 2} r={52} label={`${deg.toFixed(1)}°`} />

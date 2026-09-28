@@ -36,7 +36,7 @@ function fire(aim: Vec): Shot {
 
 export default function AimTheLaser({ id, prompt, coin = 4.2, tolerance = 0.12, explanation }: AimTheLaserProps) {
   const task = useTask(id, 'aim-the-laser');
-  const [aim, setAim] = useState<Vec>([1.6, 0.4]);
+  const [aim, setAim] = useState<Vec>([1.0, 0.5]);
   const [shots, setShots] = useState<Shot[]>([]);
   const { id: glow, defs } = useGlow();
   const last = shots[shots.length - 1];

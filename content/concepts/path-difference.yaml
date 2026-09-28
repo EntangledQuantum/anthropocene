@@ -1,0 +1,10 @@
+title: 'Path difference'
+blurb: 'How much farther one wave travels than the other to reach a point. Whole wavelengths of difference bring crest onto crest; half-integer wavelengths bring crest onto trough.'
+notation: '\Delta r = r_2 - r_1:\quad \Delta r = m\lambda\ \text{loud},\quad \Delta r = (m+\tfrac12)\lambda\ \text{still}'
+tags:
+  - 'up-ch35'
+misconceptions:
+  - id: 'up-ch35-lambda-is-dark'
+    name: 'A path difference of one wavelength makes a dark spot.'
+    signal: 'Treats any path difference, or a whole wavelength, as putting the waves out of step.'
+    correction: 'One whole wavelength late is back in step: the crest that arrives is simply the one behind. Only a half-integer number of wavelengths puts crest on trough.'

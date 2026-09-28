@@ -73,7 +73,7 @@ export default function LandTheFringes({ id, prompt, marks = true, explanation }
               {/* barrier with two gaps */}
               {[[-14, -d / 2 - 0.3], [-d / 2 + 0.3, d / 2 - 0.3], [d / 2 + 0.3, 14]].map(([a, b2], i) =>
                 <rect key={i} x={px(-0.35)} width={s.len(0.7)} y={s.sy(b2)} height={s.sy(a) - s.sy(b2)} fill={C.soft} />)}
-              {covered && <rect x={px(-0.6)} width={s.len(1.2)} y={s.sy(d / 2 + 0.6)} height={s.sy(d / 2 - 0.6) - s.sy(d / 2 + 0.6)} fill={C.force} rx={2} />}
+              {covered && <rect x={px(-0.6)} width={s.len(1.2)} y={s.sy(d / 2 + 0.6)} height={s.sy(d / 2 - 0.6) - s.sy(d / 2 + 0.6)} fill={C.ink} rx={2} />}
               {/* the far wall's glow: brightness is intensity */}
               {cells.map((c, i) => <rect key={i} x={px(L)} width={s.len(1)} y={s.sy(c.y) - cellH / 2} height={cellH}
                 fill={C.energy} opacity={Math.min(1, c.I / 4)} />)}

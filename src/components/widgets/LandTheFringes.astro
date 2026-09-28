@@ -1,0 +1,6 @@
+---
+// @graded — with `id`, the scene checks itself: move the far wall until the first loud spots land on the marks.
+import Island, { type LandTheFringesProps } from '../viz/LandTheFringes.tsx';
+const props = Astro.props as LandTheFringesProps;
+---
+<Island client:visible {...props} />

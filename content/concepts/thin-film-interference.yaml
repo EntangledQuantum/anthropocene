@@ -1,0 +1,14 @@
+title: 'Thin-film interference'
+blurb: 'A film reflects twice, from its front and its back. Light meeting a denser medium reflects flipped by half a wave, so a soap film in air is dark where 2nt is a whole number of wavelengths, including where it is thinnest.'
+notation: '2nt = m\lambda\ \text{dark},\qquad 2nt = (m+\tfrac12)\lambda\ \text{bright}\quad\text{(one flip)}'
+tags:
+  - 'up-ch35'
+misconceptions:
+  - id: 'up-ch35-flip-optional'
+    name: 'The phase flip on reflection is an optional detail.'
+    signal: 'Uses 2nt = mλ for bright without asking which surfaces flip.'
+    correction: 'The flip decides the answer. A soap film has one flip, at its front, so its thinnest part is dark. Remove the flip and the same film would be brightest there.'
+  - id: 'up-ch35-too-thin-to-reflect'
+    name: 'A very thin film is dark because there is too little of it to reflect.'
+    signal: 'Explains the black film as missing material.'
+    correction: 'Each surface still reflects about 2% of the light. The two reflections come back as mirror images and cancel, which is why the black film is black at every colour at once.'
