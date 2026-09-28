@@ -3,7 +3,7 @@
  * energy line, a wave drawn on its own energy line). Physics lives in
  * src/lib/physics/quantum1d.ts; this file only draws.
  */
-import { useEffect, useRef } from 'react';
+import { useEffect, useId, useRef } from 'react';
 import { C, type StageApi } from './scene.tsx';
 
 /** Run `cb(dtSeconds)` every animation frame. The callback is read from a ref, so it may close over fresh props. */
@@ -21,6 +21,28 @@ export function useFrame(cb: (dt: number) => void) {
     raf = requestAnimationFrame(tick);
     return () => cancelAnimationFrame(raf);
   }, []);
+}
+
+/** An id safe to use in url(#…). A scene can appear twice on a page (once hidden in a
+ *  Predict payoff), so every pattern or clip id must be unique per instance. */
+export function useSvgId(prefix: string): string {
+  return `${prefix}-${useId().replace(/[^a-zA-Z0-9_-]/g, '')}`;
+}
+
+/** Keep a curve's samples up to where it first leaves [lo, hi], ending exactly on the edge. */
+export function truncateAt(xs: number[], ys: number[], lo: number, hi: number): { xs: number[]; ys: number[] } {
+  const ox: number[] = [], oy: number[] = [];
+  for (let i = 0; i < xs.length; i++) {
+    const y = ys[i];
+    if (y >= lo && y <= hi) { ox.push(xs[i]); oy.push(y); continue; }
+    if (i > 0) {
+      const edge = y > hi ? hi : lo, y0 = ys[i - 1];
+      const t = (edge - y0) / (y - y0);
+      ox.push(xs[i - 1] + t * (xs[i] - xs[i - 1])); oy.push(edge);
+    }
+    break;
+  }
+  return { xs: ox, ys: oy };
 }
 
 /** SVG polyline points for world samples. */

@@ -1,0 +1,132 @@
+---
+title: 'Two to a slot'
+blurb: 'Predict what a magnet does to a beam of silver atoms, fill sodium''s eleven electrons into hydrogen''s standing waves, and say why neon holds on while sodium lets go.'
+order: 2
+tier: 'core'
+minutes: 10
+teaches:
+  - 'electron-spin'
+  - 'pauli-exclusion'
+  - 'electron-configuration'
+requires:
+  - 'atomic-quantum-numbers'
+  - 'hydrogen-wave-function'
+  - 'magnetic-dipole-moment'
+status: 'live'
+updated: 2026-09-28
+---
+
+<Step>
+
+Silver atoms fly from an oven through a magnet that pushes each one according to how much of
+its tiny magnetism lies along the magnet's axis. Each atom's magnetism is that of one electron.
+
+<Predict
+  id="up-ch41-silver-bet"
+  question="What builds up on the glass plate behind the magnet?"
+  options={[
+    { key: 'band', misconception: 'up-ch41-moments-point-anywhere', label: 'One even band: each atom’s magnet points some random way', why: 'That is what compass needles would give. Fire needles below and you get the band; then swap back to silver and fire again.' },
+    { key: 'two', label: 'Two separate spots with nothing between', why: 'Right. Every atom is pushed fully one way or fully the other, which is what Stern and Gerlach saw in 1922.' },
+    { key: 'one', label: 'One spot in the middle: the random pushes average out', why: 'Each atom lands on its own, so nothing averages. Fire below: the middle of the plate stays empty.' },
+    { key: 'three', label: 'Three spots: pushed up, pushed down, not pushed', why: 'An atom whose magnetism came from an l = 1 orbit would give three. Silver’s comes from one electron’s spin: two spots, and the middle stays empty.' },
+  ]}
+  correct="two"
+>
+
+<SplitTheBeam prompt="Fire some atoms, then swap in compass needles and fire again." />
+
+</Predict>
+
+</Step>
+
+<Step>
+
+## Turn the magnet
+
+The magnet is now turned a quarter turn, knife edge to the right. If each atom's magnet
+really pointed up or down, this magnet would find nothing to push.
+
+<SplitTheBeam
+  id="up-ch41-sideways-cup"
+  prompt="Drag the cup to where the atoms will land, then fire."
+  axisDeg={90}
+  cup
+  cupStart={[0, 0.1]}
+  explanation="Two spots again, 0.10 mm to the left and right. Asked along a new axis, each atom still answers fully one way or fully the other. No little arrow hides inside pointing somewhere: along any axis you ask, there are exactly two answers. That two-valued label is spin."
+/>
+
+</Step>
+
+<Step>
+
+## Name it
+
+**Spin** is a fourth label beside n, l and m, with two values: up or down along any axis.
+**Pauli exclusion** says no two electrons in an atom share all four labels, so each standing
+wave (n, l, m) is a box with two places.
+
+$$\text{subshell holds } 2(2\ell+1), \qquad \text{shell holds } 2n^2$$
+
+<Recall id="up-ch41-recall-pauli" concept="pauli-exclusion">
+  <div slot="front">Helium's two electrons fill 1s. Why can't lithium's third electron join them there, when it would have less energy?</div>
+
+  Both 1s places are taken, and a third electron would share all four labels with one already
+  there. Exclusion forbids that outright; it is not repulsion, which only costs energy. So the
+  third electron goes up to 2s, farther out and loosely held.
+</Recall>
+
+</Step>
+
+<Step>
+
+## Build sodium
+
+Sodium has 11 electrons. Each box below is one standing wave, and its halves are the two spins.
+
+<FillTheSlots
+  id="up-ch41-build-sodium"
+  prompt="Place sodium's 11 electrons so the atom has the lowest energy it can."
+  z={11}
+  explanation="Ten electrons fill shells 1 and 2 completely, exactly as in neon. The eleventh has no place left below 3s and sits there alone, outside a closed core of ten."
+/>
+
+</Step>
+
+<Step>
+
+## The sawtooth
+
+Pulling one electron off neon costs 21.6 eV. Pulling one off sodium, one proton heavier, costs
+5.1 eV.
+
+<RankOrder
+  id="up-ch41-rank-ionization"
+  prompt="Rank these atoms by the energy it takes to pull one electron off."
+  lowLabel="easiest"
+  highLabel="hardest"
+  items={[
+    { key: 'li', label: 'Lithium, 3 electrons', why: '5.39 eV. One electron alone in 2s, outside the closed 1s pair.' },
+    { key: 'ne', label: 'Neon, 10 electrons', why: '21.56 eV. Shell 2 is full, and its electrons feel about +5.9 of the nucleus.' },
+    { key: 'na', label: 'Sodium, 11 electrons', why: '5.14 eV. One electron alone in 3s, a shell farther out than lithium’s.' },
+    { key: 'ar', label: 'Argon, 18 electrons', why: '15.76 eV. Closed like neon, but its outer shell is farther out, so it holds a little less tightly.' },
+    { key: 'k', label: 'Potassium, 19 electrons', why: '4.34 eV. One electron alone in 4s, the farthest out of the three lone electrons.' },
+  ]}
+  correct={['k', 'na', 'li', 'ar', 'ne']}
+  explanation="Measured: K 4.34, Na 5.14, Li 5.39, Ar 15.76, Ne 21.56 eV. A closed shell holds tight. The next electron starts a new shell alone, outside a core that cancels most of the nucleus: sodium's outer electron feels about +2.2, against +5.85 for neon's (Slater's screening rules)."
+/>
+
+<Recall id="up-ch41-recall-sodium" concept="electron-configuration">
+  <div slot="front">Sodium has one more proton than neon. Why does it lose an electron for a quarter of the energy?</div>
+
+  Neon's ten electrons fill shells 1 and 2. Sodium's eleventh must start shell 3 on its own,
+  farther out and behind ten electrons that screen all but about +2 of the nucleus.
+</Recall>
+
+## What to carry forward
+
+- **Spin gives two answers along any axis**, and exclusion allows one electron per place: two per standing wave, $2n^2$ per shell.
+- **Filling from the bottom builds the periodic table.** Every row ends in a closed shell that holds tight and starts with one lone electron that lets go.
+
+Next: bring two atoms close together, and their standing waves split into pairs.
+
+</Step>

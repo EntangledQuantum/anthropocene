@@ -1,0 +1,6 @@
+---
+// Ungraded: warm a copper wire and a silicon chip together and watch both currents.
+import Island, { type WarmTheChipProps } from '../viz/WarmTheChip.tsx';
+const props = Astro.props as WarmTheChipProps;
+---
+<Island client:visible {...props} />

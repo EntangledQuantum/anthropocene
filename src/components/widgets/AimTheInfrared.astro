@@ -1,0 +1,6 @@
+---
+// @graded — with `id`, set the lamp to D–Cl's line and switch it on.
+import Island, { type AimTheInfraredProps } from '../viz/AimTheInfrared.tsx';
+const props = Astro.props as AimTheInfraredProps;
+---
+<Island client:visible {...props} />

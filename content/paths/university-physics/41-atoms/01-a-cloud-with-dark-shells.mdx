@@ -1,0 +1,137 @@
+---
+title: 'A cloud with dark shells'
+blurb: 'Find the distance where a hydrogen electron is most likely to be, even though the cloud is densest somewhere else, and read n and l off the dark shells and lines in its standing wave.'
+order: 1
+tier: 'core'
+minutes: 10
+teaches:
+  - 'hydrogen-wave-function'
+  - 'radial-probability'
+  - 'atomic-quantum-numbers'
+requires:
+  - 'born-rule'
+  - 'particle-in-a-box'
+  - 'bohr-model'
+  - 'standing-wave'
+  - 'electron-volt'
+status: 'live'
+updated: 2026-09-28
+---
+
+<Step>
+
+A hydrogen atom sits in its ground state. You get one try with a thin hollow shell, 5 pm
+thick and centred on the nucleus, and it catches the electron if the electron is inside it.
+
+<Predict
+  id="up-ch41-shell-bet"
+  question="What size of shell catches the electron most often?"
+  options={[
+    { key: 'tiny', misconception: 'up-ch41-densest-is-likeliest', label: 'The smallest one, hugging the nucleus: the cloud is densest there', why: 'The cloud is densest there, yes. But a shell that small holds almost no volume. Drag the shell inward below: the density climbs and the catch falls toward zero.' },
+    { key: 'a0', label: 'One about 50 pm in radius', why: 'Right. Going out, the cloud thins while the shell grows as r², and their product peaks at 53 pm.' },
+    { key: 'exact', misconception: 'up-ch41-electron-at-bohr-radius', label: 'Only one at exactly 53 pm; any other size catches nothing', why: '53 pm is the best shell, not the only one. Shells at 30 pm or 100 pm still catch the electron often, because there is no track for it to stay on.' },
+    { key: 'even', label: 'Every size equally, out to the edge of the atom', why: 'The cloud has no edge, and it thins as you go out. Out at 150 pm the shell is huge and still catches only 1%.' },
+  ]}
+  correct="a0"
+>
+
+<CatchTheShell prompt="Drag the shell in and out, and watch both numbers." start={150} />
+
+</Predict>
+
+</Step>
+
+<Step>
+
+## Two bumps
+
+Give the atom 10.2 eV and it rises to the 2s state. Its cloud has a bright core, a dark shell,
+and a faint halo.
+
+<CatchTheShell
+  id="up-ch41-catch-2s"
+  prompt="Leave the shell where it catches the electron most often."
+  n={2}
+  l={0}
+  start={20}
+  explanation="Out at about 280 pm, well beyond the dark shell at 106 pm. The bright core is dense but tiny, and a shell there catches 0.5%. The halo is faint but enormous: it holds 95% of the electron, and the best shell in it catches 1.8%."
+/>
+
+</Step>
+
+<Step>
+
+## Name it
+
+A shell's catch is density times volume: the density $|\psi|^2$, times the shell's area
+$4\pi r^2$, times its thickness. That product is the **radial probability**.
+
+$$P(r)\,dr = |\psi|^2\,4\pi r^2\,dr$$
+
+For the ground state it peaks at $a_0 = 52.9$ pm. Bohr's radius survives as the most likely
+distance, not as a track.
+
+<Recall id="up-ch41-recall-radial" concept="radial-probability">
+  <div slot="front">In hydrogen's ground state |ψ|² is largest at the nucleus. Why is the most likely distance 53 pm and not zero?</div>
+
+  The chance of a distance counts every direction at once: density times the area of the shell,
+  $4\pi r^2$. Near zero the shell has no area, so it catches nothing however dense the cloud is.
+</Recall>
+
+</Step>
+
+<Step>
+
+## Count the dark shells
+
+The ground state has no dark shell and 2s has one. Each state is a standing wave, like a
+drumhead's, and its dark places are nodes where ψ is exactly zero.
+
+<CountTheNodes
+  id="up-ch41-make-4p"
+  prompt="Step n and l until the cloud shows two dark circles and one dark line through the nucleus."
+  start={[1, 0]}
+  target={{ radial: 2, angular: 1 }}
+  explanation="n = 4, l = 1: the 4p state. Every state has n − 1 nodes in all. l of them are sheets through the nucleus, which the slice shows as straight dark lines, and the other n − l − 1 are spheres, which it shows as circles."
+/>
+
+</Step>
+
+<Step>
+
+## Shape is not energy
+
+**n** counts the nodes plus one, **l** counts the ones through the nucleus, and **m**, held at 0
+here, turns the pattern. In hydrogen the energy is $E_n = -13.6\ \text{eV}/n^2$.
+
+<Predict
+  id="up-ch41-3s-3p-3d"
+  question="3s, 3p and 3d look nothing alike. Which takes the most energy to reach from the ground state?"
+  options={[
+    { key: 's', label: '3s: it has the most dark circles', why: 'Dark circles cost nothing extra. What sets the energy in hydrogen is the total number of nodes, n − 1, and all three have two.' },
+    { key: 'd', misconception: 'up-ch41-more-lobes-more-energy', label: '3d: it has the most lobes and the most complicated shape', why: 'Step l from 0 to 2 at n = 3 below and watch the energy meter: it does not move. In hydrogen, shape and energy are separate.' },
+    { key: 'same', label: 'All three take the same', why: 'Right. All three sit at −1.51 eV, 12.09 eV above the ground state. Hydrogen’s energy depends on n alone.' },
+    { key: 'p', label: '3p: halfway between the other two', why: 'There is no gap to be halfway across. All three sit at −1.51 eV.' },
+  ]}
+  correct="same"
+>
+
+<CountTheNodes prompt="Step l at n = 3 and watch the energy." start={[3, 0]} />
+
+</Predict>
+
+<Recall id="up-ch41-recall-nodes" concept="atomic-quantum-numbers">
+  <div slot="front">How many dark spheres does hydrogen's 5d cloud have, and how many dark sheets through the nucleus?</div>
+
+  Two spheres and two sheets. A 5d state has $n - 1 = 4$ nodes: $\ell = 2$ of them pass
+  through the nucleus, and $n - \ell - 1 = 2$ are spheres.
+</Recall>
+
+## What to carry forward
+
+- **The atom is a cloud, and a chance of distance is density times shell area.** Dense is not the same as likely.
+- **n, l and m label a 3D standing wave**: n − l − 1 dark spheres, l dark sheets, and in hydrogen an energy set by n alone.
+
+Next: put eleven electrons into these standing waves, and the tie between 3s, 3p and 3d breaks.
+
+</Step>

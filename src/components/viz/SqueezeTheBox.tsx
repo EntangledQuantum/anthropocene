@@ -1,7 +1,7 @@
 import { useMemo, useState } from 'react';
 import { boxEnergy, normalise, shootBox } from '../../lib/physics/quantum1d.ts';
 import { C, CheckBar, Handle, Meter, SceneCard, Stage, useTask } from './scene.tsx';
-import { EnergyLine, Wall, pts } from './quantum-kit.tsx';
+import { EnergyLine, Wall, pts, useSvgId } from './quantum-kit.tsx';
 
 /**
  * The electron in its lowest level in a 1 nm box, and one control: the
@@ -26,6 +26,7 @@ const Y: [number, number] = [-0.7, 7.7];
 
 export default function SqueezeTheBox({ id, prompt, factor = 4, explanation }: SqueezeTheBoxProps) {
   const task = useTask(id, 'squeeze-the-box');
+  const uid = useSvgId('stb');
   const [L, setL] = useState(L0);
   const [squeezed, setSqueezed] = useState<number | null>(L0);
   const [tries, setTries] = useState<{ L: number; E: number }[]>([]);
@@ -57,15 +58,15 @@ export default function SqueezeTheBox({ id, prompt, factor = 4, explanation }: S
           hit={explanation} />
           : <button type="button" className="anth-btn" onClick={squeeze}>Squeeze</button>}
       </div>}>
-      <Stage x={[-0.25, 1.45]} y={Y} height={380} axes={{ x: 'position (nm)', y: 'energy (eV)', xTicks: [0, 0.25, 0.5, 0.75, 1], yTicks: [0, 1, 2, 3, 4, 5, 6, 7] }}
+      <Stage x={[-0.25, 1.85]} y={Y} height={380} axes={{ x: 'position (nm)', y: 'energy (eV)', xTicks: [0, 0.25, 0.5, 0.75, 1], yTicks: [0, 1, 2, 3, 4, 5, 6, 7] }}
         label={`A box ${L.toFixed(2)} nanometres wide.${showing ? ` Its lowest level is ${E.toFixed(2)} electronvolts.` : ''}`}>
         {(s) => <>
-          <Wall s={s} id="stb-l" x0={-0.12} x1={0} y0={Y[0]} y1={Y[1]} />
-          <Wall s={s} id="stb-r" x0={L + 0.12} x1={L} y0={Y[0]} y1={Y[1]} />
-          <line x1={s.sx(0)} x2={s.sx(1.2)} y1={s.sy(Etarget)} y2={s.sy(Etarget)} stroke={C.faint} strokeWidth={1.2} strokeDasharray="2 5" />
-          <text x={s.sx(1.2)} y={s.sy(Etarget) - 6} textAnchor="end" fontSize={12} fill={C.faint}>target: {factor}× the 1 nm level</text>
-          <line x1={s.sx(0)} x2={s.sx(1)} y1={s.sy(E0)} y2={s.sy(E0)} stroke={C.faint} strokeWidth={1.2} strokeDasharray="3 5" />
-          <text x={s.sx(1)} y={s.sy(E0) + 16} textAnchor="end" fontSize={12} fill={C.faint}>1 nm box: {E0.toFixed(2)} eV</text>
+          <Wall s={s} id={`${uid}-l`} x0={-0.12} x1={0} y0={Y[0]} y1={Y[1]} />
+          <Wall s={s} id={`${uid}-r`} x0={L + 0.12} x1={L} y0={Y[0]} y1={Y[1]} />
+          <line x1={s.sx(0)} x2={s.sx(1.34)} y1={s.sy(Etarget)} y2={s.sy(Etarget)} stroke={C.ink} strokeWidth={1.2} strokeDasharray="2 5" />
+          <text x={s.sx(1.37)} y={s.sy(Etarget) + 4} fontSize={12} fill={C.ink}>target: {factor}×</text>
+          <line x1={s.sx(0)} x2={s.sx(1.34)} y1={s.sy(E0)} y2={s.sy(E0)} stroke={C.faint} strokeWidth={1.2} strokeDasharray="3 5" />
+          <text x={s.sx(1.37)} y={s.sy(E0) + 4} fontSize={12} fill={C.faint}>1 nm box: {E0.toFixed(2)} eV</text>
           {tries.filter((q) => q.L !== squeezed).map((q) => (
             <g key={q.L} opacity={0.55}>
               <line x1={s.sx(q.L)} x2={s.sx(q.L)} y1={s.sy(0)} y2={s.sy(Math.min(q.E, Y[1]))} stroke={C.faint} strokeWidth={1} strokeDasharray="2 3" />

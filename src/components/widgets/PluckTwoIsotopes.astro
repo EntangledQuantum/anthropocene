@@ -1,0 +1,6 @@
+---
+// Ungraded: two isotopes of HCl plucked together, falling out of step.
+import Island, { type PluckTwoIsotopesProps } from '../viz/PluckTwoIsotopes.tsx';
+const props = Astro.props as PluckTwoIsotopesProps;
+---
+<Island client:visible {...props} />

@@ -1,7 +1,7 @@
 import { useMemo, useRef, useState } from 'react';
 import { INFINITE_WELL, countNodes, eigenEnergies, farWallMiss, normalise, shootBox, tallWallTail } from '../../lib/physics/quantum1d.ts';
 import { C, CheckBar, Handle, Meter, SceneCard, Stage, useTask } from './scene.tsx';
-import { EnergyLine, Wall, pts } from './quantum-kit.tsx';
+import { EnergyLine, Wall, pts, truncateAt, useSvgId } from './quantum-kit.tsx';
 
 /**
  * An electron in a 1 nm box with walls it can never climb. One control: the
@@ -26,7 +26,7 @@ export interface RaiseTheLevelProps {
 }
 
 const L = 1;
-const E_MAX = 4;
+const E_MAX = 3.7;
 const SCALE = 0.42;       // eV of picture per unit of normalised ψ (nm^-1/2)
 const TAIL = 0.14;        // nm of wall shown
 const KAPPA = 22;         // how steeply the picture shows the runaway, per nm
@@ -38,6 +38,7 @@ export default function RaiseTheLevel({ id, prompt, start = 0, target, explanati
   const task = useTask(graded ? id : undefined, 'raise-the-level');
   const [E, setE] = useState(start);
   const found = useRef<Set<number>>(new Set());
+  const uid = useSvgId('rtl');
   const levels = useMemo(() => eigenEnergies(INFINITE_WELL, 0, L, 3, { Emax: E_MAX, scan: 800, steps: 800 }), []);
 
   const shot = useMemo(() => {
@@ -51,8 +52,8 @@ export default function RaiseTheLevel({ id, prompt, start = 0, target, explanati
   const end = shot.psi[shot.psi.length - 1];
   const tail = useMemo(() => {
     const xs = Array.from({ length: 41 }, (_, i) => L + (i / 40) * TAIL);
-    return { xs, ys: xs.map((x) => tallWallTail(end, x - L, KAPPA)) };
-  }, [end]);
+    return truncateAt(xs, xs.map((x) => E + SCALE * tallWallTail(end, x - L, KAPPA)), Y[0], Y[1]);
+  }, [end, E]);
 
   const hit = fits && level === target;
   const sign = (v: number) => `${v >= 0 ? '+' : '−'}${Math.abs(v).toFixed(2)}`;
@@ -73,9 +74,8 @@ export default function RaiseTheLevel({ id, prompt, start = 0, target, explanati
       <Stage x={[-0.3, 1.3]} y={Y} height={380} axes={{ x: 'position (nm)', y: 'energy (eV)', xTicks: [0, 0.5, 1], yTicks: [0, 1, 2, 3, 4] }}
         label={`A box one nanometre wide. Energy ${E.toFixed(2)} electronvolts. ${fits ? `The wave fits as level ${level}.` : 'The wave misses the far wall.'}`}>
         {(s) => <>
-          <defs><clipPath id="rtl-clip"><rect x={s.sx(-0.3)} y={s.sy(Y[1])} width={s.sx(1.3) - s.sx(-0.3)} height={s.sy(Y[0]) - s.sy(Y[1])} /></clipPath></defs>
-          <Wall s={s} id="rtl-left" x0={-0.14} x1={0} y0={Y[0]} y1={Y[1]} />
-          <Wall s={s} id="rtl-right" x0={L + TAIL} x1={L} y0={Y[0]} y1={Y[1]} />
+          <Wall s={s} id={`${uid}-l`} x0={-0.14} x1={0} y0={Y[0]} y1={Y[1]} />
+          <Wall s={s} id={`${uid}-r`} x0={L + TAIL} x1={L} y0={Y[0]} y1={Y[1]} />
           {levels.filter((_, i) => found.current.has(i + 1)).map((El, i) => (
             <g key={i}>
               <line x1={s.sx(0)} x2={s.sx(L)} y1={s.sy(El)} y2={s.sy(El)} stroke={C.ok} strokeWidth={1.2} opacity={0.7} />
@@ -83,10 +83,8 @@ export default function RaiseTheLevel({ id, prompt, start = 0, target, explanati
             </g>
           ))}
           <EnergyLine s={s} E={E} from={0} to={L} solid={fits} color={fits ? C.ok : C.energy} />
-          <g clipPath="url(#rtl-clip)">
-            <polyline points={pts(s, shot.xs, shot.psi.map((v) => E + SCALE * v))} fill="none" stroke={C.position} strokeWidth={3} strokeLinejoin="round" />
-            {!fits && <polyline points={pts(s, tail.xs, tail.ys.map((v) => E + SCALE * v))} fill="none" stroke={C.warn} strokeWidth={3} />}
-          </g>
+          <polyline points={pts(s, shot.xs, shot.psi.map((v) => E + SCALE * v))} fill="none" stroke={C.position} strokeWidth={3} strokeLinejoin="round" />
+          {!fits && <polyline points={pts(s, tail.xs, tail.ys)} fill="none" stroke={C.warn} strokeWidth={3} />}
           <circle cx={s.sx(L)} cy={s.sy(E + SCALE * end)} r={5} fill={fits ? C.ok : C.warn} />
           <Handle s={s} at={[-0.22, E]} step={0.01} color={C.energy} label="Energy line: drag up or down"
             clamp={(p) => [-0.22, Math.min(E_MAX, Math.max(0, p[1]))]}

@@ -1,7 +1,7 @@
 import { useMemo, useRef, useState } from 'react';
 import { boxState, densitySampler, probabilityBetween, seededRandom } from '../../lib/physics/quantum1d.ts';
 import { C, CheckBar, Handle, SceneCard, Stage, useTask } from './scene.tsx';
-import { Wall, pts } from './quantum-kit.tsx';
+import { Wall, pts, useSvgId } from './quantum-kit.tsx';
 
 /**
  * The electron sits in one level of a 1 nm box. You cannot see it; you can
@@ -24,10 +24,11 @@ export interface CatchTheElectronProps {
 }
 
 const L = 1, WIN = 0.1, A_AT = 0.25, SCALE = 0.9;
-const STRIP: [number, number] = [-3.3, -2.0];
+const STRIP: [number, number] = [-3.55, -2.25];
 
 export default function CatchTheElectron({ id, prompt, level = 2, shots = 400, explanation }: CatchTheElectronProps) {
   const task = useTask(id, 'catch-the-electron');
+  const uid = useSvgId('cte');
   const state = useMemo(() => boxState(level, L, 400), [level]);
   const click = useMemo(() => densitySampler(state.xs, state.psi), [state]);
   const [b, setB] = useState(0.5);
@@ -76,17 +77,16 @@ export default function CatchTheElectron({ id, prompt, level = 2, shots = 400, e
     <SceneCard id={id} prompt={prompt}
       footer={<CheckBar verdict={task.verdict} done={task.done} label={firing ? 'Firing…' : `Fire ${shots}`} disabled={firing}
         onCheck={fire} miss={miss} hit={explanation} />}>
-      <Stage x={[-0.12, 1.12]} y={[-3.75, 1.75]} height={400}
+      <Stage x={[-0.12, 1.12]} y={[-4.0, 1.75]} height={410}
         label={`The level ${level} wave in a one nanometre box. Detector A at ${A_AT} nanometres, detector B at ${b.toFixed(2)} nanometres.`}>
         {(s) => <>
-          <Wall s={s} id="cte-l" x0={-0.1} x1={0} y0={-1.7} y1={1.7} />
-          <Wall s={s} id="cte-r" x0={L + 0.1} x1={L} y0={-1.7} y1={1.7} />
+          <Wall s={s} id={`${uid}-l`} x0={-0.1} x1={0} y0={-1.7} y1={1.7} />
+          <Wall s={s} id={`${uid}-r`} x0={L + 0.1} x1={L} y0={-1.7} y1={1.7} />
           <line x1={s.sx(0)} x2={s.sx(L)} y1={s.sy(0)} y2={s.sy(0)} stroke={C.grid} />
           <polyline points={pts(s, state.xs, state.psi.map((v) => SCALE * v))} fill="none" stroke={C.position} strokeWidth={3} />
           <text x={s.sx(0.02)} y={s.sy(1.45)} fontSize={14} fill={C.position} fontWeight={600}>ψ</text>
           {/* the detector strip */}
           <rect x={s.sx(0)} y={s.sy(STRIP[1])} width={s.sx(L) - s.sx(0)} height={s.sy(STRIP[0]) - s.sy(STRIP[1])} fill="none" stroke={C.grid} />
-          <text x={s.sx(0)} y={s.sy(STRIP[1]) - 8} fontSize={13} fill={C.faint}>where each electron was found</text>
           {task.done && <polygon fill={C.position} opacity={0.18}
             points={`${s.sx(0)},${s.sy(STRIP[0])} ${pts(s, state.xs, dens.map((d) => STRIP[0] + (d / densMax) * (STRIP[1] - STRIP[0])))} ${s.sx(L)},${s.sy(STRIP[0])}`} />}
           {visible.map((d, i) => <circle key={i} cx={s.sx(d.x)} cy={s.sy(d.y)} r={2.2} fill={C.ink} opacity={0.75} />)}

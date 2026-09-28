@@ -1,0 +1,6 @@
+---
+// @graded — with `id`, fit a spring parabola to the bottom of the H–Cl well.
+import Island, { type HugTheWellProps } from '../viz/HugTheWell.tsx';
+const props = Astro.props as HugTheWellProps;
+---
+<Island client:visible {...props} />

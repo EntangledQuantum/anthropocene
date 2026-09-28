@@ -1,0 +1,6 @@
+---
+// @graded — with `id` and `ratio`, add atoms until the band is that many times the pair's split.
+import Island, { type CrowdIntoBandsProps } from '../viz/CrowdIntoBands.tsx';
+const props = Astro.props as CrowdIntoBandsProps;
+---
+<Island client:visible {...props} />

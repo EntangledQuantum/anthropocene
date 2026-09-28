@@ -47,7 +47,7 @@ describe('the lesson-1 hook: dense is not likely', () => {
     expect(peaks[0] * A0_PM).toBeCloseTo(52.9, 1);
   });
 
-  it('a 5 pm shell at a₀ catches about 5% of the electron, one at 10 pm about 0.5%', () => {
+  it('a 5 pm shell at a₀ catches about 5% of the electron, one at 10 pm under 1%', () => {
     const dr = 5 / A0_PM;
     const atA0 = shellProbability(1, 0, 1 - dr / 2, dr);
     const near = shellProbability(1, 0, 10 / A0_PM - dr / 2, dr);
@@ -84,6 +84,12 @@ describe('the lesson-1 tighten: 2s has two bumps', () => {
     const dr = 5 / A0_PM;
     const [inner, outer] = radialPeaks(2, 0);
     expect(shellProbability(2, 0, outer - dr / 2, dr)).toBeGreaterThan(3 * shellProbability(2, 0, inner - dr / 2, dr));
+  });
+
+  it('95% of the 2s electron lies outside its dark shell at 106 pm', () => {
+    expect(radialNodes(2, 0)[0] * A0_PM).toBeCloseTo(105.8, 1);
+    expect(probabilityBeyond(2, 0, 2)).toBeGreaterThan(0.94);
+    expect(probabilityBeyond(2, 0, 2)).toBeLessThan(0.95);
   });
 
   it('the 2s density is still largest at the nucleus', () => {

@@ -24,7 +24,7 @@ screen. You dim it until only one photon is in the apparatus at a time.
   id="up-ch38-one-at-a-time"
   question="What builds up on the screen?"
   options={[
-    { key: 'bands', misconception: 'up-ch38-photons-on-rays', label: 'Two bright bands, one behind each slit', why: 'That is what little balls through one slit or the other would make. Fire them below and watch where the dots pile up.' },
+    { key: 'bands', label: 'Two bright bands, one behind each slit', why: 'That is what little balls through one slit or the other would make. Fire them below and watch where the dots pile up.' },
     { key: 'faint', misconception: 'up-ch38-duality-both-at-once', label: 'A faint copy of the stripes, brightening evenly', why: 'Each photon lands as one dot at one spot, never as a faint smear. The stripes appear only as the dots add up.' },
     { key: 'none', misconception: 'up-ch38-interference-needs-crowd', label: 'Dots scattered anywhere: stripes need many photons at once', why: 'The stripes build up just the same one photon at a time. There is no other photon in the apparatus to interfere with.' },
     { key: 'dots', label: 'Single dots, which slowly build the same stripes', why: 'Right. Each photon lands whole at one random spot, yet the dots avoid the dark stripes from the start.' },
@@ -49,7 +49,7 @@ Two hundred photons have landed. A narrow counter can sit anywhere on the screen
   preload={200}
   counter={0}
   prompt="Place the counter where the next 1000 photons will not land."
-  explanation="Your counter caught {n}: it sits on a dark stripe. Each photon lands at a random spot, and still none lands there. The dark stripes are 2.5 mm apart, λL/d, where the wave through one slit cancels the wave through the other."
+  explanation="Your counter caught {n}: it sits on a dark stripe. Each photon lands at a random spot, yet the middle of a dark stripe gets none at all. The dark stripes are 2.5 mm apart, λL/d, where the wave through one slit cancels the wave through the other."
 />
 
 </Step>
@@ -67,7 +67,7 @@ photon that gets through has only slit A.
   options={[
     { key: 'still', misconception: 'up-ch38-photons-on-rays', label: 'Still nothing: covering a slit can only take photons away', why: 'That is the billiard-ball argument, and the counter refutes it. Cover B below and watch it tick.' },
     { key: 'double', label: 'Counts twice as fast: the photons blocked at B go through A', why: 'Photons that hit the cover are simply absorbed, and half of those fired never get through. Even so, the counter now counts.' },
-    { key: 'counts', label: 'Starts counting', why: 'Right. With both slits open none of 1000 photons arrive there; with one covered, about 13 do. Opening the second slit took photons away from that spot, so each photon’s odds depend on both slits.' },
+    { key: 'counts', label: 'Starts counting', why: 'Right. With both slits open about one photon in 2000 lands in the counter; with one covered, about 13 in every 1000 fired do. Opening the second slit took photons away from that spot, so each photon’s odds depend on both slits.' },
   ]}
   correct="counts"
 >
