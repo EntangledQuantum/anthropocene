@@ -1,0 +1,6 @@
+---
+// @graded — with `id`, the scene checks itself: slide the core until the lamp reaches half its current on time.
+import Island, { type DelayTheLampProps } from '../viz/DelayTheLamp.tsx';
+const props = Astro.props as DelayTheLampProps;
+---
+<Island client:visible {...props} />

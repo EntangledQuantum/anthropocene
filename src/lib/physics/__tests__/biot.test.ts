@@ -268,3 +268,12 @@ describe('the MRI estimate', () => {
     expect(turnsPerMetreFor(3, 500) / 100).toBeCloseTo(47.7, 1);
   });
 });
+
+describe('readouts', () => {
+  it('siUnit never falls into exponent notation', async () => {
+    const { siUnit } = await import('../biot.ts');
+    expect(siUnit(1.9e-4, 'T', 2)).toBe('190 µT');
+    expect(siUnit(2.513e-6, 'T·m')).toBe('2.51 µT·m');
+    expect(siUnit(-6e-6, 'N', 2)).toBe('-6.0 µN');
+  });
+});

@@ -39,7 +39,7 @@ const ty = (v: number) => TY0 - (v / E) * (TY0 - TY1);
 const api: StageApi = { sx: (x) => x, sy: (y) => y, len: (d) => d, W: 640, H: 330, x: [0, 640], y: [0, 330] };
 const rAt = (x: number) => Math.round((((x - WX0) / (WX1 - WX0)) * RMAX) / 50) * 50;
 const xAt = (R: number) => WX0 + (R / RMAX) * (WX1 - WX0);
-const XCAP = 520, YCAP = 112, XBAT = 60, YBOT = 170, XFL = 598;
+const XCAP = 520, YCAP = 112, XBAT = 84, YBOT = 170, XFL = 598;
 
 export default function RechargeTheFlash({
   id, prompt, r0 = 5000, adjustable = true, target, tolerance = 0.1, ledger = false, explanation,
@@ -138,7 +138,7 @@ export default function RechargeTheFlash({
         <FlowDots paths={loop} currents={{ a: I, b: I, c: I }} pxPerAmp={260} />
         <Battery x={XBAT} y={(WY + YBOT) / 2 + 4} label={`${E} V`} />
         <text x={(WX0 + WX1) / 2} y={WY + 30} textAnchor="middle" fontSize={12} fill={C.faint}>resistance wire: 0 to {RMAX / 1000} kΩ</text>
-        <text x={xAt(R)} y={WY - 28} textAnchor="middle" fontSize={14} fontFamily="var(--font-mono)" fill={C.ink}
+        <text x={xAt(R) - 10} y={WY - 16} textAnchor="end" fontSize={14} fontFamily="var(--font-mono)" fill={C.ink}
           stroke="var(--color-surface)" strokeWidth={4} paintOrder="stroke">R = {k.toFixed(2)} kΩ</text>
         {/* capacitor with its charge */}
         <line x1={XCAP - 30} x2={XCAP + 30} y1={YCAP - 8} y2={YCAP - 8} stroke={C.ink} strokeWidth={3} />
@@ -155,7 +155,7 @@ export default function RechargeTheFlash({
         {shown.fires > 0 && <circle key={shown.fires} cx={XFL} cy={112} r={70} fill="var(--color-ink)"
           style={{ animation: 'ch26burst 0.6s ease-out forwards' }} pointerEvents="none" />}
         <circle cx={XFL} cy={148} r={6} fill={ready ? C.ok : C.surface} stroke={ready ? C.ok : C.ghost} strokeWidth={1.5} />
-        <text x={XFL} y={196} textAnchor="middle" fontSize={12} fill={ready ? C.ok : C.faint}>{ready ? 'ready' : 'charging'}</text>
+        <text x={XFL - 14} y={153} textAnchor="end" fontSize={12} fill={ready ? C.ok : C.faint}>{ready ? 'ready' : 'charging'}</text>
         <text x={XFL - 16} y={90} textAnchor="end" fontSize={12} fill={C.faint}>flash</text>
 
         {/* the trace: capacitor voltage since the last firing */}

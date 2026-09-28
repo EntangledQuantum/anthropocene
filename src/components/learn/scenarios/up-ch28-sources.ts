@@ -15,11 +15,10 @@ export const estimate: Record<string, EstimateScenario> = {
     quantity: 'turns of wire in each centimetre of the coil',
     unit: 'turns/cm',
     logRange: [-1, 5],
-    logStart: 1,
+    logStart: 0,
     withinFactor: 2,
     truth: () => turnsPerMetreFor(3, 500) / 100,
     landmarks: [
-      { value: 1, label: 'one turn per cm' },
       { value: 10, label: 'one layer of 1 mm wire' },
       { value: 1000, label: 'a layer of hair-thin wire' },
     ],

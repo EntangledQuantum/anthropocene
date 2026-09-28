@@ -301,5 +301,7 @@ export function siUnit(v: number, unit: string, digits = 3): string {
   const a = Math.abs(v);
   const pre: [number, string][] = [[1, ''], [1e-3, 'm'], [1e-6, 'µ'], [1e-9, 'n']];
   const [f, p] = pre.find(([f]) => a >= f * 0.9995) ?? [1e-9, 'n'];
-  return `${(v / f).toPrecision(digits)} ${p}${unit}`;
+  const x = v / f, ax = Math.abs(x);
+  const dec = Math.max(0, digits - (ax >= 100 ? 3 : ax >= 10 ? 2 : 1));
+  return `${x.toFixed(dec)} ${p}${unit}`;
 }

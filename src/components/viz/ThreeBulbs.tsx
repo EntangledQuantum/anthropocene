@@ -76,9 +76,9 @@ export default function ThreeBulbs({ id, prompt, spare = false, explanation }: T
     const [x, y] = bulbAt(name);
     const side = name === 'D' && slot === 'alongA';
     const vert = !horizontal(name);
-    const tx = side ? x + 64 : vert ? x + 22 : x;
+    const tx = side ? x + 60 : vert ? x + 22 : x;
     const ty = side ? y - 4 : vert ? y - 12 : y + 36;
-    const anchor = vert ? 'start' : 'middle';
+    const anchor = vert || side ? 'start' : 'middle';
     return <text key={`t${name}`} x={tx} y={ty} textAnchor={anchor} fontSize={12.5} fontFamily="var(--font-mono)" fill={C.soft}
       stroke="var(--color-surface)" strokeWidth={4} paintOrder="stroke">
       {vert && <tspan x={tx} fontFamily="var(--font-sans)" fontSize={14} fontWeight={600} fill={C.ink}>{name}</tspan>}

@@ -1,0 +1,6 @@
+---
+// @graded — with `id`, the scene checks itself: freeze the loop when all the energy is in the coil.
+import Island, { type SloshingLCProps } from '../viz/SloshingLC.tsx';
+const props = Astro.props as SloshingLCProps;
+---
+<Island client:visible {...props} />

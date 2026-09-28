@@ -1,0 +1,6 @@
+---
+// @graded — with `id`, the scene checks itself: open the switch when the field holds the target share of its energy.
+import Island, { type LetTheCoilGoProps } from '../viz/LetTheCoilGo.tsx';
+const props = Astro.props as LetTheCoilGoProps;
+---
+<Island client:visible {...props} />

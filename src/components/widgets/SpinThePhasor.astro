@@ -1,0 +1,6 @@
+---
+// @graded — with `id` and `target`, put the mains arrow at a named instant.
+import Island, { type SpinThePhasorProps } from '../viz/SpinThePhasor.tsx';
+const props = Astro.props as SpinThePhasorProps;
+---
+<Island client:visible {...props} />

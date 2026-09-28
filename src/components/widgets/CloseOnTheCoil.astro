@@ -1,0 +1,6 @@
+---
+// Ungraded: two lamps, one with a coil in its branch, and a switch.
+import Island, { type CloseOnTheCoilProps } from '../viz/CloseOnTheCoil.tsx';
+const props = Astro.props as CloseOnTheCoilProps;
+---
+<Island client:visible {...props} />

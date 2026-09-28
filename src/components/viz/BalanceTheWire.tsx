@@ -111,10 +111,12 @@ export default function BalanceTheWire({
               const f = forceOn(i);
               const y0 = half * 0.34;
               return <g key={i}>
-                {probe !== undefined && world.map((_, j) => j === i ? null : (
-                  <Arrow key={j} s={s} from={[w.x, -y0]} to={[w.x + toLen(parts[j]), -y0]} color={C.force} width={2} dash="5 4"
-                    label={`from ${world[j].label}`} labelSide={-1} />
-                ))}
+                {probe !== undefined && world.filter((_, j) => j !== i).map((o, k) => {
+                  const j = world.indexOf(o);
+                  const yy = -y0 - k * half * 0.22;
+                  return <Arrow key={j} s={s} from={[w.x, yy]} to={[w.x + toLen(parts[j]), yy]} color={C.force} width={2} dash="5 4"
+                    label={`from ${o.label}`} labelSide={-1} />;
+                })}
                 <Arrow s={s} from={[w.x, y0]} to={[w.x + toLen(f), y0]} color={C.force} width={4}
                   label={Math.abs(f) < 1e-12 ? undefined : siUnit(Math.abs(f), 'N/m', 2)} />
                 {Math.abs(toLen(f)) < 0.3 && <circle cx={s.sx(w.x)} cy={s.sy(y0)} r={4} fill={C.force} />}
