@@ -35,7 +35,8 @@ export default function LifeguardDash({ id, prompt, run = BEACH.run, swim = BEAC
   const best = fastestEntry(A, B, run, swim);
   const T = pathTime(A, B, x, run, swim), Tbest = pathTime(A, B, best, run, swim);
   const ok = Math.abs(x - best) <= tolerance;
-  const { theta1, theta2 } = pathAngles(A, B, x);
+  // The reveal is drawn at the true best route, so its sines are exact.
+  const { theta1, theta2 } = pathAngles(A, B, best);
   const later = pathTimeSlope(A, B, x, run, swim) < 0 ? 'further along the beach' : 'back toward the chair';
   const tMax = pathTime(A, B, 0, run, swim);
 
@@ -53,7 +54,7 @@ export default function LifeguardDash({ id, prompt, run = BEACH.run, swim = BEAC
           <Meter label="Time to the swimmer" value={T.toFixed(2)} unit="s" />
           <Meter label="Run" value={Math.hypot(x - A[0], A[1]).toFixed(1)} unit="m" color={C.position} />
           <Meter label="Swim" value={Math.hypot(B[0] - x, B[1]).toFixed(1)} unit="m" color={C.position} />
-          {task.done && <Meter label="sin θ₁ / sin θ₂" value={(Math.sin(theta1) / Math.sin(theta2)).toFixed(2)} color={C.ok} />}
+          {task.done && <Meter label="Best route: sin θ₁ / sin θ₂" value={(Math.sin(theta1) / Math.sin(theta2)).toFixed(2)} color={C.ok} />}
           {task.done && <Meter label="run / swim speed" value={(run / swim).toFixed(2)} color={C.ok} />}
         </span>
         {id && <CheckBar verdict={task.verdict} done={task.done}
@@ -70,9 +71,10 @@ export default function LifeguardDash({ id, prompt, run = BEACH.run, swim = BEAC
           <text x={s.sx(s.x[1]) - 8} y={s.sy(0) + 20} textAnchor="end" fontSize={13} fill={C.soft}>water: swim at {swim} m/s</text>
           <line x1={s.sx(A[0])} y1={s.sy(A[1])} x2={s.sx(B[0])} y2={s.sy(B[1])} stroke={C.ghost} strokeDasharray="3 6" strokeWidth={1.5} />
           {task.done && <>
-            <Normal s={s} at={[x, 0]} len={10} />
-            <AngleArc s={s} at={[x, 0]} a0={Math.PI / 2} a1={Math.PI / 2 + theta1} r={46} label={`θ₁ ${(theta1 * 180 / Math.PI).toFixed(0)}°`} />
-            <AngleArc s={s} at={[x, 0]} a0={-Math.PI / 2} a1={-Math.PI / 2 + theta2} r={46} label={`θ₂ ${(theta2 * 180 / Math.PI).toFixed(0)}°`} />
+            <path d={`M${s.sx(A[0])},${s.sy(A[1])}L${s.sx(best)},${s.sy(0)}L${s.sx(B[0])},${s.sy(B[1])}`} fill="none" stroke={C.ok} strokeWidth={1.6} strokeDasharray="6 5" />
+            <Normal s={s} at={[best, 0]} len={10} />
+            <AngleArc s={s} at={[best, 0]} a0={Math.PI / 2} a1={Math.PI / 2 + theta1} r={46} label={`θ₁ ${(theta1 * 180 / Math.PI).toFixed(0)}°`} />
+            <AngleArc s={s} at={[best, 0]} a0={-Math.PI / 2} a1={-Math.PI / 2 + theta2} r={46} label={`θ₂ ${(theta2 * 180 / Math.PI).toFixed(0)}°`} />
           </>}
           <path d={`M${s.sx(A[0])},${s.sy(A[1])}L${s.sx(x)},${s.sy(0)}L${s.sx(B[0])},${s.sy(B[1])}`} fill="none" stroke={C.position} strokeWidth={3} strokeLinejoin="round" />
           <Body s={s} at={A} w={2.6} round color={C.ink} />
@@ -88,7 +90,7 @@ export default function LifeguardDash({ id, prompt, run = BEACH.run, swim = BEAC
           fill={v === x ? C.position : C.surface} stroke={C.position} strokeWidth={2} />)}
       </Stage>
       <p className="hud-label" style={{ margin: '6px 0 0' }}>
-        Iris: your route · dotted: the straight line · each dot below is a route you tried
+        Iris: your route · dotted: the straight line{task.done ? ' · dashed green: the best route' : ''} · each dot below is a route you tried
       </p>
     </SceneCard>
   );

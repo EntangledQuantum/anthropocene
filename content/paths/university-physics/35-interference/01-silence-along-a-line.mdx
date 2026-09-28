@@ -1,0 +1,126 @@
+---
+title: 'Silence along a line'
+blurb: 'Find the still water between two dippers, steer the quiet lines onto a leaf, and say why two drifting sources make no pattern.'
+order: 1
+tier: 'core'
+minutes: 9
+teaches:
+  - 'two-source-interference'
+  - 'path-difference'
+  - 'coherence'
+requires:
+  - 'wave-superposition'
+  - 'sound-wave'
+status: 'live'
+updated: 2026-09-28
+---
+
+<Step>
+
+Two speakers stand side by side, playing the same steady note exactly in step. You walk
+slowly around the room.
+
+<Predict
+  id="up-ch35-silent-spot"
+  question="Is there anywhere in the room where you hear nothing?"
+  options={[
+    { key: 'louder', misconception: 'up-ch35-two-louder-everywhere', label: 'No: two speakers are louder everywhere', why: 'Waves add as heights, and heights can be negative. Where a crest from one always meets a trough from the other, nothing moves. Start the second dipper below and look for grey lines.' },
+    { key: 'middle', misconception: 'up-ch35-quiet-on-midline', label: 'Yes, at the spot exactly halfway between them', why: 'Halfway, both waves travel the same distance and arrive crest with crest. That is the loudest line in the room.' },
+    { key: 'lines', label: 'Yes, along whole lines fanning out from the speakers', why: 'Right. Wherever one path is longer by half a wavelength, crest meets trough at every instant, and those places join into lines.' },
+    { key: 'near', label: 'Yes, but only close to the speakers', why: 'Distance from the speakers does not matter. The quiet lines run on across the whole room, spreading as they go.' },
+  ]}
+  correct="lines"
+>
+
+<TwoDipperTank prompt="Start the upper dipper, then look for water that stays flat." />
+
+</Predict>
+
+</Step>
+
+<Step>
+
+## Find the still water
+
+Water shows what sound hides. Here is the same pair of sources as two dippers, and a cork.
+
+<FindTheStillCork
+  id="up-ch35-still-cork"
+  prompt="Drag the cork to a spot where it floats still, then check."
+  explanation="Every still spot has a half-integer number of wavelengths of difference: ½λ, 1½λ, 2½λ. There a crest from one dipper always arrives with a trough from the other, and the two traces under the tank are mirror images."
+/>
+
+</Step>
+
+<Step>
+
+## Name it
+
+Loud or still is decided by one number: how much farther one wave travels than the other,
+the path difference $\Delta r = r_2 - r_1$.
+
+$$\Delta r = m\lambda \;\;\text{loud},\qquad \Delta r = \left(m+\tfrac12\right)\lambda \;\;\text{still}$$
+
+A whole wavelength late is back in step: the crest that arrives is just the next one.
+
+<Recall id="up-ch35-recall-whole-lambda" concept="path-difference">
+  <div slot="front">A spot is exactly one wavelength farther from one source than the other. Is it quiet?</div>
+
+  No, it is as loud as anywhere. One whole wavelength of delay brings a crest in with a crest.
+  Only a half-integer difference puts a crest on a trough.
+</Recall>
+
+</Step>
+
+<Step>
+
+## Steer the pattern
+
+Now the leaf cannot move, and it floats on the loudest line. One dipper is bolted to the
+wall; the other slides.
+
+<SpreadTheDippers
+  id="up-ch35-spread-dippers"
+  prompt="Slide the upper dipper along the wall until the leaf floats still."
+  explanation="Spreading the dippers makes the paths differ more at every point, so more quiet lines fit in and they swing outward until one crosses the leaf. Two dippers closer than half a wavelength cannot make a quiet line at all."
+/>
+
+</Step>
+
+<Step>
+
+## Two motors, no pattern
+
+Two ordinary lamps, or two separate motors, never stay exactly in step. Suppose the upper
+dipper runs a tenth of a hertz fast.
+
+<Predict
+  id="up-ch35-drifting-dipper"
+  question="What happens to the quiet lines?"
+  options={[
+    { key: 'same', misconception: 'up-ch35-any-two-sources-interfere', label: 'Nothing: same wavelength, same lines', why: 'The lines sit where the waves arrive opposite, and that depends on the dippers’ timing as well as on distance. Change the timing and the lines move.' },
+    { key: 'gone', label: 'They vanish at once', why: 'At any instant there is still a pattern of loud and still. It just does not stay put.' },
+    { key: 'sweep', label: 'They sweep across the tank, so no spot stays still', why: 'Yes. Each spot goes still, then loud, then still again, once every ten seconds. Averaged, every spot gets the plain sum of two dippers.' },
+  ]}
+  correct="sweep"
+>
+
+<FindTheStillCork detune={0.1} start={[14, 2.2]} prompt="Try to hold the cork on still water now." />
+
+</Predict>
+
+<Recall id="up-ch35-recall-coherence" concept="coherence">
+  <div slot="front">Why do two ordinary lamps side by side not paint stripes on a wall?</div>
+
+  Their timing drifts at random, millions of times a second, so the quiet lines sweep away
+  faster than any eye can follow. A steady pattern needs sources that stay in step.
+</Recall>
+
+## What to carry forward
+
+- **Path difference decides it.** Whole wavelengths stack; half-integers cancel, along lines.
+- **The sources must stay in step.** Drift, and the pattern sweeps away into the plain sum.
+
+Next: one lamp behind two slits, so both waves come from the same crest.
+
+</Step>

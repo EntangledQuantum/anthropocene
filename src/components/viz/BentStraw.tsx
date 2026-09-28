@@ -52,7 +52,7 @@ export default function BentStraw({ prompt }: BentStrawProps) {
         label={`A straw in water seen by an eye at ${eye[0].toFixed(0)}, ${eye[1].toFixed(0)} centimetres. The tip looks ${lift.toFixed(1)} centimetres higher than it is.`}>
         {(s) => <>
           {defs}
-          <Medium s={s} x={[-HALF, HALF]} y={[-DEPTH, 0]} fill={WATER_FILL} label={`water, n = ${N_WATER}`} labelAt={[-HALF, -DEPTH + 1.6]} />
+          <Medium s={s} x={[-HALF, HALF]} y={[-DEPTH, 0]} fill={WATER_FILL} label={`water, n = ${N_WATER}`} labelAt={[1.5, -DEPTH + 0.5]} />
           {/* the glass */}
           <path d={`M${s.sx(-HALF - 0.4)},${s.sy(RIM)}L${s.sx(-HALF - 0.4)},${s.sy(-DEPTH - 0.4)}L${s.sx(HALF + 0.4)},${s.sy(-DEPTH - 0.4)}L${s.sx(HALF + 0.4)},${s.sy(RIM)}`}
             fill="none" stroke={C.soft} strokeWidth={2.5} />

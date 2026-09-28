@@ -62,7 +62,7 @@ export function Normal({ s, at, len }: { s: StageApi; at: Vec; len: number }) {
   return <g>
     <line x1={s.sx(at[0])} x2={s.sx(at[0])} y1={s.sy(at[1] + len)} y2={s.sy(at[1] - len)}
       stroke={C.faint} strokeWidth={1.3} strokeDasharray="5 5" />
-    <text x={s.sx(at[0]) + 6} y={s.sy(at[1] + len) + 12} fontSize={12} fill={C.faint}>normal</text>
+    <text x={s.sx(at[0]) - 6} y={s.sy(at[1] + len) + 12} textAnchor="end" fontSize={12} fill={C.faint}>normal</text>
   </g>;
 }
 
