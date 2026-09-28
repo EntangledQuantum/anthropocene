@@ -1,0 +1,10 @@
+title: 'Stopping potential'
+blurb: 'A reverse voltage turns back every photoelectron with less than eV of kinetic energy. The current stops at eV₀ = hf − φ, so V₀ plotted against f is a straight line of slope h/e for every metal, shifted by its work function.'
+notation: 'eV_0 = K_{\max} = hf - \phi'
+tags:
+  - 'up-ch38'
+misconceptions:
+  - id: 'up-ch38-slope-depends-on-metal'
+    name: 'Each metal gives its own slope on the stopping-voltage graph.'
+    signal: 'Expects a different metal to give a steeper or shallower line.'
+    correction: 'The slope is h/e, the same for every metal. Only the intercept moves: the line crosses zero at the metal''s cutoff frequency φ/h.'

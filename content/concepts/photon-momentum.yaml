@@ -1,0 +1,10 @@
+title: 'Photon momentum and Compton scattering'
+blurb: 'A photon carries momentum h/λ. Bounced off a free electron, an X-ray comes out longer by (h/mc)(1 − cos θ), whatever the target: a collision in which momentum and energy both balance, with a particle of light.'
+notation: 'p = \dfrac{h}{\lambda},\qquad \lambda'' - \lambda = \dfrac{h}{mc}(1 - \cos\theta)'
+tags:
+  - 'up-ch38'
+misconceptions:
+  - id: 'up-ch38-massless-no-momentum'
+    name: 'A photon has no mass, so it carries no momentum.'
+    signal: 'Expects the electron to stay put, or to recoil only along the scattered photon''s line.'
+    correction: 'A photon carries momentum h/λ without mass. The electron takes whatever the photon''s momentum changed by.'

@@ -64,7 +64,7 @@ void main() {
       h += u_src[i].z * cos(u_k * r - u_wt + u_src[i].w);
     }
   }
-  float t = clamp(h * 0.5, -1.0, 1.0);   // two crests stacked = full bright
+  float t = clamp(h * 0.8, -1.0, 1.0);   // gain: loud water saturates, so still water reads as a line
   vec3 still = vec3(0.21, 0.25, 0.31);
   vec3 crest = vec3(0.66, 0.84, 0.93);
   vec3 trough = vec3(0.045, 0.05, 0.075);

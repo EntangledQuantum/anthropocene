@@ -1,0 +1,14 @@
+title: 'Time dilation'
+blurb: 'A clock moving past you ticks slower than yours by the factor γ. A light clock shows why: its light runs a longer, slanted path at the same speed c, and Pythagoras on one leg gives γ.'
+notation: '\Delta t = \gamma\,\Delta\tau,\qquad \gamma = \dfrac{1}{\sqrt{1 - v^2/c^2}}'
+tags:
+  - 'up-ch37'
+misconceptions:
+  - id: 'up-ch37-time-is-universal'
+    name: 'A particle''s 2.2 µs lifetime is 2.2 µs for everyone, however fast it goes.'
+    signal: 'Multiplies lifetime by speed to get how far a fast particle travels, with no factor for its motion.'
+    correction: 'The lifetime is 2.2 µs on the particle''s own clock. Measured from the ground, that clock runs slow by γ, so a muon at 0.9995c lasts about 70 µs of ground time and crosses the whole atmosphere.'
+  - id: 'up-ch37-dilation-is-illusion'
+    name: 'Time dilation is an optical illusion caused by light taking time to arrive.'
+    signal: 'Expects the effect to vanish once the delay of the light carrying the clock''s image is corrected for.'
+    correction: 'The muon actually reaches the detector; an illusion could not carry it there. Dilation is what remains after every signal delay has been subtracted.'

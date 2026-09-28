@@ -1,0 +1,116 @@
+---
+title: 'Narrow the slit, widen the spot'
+blurb: 'Predict what closing a slit does to the light on the wall, find the dark directions by pairing up wavelets, and size a laser''s spread in millimetres.'
+order: 1
+tier: 'core'
+minutes: 10
+teaches:
+  - 'single-slit-diffraction'
+requires:
+  - 'double-slit'
+  - 'path-difference'
+  - 'phasor'
+status: 'live'
+updated: 2026-09-28
+---
+
+<Step>
+
+A red laser shines through an adjustable slit onto the far wall. The slit is a tenth of a
+millimetre wide, and the wall shows a bright band.
+
+<Predict
+  id="up-ch36-half-the-slit"
+  question="Close the slit to half its width. What does the bright band on the wall do?"
+  options={[
+    { key: 'narrower', misconception: 'up-ch36-hole-shaped-spot', label: 'Gets half as wide: a smaller opening makes a smaller spot', why: 'That is the ray picture, and it is right for a window. Narrow the slit below and watch the band on the wall do the opposite.' },
+    { key: 'same', label: 'Keeps its width and just gets dimmer', why: 'Dimmer, yes: less light gets through. But the band changes size too. Drag the jaw below and watch the dark gaps on the wall move.' },
+    { key: 'wider', label: 'Gets about twice as wide', why: 'Right, and it is backward from every shadow you have seen. The narrower the opening, the wider the light fans out.' },
+    { key: 'spots', misconception: 'up-ch36-diffraction-not-interference', label: 'Breaks into two bright fringes, one from each edge', why: 'The edges are not special sources. Every point across the slit sends light, and the central band stays one band. It grows.' },
+  ]}
+  correct="wider"
+>
+
+<NarrowTheSlit prompt="Drag the upper jaw and watch the wall." start={6} />
+
+</Predict>
+
+</Step>
+
+<Step>
+
+## Put the dark on the marks
+
+The same slit, magnified until the wavelength shows. Two marks sit on the wall, 20
+wavelengths above and below the centre.
+
+<NarrowTheSlit
+  id="up-ch36-dark-on-the-marks"
+  prompt="Move the jaw until the first dark bands land on the two marks."
+  start={7}
+  markAt={20}
+  explanation="About 2.5 wavelengths, a third of where you started. Every time you closed the slit the band grew, and every time you opened it the band shrank. The dark gaps are directions in which the light from across the slit cancels itself, and the next step finds out why."
+/>
+
+</Step>
+
+<Step>
+
+## Where the wavelets cancel
+
+Here is that 2.5 λ slit up close, as twelve sources side by side. Each sends a wavelet toward
+the far wall, and the lower it starts, the farther it has to go.
+
+<AimTheDark
+  id="up-ch36-aim-the-dark"
+  prompt="Swing the direction up from straight ahead until the far wall goes dark."
+  a={2.5}
+  start={8}
+  explanation="23.6°, the direction of the dark band you put on the mark. There the bottom edge's wavelet goes one whole wavelength farther than the top edge's. Pair each source in the top half with the one 1.25 λ below it: that pair is half a wavelength apart, crest on trough, and cancels, and so does every other pair. At half a wavelength across, the double-slit rule, the loop is only half closed and 40% of the light still arrives."
+/>
+
+</Step>
+
+<Step>
+
+## Name it
+
+A slit is dark wherever its row of wavelets cancels in pairs: a whole number of wavelengths
+across the opening.
+
+$$a\sin\theta = m\lambda \qquad (m = 1, 2, 3, \dots)$$
+
+Halve $a$ and $\sin\theta$ doubles. Diffraction is not a new effect: it is interference among
+all the sources across one opening.
+
+<Recall id="up-ch36-recall-single-slit" concept="single-slit-diffraction">
+  <div slot="front">Green light, 500 nm, passes a slit 2 µm wide. Where is the first dark band, and where is it if the slit closes to 1 µm?</div>
+
+  At 14.5°, since $\sin\theta = \lambda/a = 0.25$. At 1 µm, $\sin\theta = 0.5$, so 30°.
+  Close it to 0.5 µm and there is no dark band at all: the light floods the whole half-space.
+</Recall>
+
+</Step>
+
+<Step>
+
+## Back to the laser
+
+The real thing: 650 nm light, a slit 0.1 mm wide, the wall 3 m away.
+
+<Estimate
+  id="up-ch36-laser-band"
+  scenario="up-ch36-laser-band"
+  prompt="How wide is the central bright band on the wall?"
+  explanation="About 39 mm, four hundred times the slit. The first dark band is at sin θ = 0.65 µm ÷ 0.1 mm = 0.0065, and 3 m away that is 19.5 mm either side of the centre. Close the slit to 0.05 mm and the band doubles to 78 mm."
+/>
+
+## What to carry forward
+
+- **Narrow the opening, widen the spread.** The first dark band sits at $\sin\theta = \lambda/a$.
+- **Diffraction is interference** among the wavelets from every point of one opening, dark where they cancel in pairs.
+- **Rays are the wide-opening limit.** When $a$ is thousands of wavelengths, the spread is too small to notice.
+
+Next: a round opening, two stars, and why a telescope's width, not its magnification, decides what it can see.
+
+</Step>

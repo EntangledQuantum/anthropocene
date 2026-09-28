@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import {
-  A0, BASEBALL, HALF_RING, MU_H, MU_HE, NICKEL, TUBE,
+  A0, BASEBALL, HALF_RING, M_P, MU_H, MU_HE, NICKEL, TUBE,
   allowedRadius, balmerLinesNm, bandOf, baseballWavelength, braggAngle, echoPeakAngle, electronWavelength,
   extraPath, lapSurvival, lapWave, levelEV, orbitEnergy, photonEV, relativisticError, ringRadius,
   rowIntensity, spectralRgb, transitionWavelength, voltageForRing, wavesPerOrbit,
@@ -24,6 +24,11 @@ describe('de Broglie: λ = h/p', () => {
     expect(relativisticError(100e3)).toBeGreaterThan(0.04);
     expect(relativisticError(100e3)).toBeLessThan(0.06);
     expect(electronWavelength(100e3, true) * 1e12).toBeCloseTo(3.70, 2);
+  });
+
+  it('through the same voltage a proton’s wavelength is √1836 ≈ 43 times shorter', () => {
+    expect(electronWavelength(100) / electronWavelength(100, false, M_P)).toBeCloseTo(Math.sqrt(M_P / 9.1093837015e-31), 10);
+    expect(electronWavelength(100) / electronWavelength(100, false, M_P)).toBeCloseTo(42.85, 1);
   });
 
   it('a thrown baseball has λ of order 10⁻³⁴ m, 10¹⁹ times smaller than a proton', () => {
@@ -56,6 +61,9 @@ describe('the graphite tube: rings shrink as the voltage rises', () => {
     const V = voltageForRing(HALF_RING.target(), TUBE.d[0]);
     expect(V / HALF_RING.startV).toBeGreaterThan(3.8);
     expect(V / HALF_RING.startV).toBeLessThan(4.1);
+    expect(V / 1000).toBeCloseTo(4.7, 1);
+    // doubling it only takes the ring to about 70 %, far outside the mark
+    expect(ringRadius(2 * HALF_RING.startV, TUBE.d[0]) / ringRadius(HALF_RING.startV, TUBE.d[0])).toBeCloseTo(0.70, 2);
     expect(ringRadius(2 * HALF_RING.startV, TUBE.d[0]) - HALF_RING.target()).toBeGreaterThan(HALF_RING.toleranceMm * 1e-3 * 5);
   });
 
@@ -156,6 +164,12 @@ describe('spectra: a jump gives one photon of wavelength hc/ΔE', () => {
     const he64 = transitionWavelength(6, 4, 2, MU_HE) * 1e9;
     expect(Math.abs(he64 - transitionWavelength(3, 2, 1, MU_H) * 1e9)).toBeLessThan(0.5);
     expect(bandOf(transitionWavelength(3, 2, 2, MU_HE) * 1e9)).toBe('ultraviolet');
+    expect(transitionWavelength(3, 2, 2, MU_HE) * 1e9).toBeCloseTo(164, 0);
+    expect(photonEV(3, 2, 2, MU_HE)).toBeCloseTo(7.56, 2);
+    // He⁺ 4 → 2 lands on hydrogen's ultraviolet 2 → 1
+    expect(Math.abs(transitionWavelength(4, 2, 2, MU_HE) - transitionWavelength(2, 1, 1, MU_H)) * 1e9).toBeLessThan(0.1);
+    expect(photonEV(2, 1)).toBeCloseTo(10.2, 1);
+    expect(levelEV(1, 2, MU_HE)).toBeCloseTo(-54.4, 1);
     // every He⁺ level is four times deeper
     expect(levelEV(2, 2, MU_HE) / levelEV(1, 1, MU_HE)).toBeCloseTo(1, 12);
   });

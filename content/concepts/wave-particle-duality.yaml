@@ -1,0 +1,18 @@
+title: 'Wave–particle duality'
+blurb: 'Light is detected in whole lumps, one at a time, each at one spot. Where the lumps are likely to land is set by the wave: the probability of arrival follows the intensity, including the dark stripes that need both slits open.'
+notation: 'P(\text{arrive near } y) \propto I(y)'
+tags:
+  - 'up-ch38'
+misconceptions:
+  - id: 'up-ch38-photons-on-rays'
+    name: 'Photons are little balls travelling on rays through one slit or the other.'
+    signal: 'Predicts two bright bands behind the slits, or that covering a slit can only lower the count anywhere.'
+    correction: 'Covering a slit makes photons land on the dark stripes where none landed before. A photon that went through one slit only could not care whether the other was open.'
+  - id: 'up-ch38-duality-both-at-once'
+    name: 'Each photon spreads out into a faint copy of the whole pattern.'
+    signal: 'Predicts a faint, evenly growing pattern rather than separate dots.'
+    correction: 'Every detection is a single dot at one spot. The pattern is a statistic: it appears only as dots pile up.'
+  - id: 'up-ch38-interference-needs-crowd'
+    name: 'Interference is photons interfering with each other, so it needs many at once.'
+    signal: 'Predicts the stripes vanish when photons go through one at a time.'
+    correction: 'The stripes build up just the same with one photon in the apparatus at a time. Each photon''s own chances are striped.'

@@ -1,0 +1,14 @@
+title: 'Rayleigh criterion'
+blurb: 'A round opening turns every point of light into a blur with dark rings, the first at an angle 1.22 λ/D. Two points are just told apart when one sits on the other''s first dark ring, so only a wider opening, or a shorter wavelength, shows finer detail.'
+notation: '\sin\theta_{\min} = 1.22\,\frac{\lambda}{D}'
+tags:
+  - 'up-ch36'
+misconceptions:
+  - id: 'up-ch36-magnify-to-resolve'
+    name: 'A telescope that cannot split two stars just needs more magnification.'
+    signal: 'Reaches for a stronger eyepiece or a longer tube to separate a blurred pair.'
+    correction: 'Magnifying enlarges the blur and the gap between the stars by the same factor. The blur''s size is set by the mirror, 1.22 λ/D, so only a wider mirror shrinks it.'
+  - id: 'up-ch36-mirror-only-brighter'
+    name: 'A bigger mirror only gathers more light; it makes stars brighter, not sharper.'
+    signal: 'Thinks aperture buys faintness and magnification buys detail.'
+    correction: 'It does both. Every star''s image is a diffraction blur whose angular size is 1.22 λ/D: double the mirror and the blur halves.'

@@ -1,0 +1,14 @@
+title: 'Relativity of simultaneity'
+blurb: 'Two events at different places that are simultaneous in one frame are not simultaneous in a frame moving along the line joining them. The one ahead in the direction of motion happens first for the moving observer.'
+notation: '\Delta t'' = -\gamma\,\dfrac{v\,\Delta x}{c^2}\quad\text{when }\Delta t = 0'
+tags:
+  - 'up-ch37'
+misconceptions:
+  - id: 'up-ch37-simultaneity-absolute'
+    name: 'The strikes really were simultaneous; the passenger only sees one first because she is moving toward it.'
+    signal: 'Treats the platform frame as the true one and the passenger''s motion as an error she should correct for.'
+    correction: 'In her own frame she is at rest, halfway along, with light coming at c from both ends. The front flash arrives first, so the front strike happened first. No experiment can pick out whose frame is the real one.'
+  - id: 'up-ch37-just-signal-delay'
+    name: 'Disagreement about simultaneity is only about when the light arrives, not about when things happened.'
+    signal: 'Expects correcting for light travel time to restore agreement between the frames.'
+    correction: 'The passenger does correct for travel time: both flashes came 200 m at c. The corrected times still differ by 0.80 µs. The disagreement is about the events themselves.'

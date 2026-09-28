@@ -1,0 +1,10 @@
+title: 'Photon energy'
+blurb: 'Light of frequency f is absorbed and emitted in lumps of energy E = hf. Colour sets the size of each lump; brightness sets how many arrive each second.'
+notation: 'E = hf = \dfrac{hc}{\lambda},\qquad hc \approx 1240\ \text{eV·nm}'
+tags:
+  - 'up-ch38'
+misconceptions:
+  - id: 'up-ch38-brighter-means-stronger-photons'
+    name: 'Brighter light is made of more energetic photons.'
+    signal: 'Expects a brighter lamp to free electrons that a dimmer one of the same colour cannot, or to make them faster.'
+    correction: 'Each photon''s energy is hf, fixed by the colour. Brightness is the number of photons per second: more lumps of the same size.'

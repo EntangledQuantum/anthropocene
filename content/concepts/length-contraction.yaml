@@ -1,0 +1,10 @@
+title: 'Length contraction'
+blurb: 'A length moving past you along its own direction measures shorter than its rest length by γ. The atmosphere rushing up at a muon is only about 660 m thick in the muon''s frame, exactly as far as it goes in its 2.2 µs.'
+notation: 'L = L_0/\gamma'
+tags:
+  - 'up-ch37'
+misconceptions:
+  - id: 'up-ch37-frames-disagree-on-events'
+    name: 'Whether the muon reaches the ground can depend on the frame.'
+    signal: 'Accepts that the ground sees the muon arrive while the muon, in its own frame, decays in mid-air.'
+    correction: 'The detector clicks or it does not, and a click is one event. Frames disagree about times and lengths between events, never about whether an event happened. In the muon''s frame the air is contracted, and it arrives anyway.'

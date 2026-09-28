@@ -1,0 +1,6 @@
+---
+// @graded — with `id`, the scene checks itself: widen the mirror until B sits on A's first dark ring.
+import Island, { type SplitTheStarsProps } from '../viz/SplitTheStars.tsx';
+const props = Astro.props as SplitTheStarsProps;
+---
+<Island client:visible {...props} />

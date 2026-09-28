@@ -1,0 +1,5 @@
+title: 'Lorentz transformation'
+blurb: 'The rule that turns an event''s coordinates in one frame into another''s, keeping c the same for both. Time mixes with position: an event far ahead of you gets an earlier time in a frame moving forward.'
+notation: 'ct'' = \gamma(ct - \beta x),\qquad x'' = \gamma(x - \beta\,ct)'
+tags:
+  - 'up-ch37'

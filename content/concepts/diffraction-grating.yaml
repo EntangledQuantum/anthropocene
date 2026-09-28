@@ -1,0 +1,10 @@
+title: 'Diffraction grating'
+blurb: 'Many slits, evenly spaced. The bright lines sit where the double slit puts them, d sin θ = mλ, but every added slit narrows them, so two colours only λ/N apart come out as two separate lines.'
+notation: 'd\sin\theta = m\lambda,\qquad R = \frac{\lambda}{\Delta\lambda} = mN'
+tags:
+  - 'up-ch36'
+misconceptions:
+  - id: 'up-ch36-more-slits-move-lines'
+    name: 'Adding slits moves the bright lines, or packs more of them in.'
+    signal: 'Predicts the lines crowd together or new bright lines appear as slits are added.'
+    correction: 'The line positions depend only on the spacing d and the wavelength. More slits at the same spacing leave every line where it was and make each one narrower, with the light that used to fill the gaps gathered into it.'

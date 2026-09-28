@@ -1,0 +1,6 @@
+---
+// @graded — with `id`, the scene checks itself: uncover the fewest slits that split the mercury doublet.
+import Island, { type LightTheSlitsProps } from '../viz/LightTheSlits.tsx';
+const props = Astro.props as LightTheSlitsProps;
+---
+<Island client:visible {...props} />

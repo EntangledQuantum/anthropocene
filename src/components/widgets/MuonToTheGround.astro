@@ -1,0 +1,6 @@
+---
+// @graded — with an `id`, the scene checks itself; without one it is an ungraded picture.
+import Island, { type MuonToTheGroundProps } from '../viz/MuonToTheGround.tsx';
+const props = Astro.props as MuonToTheGroundProps;
+---
+<Island client:visible {...props} />

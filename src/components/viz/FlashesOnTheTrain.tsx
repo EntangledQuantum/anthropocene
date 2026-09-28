@@ -25,7 +25,7 @@ export interface FlashesOnTheTrainProps {
 }
 
 type Frame = 'platform' | 'train';
-const { L0, beta: B } = CH37_TRAIN;
+const B = CH37_TRAIN.beta;
 const PLAY = 170;        // metres of ct per second of screen time
 const SPAN_M = 900;      // metres across the canvas
 const DELAY_US: [number, number] = [-0.5, 2];
@@ -82,9 +82,9 @@ export default function FlashesOnTheTrain({ id, prompt, tolerance = 0.04, explan
 
     // header
     g.font = '15px Inter, sans-serif'; g.fillStyle = c.ink; g.textAlign = 'left';
-    g.fillText(fr === 'platform' ? 'Seen from the platform' : 'Seen from the train', 12, 22);
+    g.fillText(fr === 'platform' ? 'Seen from the platform' : 'Seen from the train', 12, 18);
     g.font = '14px ui-monospace, monospace'; g.fillStyle = c.soft; g.textAlign = 'right';
-    g.fillText(`${fr} clock  ${ctToUs(T).toFixed(2)} µs`, Wd - 12, 22);
+    g.fillText(`${fr} clock  ${ctToUs(T).toFixed(2)} µs`, Wd - 12, 18);
 
     // platform: track and ticks every 50 m, labelled every 100 m, moving at wP
     g.strokeStyle = c.rule; g.lineWidth = 2; g.beginPath(); g.moveTo(0, yTrack); g.lineTo(Wd, yTrack); g.stroke();
@@ -132,11 +132,11 @@ export default function FlashesOnTheTrain({ id, prompt, tolerance = 0.04, explan
       if (T >= e.ct) {
         if (T < e.ct + 70) {
           g.strokeStyle = c.ink; g.lineWidth = 3;
-          g.beginPath(); g.moveTo(x - 6, 40); g.lineTo(x + 6, 70); g.lineTo(x - 5, 80); g.lineTo(x + 2, yTop); g.stroke();
+          g.beginPath(); g.moveTo(x - 6, 68); g.lineTo(x + 6, 88); g.lineTo(x - 5, 96); g.lineTo(x + 2, yTop); g.stroke();
         }
-        g.fillStyle = c.ink; g.fillText(`${name} strike`, x, 50 - 16);
+        g.fillStyle = c.ink; g.fillText(`${name} strike`, x, 44);
         g.fillStyle = c.soft; g.font = '12.5px ui-monospace, monospace';
-        g.fillText(`t = ${ctToUs(e.ct).toFixed(2)} µs`, x, 50);
+        g.fillText(`t = ${ctToUs(e.ct).toFixed(2)} µs`, x, 60);
         const tEnd = Math.min(T, a.ct);
         const xe = px(e.x + sgn * (tEnd - e.ct));
         g.strokeStyle = c.ink; g.globalAlpha = 0.35; g.lineWidth = 2;
@@ -151,7 +151,7 @@ export default function FlashesOnTheTrain({ id, prompt, tolerance = 0.04, explan
       const first = E.aFront.ct < E.aRear.ct ? 'front' : 'rear';
       g.textAlign = 'center'; g.font = '600 13.5px Inter, sans-serif';
       g.fillStyle = gap < usToCt(tolerance) ? c.ok : c.ink;
-      g.fillText(gap < usToCt(tolerance) ? 'both flashes reach her together' : `${first} flash reaches her first`, xp, yTop - 38 + (fr === 'platform' ? 0 : 0));
+      g.fillText(gap < usToCt(tolerance) ? 'both flashes reach her together' : `${first} flash reaches her first`, xp, yTop - 12);
     }
   });
 
@@ -196,4 +196,3 @@ export default function FlashesOnTheTrain({ id, prompt, tolerance = 0.04, explan
   );
 }
 
-export { L0 };

@@ -1,0 +1,6 @@
+---
+// @graded — with an `id`, the scene checks itself; without one it is an ungraded picture.
+import Island, { type FlashesOnTheTrainProps } from '../viz/FlashesOnTheTrain.tsx';
+const props = Astro.props as FlashesOnTheTrainProps;
+---
+<Island client:visible {...props} />

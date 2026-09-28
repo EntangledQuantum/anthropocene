@@ -1,0 +1,10 @@
+title: 'The two postulates of relativity'
+blurb: 'The laws of physics are the same in every inertial frame, and light in vacuum goes at c in every inertial frame, whoever is moving. The second one looks harmless and breaks absolute time.'
+notation: 'c = 299\,792\,458\ \text{m/s in every inertial frame}'
+tags:
+  - 'up-ch37'
+misconceptions:
+  - id: 'up-ch37-light-speed-adds'
+    name: 'Light from a moving source, or chasing a moving observer, goes at c plus or minus their speed.'
+    signal: 'Adds the train''s speed to the speed of light, or expects the flash chasing the train to arrive late because it is slower relative to the train.'
+    correction: 'Velocities of ordinary things nearly add, but light is measured at c by everyone. That single fact is what forces clocks and rulers to disagree between frames.'

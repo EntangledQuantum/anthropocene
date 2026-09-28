@@ -1,0 +1,10 @@
+title: 'Spacetime interval'
+blurb: 'The combination (cΔt)² − Δx² of two events is the same in every frame. When it is positive the events are timelike: one lies inside the other''s light cone, and every frame agrees on their order.'
+notation: 's^2 = (c\,\Delta t)^2 - \Delta x^2'
+tags:
+  - 'up-ch37'
+misconceptions:
+  - id: 'up-ch37-everything-relative'
+    name: 'In relativity everything is relative, so a fast enough observer can reverse any two events.'
+    signal: 'Expects some frame to see an effect before its cause.'
+    correction: 'Only events outside each other''s light cones can swap order. If light, or anything slower, could get from one to the other, every frame agrees which came first. The speed of light and the interval are not relative at all.'

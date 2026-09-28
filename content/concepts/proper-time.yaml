@@ -1,0 +1,10 @@
+title: 'Proper time'
+blurb: 'The time a clock carried along with an object reads between two events on its path. Every frame agrees on it, because it is one clock''s reading, and it is the shortest time any inertial observer assigns to those two events.'
+notation: '\Delta\tau = \Delta t / \gamma'
+tags:
+  - 'up-ch37'
+misconceptions:
+  - id: 'up-ch37-clock-slows-for-itself'
+    name: 'A fast particle''s clock runs slow even as the particle itself experiences it.'
+    signal: 'Explains the muon''s survival, in the muon''s own frame, by its clock running slow.'
+    correction: 'In its own frame the muon is at rest and its clock runs normally: 2.2 µs is 2.2 µs. Slowness is a comparison between frames, never something a clock notices about itself.'

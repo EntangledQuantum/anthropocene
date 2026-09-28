@@ -1,0 +1,6 @@
+---
+// @graded — with `id` and `markAt`, the scene checks itself: set the slit so the first dark bands land on the marks.
+import Island, { type NarrowTheSlitProps } from '../viz/NarrowTheSlit.tsx';
+const props = Astro.props as NarrowTheSlitProps;
+---
+<Island client:visible {...props} />

@@ -1,0 +1,6 @@
+---
+// @graded — when given `id` and `counter`, the scene checks itself.
+import Island, { type PhotonsDotByDotProps } from '../viz/PhotonsDotByDot.tsx';
+const props = Astro.props as PhotonsDotByDotProps;
+---
+<Island client:visible {...props} />

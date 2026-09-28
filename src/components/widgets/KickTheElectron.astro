@@ -1,0 +1,6 @@
+---
+// @graded — when given `id`, the scene checks momentum balance itself.
+import Island, { type KickTheElectronProps } from '../viz/KickTheElectron.tsx';
+const props = Astro.props as KickTheElectronProps;
+---
+<Island client:visible {...props} />

@@ -1,0 +1,18 @@
+title: 'The photoelectric effect'
+blurb: 'Light frees electrons from a metal only above a cutoff frequency, at once, however dim. One photon frees one electron, which leaves with at most hf − φ, where the work function φ is what the metal charges to let an electron go.'
+notation: 'K_{\max} = hf - \phi,\qquad f_0 = \phi/h'
+tags:
+  - 'up-ch38'
+misconceptions:
+  - id: 'up-ch38-brightness-frees-electrons'
+    name: 'Bright enough light of any colour will free electrons.'
+    signal: 'Predicts that turning red light up frees electrons from sodium.'
+    correction: 'An electron takes the energy of one photon, never the sum of several. Below the cutoff no single photon is enough, and more of them does not help.'
+  - id: 'up-ch38-energy-soaks-in'
+    name: 'Dim light frees electrons after a delay, once enough energy has soaked in.'
+    signal: 'Predicts a few slow electrons after a long exposure, or a wait before emission starts.'
+    correction: 'Spread evenly, dim light would take about an hour to give one atom enough. Electrons appear within nanoseconds, because the energy arrives in one lump.'
+  - id: 'up-ch38-brightness-makes-faster'
+    name: 'Brighter light makes the electrons faster.'
+    signal: 'Turns up the brightness to raise the fastest electron''s energy.'
+    correction: 'The fastest electron gets one photon''s energy minus the work function, hf − φ. Brightness changes how many leave each second, not how fast.'

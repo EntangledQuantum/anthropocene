@@ -1,0 +1,18 @@
+title: 'Single-slit diffraction'
+blurb: 'Light through a slit spreads into a central bright band with fainter bands beside it. Every point of the opening is a source, and the first dark band sits where the far edge is one whole wavelength behind the near one, so a narrower slit makes a wider band.'
+notation: 'a\sin\theta = m\lambda\ \ \text{(dark)},\qquad I(\theta) = I_0\left(\frac{\sin\beta}{\beta}\right)^{2},\quad \beta = \frac{\pi a\sin\theta}{\lambda}'
+tags:
+  - 'up-ch36'
+misconceptions:
+  - id: 'up-ch36-hole-shaped-spot'
+    name: 'Light through a hole makes a hole-shaped spot, so a narrower slit makes a narrower spot.'
+    signal: 'Predicts the bright band on the wall shrinks along with the slit.'
+    correction: 'That is the ray picture, and it holds only while the slit is many wavelengths wide. Once the slit is narrow, the band''s half-angle is set by sin θ = λ/a: halve the slit and the band doubles.'
+  - id: 'up-ch36-diffraction-not-interference'
+    name: 'Diffraction is a different effect from interference: light bending round the edges of the slit.'
+    signal: 'Explains the dark bands by the edges pulling light sideways.'
+    correction: 'Nothing is special about the edges. Every point across the opening sends out a wavelet, and the bright and dark bands are those wavelets interfering, exactly as two slits do, only with a whole row of sources.'
+  - id: 'up-ch36-dark-at-half-wave'
+    name: 'The first dark band is where the far edge is half a wavelength behind the near edge.'
+    signal: 'Carries the double-slit rule over and aims at a sin θ = λ/2.'
+    correction: 'With only the two edges that would be dark. With a whole row of sources in between, half a wavelength across the slit still leaves 40% of the peak. It takes a whole wavelength across, so the top half and bottom half cancel in pairs.'

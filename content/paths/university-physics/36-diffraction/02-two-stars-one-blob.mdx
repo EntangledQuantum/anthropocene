@@ -1,0 +1,133 @@
+---
+title: 'Two stars, one blob'
+blurb: 'Split a double star by widening the mirror, say why magnifying never helps, and uncover just enough of a grating to split two colours 2 nm apart.'
+order: 2
+tier: 'core'
+minutes: 11
+teaches:
+  - 'rayleigh-criterion'
+  - 'diffraction-grating'
+requires:
+  - 'single-slit-diffraction'
+  - 'double-slit'
+status: 'live'
+updated: 2026-09-28
+---
+
+<Step>
+
+A backyard telescope with a 5 cm mirror shows a famous double star as one fuzzy blob. The
+two stars are one arcsecond apart.
+
+<Predict
+  id="up-ch36-split-the-double"
+  question="Which change splits the blob into two stars?"
+  options={[
+    { key: 'magnify', misconception: 'up-ch36-magnify-to-resolve', label: 'A stronger eyepiece, magnifying twice as much', why: 'Magnifying enlarges the blob and the gap between the stars together. Press Eyepiece ×2 below: bigger, and still one blob.' },
+    { key: 'mirror', label: 'A wider mirror, with the same eyepiece', why: 'Right. Each star’s image is a diffraction blur whose size is set by the opening. Widen the mirror below: the blurs shrink while the stars stay put.' },
+    { key: 'exposure', misconception: 'up-ch36-mirror-only-brighter', label: 'A longer exposure, to collect more light', why: 'More light makes the blob brighter, not narrower. Its shape is set by the opening, however long you wait.' },
+    { key: 'red', label: 'A red filter, to cut the glare', why: 'Red light has a longer wavelength, and the blur grows with the wavelength. A red filter makes it worse; a blue one would help a little.' },
+  ]}
+  correct="mirror"
+>
+
+<SplitTheStars zoom prompt="Try the stronger eyepiece, then drag the mirror’s rim." start={5} />
+
+</Predict>
+
+</Step>
+
+<Step>
+
+## One on the other's dark ring
+
+Each star alone is a bright disc circled by faint rings; the dashed circle is star A's first
+dark ring. Astronomers call a pair split when one star sits on the other's first dark ring.
+
+<SplitTheStars
+  id="up-ch36-just-split"
+  prompt="Widen the mirror until star B sits on A’s first dark ring."
+  start={5}
+  explanation="13.8 cm. The ring shrank as the mirror grew: going 2.8 times wider pulled it in from 2.77″ to 1.00″. With B on A's dark ring, the brightness between the stars dips 26% below the peaks, which is just enough for an eye to see a gap."
+/>
+
+</Step>
+
+<Step>
+
+## Name it
+
+A round opening of diameter $D$ blurs every point into a disc whose first dark ring sits at
+
+$$\sin\theta = 1.22\,\frac{\lambda}{D}$$
+
+That angle is the finest detail the opening can show. The 1.22 comes from the round shape; a
+slit's first dark is at exactly $\lambda/a$.
+
+<Recall id="up-ch36-recall-headlights" concept="rayleigh-criterion">
+  <div slot="front">Your pupil is about 3 mm wide at night. How far away can a car be and still show its two headlights, 1.5 m apart, as two?</div>
+
+  About 7 km. Your eye's limit is $1.22 \times 550\ \text{nm} / 3\ \text{mm} = 2.2\times10^{-4}$
+  rad, and 1.5 m subtends that at 6.7 km. Farther away, the lamps merge into one, however
+  sharp your eyesight.
+</Recall>
+
+</Step>
+
+<Step>
+
+## From two slits to hundreds
+
+Two slits paint broad stripes, evenly spaced. A grating is the same thing with hundreds of
+slits at the same spacing.
+
+<Predict
+  id="up-ch36-many-slits"
+  question="Uncover more and more slits. What happens to the bright lines on the wall?"
+  options={[
+    { key: 'crowd', misconception: 'up-ch36-more-slits-move-lines', label: 'They crowd closer together', why: 'Their places are set by d sin θ = mλ, and the spacing d has not changed. Uncover slits below: the lines never move.' },
+    { key: 'more', label: 'New bright lines appear between the old ones', why: 'Faint ripples appear between them, and they fade as slits are added. The main lines stay where they were, and no new ones join them.' },
+    { key: 'sharp', label: 'They stay put and turn into thin, sharp lines', why: 'Right. Every wavelet agrees with all the others only at exactly d sin θ = mλ. A hair to either side, hundreds of them cancel, so each line narrows as 1/N.' },
+    { key: 'glow', label: 'They blur together into an even glow', why: 'That is what one wide slit would do. Many narrow slits do the opposite and gather the light into the lines.' },
+  ]}
+  correct="sharp"
+>
+
+<LightTheSlits prompt="Slide the mask to uncover more slits." start={2} />
+
+</Predict>
+
+</Step>
+
+<Step>
+
+## Split the yellow
+
+A mercury lamp's yellow is two colours, 577.0 nm and 579.1 nm, and the eyepiece looks at the
+first-order line. The rule is the stars' rule: the pair is split when one line's peak sits on
+the other's first dark.
+
+<LightTheSlits
+  id="up-ch36-split-the-yellow"
+  prompt="Uncover the fewest slits that split the two yellow lines."
+  start={60}
+  explanation="274 slits, under half a millimetre of grating. Each line's first dark lies λ/(Nd) from its peak in sin θ, and the two peaks are Δλ/d apart, so they split once N = λ/Δλ = 577/2.1 ≈ 274. It is the telescope again: a wider opening makes a sharper line, and here the opening is counted in slits."
+/>
+
+<Recall id="up-ch36-recall-grating" concept="diffraction-grating">
+  <div slot="front">A grating will not split sodium’s two yellow lines, 589.0 nm and 589.6 nm, in first order. Name two ways to split them.</div>
+
+  Uncover more slits: about 980 in first order, since $\lambda/\Delta\lambda \approx 980$. Or
+  look in second order, where the lines are twice as far apart and half as many slits do,
+  because the rule is $Nm = \lambda/\Delta\lambda$. A stronger eyepiece does neither.
+</Recall>
+
+## What to carry forward
+
+- **Sharpness is bought with width.** A round opening blurs each point to $1.22\lambda/D$; a grating's lines narrow as $1/N$.
+- **Just split** means one peak on the other's first dark.
+- **Magnifying never splits a blur.** It enlarges the blur and the gap alike.
+
+Next: relativity, where the speed of light stops being a fact about light.
+
+</Step>

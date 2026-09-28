@@ -1,0 +1,6 @@
+---
+// @graded — with an `id`, the scene checks itself; without one it is an ungraded picture.
+import Island, { type TiltTheNowProps } from '../viz/TiltTheNow.tsx';
+const props = Astro.props as TiltTheNowProps;
+---
+<Island client:visible {...props} />

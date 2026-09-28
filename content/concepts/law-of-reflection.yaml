@@ -1,5 +1,14 @@
 title: 'Law of reflection'
-blurb: 'At a smooth surface the reflected ray leaves at the same angle to the normal as the incoming ray arrived, in the same plane.'
+blurb: 'At a smooth surface the reflected ray leaves at the same angle to the normal as the incoming ray arrived, in the same plane. Along the glass nothing changes; across it, the motion reverses.'
 notation: '\theta_r = \theta_i'
 tags:
-  - 'up-ch33'
+  - 'up-ch34'
+misconceptions:
+  - id: 'up-ch34-mirror-reverses-left-right'
+    name: 'A mirror swaps left and right.'
+    signal: 'Says your reflection''s right hand is your left hand because the mirror flips sideways.'
+    correction: 'A mirror leaves everything along the glass alone, up and down and left and right alike, and reverses only the direction straight into the glass. Your image is turned front to back. It looks left-right swapped only because you imagine walking round to stand where it stands.'
+  - id: 'up-ch34-angle-from-surface'
+    name: 'The angles are measured from the mirror''s surface, so any ray that bounces is fine.'
+    signal: 'Draws a reflected ray at the right-looking slope but on the wrong side of the normal, or measures from the glass and gets a different pairing.'
+    correction: 'Both angles are measured from the normal, the line square to the glass, and the reflected ray lies on the other side of it. Equivalently: the part of the ray''s direction along the glass is kept, and the part into the glass is reversed.'

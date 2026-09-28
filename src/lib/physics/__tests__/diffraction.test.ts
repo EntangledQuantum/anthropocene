@@ -204,3 +204,27 @@ describe('a grating is many slits: the same lines, sharper', () => {
     expect(slitsToSplit(l1, l2, 2)).toBeCloseTo(NR / 2, 9);
   });
 });
+
+describe('the numbers the chapter 36 lessons quote', () => {
+  it('a 2.5λ slit: first dark at 23.6°, which is 20 λ up a wall 46 λ away', () => {
+    const th = slitDarkAngle(2.5, 1);
+    expect(th / DEG).toBeCloseTo(23.58, 2);
+    expect(46 * Math.tan(th)).toBeCloseTo(20.08, 2);
+  });
+
+  it('a 5 cm mirror’s first dark ring is 2.77″ out; 13.8 cm pulls it to 1″', () => {
+    const arcsec = Math.PI / 180 / 3600;
+    expect(firstRingAngle(0.05, 550e-9) / arcsec).toBeCloseTo(2.77, 2);
+    expect(firstRingAngle(apertureToSplit(arcsec, 550e-9), 550e-9) / arcsec).toBeCloseTo(1, 9);
+  });
+
+  it('a 3 mm pupil splits headlights 1.5 m apart out to about 6.7 km', () => {
+    const theta = firstRingAngle(3e-3, 550e-9);
+    expect(1.5 / Math.tan(theta) / 1000).toBeCloseTo(6.7, 1);
+  });
+
+  it('the sodium pair needs about 980 slits in first order, half that in second', () => {
+    expect(slitsToSplit(589.0e-9, 589.6e-9, 1)).toBeCloseTo(981.7, 1);
+    expect(slitsToSplit(589.0e-9, 589.6e-9, 2)).toBeCloseTo(490.8, 1);
+  });
+});

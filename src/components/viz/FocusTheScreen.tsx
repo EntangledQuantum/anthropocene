@@ -32,10 +32,10 @@ export interface FocusTheScreenProps {
   explanation?: string;
 }
 
-const XR = 44, YR = 4.8, N = 15;
+const XR = 44, YR = 4.8, N = 16;
 
 export default function FocusTheScreen({
-  id, prompt, f = 10, R = 3.5, h = 1.5, objects = [30, 20, 15], screen = 38, cover, tolerance = 0.25, explanation,
+  id, prompt, f = 10, R = 3.5, h = 1.5, objects = [30, 20, 15], screen = 38, cover, tolerance = 0.15, explanation,
 }: FocusTheScreenProps) {
   const task = useTask(id, 'focus-the-screen');
   const [x, setX] = useState(screen);
@@ -118,11 +118,11 @@ export default function FocusTheScreen({
                 <Lens s={s} R={R} f={f} cover={cover} />
                 <ArrowMark s={s} x={-dObj} h={h} label="candle" />
                 {(done || !id) && sharp && <ArrowMark s={s} x={x} h={tipY} label="image" />}
-                <rect x={s.sx(x) - 3} y={s.sy(YR - 0.2)} width={6} height={s.sy(-YR + 0.9) - s.sy(YR - 0.2)} fill={C.soft} opacity={0.55} rx={2} />
+                <rect x={s.sx(x) - 3} y={s.sy(YR - 0.9)} width={6} height={s.sy(-YR + 0.2) - s.sy(YR - 0.9)} fill={C.soft} opacity={0.55} rx={2} />
                 <line x1={s.sx(x)} x2={s.sx(x)} y1={s.sy(heightAt(tip[0], x))} y2={s.sy(heightAt(tip[tip.length - 1], x))}
                   stroke={C.energy} strokeWidth={7} strokeLinecap="round" opacity={0.9} />
-                <Handle s={s} at={[x, -YR + 0.6]} step={0.5} label="Screen: drag along the axis"
-                  clamp={(p) => [Math.max(3, Math.min(XR - 1, p[0])), -YR + 0.6]}
+                <Handle s={s} at={[x, YR - 0.6]} step={0.5} label="Screen: drag along the axis"
+                  clamp={(p) => [Math.max(3, Math.min(XR - 1, p[0])), YR - 0.6]}
                   onChange={(p) => { setX(Math.round(p[0] * 10) / 10); task.touch(); }} />
               </>;
             }}
