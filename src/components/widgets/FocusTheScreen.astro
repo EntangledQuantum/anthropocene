@@ -1,0 +1,6 @@
+---
+// @graded — slide a screen until a lens's image of the candle is sharp, for several candle distances.
+import Island, { type FocusTheScreenProps } from '../viz/FocusTheScreen.tsx';
+const props = Astro.props as FocusTheScreenProps;
+---
+<Island client:visible {...props} />

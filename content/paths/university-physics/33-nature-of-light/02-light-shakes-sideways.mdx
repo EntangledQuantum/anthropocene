@@ -1,0 +1,139 @@
+---
+title: 'Light shakes sideways'
+blurb: 'Predict how much light two polarising filters pass at any angle, bring light back through crossed filters, and find the sun height at which polarised sunglasses erase the glare off a lake.'
+order: 2
+tier: 'core'
+minutes: 10
+teaches:
+  - 'polarization'
+  - 'malus-law'
+  - 'brewster-angle'
+requires:
+  - 'em-wave'
+  - 'em-intensity'
+  - 'vector-components'
+  - 'snells-law'
+status: 'live'
+updated: 2026-09-28
+---
+
+<Step>
+
+Lamplight passes through a polarising filter and then a second, identical one. With their slots lined up, the second passes all the light the first lets through.
+
+<Predict
+  id="up-ch33-thirty-degrees"
+  question="You turn the second filter 30°, a third of the way to crossed. How much of that light does it now pass?"
+  options={[
+    { key: '67', misconception: 'up-ch33-malus-linear', label: 'About 67%: a third of the way to dark', why: 'The fall is not even. Turn the filter below: it dims slowly at first and steeply near 90°.' },
+    { key: '87', misconception: 'up-ch33-malus-amplitude', label: 'About 87%: cos 30°', why: 'That is the share of the field that gets through, the orchid arrow below. The light goes as the square of the field: 0.87² = 0.75.' },
+    { key: '75', label: 'About 75%', why: 'Right. The filter passes the part of the field along its slots, cos 30° of it, and the light goes as the square of the field.' },
+    { key: '50', misconception: 'up-ch33-polarization-is-magnetic', label: 'About 50%: it passes the electric part and blocks the magnetic part', why: 'Both filters already pass light whose electric field lies along the slots, and its magnetic field comes with it. What matters is the electric field’s angle to the second filter.' },
+  ]}
+  correct="75"
+>
+
+<TurnTheAnalyzer prompt="Turn the second filter by its rim. Watch the field arrow and the screen." />
+
+</Predict>
+
+</Step>
+
+<Step>
+
+## A quarter of the light
+
+<TurnTheAnalyzer
+  id="up-ch33-quarter-light"
+  target={0.25}
+  prompt="Turn the second filter until it passes exactly a quarter of the light reaching it."
+  explanation="60°. The field along the slots is cos 60° = one half of what arrived, and the light, going as its square, is one quarter. Halfway to crossed, at 45°, still passes half."
+/>
+
+</Step>
+
+<Step>
+
+## Name it
+
+Light's electric field points across the beam, and its direction is the light's **polarisation**. A filter passes the part of the field along its slots, and intensity goes as the field squared, which is **Malus's law**:
+
+$$I = I_0 \cos^2\theta$$
+
+<Recall id="up-ch33-recall-malus" concept="malus-law">
+  <div slot="front">Polarised light meets a filter turned 60° from its field. What fraction gets through, and why that and not one half?</div>
+
+  A quarter. The filter passes the part of the field along its axis, $\cos 60° = \tfrac12$
+  of it, and intensity goes as the square of the field.
+</Recall>
+
+</Step>
+
+<Step>
+
+## Wait, really?
+
+Two filters crossed at 90° pass nothing. You slip a third filter between them, turned 45°.
+
+<Predict
+  id="up-ch33-third-filter"
+  question="What reaches the screen now?"
+  options={[
+    { key: 'dark', misconception: 'up-ch33-filter-only-removes', label: 'Still nothing: a filter can only take light away', why: 'Turn the middle filter below. At 45° light comes back: the middle filter did not only remove light, it turned the field.' },
+    { key: 'eighth', label: 'Light returns: an eighth of the lamp’s light', why: 'Right. Half the lamp gets through the first, half of that through the 45° filter, now turned 45°, and half of that through the last.' },
+    { key: 'half', label: 'Light returns: half of the lamp’s light', why: 'Each of the three filters costs something. Half the lamp survives the first alone, and the next two each take half of what reaches them.' },
+    { key: 'order', label: 'Nothing, because the last filter is still horizontal', why: 'It is still horizontal, and still passes the horizontal part of whatever reaches it. After the 45° filter, there is a horizontal part.' },
+  ]}
+  correct="eighth"
+>
+
+<CrossedFilters prompt="Turn the middle filter. Watch the field after each filter, and the screen." />
+
+</Predict>
+
+</Step>
+
+<Step>
+
+## Turn it without losing it
+
+One filter at 45° turns the light a right angle and keeps a quarter of it. Your target is four-fifths.
+
+<TwistWithFilters
+  id="up-ch33-twist-light"
+  target={0.8}
+  prompt="Choose how many evenly turned filters share the 90° turn, then shine the lamp. Keep at least 80% of the light."
+  explanation="Twelve filters, each turned 7.5°, keep 81%; eleven keep 79.9%. Each small turn costs cos² of a small angle, almost nothing, and the losses shrink faster than the filters multiply. The liquid crystal in a laptop screen turns light the same way, with a twisted stack of molecules instead of filters."
+/>
+
+<Recall id="up-ch33-recall-third" concept="polarization">
+  <div slot="front">Why does a third filter at 45° let light through two crossed filters?</div>
+
+  A filter does not only remove light: it sets the direction of the field it passes. The 45°
+  filter leaves the field at 45°, which has a part along the last filter's axis. One-eighth
+  of the lamp's light gets through.
+</Recall>
+
+</Step>
+
+<Step>
+
+## Kill the glare
+
+Sunlight bounces off a lake into your eyes. Your sunglasses are polarising filters with their slots vertical.
+
+<KillTheGlare
+  id="up-ch33-brewster-glare"
+  prompt="Drag the sun across the sky until the glare through your sunglasses disappears."
+  explanation="With the sun 36.9° up, light meets the water 53.1° from the normal, Brewster's angle, where tan θ = 1.33. The reflection then carries only field along the surface, horizontal, and vertical slots block all of it. There the reflected and refracted rays are square to each other, marked in green."
+/>
+
+## What to carry forward
+
+- **Light's field points across the beam.** A filter passes the part along its axis, $\cos\theta$ of the field and $\cos^2\theta$ of the light.
+- **A filter also sets the direction.** Many small turns can rotate light almost for free.
+- **Reflections are polarised along the surface**, completely at Brewster's angle, $\tan\theta_B = n_2/n_1$.
+
+Next: mirrors and lenses, where rays that only seem to meet make an image.
+
+</Step>

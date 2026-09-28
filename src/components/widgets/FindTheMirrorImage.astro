@@ -1,0 +1,6 @@
+---
+// @graded — drag a marker to where a lamp's image in a flat mirror is.
+import Island, { type FindTheMirrorImageProps } from '../viz/FindTheMirrorImage.tsx';
+const props = Astro.props as FindTheMirrorImageProps;
+---
+<Island client:visible {...props} />

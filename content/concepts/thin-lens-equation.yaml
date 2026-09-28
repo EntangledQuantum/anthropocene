@@ -1,0 +1,14 @@
+title: 'Thin-lens equation'
+blurb: 'Where a thin lens forms a sharp image: the reciprocals of the object and image distances add to the reciprocal of the focal length. Bring the object closer and the image runs away.'
+notation: '\frac{1}{d_o} + \frac{1}{d_i} = \frac{1}{f}'
+tags:
+  - 'up-ch34'
+misconceptions:
+  - id: 'up-ch34-image-at-focal-point'
+    name: 'A lens always makes its image at the focal point.'
+    signal: 'Puts the screen at f for an object at any distance.'
+    correction: 'Only rays that arrive parallel, from an object very far away, meet at the focal point. Rays from a nearby point arrive already spreading, and the lens cannot bend them together as soon: the image forms beyond f, at 1/d_i = 1/f − 1/d_o.'
+  - id: 'up-ch34-image-closer-when-object-closer'
+    name: 'Move the object toward the lens and its image moves toward the lens too.'
+    signal: 'Expects a projector to need its screen brought nearer when the slide is moved closer to the lens.'
+    correction: 'It goes the other way. A closer object sends light into the lens spreading more steeply, so the lens needs longer to bring it back together: as d_o falls toward f, d_i grows without limit.'

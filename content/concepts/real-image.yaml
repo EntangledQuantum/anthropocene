@@ -1,0 +1,10 @@
+title: 'Real image'
+blurb: 'An image where the light really meets: a screen placed there shows it sharp. Every part of the lens carries light from every point of the object, so covering part of the lens dims the image and cuts nothing out.'
+notation: 'd_i > 0'
+tags:
+  - 'up-ch34'
+misconceptions:
+  - id: 'up-ch34-cover-half-lens'
+    name: 'Cover half the lens and half the image disappears.'
+    signal: 'Expects a card over the top of a projector lens to cut off the top or bottom of the picture.'
+    correction: 'Every point of the object sends light through the whole lens, and every part of the lens bends its share of that light to the same image point. Blocking half the lens removes half the rays from every point, so the whole image stays, at half the brightness.'

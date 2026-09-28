@@ -1,0 +1,10 @@
+title: 'Brewster''s angle'
+blurb: 'At one angle of incidence, a reflection off glass or water carries no field in the plane of incidence at all: the reflected light is fully polarised along the surface. There the reflected and refracted rays are square to each other.'
+notation: '\tan\theta_B = \frac{n_2}{n_1}'
+tags:
+  - 'up-ch33'
+misconceptions:
+  - id: 'up-ch33-glare-unpolarized'
+    name: 'Glare is just more of the same sunlight, so only darker lenses can cut it.'
+    signal: 'Expects polarised sunglasses to dim a reflection exactly as much as everything else.'
+    correction: 'Reflection prefers the field along the surface, so glare off water is mostly horizontally polarised. Vertical slots block most of it while passing half of everything else, and at Brewster''s angle they block all of it.'

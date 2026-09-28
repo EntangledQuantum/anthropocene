@@ -1,0 +1,6 @@
+---
+// @graded — with an `id`, choose how many filters share a 90° turn, then shine the lamp.
+import Island, { type TwistWithFiltersProps } from '../viz/TwistWithFilters.tsx';
+const props = Astro.props as TwistWithFiltersProps;
+---
+<Island client:visible {...props} />

@@ -1,0 +1,6 @@
+---
+// Ungraded picture: crossed filters with a third between them that you turn.
+import Island, { type CrossedFiltersProps } from '../viz/CrossedFilters.tsx';
+const props = Astro.props as CrossedFiltersProps;
+---
+<Island client:visible {...props} />

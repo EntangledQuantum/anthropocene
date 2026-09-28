@@ -1,0 +1,6 @@
+---
+// @graded — slide a stamp until a converging lens shows it upright and twice as tall.
+import Island, { type MakeAMagnifierProps } from '../viz/MakeAMagnifier.tsx';
+const props = Astro.props as MakeAMagnifierProps;
+---
+<Island client:visible {...props} />

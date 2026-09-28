@@ -1,0 +1,5 @@
+title: 'Lateral magnification'
+blurb: 'How tall the image is compared with the object, with a sign for which way up: minus the image distance over the object distance. Real images from one lens are upside down; virtual ones are upright.'
+notation: 'm = \frac{h_i}{h_o} = -\frac{d_i}{d_o}'
+tags:
+  - 'up-ch34'

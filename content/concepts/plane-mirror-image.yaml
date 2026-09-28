@@ -1,0 +1,10 @@
+title: 'Image in a plane mirror'
+blurb: 'A flat mirror shows every point as far behind the glass as it is in front, the same size and the same way up. To see yourself whole you need a mirror half your height, at any distance.'
+notation: 'd_i = d_o,\quad m = +1,\quad \text{mirror} = \tfrac12\,\text{height}'
+tags:
+  - 'up-ch34'
+misconceptions:
+  - id: 'up-ch34-step-back-see-more'
+    name: 'Step back from a mirror and you see more of yourself.'
+    signal: 'Says a small bathroom mirror would show your whole body if you stood far enough away.'
+    correction: 'The part of you a mirror shows is fixed by where its edges are, not by where you stand. The sight line to each edge reflects and lands halfway between that edge''s height doubled and your eye, whatever the distance, because the image steps back exactly as far as you do. What does change with distance is how much of the room behind you shows.'

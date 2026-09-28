@@ -1,0 +1,14 @@
+title: 'Polarisation'
+blurb: 'Light''s electric field points in a direction across the beam. A lamp''s light shakes in every such direction at once; a polarising filter passes only the part of the field along its axis, so what leaves it shakes in one direction.'
+notation: '\vec E \perp \hat k,\qquad E_{\text{out}} = E_{\text{in}}\cos\theta'
+tags:
+  - 'up-ch33'
+misconceptions:
+  - id: 'up-ch33-polarization-is-magnetic'
+    name: 'Polarisation is the direction of the magnetic field.'
+    signal: 'Describes a polariser as picking out "the magnetic part" of the light.'
+    correction: 'By convention, and because it is what acts on the electrons in a filter or your eye, the polarisation is the direction of the electric field. The magnetic field is always square to it.'
+  - id: 'up-ch33-filter-only-removes'
+    name: 'Adding a filter can only ever let less light through.'
+    signal: 'Predicts that a third filter slipped between crossed polarisers keeps the screen dark.'
+    correction: 'A filter does not only remove: it also sets the direction of what it passes. A filter at 45° turns the field halfway, and the last filter then has something along its axis to pass.'

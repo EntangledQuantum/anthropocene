@@ -1,0 +1,6 @@
+---
+// @graded — drag a wall mirror's top and bottom edges to the smallest size that shows you whole.
+import Island, { type TrimTheMirrorProps } from '../viz/TrimTheMirror.tsx';
+const props = Astro.props as TrimTheMirrorProps;
+---
+<Island client:visible {...props} />

@@ -1,0 +1,5 @@
+title: 'Converging lens'
+blurb: 'A lens thicker in the middle bends every ray from one point of an object toward one point of an image. Three rays find that point without a formula: level in and through F, straight through the centre, through F and out level.'
+notation: '\text{slope}_\text{out} = \text{slope}_\text{in} - y/f'
+tags:
+  - 'up-ch34'

@@ -1,0 +1,14 @@
+title: 'Virtual image'
+blurb: 'An image where light only seems to come from: the rays that reach your eye, traced straight backward, cross there, but no light ever does. A screen placed there shows nothing.'
+notation: 'd_i < 0'
+tags:
+  - 'up-ch34'
+misconceptions:
+  - id: 'up-ch34-image-on-mirror-surface'
+    name: 'The image is on the surface of the mirror.'
+    signal: 'Places a reflection on the glass, or expects to focus a camera on the mirror to photograph a reflection.'
+    correction: 'Two people looking at one lamp see it at two different spots on the glass, so the glass cannot be where the image is. Carry each person''s sight line straight on through the glass and they all cross at one point, as far behind the mirror as the lamp is in front. That point is the image, and a camera must focus there.'
+  - id: 'up-ch34-virtual-not-useful'
+    name: 'A virtual image is not real, so it is not useful.'
+    signal: 'Treats a virtual image as an illusion that an instrument cannot use.'
+    correction: 'Virtual means only that no screen can catch it, because the light never passes through it. Your eye, a camera or a second lens can still use it: every reflection you look at, every magnifying glass and the eyepiece of every telescope works with a virtual image.'

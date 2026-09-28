@@ -1,0 +1,6 @@
+---
+// @graded — with `id` (and no `detune`), the scene checks itself: leave the cork where the water is still.
+import Island, { type FindTheStillCorkProps } from '../viz/FindTheStillCork.tsx';
+const props = Astro.props as FindTheStillCorkProps;
+---
+<Island client:visible {...props} />

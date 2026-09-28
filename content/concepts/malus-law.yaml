@@ -1,0 +1,14 @@
+title: 'Malus''s law'
+blurb: 'Polarised light meeting a filter at angle θ to its field keeps the part of the field along the axis, cos θ of it, and so cos²θ of its intensity, because intensity goes as the square of the field. A filter halves unpolarised light at any angle.'
+notation: 'I = I_0 \cos^2\theta'
+tags:
+  - 'up-ch33'
+misconceptions:
+  - id: 'up-ch33-malus-linear'
+    name: 'The light fades in proportion to the angle between the filters.'
+    signal: 'Says a third of the way to crossed (30°) lets through two-thirds of the light.'
+    correction: 'The field passed is the projection, cos θ, and the light is its square. At 30° that is 75%, not 67%; the fall is slow at first and steep near 90°.'
+  - id: 'up-ch33-malus-amplitude'
+    name: 'A filter at θ passes cos θ of the light.'
+    signal: 'Gives 87% for two filters at 30°.'
+    correction: 'cos θ is the share of the field that gets through. Intensity goes as the field squared, so the light that gets through is cos²θ: 75% at 30°.'

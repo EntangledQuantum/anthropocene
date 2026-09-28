@@ -1,0 +1,6 @@
+---
+// Ungraded picture: drag yourself back from a wall mirror; the part of you it shows does not change.
+import Island, { type StepBackFromMirrorProps } from '../viz/StepBackFromMirror.tsx';
+const props = Astro.props as StepBackFromMirrorProps;
+---
+<Island client:visible {...props} />

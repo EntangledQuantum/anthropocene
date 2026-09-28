@@ -92,16 +92,16 @@ export default function DropThroughTheTube({ prompt }: DropThroughTheTubeProps) 
       if (K[i] > 0 && v > 1e-4) {
         for (const zr of [-2, -1.5, -1, -0.5, 0.5, 1, 1.5, 2]) {
           const ring = ringOnFallingMagnet(zr * CH29_PIPE.a, v, 0.004, kind);
-          const r = 2 + 6 * Math.min(1, Math.abs(ring.I) / I_REF);
+          const r = 2 + 4.5 * Math.min(1, Math.abs(ring.I) / I_REF);
           if (r < 2.6) continue;
-          const yy = my - zr * HALF * 1.6;
+          const yy = my - zr * HALF * 2;
           drawCurrentEnd(g, cx + HALF, yy, r, ring.I < 0, c.velocity, c.surface);
           drawCurrentEnd(g, cx - HALF, yy, r, ring.I > 0, c.velocity, c.surface);
         }
       }
       // forces: weight down, drag up
       const W = CH29_PIPE.M * G, drag = K[i] * v;
-      drawArrow(g, [cx + HALF + 14, my], [cx + HALF + 14, my + W / N_PER_PX], c.force, 2.5);
+      if (Number.isNaN(st.landed[i])) drawArrow(g, [cx + HALF + 14, my], [cx + HALF + 14, my + W / N_PER_PX], c.force, 2.5);
       if (drag > 1e-4) drawArrow(g, [cx + HALF + 24, my], [cx + HALF + 24, my - drag / N_PER_PX], c.force, 2.5);
       const t = Number.isNaN(st.landed[i]) ? st.t : st.landed[i];
       text(g, `${t.toFixed(2)} s`, cx, bot + 42, Number.isNaN(st.landed[i]) ? c.faint : c.ink, { size: 15, align: 'center', mono: true, weight: 600 });

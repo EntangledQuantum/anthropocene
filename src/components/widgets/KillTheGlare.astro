@@ -1,0 +1,6 @@
+---
+// @graded — with an `id`, drag the sun until vertical sunglasses cut the glare to nothing.
+import Island, { type KillTheGlareProps } from '../viz/KillTheGlare.tsx';
+const props = Astro.props as KillTheGlareProps;
+---
+<Island client:visible {...props} />

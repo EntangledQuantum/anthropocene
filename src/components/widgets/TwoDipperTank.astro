@@ -1,0 +1,6 @@
+---
+// Ungraded: the ripple tank, with a button that starts the second dipper.
+import Island, { type TwoDipperTankProps } from '../viz/TwoDipperTank.tsx';
+const props = Astro.props as TwoDipperTankProps;
+---
+<Island client:visible {...props} />
