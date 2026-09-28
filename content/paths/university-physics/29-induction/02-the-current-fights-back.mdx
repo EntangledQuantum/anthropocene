@@ -1,0 +1,126 @@
+---
+title: 'The current fights back'
+blurb: 'Brake a falling magnet with copper that does not attract it, and light a bulb by pushing a bar, and see why every induced current opposes the change that made it.'
+order: 2
+tier: 'core'
+minutes: 10
+teaches:
+  - 'lenz-law'
+  - 'motional-emf'
+  - 'eddy-currents'
+requires:
+  - 'faradays-law'
+  - 'magnetic-force-on-current'
+  - 'electrical-power'
+status: 'live'
+updated: 2026-09-28
+---
+
+<Step>
+
+A 12 mm neodymium magnet drops through a metre of plastic pipe in 0.45 s. Copper does not
+attract magnets at all.
+
+<Predict
+  id="up-ch29-copper-pipe"
+  question="Drop the same magnet down a metre of copper pipe. How long does it take?"
+  options={[
+    { key: 'same', misconception: 'up-ch29-copper-ignores-magnets', label: '0.45 s, the same: copper ignores magnets', why: 'Copper ignores a magnet at rest. A falling one changes the flux through every ring of the pipe, and the copper answers with currents. Watch.' },
+    { key: 'bit', label: 'A little longer, about 0.6 s, from rubbing the walls', why: 'The magnet never touches the walls here. It still takes almost twenty times longer.' },
+    { key: 'long', label: 'About 9 s', why: 'Right: 8.8 s. It hardly accelerates at all, sinking at a steady 11 cm/s from the first centimetre.' },
+    { key: 'stuck', label: 'It slows to a stop and hangs in the pipe', why: 'A stopped magnet changes no flux, so the currents holding it up would vanish. It can only slow to the speed where their push matches its weight.' },
+  ]}
+  correct="long"
+>
+
+<DropThroughTheTube prompt="Drop all three and watch." />
+
+</Predict>
+
+</Step>
+
+<Step>
+
+## Every ring pushes back
+
+Freeze the copper pipe mid-fall and cut it open. The magnet, north pole down, sinks between two
+rings of copper.
+
+<RingsThatFight
+  id="up-ch29-rings-that-fight"
+  prompt="Click each ring to set its current so that the ring slows the magnet."
+  explanation="Below, the ring shows a north face to the magnet's north and pushes it back; above, it shows a north face to the magnet's south and pulls it back. Each ring's current opposes the change in its own flux: growing below, shrinking above. Two rings give 25 mN; the rest of the pipe makes up the magnet's 100 mN weight. This is Lenz's law, and it is the minus sign in Faraday's law."
+/>
+
+</Step>
+
+<Step>
+
+## Pay for the light
+
+A metal bar lies across two rails 1 m apart in a 0.8 T field, and a 1 Ω bulb closes the circuit.
+You push the bar with a steady force.
+
+<PushTheRailBar
+  id="up-ch29-light-the-bulb"
+  prompt="Set your push, let go, and make the bulb settle at 4 W."
+  target={4}
+  explanation="1.6 N. The bar speeds up until the drag on its current matches your push, then cruises at 2.5 m/s. From then on your hand delivers 1.6 N × 2.5 m/s = 4 W and the bulb burns exactly 4 W. The field supplies none of it."
+/>
+
+</Step>
+
+<Step>
+
+## Name it
+
+The moving bar sweeps out area, so the flux grows at $BLv$. The current feels a force $ILB$, and
+Lenz fixes its direction: always against the motion.
+
+$$\mathcal E = BLv, \qquad F_{\text{drag}} = ILB = \frac{B^2L^2v}{R}, \qquad F_{\text{drag}}\,v = \frac{\mathcal E^2}{R}$$
+
+<Recall id="up-ch29-recall-lenz" concept="lenz-law">
+  <div slot="front">Suppose the induced current pushed the bar along instead of holding it back. What would one small nudge do?</div>
+
+  Run away. The bar would speed up, drive more current, get pushed harder, and light the bulb
+  from nothing. The minus sign in Faraday's law is energy conservation.
+</Recall>
+
+</Step>
+
+<Step>
+
+## Harder to push
+
+You hold the bar at a steady 3 m/s on the same rails.
+
+<RankOrder
+  id="up-ch29-rank-the-push"
+  prompt="Rank the setups by the push it takes to hold 3 m/s."
+  lowLabel="easiest"
+  highLabel="hardest"
+  items={[
+    { key: 'open', label: 'The bulb unscrewed, so the circuit is open', why: 'An EMF of 2.4 V still appears across the gap, but no current flows, so there is no drag: 0 N.' },
+    { key: 'dim', label: 'A dimmer 4 Ω bulb', why: 'More resistance, less current, less drag: 0.48 N.' },
+    { key: 'base', label: 'The 1 Ω bulb', why: '2.4 V drives 2.4 A, and 2.4 A × 1 m × 0.8 T is 1.92 N.' },
+    { key: 'strong', label: 'The 1 Ω bulb, with the field doubled', why: 'Doubling B doubles the EMF, so the current, and the force on that current doubles again: four times, 7.68 N.' },
+  ]}
+  correct={['open', 'dim', 'base', 'strong']}
+  explanation="The push matches the drag B²L²v/R. A brighter load, lower R, is harder to push, which is why a bicycle dynamo drags more with the lamp on. A heavier bar would change nothing once it cruises: mass only matters while speeding up."
+/>
+
+<Recall id="up-ch29-recall-eddy" concept="eddy-currents">
+  <div slot="front">Why does a slot down the copper pipe let the magnet fall almost freely?</div>
+
+  The braking currents run round the pipe. A slot cuts every one of those loops, so almost no
+  current flows and almost nothing pushes back.
+</Recall>
+
+## What to carry forward
+
+- **An induced current always opposes the change that drives it.** Ahead of a magnet it repels; behind, it pulls back.
+- **Every induced watt is paid for** by whatever makes the change: your hand, or a falling magnet's weight.
+
+Next: a coil that fights changes in its own current, which is inductance.
+
+</Step>

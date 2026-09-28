@@ -22,7 +22,7 @@ export interface RaceRoundTheFieldProps {
 
 const BT = 0.2;
 const CM = 0.01;
-const K = 2.4; // cm of arrow per 10⁶ m/s
+const K = 3.6; // cm of arrow per 10⁶ m/s
 const VMIN = 0.4, VMAX = 3;
 const LAP_S = 3.2; // one lap on screen
 const STEPS = 720;
@@ -90,15 +90,17 @@ export default function RaceRoundTheField({ prompt, start = 2 }: RaceRoundTheFie
               stroke={C.ghost} strokeDasharray="3 6" />)}
             <polyline ref={trails[0]} fill="none" stroke={C.soft} strokeWidth={2.2} />
             <polyline ref={trails[1]} fill="none" stroke={C.position} strokeWidth={2.2} />
-            <line x1={s.sx(0)} x2={s.sx(0)} y1={s.sy(-2.5)} y2={s.sy(2.5)} stroke={C.ok} strokeWidth={3} />
-            <text x={s.sx(-0.8)} y={s.sy(-3.6)} textAnchor="end" fontSize={13} fill={C.ok}>gate</text>
+            <line x1={s.sx(0)} x2={s.sx(0)} y1={s.sy(-3)} y2={s.sy(3)} stroke={C.ok} strokeWidth={3} />
+            <text x={s.sx(-0.8)} y={s.sy(-2.6)} textAnchor="end" fontSize={13} fill={C.ok}>gate</text>
             {(!running || shown.done) && <>
-              <Arrow s={s} from={[0, -0.9]} to={[K, -0.9]} color={C.velocity} width={2} label="A 1.0" labelSide={-1} />
-              <Arrow s={s} from={[0, 0.9]} to={[tipB[0], 0.9]} color={C.velocity} width={3} label={`B ${vB.toFixed(1)} × 10⁶ m/s`} />
+              <Arrow s={s} from={[0, -1.8]} to={[K, -1.8]} color={C.velocity} width={2} />
+              <text x={s.sx(K + 1)} y={s.sy(-1.8) + 5} fontSize={13} fontWeight={600} fill={C.soft}>A, 1.0 × 10⁶ m/s</text>
+              <Arrow s={s} from={[0, 1.8]} to={[tipB[0], 1.8]} color={C.velocity} width={3} />
+              <text x={s.sx(tipB[0] + 1.4)} y={s.sy(1.8) + 5} fontSize={13} fontWeight={600} fill={C.position}>B, {vB.toFixed(1)} × 10⁶ m/s</text>
             </>}
             <circle ref={dots[0]} r={6} fill={C.surface} stroke={C.soft} strokeWidth={2.5} />
             <circle ref={dots[1]} r={6} fill={C.surface} stroke={C.position} strokeWidth={2.5} />
-            {(!running || shown.done) && <Handle s={s} at={[tipB[0], 0.9]} color={C.velocity} step={0.1 * K} r={7}
+            {(!running || shown.done) && <Handle s={s} at={[tipB[0], 1.8]} color={C.velocity} step={0.1 * K} r={7}
               label="Proton B's speed: drag its arrow tip"
               onChange={(p) => { setRunning(false); setVB(Math.round(Math.min(VMAX, Math.max(VMIN, p[0] / K)) * 10) / 10); }} />}
           </>;

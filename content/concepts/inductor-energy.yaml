@@ -1,0 +1,14 @@
+title: 'Energy stored in an inductor'
+blurb: 'Building up a current in a coil takes work against its back-voltage, and the coil holds that work as energy in its magnetic field. It goes as the square of the current, and it comes back out when the current falls, as a spark if nothing else will take it.'
+notation: 'U = \tfrac12 L I^2'
+tags:
+  - 'up-ch30'
+misconceptions:
+  - id: 'up-ch30-energy-follows-current'
+    name: 'Half the current means half the stored energy.'
+    signal: 'Opens a switch at half the full current expecting half the energy to be released.'
+    correction: 'The energy goes as I². Half the current holds a quarter of the energy; half the energy needs 1/√2 of the current, about 71 %.'
+  - id: 'up-ch30-current-stops-at-once'
+    name: 'Opening a switch stops the current instantly.'
+    signal: 'Expects a coil''s current and field simply to vanish when its circuit is broken.'
+    correction: 'The coil''s energy has to go somewhere, and stopping the current in zero time would take an infinite voltage. The voltage climbs until the air in the gap breaks down, and the current carries on across it as a spark until the field''s energy is spent.'

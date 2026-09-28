@@ -1,0 +1,10 @@
+title: 'Radiation from an accelerated charge'
+blurb: 'A charge at rest or coasting keeps its field; a charge that changes its velocity leaves a kink in every field line, and the kink runs outward at c. The kink is sideways in proportion to sin θ from the line of shaking, so nothing is sent straight along it.'
+notation: '\text{kink} \propto \Delta y\,\sin\theta'
+tags:
+  - 'up-ch32'
+misconceptions:
+  - id: 'up-ch32-radiates-equally'
+    name: 'A shaken charge sends its wave out equally in every direction, like ripples on a pond.'
+    signal: 'Expects a detector straight above a vertical antenna to pick up as much as one to its side.'
+    correction: 'A field line along the line of shaking is only slid along itself; it gets no sideways kink. The ripple is strongest broadside and vanishes along the axis.'

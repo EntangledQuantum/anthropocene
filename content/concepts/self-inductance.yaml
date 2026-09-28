@@ -1,0 +1,14 @@
+title: 'Self-inductance'
+blurb: 'A coil makes a voltage that fights any change in its own current, in proportion to how fast the current changes. It resists change, not current: an inductor is inertia for current, as mass is inertia for velocity.'
+notation: '\mathcal{E}_L = -L\,\dfrac{dI}{dt}'
+tags:
+  - 'up-ch30'
+misconceptions:
+  - id: 'up-ch30-inductor-blocks-current'
+    name: 'A coil holds current back, so less flows through it for as long as it is there.'
+    signal: 'Expects a lamp in series with a coil to stay dimmer than the same lamp without one, however long the switch is closed.'
+    correction: 'The coil only answers a change. Once the current is steady, dI/dt is zero, the coil makes no voltage, and a coil of plain copper passes the full current. The lamp beside the coil ends exactly as bright as the one without.'
+  - id: 'up-ch30-coil-is-just-wire'
+    name: 'A coil is only a length of wire, so the current flows through it the moment the switch closes.'
+    signal: 'Predicts the full current, or a surge, through a coil at the instant a circuit is closed.'
+    correction: 'At the instant of closing the current is zero and changing as fast as it can, so the coil''s voltage exactly cancels the battery. The current has to build up, like a heavy cart that cannot jump to a speed.'

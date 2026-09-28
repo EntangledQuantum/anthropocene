@@ -105,10 +105,12 @@ describe('the lesson-1 scenes', () => {
 
   it('the rank-order claims: half-way times of four coil-and-lamp pairs', () => {
     const t = (L: number, r: number) => rlHalfTime(L, r);
-    // 2 H + 40 Ω, 2 H + 10 Ω, 8 H + 40 Ω, 8 H + 10 Ω
-    expect(t(2, 40)).toBeCloseTo(0.0347, 4);
-    expect(t(8, 40)).toBeCloseTo(t(2, 10), 12);
-    expect(t(8, 10)).toBeCloseTo(0.5545, 4);
+    // 2 H + 40 Ω < 8 H + 40 Ω < 2 H + 5 Ω < 8 H + 10 Ω
+    const order = [t(2, 40), t(8, 40), t(2, 5), t(8, 10)];
+    expect(order.map((v) => +v.toFixed(3))).toEqual([0.035, 0.139, 0.277, 0.555]);
+    for (let k = 1; k < order.length; k++) expect(order[k]).toBeGreaterThan(order[k - 1]);
+    // the RC trap: the same coil with four times the resistance is four times as fast
+    expect(t(8, 10) / t(8, 40)).toBeCloseTo(4, 12);
   });
 });
 
@@ -191,5 +193,23 @@ describe('the radio tuner', () => {
     expect(tankResponse(hi, stationHz, Q)).toBeCloseTo(Math.SQRT1_2, 9);
     expect((hi - lo) / stationHz).toBeCloseTo(1 / Q, 9);
     expect(TAU).toBeCloseTo(2 * Math.PI, 15);
+  });
+});
+
+describe('the numbers the lessons print', () => {
+  it('lesson 2: first empty at 7.9 ms, then every 15.7 ms, at 0.20 A peak', () => {
+    const { L, C, V0 } = CH30_LC;
+    expect(lcPeriod(L, C) / 4 * 1000).toBeCloseTo(7.85, 2);
+    expect(lcPeriod(L, C) / 2 * 1000).toBeCloseTo(15.71, 2);
+    expect(lcPeakCurrent(V0, L, C)).toBeCloseTo(0.2, 12);
+  });
+
+  it('lesson 2: the radio starts on 352 µH', () => {
+    expect(inductanceForFrequency(CH30_RADIO.startHz, CH30_RADIO.C) * 1e6).toBeCloseTo(351.8, 1);
+  });
+
+  it('lesson 1: about 17 H for half-way at 1 s; 1.5 J of 3.0 J at 0.35 A', () => {
+    expect(Math.round(inductanceForHalfTime(1, R))).toBe(17);
+    expect(coilEnergy(CH30_SPARK.L, currentForEnergyFraction(0.5, 0.5))).toBeCloseTo(1.5, 12);
   });
 });

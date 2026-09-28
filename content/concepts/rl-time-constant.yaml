@@ -1,0 +1,10 @@
+title: 'The RL time constant'
+blurb: 'A coil and a resistor on a battery: the current climbs toward E/R, closing the same fraction of the remaining gap in every equal stretch of time. After one time constant, L/R, it has closed 63 % of it; it reaches half at τ ln 2.'
+notation: 'I(t) = \dfrac{\mathcal{E}}{R}\left(1 - e^{-t/\tau}\right),\qquad \tau = \dfrac{L}{R}'
+tags:
+  - 'up-ch30'
+misconceptions:
+  - id: 'up-ch30-rl-like-rc'
+    name: 'More resistance makes an RL circuit slower, as it makes an RC circuit slower.'
+    signal: 'Ranks a coil with a big resistor as the slowest to come up, or picks a bigger resistor to delay a lamp.'
+    correction: 'In RC the resistor limits the current that fills the capacitor, so τ = RC. In RL the resistor sets the final current E/R, and a smaller target is reached sooner: τ = L/R. Double R and the coil comes up in half the time, to half the current.'

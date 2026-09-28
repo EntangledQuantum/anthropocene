@@ -1,0 +1,14 @@
+title: 'Reactance'
+blurb: 'A coil''s or capacitor''s opposition to alternating current, in ohms. A coil''s grows with frequency, ωL; a capacitor''s shrinks, 1/ωC. Neither turns energy into heat.'
+notation: 'X_L = \omega L,\qquad X_C = \dfrac{1}{\omega C}'
+tags:
+  - 'up-ch31'
+misconceptions:
+  - id: 'up-ch31-capacitor-passes-high'
+    name: 'A coil and a capacitor in series pass more current the higher the frequency, because a capacitor passes high frequencies.'
+    signal: 'Reasons about the capacitor alone and forgets the coil in the same loop, whose opposition grows with frequency.'
+    correction: 'The capacitor''s opposition falls with frequency but the coil''s rises. At low frequency the capacitor chokes the current, at high frequency the coil does, and in between there is one frequency where they cancel.'
+  - id: 'up-ch31-coil-blocks-high'
+    name: 'The coil wins at every frequency, so the current only falls as the frequency rises.'
+    signal: 'Reasons about the coil alone and forgets that the capacitor chokes low frequencies.'
+    correction: 'At low frequency the capacitor has barely time to fill, and its opposition 1/ωC is huge. The current is small at both ends and largest in the middle.'

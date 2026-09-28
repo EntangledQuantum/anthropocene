@@ -1,0 +1,10 @@
+title: 'The speed of light from μ₀ and ε₀'
+blurb: 'Two constants measured on a bench, one with a capacitor and one with a coil, fix how fast a change in the field spreads: 299 792 458 m/s. Nothing about the source enters, so every EM wave in vacuum goes at this speed.'
+notation: 'c = \dfrac{1}{\sqrt{\mu_0\varepsilon_0}}'
+tags:
+  - 'up-ch32'
+misconceptions:
+  - id: 'up-ch32-harder-shake-faster'
+    name: 'A more violent source sends its wave out faster.'
+    signal: 'Expects a bigger or quicker shake of the charge to reach the detector sooner.'
+    correction: 'The shake sets the size and shape of the kink, never its speed. The news always takes distance ÷ c.'

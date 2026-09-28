@@ -223,6 +223,3 @@ export const CH30_LC = { L: 0.25, C: 100e-6, V0: 10, slow: 150 } as const;
 
 /** Lesson 2: the radio. A 200 pF tuning capacitor, a slug-tuned coil, Q = 15. */
 export const CH30_RADIO = { C: 200e-12, Lair: 40e-6, Lfull: 600e-6, Q: 15, startHz: 600e3, stationHz: 1200e3 } as const;
-
-/** Lesson 1 transfer: a car's ignition coil primary, 8 mH at 6 A. */
-export const CH30_IGNITION = { L: 8e-3, I: 6 } as const;

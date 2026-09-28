@@ -1,0 +1,6 @@
+---
+// @graded — with `id`, set a battery so its heater glows as bright as one on the mains.
+import Island, { type MatchTheGlowProps } from '../viz/MatchTheGlow.tsx';
+const props = Astro.props as MatchTheGlowProps;
+---
+<Island client:visible {...props} />

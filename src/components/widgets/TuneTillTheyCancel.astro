@@ -1,0 +1,6 @@
+---
+// @graded — with `id`, tune a series RLC loop until the coil's and capacitor's voltages cancel.
+import Island, { type TuneTillTheyCancelProps } from '../viz/TuneTillTheyCancel.tsx';
+const props = Astro.props as TuneTillTheyCancelProps;
+---
+<Island client:visible {...props} />

@@ -1,0 +1,129 @@
+---
+title: 'Current has inertia'
+blurb: 'Predict what a coil does to a current the instant a switch closes, set how long a lamp takes to come up, and release a coil''s stored energy as a spark.'
+order: 1
+tier: 'core'
+minutes: 10
+teaches:
+  - 'self-inductance'
+  - 'rl-time-constant'
+  - 'inductor-energy'
+requires:
+  - 'solenoid-field'
+  - 'rc-time-constant'
+status: 'live'
+updated: 2026-09-28
+---
+
+<Step>
+
+Two identical lamps share a 6 V battery. Lamp B has a coil of plain copper wire in its
+branch; lamp A does not.
+
+<Predict
+  id="up-ch30-closing-current"
+  question="The instant you close the switch, how much current flows through lamp B?"
+  options={[
+    { key: 'full', misconception: 'up-ch30-coil-is-just-wire', label: 'The full 0.5 A, like lamp A: the coil is only copper', why: 'Lamp A gets its 0.5 A at once. Lamp B starts from zero, because the coil answers the sudden change with a voltage that cancels the battery.' },
+    { key: 'zero', label: 'None at all, at first', why: 'Right. At the first instant the current is zero and trying to change as fast as it can, and the coil pushes back with the whole 6 V. Then the current builds.' },
+    { key: 'dim', misconception: 'up-ch30-inductor-blocks-current', label: 'Some, but less than lamp A for as long as the switch is closed', why: 'Wait a few seconds: lamp B ends exactly as bright as lamp A. Once the current is steady the coil does nothing at all.' },
+    { key: 'surge', label: 'A surge, more than lamp A, then settling to 0.5 A', why: 'A coil never makes a surge on closing. It is the opposite: the coil fights the rise, so lamp B comes up slowly from zero.' },
+  ]}
+  correct="zero"
+>
+
+<CloseOnTheCoil prompt="Close the switch, wait, then open it. Watch lamp A when you do." />
+
+</Predict>
+
+</Step>
+
+<Step>
+
+## Make it wait
+
+This coil has an iron core you can slide in or out. The lamp in series with it should reach
+half its full current exactly 1 second after the switch closes.
+
+<DelayTheLamp
+  id="up-ch30-delay-the-lamp"
+  prompt="Slide the core, close the switch, and make the current reach half at the 1 s mark."
+  explanation="About 17 H, with the core most of the way in. The lamp still ends at 0.5 A whatever the core does: the coil sets how long the current takes to get there, not where it ends."
+/>
+
+</Step>
+
+<Step>
+
+## Name it
+
+A coil makes a voltage that fights any change in its own current:
+
+$$\mathcal{E}_L = -L\,\frac{dI}{dt}, \qquad I(t) = \frac{\mathcal{E}}{R}\left(1 - e^{-t/\tau}\right), \qquad \tau = \frac{L}{R}$$
+
+$L$ does for current what mass does for velocity: **an inductor is inertia for current.**
+Chapter 14's mass on a spring comes back in the next lesson, made of wire.
+
+<Recall id="up-ch30-recall-inertia" concept="self-inductance">
+  <div slot="front">A coil of plain copper sits in series with a lamp. What is the current the instant the switch closes, and long afterwards?</div>
+
+  Zero at the instant: the coil's voltage $-L\,dI/dt$ cancels the battery. Long afterwards,
+  the full $\mathcal{E}/R$, exactly as if the coil were not there. A coil resists changes in
+  current, not current.
+</Recall>
+
+</Step>
+
+<Step>
+
+## A bigger resistor, a faster lamp
+
+In chapter 26 a bigger resistor made a capacitor charge more slowly. A coil is different.
+
+<RankOrder
+  id="up-ch30-rank-rl-speed"
+  prompt="Rank these coil-and-lamp pairs by how soon the current reaches half its final value."
+  lowLabel="soonest"
+  highLabel="latest"
+  items={[
+    { key: '8-10', label: '8 H coil, 10 Ω lamp', why: 'τ = 0.8 s, half at 0.55 s. The biggest coil and a small resistor: slowest.' },
+    { key: '2-40', label: '2 H coil, 40 Ω lamp', why: 'τ = 0.05 s, half at 0.035 s. A small coil and a big resistor: the target current is small and reached almost at once.' },
+    { key: '2-5', label: '2 H coil, 5 Ω lamp', why: 'τ = 0.4 s, half at 0.28 s. The smallest resistor sets the largest final current, and the coil takes a while to build it.' },
+    { key: '8-40', label: '8 H coil, 40 Ω lamp', why: 'τ = 0.2 s, half at 0.14 s. The same coil as the slowest pair, four times the resistance, four times as fast.' },
+  ]}
+  correct={['2-40', '8-40', '2-5', '8-10']}
+  explanation="Only L/R matters. The resistor sets the final current, E/R, and a coil reaches a smaller target sooner. That is why τ = L/R here, where it was RC for a capacitor."
+/>
+
+</Step>
+
+<Step>
+
+## Let it go
+
+Open the switch on a running coil and the current cannot stop at once. It jumps the gap as
+a spark, carrying off the energy the coil's field was holding.
+
+<LetTheCoilGo
+  id="up-ch30-half-the-energy"
+  prompt="Close the switch, then open it when the coil holds half the energy it would hold at full current."
+  explanation="At 0.35 A, 71% of the full current. The field's energy is ½LI², so it goes as the square of the current: at half the current the field holds only a quarter. Here that is 1.5 J of the 3.0 J it holds at 0.5 A."
+/>
+
+<Recall id="up-ch30-recall-spark" concept="inductor-energy">
+  <div slot="front">A coil carrying current has its circuit broken. Where does its energy go, and how much is there?</div>
+
+  $\tfrac12 LI^2$, stored in its magnetic field. The current cannot stop instantly, so the
+  voltage across the gap climbs until the air breaks down, and the energy leaves as a spark.
+  A car's ignition coil works exactly this way.
+</Recall>
+
+## What to carry forward
+
+- **A coil resists change in current, not current.** It starts at zero and ends at $\mathcal{E}/R$.
+- **$\tau = L/R$:** more coil is slower, more resistance is faster.
+- **The energy is $\tfrac12 LI^2$ in the field**, and it has to come out somewhere.
+
+Next: give that energy a capacitor to go into instead of a spark, and it comes back.
+
+</Step>

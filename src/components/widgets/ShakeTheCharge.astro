@@ -1,0 +1,6 @@
+---
+// @graded — when given `id` and `targetNs`, the scene checks itself.
+import Island, { type ShakeTheChargeProps } from '../viz/ShakeTheCharge.tsx';
+const props = Astro.props as ShakeTheChargeProps;
+---
+<Island client:visible {...props} />

@@ -1,0 +1,6 @@
+---
+// @graded — with `id`, set a steady push that settles the bulb at `target` watts.
+import Island, { type PushTheRailBarProps } from '../viz/PushTheRailBar.tsx';
+const props = Astro.props as PushTheRailBarProps;
+---
+<Island client:visible {...props} />

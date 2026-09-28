@@ -31,7 +31,7 @@ export interface SloshingLCProps {
 const TOP = 50, BOT = 214, XC = 110, XL = 380, P1 = 120, P2 = 144, PW = 76;
 const PATH: Record<string, readonly Pt[]> = { loop: [[XC, P1], [XC, TOP], [XL, TOP], [XL, BOT], [XC, BOT], [XC, P2]] };
 const TL = 70, TR = 620, TT = 262, TB = 382, TMS = 100;
-const SUB = 6, SIGNS = 5;
+const SUB = 6, SIGNS = 4, SIGN_X = [-32, -19, 19, 32];
 
 export default function SloshingLC({ id, prompt, volts = [CH30_LC.V0], share = 0.92, explanation }: SloshingLCProps) {
   const task = useTask(id, 'sloshing-lc');
@@ -121,19 +121,19 @@ export default function SloshingLC({ id, prompt, volts = [CH30_LC.V0], share = 0
             : `Frozen with ${pct(1 - inCoil)} of the energy still in the capacitor, which holds ${mC(Math.abs(frozen.q))} mC of its ${mC(Cap * V)} mC.`}
           hit={explanation} />}
       </div>}>
-      <svg viewBox="0 0 640 410" role="img" style={{ width: '100%', display: 'block', userSelect: 'none', fontFamily: 'var(--font-sans)' }}
+      <svg viewBox="0 0 640 420" role="img" style={{ width: '100%', display: 'block', userSelect: 'none', fontFamily: 'var(--font-sans)' }}
         aria-label={`A capacitor across a coil. Charge on the top plate ${mC(shown.q)} millicoulombs, current ${shown.I.toFixed(3)} amps.`}>
         <Wire pts={[[XC, P1], [XC, TOP], [XL, TOP], [XL, BOT], [XC, BOT], [XC, P2]]} />
         <FlowDots paths={PATH} currents={currents} pxPerAmp={1400} />
         {/* capacitor */}
         <g ref={efield} opacity={1}>
-          {[-24, -8, 8, 24].map((dx) => <line key={dx} x1={XC + dx} x2={XC + dx} y1={P1 + 4} y2={P2 - 4} stroke={C.field} strokeWidth={1.6} />)}
+          {[-26, -10, 10, 26].map((dx) => <line key={dx} x1={XC + dx} x2={XC + dx} y1={P1 + 4} y2={P2 - 4} stroke={C.field} strokeWidth={1.6} />)}
         </g>
         <line x1={XC - PW / 2} x2={XC + PW / 2} y1={P1} y2={P1} stroke={C.ink} strokeWidth={4} />
         <line x1={XC - PW / 2} x2={XC + PW / 2} y1={P2} y2={P2} stroke={C.ink} strokeWidth={4} />
         {Array.from({ length: SIGNS }, (_, k) => <g key={k}>
-          <text ref={(el) => { plus.current[k] = el; }} x={XC - 28 + k * 14} y={P1 - 6} textAnchor="middle" fontSize={15} fontWeight={700} fill={POS}>+</text>
-          <text ref={(el) => { minus.current[k] = el; }} x={XC - 28 + k * 14} y={P2 + 17} textAnchor="middle" fontSize={15} fontWeight={700} fill={NEG}>−</text>
+          <text ref={(el) => { plus.current[k] = el; }} x={XC + SIGN_X[k]} y={P1 - 6} textAnchor="middle" fontSize={15} fontWeight={700} fill={POS}>+</text>
+          <text ref={(el) => { minus.current[k] = el; }} x={XC + SIGN_X[k]} y={P2 + 17} textAnchor="middle" fontSize={15} fontWeight={700} fill={NEG}>−</text>
         </g>)}
         <text x={XC - PW / 2 - 8} y={P1 + 17} textAnchor="end" fontSize={13} fill={C.soft}>{Cap * 1e6} µF</text>
         {/* coil */}
@@ -148,7 +148,8 @@ export default function SloshingLC({ id, prompt, volts = [CH30_LC.V0], share = 0
           <EnergyBar x={568} y={TOP} h={140} label="coil" sub="½LI²" fill={barL} />
           <text x={560} y={TOP - 12} textAnchor="middle" fontSize={12} fill={C.faint}>energy, {Math.round(Emax * 1000)} mJ full scale</text>
         </g>
-        {hideBars && <text x={560} y={TOP + 76} textAnchor="middle" fontSize={13} fill={C.faint}>energy shown when frozen</text>}
+        {hideBars && <text x={563} y={TOP + 66} textAnchor="middle" fontSize={13} fill={C.faint}>
+          <tspan x={563}>energy bars</tspan><tspan x={563} dy={17}>shown when frozen</tspan></text>}
         {/* the strip: charge on the top plate against time */}
         {[-Qmax, 0, Qmax].map((q) => <g key={q}>
           <line x1={TL} x2={TR} y1={ty(q)} y2={ty(q)} stroke={q === 0 ? C.rule : C.grid} />

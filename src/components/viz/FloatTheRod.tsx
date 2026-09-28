@@ -28,7 +28,7 @@ export interface FloatTheRodProps {
 
 const IMAX = 8;
 const TRACK: [number, number] = [-12, 12];
-const TRACK_Y = -10.5;
+const TRACK_Y = -13.5;
 const PER_N = 16; // cm of arrow per newton
 const CM = 0.01;
 const ROOM = 6; // the rod can travel ±6 cm before it hits the stops
@@ -70,21 +70,21 @@ export default function FloatTheRod({
   }, [released, net, mass]);
 
   const dir = (f: number) => (f >= 0 ? 'up' : 'down');
-  const miss = `At ${I.toFixed(2)} A the magnetic push is ${Math.abs(Fm).toFixed(3)} N ${dir(Fm)}; the rod weighs ${W.toFixed(3)} N, so it ${net < 0 ? 'falls' : 'rises'}.`;
+  const miss = `At ${I < 0 ? '−' : ''}${Math.abs(I).toFixed(2)} A the magnetic push is ${Math.abs(Fm).toFixed(3)} N ${dir(Fm)}; the rod weighs ${W.toFixed(3)} N, so it ${Fm < 0 ? 'is driven down' : net < 0 ? 'falls' : 'rises'}.`;
   const xOf = (i: number) => TRACK[0] + ((i + IMAX) / (2 * IMAX)) * (TRACK[1] - TRACK[0]);
 
   return (
     <SceneCard id={id} prompt={prompt}
       footer={<div style={{ display: 'grid', gap: 14 }}>
         <div style={{ display: 'flex', gap: 22, flexWrap: 'wrap' }}>
-          <Meter label="Current" value={`${I.toFixed(2)}`} unit={`A, flowing ${I >= 0 ? 'right' : 'left'}`} />
+          <Meter label="Current" value={`${I < 0 ? '−' : ''}${Math.abs(I).toFixed(2)}`} unit={`A, flowing ${I >= 0 ? 'right' : 'left'}`} />
           <Meter label="Magnetic push" value={`${Math.abs(Fm).toFixed(3)}`} unit={`N ${dir(Fm)}`} color={C.force} />
           <Meter label="Weight" value={W.toFixed(3)} unit="N down" color={C.force} />
         </div>
         {id && <CheckBar verdict={task.verdict} done={live && task.done} label="Let go and check"
           onCheck={() => { setReleased(true); task.check(ok, { I }); }} miss={miss} hit={explanation} />}
       </div>}>
-      <Stage x={[-16, 16]} y={[-13, 11]} height={380} equal
+      <Stage x={[-16, 16]} y={[-16, 11]} height={410} equal
         label={`A rod on vertical rails in a field into the page, carrying ${I.toFixed(2)} amps.`}>
         {(s) => {
           api.current = s;
@@ -97,6 +97,7 @@ export default function FloatTheRod({
                 y1={s.sy(yy)} y2={s.sy(yy)} stroke={C.faint} strokeWidth={3} />)}
             </g>)}
             <g ref={rod}>
+              <text x={s.sx(-half)} y={s.sy(0.9)} fontSize={12} fill={C.faint}>copper rod, {(mass * 1000).toFixed(0)} g, {(length * 100).toFixed(0)} cm</text>
               <rect x={s.sx(-half)} y={s.sy(0.45)} width={s.len(2 * half)} height={s.len(0.9)} rx={3} fill={C.surface} stroke={C.ink} strokeWidth={2} />
               {Math.abs(I) > 0.02 && [-6, 0, 6].map((x) => <Arrow key={x} s={s} from={[x - Math.sign(I) * 1.2, 0]} to={[x + Math.sign(I) * 1.2, 0]}
                 color={C.ink} width={2} />)}
@@ -104,7 +105,6 @@ export default function FloatTheRod({
               {Math.abs(Fm) > 1e-3 && <Arrow s={s} from={[2.5, Math.sign(Fm) * 0.5]} to={[2.5, Math.sign(Fm) * 0.5 + Fm * PER_N]} color={C.force}
                 label={`I L × B ${Math.abs(Fm).toFixed(2)} N`} labelSide={-1} />}
             </g>
-            <text x={s.sx(-half)} y={s.sy(0.9)} fontSize={12} fill={C.faint}>copper rod, {(mass * 1000).toFixed(0)} g, {(length * 100).toFixed(0)} cm</text>
             <line x1={s.sx(TRACK[0])} x2={s.sx(TRACK[1])} y1={s.sy(TRACK_Y)} y2={s.sy(TRACK_Y)} stroke={C.rule} strokeWidth={3} strokeLinecap="round" />
             {[-IMAX, 0, IMAX].map((i) => <text key={i} x={s.sx(xOf(i))} y={s.sy(TRACK_Y) + 22} textAnchor="middle" fontSize={12}
               fill={C.faint} fontFamily="var(--font-mono)">{i} A</text>)}

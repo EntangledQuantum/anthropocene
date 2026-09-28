@@ -225,7 +225,7 @@ export function batteryCurrent(net: 'one' | 'two-series' | 'two-parallel' | 'tri
 /** The flash of lesson 2: a 300 V supply and a 200 µF capacitor. */
 export const CH26_FLASH: Readonly<{ emf: number; C: number; ready: number }> = { emf: 300, C: 200e-6, ready: 0.95 };
 /** The lamp the charged capacitor empties through in lesson 2. */
-export const CH26_LAMP_R = 10e3;
+export const CH26_LAMP_R = 20e3;
 
 /** The time constant, s. */
 export const tau = (R: number, C: number) => R * C;

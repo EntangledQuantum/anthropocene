@@ -1,0 +1,131 @@
+---
+title: 'The news leaves at c'
+blurb: 'Shake a charge, watch the kink in its field run out through empty space, and build the one arrangement of E and B that travels.'
+order: 1
+tier: 'core'
+minutes: 10
+teaches:
+  - 'em-wave'
+  - 'em-wave-speed'
+  - 'accelerating-charge-radiation'
+requires:
+  - 'electric-field'
+  - 'magnetic-field'
+  - 'mechanical-wave'
+status: 'live'
+updated: 2026-09-28
+---
+
+<Step>
+
+A charge sits on a rod in a chamber pumped completely empty. A detector 9 m away shows
+which way the charge's field points there, and you jerk the charge upward.
+
+<Predict
+  id="up-ch32-vacuum-news"
+  question="When does the arrow on the detector move?"
+  options={[
+    { key: 'instant', misconception: 'up-ch32-field-change-instant', label: 'At the same instant: the field is already out there, attached to the charge', why: 'The field is out there, but it is not a rigid rod. Move the charge below and watch the far lines keep pointing at where it was until a kink reaches them.' },
+    { key: 'never', misconception: 'up-ch32-em-needs-medium', label: 'Never: with no air, nothing can carry the change', why: 'Nothing needs to carry it. The field line itself bends, and the bend runs outward through empty space.' },
+    { key: 'c', label: 'About 30 ns later', why: 'Right. The kink runs out at 3 × 10⁸ m/s, so 9 m takes 30 ns, air or no air.' },
+    { key: 'stop', label: 'Only once the charge stops moving', why: 'The news of the start leaves at once and does not wait for the end. A long, slow drag makes a thick kink, and its front still arrives 30 ns after the charge first moved.' },
+  ]}
+  correct="c"
+>
+
+<ShakeTheCharge prompt="Drag the charge up or down the rod and let go. Try small, big, slow and quick moves." detectorAt={9} />
+
+</Predict>
+
+</Step>
+
+<Step>
+
+## The news keeps its own pace
+
+However you moved the charge, distance ÷ time came out the same.
+
+<ShakeTheCharge
+  id="up-ch32-place-20ns"
+  prompt="Put the detector where the news arrives 20 ns after the charge moves, then shake and check."
+  detectorAt={9}
+  targetNs={20}
+  explanation="6.0 m. At 9 m the news took 30 ns, so it covers 0.30 m every nanosecond, and 20 ns buys 6 m. No shake changes that rate: it belongs to empty space, not to the charge."
+/>
+
+</Step>
+
+<Step>
+
+## Name it
+
+The kink is a change in $\vec E$ running through space. A changing $\vec E$ makes a $\vec B$ and a changing $\vec B$ makes an $\vec E$, and Maxwell found the pair carries itself along at one speed, set by the constants of Coulomb's and Ampère's laws:
+
+$$c = \frac{1}{\sqrt{\mu_0\varepsilon_0}} = \frac{1}{\sqrt{(1.2566\times10^{-6})(8.8542\times10^{-12})}} = 2.998\times10^{8}\ \text{m/s}$$
+
+Those constants come from capacitors and coils on a bench, and the speed of light falls out.
+
+<Recall id="up-ch32-recall-c" concept="em-wave-speed">
+  <div slot="front">A radio mast and a lightbulb are both switched on 3 km away. Whose signal reaches you first?</div>
+
+  Neither. Both are the same kind of field wave, and in vacuum every one of them moves at
+  $c = 1/\sqrt{\mu_0\varepsilon_0}$, 10 µs for 3 km. The source sets the shape of the
+  wave, never its speed.
+</Recall>
+
+</Step>
+
+<Step>
+
+## Freeze it
+
+Far from a charge shaken steadily, the kinks line up into a wave: $\vec E$ up and down the page, $\vec B$ in and out of it. Here $\vec E$ is frozen, and $\vec B$'s pattern is yours to slide.
+
+<SendTheWaveRight
+  id="up-ch32-send-it-right"
+  prompt="Slide B's crest until this wave will run to the receiver. Let it go to test it, then check."
+  startPhase={90}
+  explanation="B's crests sit exactly on E's. Then E × B points right at every point and the whole pattern slides right at c, unchanged. E and B do not take turns: in a travelling wave they peak together, and E = cB, so 100 V/m goes with 0.33 µT."
+/>
+
+<Recall id="up-ch32-recall-in-phase" concept="em-wave">
+  <div slot="front">Freeze a light wave travelling east. Where along it is B biggest, and which way does it point?</div>
+
+  Exactly where E is biggest. B is at right angles to E and to east, turned so that E × B
+  points east. A B a quarter wave behind E would not travel; it would split into halves
+  running both ways.
+</Recall>
+
+</Step>
+
+<Step>
+
+## Nothing goes up the rod
+
+A radio mast is this charge shaken up and down, over and over.
+
+<Predict
+  id="up-ch32-silent-direction"
+  question="Where does a receiver near the mast pick up nothing at all?"
+  options={[
+    { key: 'side', label: 'Straight out to the side', why: 'Broadside is where the kink is biggest: every line there takes the whole sideways shift of the charge.' },
+    { key: 'none', misconception: 'up-ch32-radiates-equally', label: 'Nowhere: the ripple spreads equally all round, like a pond', why: 'Shake the charge below and watch the lines straight above and below the rod. They slide along themselves and never kink.' },
+    { key: 'axis', label: 'Straight above and below the mast', why: 'Right. A line along the rod is only slid along its own length. The sideways kink goes as sin θ: all of it broadside, none on the axis.' },
+    { key: 'diag', label: 'At 45°, where the up and down parts cancel', why: 'Nothing cancels at 45°. The lines there kink by about 0.7 of the broadside amount.' },
+  ]}
+  correct="axis"
+>
+
+<ShakeTheCharge mode="around" prompt="Shake the charge and watch the lines straight above and below it." />
+
+</Predict>
+
+## What to carry forward
+
+- **A change in the field is news, and news travels at c.** Far away, the field still points at where the charge was.
+- **c = 1/√(μ₀ε₀)** belongs to empty space. No source can hurry it.
+- The picture: **two transverse arrows, E and B, skating forward together**, with E × B pointing the way they go.
+
+Next: the wave carries energy and momentum, enough to push a sail.
+
+</Step>

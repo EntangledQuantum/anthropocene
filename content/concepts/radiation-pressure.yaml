@@ -1,0 +1,10 @@
+title: 'Radiation pressure'
+blurb: 'Light carries momentum U/c along with its energy U. A surface that stops it takes that momentum, a pressure I/c; a mirror that sends it straight back takes twice as much, 2I/c.'
+notation: 'p = \dfrac{U}{c},\qquad P_{\text{absorb}} = \dfrac{I}{c},\qquad P_{\text{reflect}} = \dfrac{2I}{c}'
+tags:
+  - 'up-ch32'
+misconceptions:
+  - id: 'up-ch32-black-pushed-harder'
+    name: 'A black surface is pushed harder by light, because it takes in more of the energy.'
+    signal: 'Picks the black sail over the mirror sail.'
+    correction: 'The push is the momentum handed over. Light that stops hands over its momentum once; light that bounces straight back must be turned round, which takes twice as much. A mirror feels 2I/c, a black sheet I/c.'

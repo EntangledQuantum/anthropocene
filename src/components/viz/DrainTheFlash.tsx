@@ -4,7 +4,7 @@ import { C, CheckBar, Meter, SceneCard, useTask } from './scene.tsx';
 import { Bulb, FlowDots, Wire, type Pt } from './circuit-kit.tsx';
 
 /**
- * The flash capacitor, full at 300 V, and a 10 kΩ lamp across it behind a
+ * The flash capacitor, full at 300 V, and a 20 kΩ lamp across it behind a
  * switch you hold closed. While you hold, the capacitor empties through the
  * lamp: the lamp glows by the power it takes, V²/R, and dims as the voltage
  * falls. The strip traces the voltage against the time the switch was closed.
@@ -27,7 +27,7 @@ const { emf: V0, C: CAP } = CH26_FLASH;
 const R = CH26_LAMP_R;
 const U0 = capEnergy(CAP, V0);
 const TOP = 40, BOT = 164, XC = 150, XL = 470, XS = 300;
-const SPAN = 6, TX0 = 60, TX1 = 620, TY0 = 290, TY1 = 196;
+const SPAN = 8, TX0 = 60, TX1 = 620, TY0 = 290, TY1 = 196;
 const tx = (t: number) => TX0 + (t / SPAN) * (TX1 - TX0);
 const ty = (v: number) => TY0 - (v / V0) * (TY0 - TY1);
 
@@ -119,7 +119,7 @@ export default function DrainTheFlash({ id, prompt, target = 0.5, tolerance = 0.
         </g>)}
         <text x={XC - 40} y={TOP + 62} textAnchor="end" fontSize={12} fill={C.faint}>200 µF</text>
         <Bulb x={XL} y={(TOP + BOT) / 2} power={I * I * R} pMax={V0 * V0 / R} />
-        <text x={XL + 26} y={(TOP + BOT) / 2 + 5} fontSize={12} fill={C.faint}>lamp, 10 kΩ</text>
+        <text x={XL + 26} y={(TOP + BOT) / 2 + 5} fontSize={12} fill={C.faint}>lamp, {R / 1000} kΩ</text>
 
         {/* the trace */}
         {[0, 75, 150, 225, 300].map((u) => <g key={u}>

@@ -1,0 +1,14 @@
+title: 'Motional EMF'
+blurb: 'A conductor moving through a field sweeps out area, and the flux through its circuit grows at B L v. The current that EMF drives feels a force I L B against the motion, so every watt the circuit delivers is a watt the pusher supplies.'
+notation: '\mathcal{E} = BLv,\qquad F_{\text{drag}} = ILB = \frac{B^2L^2v}{R}'
+tags:
+  - 'up-ch29'
+misconceptions:
+  - id: 'up-ch29-steady-push-endless-speedup'
+    name: 'A steady push on the bar keeps it speeding up, as on frictionless ice.'
+    signal: 'Expects any push, held long enough, to make the bulb as bright as you like.'
+    correction: 'The faster the bar goes, the bigger the current and the magnetic drag on it. It speeds up only until the drag matches your push, then cruises. A given push buys a given brightness.'
+  - id: 'up-ch29-generator-free-power'
+    name: 'The bulb''s power comes from the magnet''s field.'
+    signal: 'Expects a brighter bulb to cost the pusher nothing extra.'
+    correction: 'The field does no net work. Once the bar cruises, your push times its speed equals the bulb''s power exactly: the bulb burns what your hand supplies, and a brighter bulb is harder to push.'

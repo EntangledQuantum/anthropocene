@@ -1,0 +1,14 @@
+title: 'Eddy currents'
+blurb: 'A changing flux through a lump or pipe of metal drives currents that swirl round inside it, and by Lenz''s law they brake whatever motion made the flux change. Cut their paths and the braking goes.'
+notation: 'F = -k\,v,\qquad k = \frac{45\,\mu_0^2 m^2 \sigma w}{1024\,a^4}\ \text{(dipole in a thin pipe)}'
+tags:
+  - 'up-ch29'
+misconceptions:
+  - id: 'up-ch29-copper-ignores-magnets'
+    name: 'Copper is not magnetic, so a magnet moving past it feels nothing.'
+    signal: 'Predicts the magnet falls through a copper pipe as fast as through a plastic one.'
+    correction: 'Copper is not attracted to a magnet at rest. But a moving magnet changes the flux through every ring of the copper, and the currents that drives push back. A copper pipe slows the magnet about twentyfold.'
+  - id: 'up-ch29-air-cushion'
+    name: 'The magnet falls slowly in the pipe because it has to push the air out.'
+    signal: 'Credits trapped air, and expects any snug pipe to slow the magnet.'
+    correction: 'A plastic pipe of the same bore traps the air just as well, and the magnet falls through it freely. What the copper adds is a closed path round the pipe for current; slit it down its length and the braking all but vanishes.'

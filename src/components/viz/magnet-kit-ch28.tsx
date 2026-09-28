@@ -112,7 +112,14 @@ export function FieldLinesStage({ wires, range = [-4, 2], lineStep = 0.5, lines 
     if (!canvas.current || !wrap.current) return;
     surf.current = createShaderSurface(canvas.current, FRAG);
     const stop = observeSize(wrap.current, (w, h) => { size.current = [w, h]; draw(); });
-    return () => { stop(); surf.current?.destroy(); surf.current = null; };
+    // A scene revealed inside a <Predict> can mount mid-transition; paint
+    // again once it has settled so the first frame is never left blank.
+    const late = [150, 600].map((ms) => window.setTimeout(() => {
+      const el = wrap.current;
+      if (el) size.current = [el.clientWidth, el.clientHeight];
+      draw();
+    }, ms));
+    return () => { stop(); late.forEach(clearTimeout); surf.current?.destroy(); surf.current = null; };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
   useEffect(draw);

@@ -1,0 +1,14 @@
+title: 'Faraday''s law'
+blurb: 'The EMF round a loop is minus the rate of change of the magnetic flux through it. A flux that sits still drives nothing, however large; a flux that changes fast drives a lot, however small.'
+notation: '\mathcal{E} = -N\frac{d\Phi_B}{dt}'
+tags:
+  - 'up-ch29'
+misconceptions:
+  - id: 'up-ch29-field-makes-current'
+    name: 'A magnet inside a coil drives a current through it, bigger for a stronger magnet.'
+    signal: 'Predicts a steady current from a magnet held still inside a coil.'
+    correction: 'The needle kicks only while the flux changes. A magnet sitting still in the coil, however strong, gives a steady flux and so no EMF and no current.'
+  - id: 'up-ch29-current-fades-slowly'
+    name: 'After the magnet stops, the current dies away gradually, like something running down.'
+    signal: 'Expects the needle to drift back to zero over seconds once the magnet stops.'
+    correction: 'The EMF is set by the rate of change of flux at each instant. The moment the magnet stops, the rate is zero and so is the current (to within the coil''s own tiny lag, which chapter 30 measures in microseconds).'

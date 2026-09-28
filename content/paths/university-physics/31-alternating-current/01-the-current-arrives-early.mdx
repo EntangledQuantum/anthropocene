@@ -1,0 +1,154 @@
+---
+title: 'The current arrives early'
+blurb: 'Read a sine wave as a turning arrow, place a capacitor''s and a coil''s current a quarter turn from their voltage, and say what 230 V actually measures.'
+order: 1
+tier: 'core'
+minutes: 11
+teaches:
+  - 'phasor'
+  - 'current-voltage-phase'
+  - 'rms'
+requires:
+  - 'uniform-circular-motion'
+  - 'simple-harmonic-motion'
+  - 'capacitance'
+  - 'self-inductance'
+  - 'electric-current'
+  - 'electrical-power'
+status: 'live'
+updated: 2026-09-28
+---
+
+<Step>
+
+A capacitor sits on a supply that swings smoothly between +10 V and −10 V. The voltage
+climbs to its peak, pauses, and turns back.
+
+<Predict
+  id="up-ch31-capacitor-peak"
+  question="At the instant the voltage peaks, what is the current in the wire doing?"
+  options={[
+    { key: 'peak', misconception: 'up-ch31-current-follows-voltage', label: 'Peaking too: most voltage, most current', why: 'That is a resistor’s timing. Here the current is how fast charge piles onto the plates, and at the voltage peak the pile has stopped growing.' },
+    { key: 'early', label: 'Zero: it peaked a quarter cycle earlier', why: 'Right. The plates fill fastest as the voltage climbs through zero, so the current peaks there. By the voltage peak the plates are full and the flow has stopped.' },
+    { key: 'late', misconception: 'up-ch31-capacitor-current-late', label: 'Zero: it peaks a quarter cycle later, once the plates catch up', why: 'Nothing lags: the charge on the plates is C times the voltage at every instant. The flow is fastest when the voltage changes fastest, which is before the peak, not after.' },
+    { key: 'never', misconception: 'up-ch31-capacitor-blocks-ac', label: 'Zero, always: no charge crosses the gap', why: 'None crosses the gap, but charge flows onto one plate and off the other through the wires. Watch the cyan arrow on the wire below.' },
+  ]}
+  correct="early"
+>
+
+<PlaceTheCurrent element="capacitor" prompt="Watch the plates fill and empty, and the current on the wire." />
+
+</Predict>
+
+</Step>
+
+<Step>
+
+## Turn the mains
+
+The arrows in that picture turn once per cycle, and each wave is an arrow's height. The wall
+socket works the same way: its voltage is the height of a 325 V arrow turning once every 20 ms.
+
+<SpinThePhasor
+  id="up-ch31-spin-to-instant"
+  prompt="Turn the arrow to the instant the supply reads +162 V and is falling."
+  target={{ volts: 162, falling: true }}
+  explanation="At 150°, 8.3 ms into the cycle. The supply reads +162 V twice: at 30° on the way up and at 150° on the way down. The arrow turns anticlockwise, so on the right half of the circle its shadow climbs and on the left half it falls. The angle is the moment; the height alone is not."
+/>
+
+</Step>
+
+<Step>
+
+## Name it
+
+A sine wave is the shadow of a turning arrow, a **phasor**: its length is the peak and its
+angle is the moment. A capacitor's current is how fast its charge $q = Cv$ changes, so its
+arrow turns a quarter turn ahead of the voltage's:
+
+$$i = C\,\frac{dv}{dt} \quad\Longrightarrow\quad \text{current leads by } 90^\circ$$
+
+<Recall id="up-ch31-recall-phasor" concept="phasor">
+  <div slot="front">A phasor points straight left. What is its sine wave doing at that instant?</div>
+
+  Passing through zero on its way down. The shadow is the arrow's height, which is zero when
+  it points sideways; turning anticlockwise from straight left, the tip swings downward.
+</Recall>
+
+</Step>
+
+<Step>
+
+## The coil does the opposite
+
+Swap the capacitor for a coil. A coil's voltage is $L\,di/dt$: it pushes hardest when its
+current is changing fastest.
+
+<PlaceTheCurrent
+  id="up-ch31-coil-current"
+  element="inductor"
+  start={0}
+  prompt="Drag the current arrow to where the coil's current must be."
+  explanation="A quarter turn behind the voltage. At the voltage peak the coil is driving its current up its fastest, so the current is climbing through zero. It reaches its own peak a quarter cycle later, as the voltage passes through zero and the coil stops pushing."
+/>
+
+<Recall id="up-ch31-recall-lead-lag" concept="current-voltage-phase">
+  <div slot="front">On AC, whose current peaks before its voltage: a capacitor's or a coil's?</div>
+
+  The capacitor's, by a quarter cycle: its current is how fast its charge changes, $C\,dv/dt$.
+  A coil's current peaks a quarter cycle after its voltage, because the voltage sets how fast
+  that current changes.
+</Recall>
+
+</Step>
+
+<Step>
+
+## What the socket's number means
+
+The mains arrow is 325 V long. A heater does not care which way the current goes, only how
+fast it is being heated.
+
+<MatchTheGlow
+  id="up-ch31-match-the-glow"
+  prompt="Set the battery so its heater glows exactly as bright as the one on the mains."
+  explanation="{v} V, the number printed on every European socket. The mains heater's power pulses from 0 to 1058 W twice a cycle and averages exactly half its peak, 529 W. Half the power takes 1/√2 of the voltage: 325 V ÷ √2 = 230 V."
+/>
+
+</Step>
+
+<Step>
+
+## Name it, and a catch
+
+Mains is labelled with its **RMS** voltage, the steady voltage that heats a resistor just as
+fast: $V_{\text{rms}} = V_0/\sqrt2$. Ammeters on AC read RMS amps the same way.
+
+<Predict
+  id="up-ch31-capacitor-power"
+  question="A capacitor on the 230 V mains carries 1.0 A RMS. How much power does it take from the grid, on average?"
+  options={[
+    { key: 'vi', misconception: 'up-ch31-power-is-vi', label: '230 W: volts times amps', why: 'That works for the heater, whose current rises and falls with its voltage. The capacitor’s current is a quarter cycle ahead.' },
+    { key: 'half', label: '115 W: they overlap half the time', why: 'In the quarters where v and i share a sign the capacitor takes energy in. In the quarters where they differ it hands the same amount back. Nothing is left over.' },
+    { key: 'zero', label: 'None: it borrows energy for a quarter cycle and returns it the next', why: 'Right. Charging, it stores energy in its field; discharging, it gives all of it back to the grid. Average power is V_rms × I_rms × cos φ, and at 90° the cosine is zero.' },
+  ]}
+  correct="zero"
+/>
+
+<Recall id="up-ch31-recall-rms" concept="rms">
+  <div slot="front">US mains is labelled 120 V. What is its peak voltage?</div>
+
+  About 170 V. The label is the RMS value, and for a sine the peak is √2 times larger:
+  $120 \times 1.414 \approx 170$ V.
+</Recall>
+
+## What to carry forward
+
+- **A sine is a turning arrow.** Its angle is the moment; adding sines is adding arrows.
+- **A capacitor's current leads by a quarter turn; a coil's lags by one.** Neither takes
+  any average power.
+- **230 V is RMS**: the steady voltage that heats the same. The peak is 325 V.
+
+Next: put a coil and a capacitor in one loop, and their arrows start to cancel.
+
+</Step>

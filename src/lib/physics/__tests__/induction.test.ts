@@ -206,3 +206,29 @@ describe('lesson 2: the bar on rails', () => {
     expect(holdForce(3, { ...r, m: 2 * r.m })).toBe(base);
   });
 });
+
+describe('the numbers the lesson text quotes', () => {
+  it('pulling the magnet from the centre to the end of its travel sends 0.31 mC round the coil', () => {
+    expect(chargeThroughCoil(0, 0.34) * 1000).toBeCloseTo(0.31, 2);
+    expect(chargeThroughCoil(0, -0.34)).toBeCloseTo(chargeThroughCoil(0, 0.34), 12);
+    expect(CH29_COIL.N).toBe(500);
+  });
+  it('the two frozen rings, one radius either side, brake the magnet with about 25 mN of its 100 mN weight', () => {
+    const vt = terminalSpeed(CH29_PIPE.M, pipeDragCoefficient('copper'));
+    const two = ringOnFallingMagnet(-CH29_PIPE.a, vt, 0.004).force + ringOnFallingMagnet(CH29_PIPE.a, vt, 0.004).force;
+    expect(two * 1000).toBeGreaterThan(24);
+    expect(two * 1000).toBeLessThan(26);
+    expect(CH29_PIPE.M * G * 1000).toBeCloseTo(100, 0);
+  });
+  it('the copper magnet reaches its terminal speed within a centimetre', () => {
+    const k = pipeDragCoefficient('copper');
+    let y = 0, v = 0;
+    while (y < 0.01) [y, v] = fallStep(y, v, 1e-4, k, CH29_PIPE.M);
+    expect(v / terminalSpeed(CH29_PIPE.M, k)).toBeGreaterThan(0.99);
+  });
+  it('the rails at 3 m/s: 2.4 V, and with the 1 Ω bulb 2.4 A', () => {
+    const s = railState(3, 0);
+    expect(s.emf).toBeCloseTo(2.4, 12);
+    expect(s.I).toBeCloseTo(2.4, 12);
+  });
+});

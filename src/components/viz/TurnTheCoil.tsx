@@ -44,12 +44,12 @@ export default function TurnTheCoil({ id, prompt, start = 50, tolerance = 6, exp
   const fSide = Math.hypot(...sides.sides[0].F);
   const d = signed(deg);
   const turnWord = (t: number) => (Math.abs(t) < 5e-4 ? '' : t < 0 ? ' clockwise' : ' counterclockwise');
-  const nudged = Math.abs(loopTorque(COIL.N, COIL.I, A, COIL.B, Math.PI + (5 * Math.PI) / 180));
+  const nudged = Math.abs(loopTorque(COIL.N, COIL.I, A, COIL.B, Math.PI + (20 * Math.PI) / 180));
 
   const ok = Math.abs(d) <= tolerance;
   const nearFlip = Math.abs(Math.abs(d) - 180) <= tolerance;
   const miss = nearFlip
-    ? `The torque here is only ${Math.abs(tz).toFixed(3)} N·m, but nudged 5° either way it grows to ${nudged.toFixed(3)} N·m and turns the coil further away. This balance does not hold.`
+    ? `The torque here is only ${Math.abs(tz).toFixed(3)} N·m, but nudged 20° either way it grows to ${nudged.toFixed(3)} N·m and turns the coil further away. This balance does not hold.`
     : `At ${Math.abs(d).toFixed(0)}° the field still twists the coil with ${Math.abs(tz).toFixed(3)} N·m${turnWord(tz)}.`;
 
   const tip: [number, number] = [-Math.sin(th) * HALF, Math.cos(th) * HALF];

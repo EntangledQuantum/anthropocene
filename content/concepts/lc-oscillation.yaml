@@ -1,0 +1,18 @@
+title: 'LC oscillation'
+blurb: 'A charged capacitor across a coil: the charge drains through the coil, overshoots onto the plates the other way up, and comes back, forever if nothing resists. It is a mass on a spring in electrical clothes: charge is the position, current the velocity, the coil the mass and the capacitor the spring.'
+notation: 'L\,\ddot q = -\dfrac{q}{C},\qquad \omega = \dfrac{1}{\sqrt{LC}},\qquad \tfrac{q^2}{2C} + \tfrac12 L I^2 = \text{constant}'
+tags:
+  - 'up-ch30'
+misconceptions:
+  - id: 'up-ch30-empty-means-stopped'
+    name: 'Once the capacitor is empty, nothing is left to push, so the current stops.'
+    signal: 'Places zero current at the moment the capacitor has no charge.'
+    correction: 'The coil keeps the current going. At the empty moment the current is at its peak and all the energy is in the coil''s field, just as a spring cart is fastest as it passes the middle.'
+  - id: 'up-ch30-lc-energy-vanishes'
+    name: 'At the instant the current is zero, the loop''s energy has gone.'
+    signal: 'Says an LC loop has no energy when its current momentarily stops.'
+    correction: 'When the current stops the capacitor is full, the other way up, and holds all the energy as ½q²/C. The energy only changes place; the total stays fixed.'
+  - id: 'up-ch30-more-charge-slower'
+    name: 'More charge on the capacitor takes longer to slosh round.'
+    signal: 'Predicts a longer period after charging to a higher voltage.'
+    correction: 'Twice the charge drives twice the current, so every part of the motion scales together and the period stays 2π√(LC). It is chapter 14''s bigger spring swing on the same clock.'

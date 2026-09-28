@@ -1,0 +1,10 @@
+title: 'The electromagnetic spectrum'
+blurb: 'Radio, microwaves, infrared, visible light, ultraviolet, X-rays and gamma rays are one kind of wave at different wavelengths, all travelling at c with λf = c. Sound and ultrasound are not on it: they are pressure waves in matter.'
+notation: 'c = \lambda f'
+tags:
+  - 'up-ch32'
+misconceptions:
+  - id: 'up-ch32-different-kinds'
+    name: 'Radio waves, light and X-rays are different kinds of thing.'
+    signal: 'Sorts radio or X-rays apart from light, or puts ultrasound with radio because both are invisible.'
+    correction: 'All are the same field wave, differing only in wavelength, from kilometres to picometres. What changes is how they meet matter, not what they are.'

@@ -1,0 +1,10 @@
+title: 'Impedance'
+blurb: 'The AC generalization of resistance: a complex number whose size is volts per amp and whose angle is how far the current lags. In series, the parts'' voltages add as arrows, not as numbers.'
+notation: 'Z = R + i\left(\omega L - \dfrac{1}{\omega C}\right),\qquad |Z| = \sqrt{R^2 + (X_L - X_C)^2}'
+tags:
+  - 'up-ch31'
+misconceptions:
+  - id: 'up-ch31-voltages-add-as-numbers'
+    name: 'The voltages across parts in series add up, as numbers, to the supply voltage.'
+    signal: 'Adds the three voltmeter readings and expects the supply, or expects none of them to exceed it.'
+    correction: 'They add as arrows. The coil''s voltage points one way and the capacitor''s the opposite way, so they can each be large while their sum is small. Kirchhoff''s loop rule still holds, instant by instant and arrow by arrow.'

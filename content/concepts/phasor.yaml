@@ -1,0 +1,10 @@
+title: 'Phasor'
+blurb: 'A sine wave is the shadow of an arrow turning at a steady rate. The arrow''s length is the peak, its angle is the moment, and two sines of one frequency add as their arrows add.'
+notation: 'v(t) = V_0\sin(\omega t + \varphi) = \operatorname{Im}\!\left(V_0 e^{i\varphi}\,e^{i\omega t}\right)'
+tags:
+  - 'up-ch31'
+misconceptions:
+  - id: 'up-ch31-height-is-the-moment'
+    name: 'A voltage value fixes the moment in the cycle.'
+    signal: 'Places the arrow by the height of its shadow alone, and lands on the rising instant when the falling one was asked for.'
+    correction: 'Every height except the peaks happens twice a cycle, once rising and once falling. The arrow turns anticlockwise, so on the right half of the circle its shadow climbs and on the left half it falls.'

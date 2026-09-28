@@ -1,0 +1,6 @@
+---
+// @graded — with `id`, drag the current phasor to where a capacitor's or coil's current must be.
+import Island, { type PlaceTheCurrentProps } from '../viz/PlaceTheCurrent.tsx';
+const props = Astro.props as PlaceTheCurrentProps;
+---
+<Island client:visible {...props} />

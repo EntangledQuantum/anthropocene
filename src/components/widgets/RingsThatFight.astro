@@ -1,0 +1,6 @@
+---
+// @graded — set each ring's current so it brakes the falling magnet.
+import Island, { type RingsThatFightProps } from '../viz/RingsThatFight.tsx';
+const props = Astro.props as RingsThatFightProps;
+---
+<Island client:visible {...props} />

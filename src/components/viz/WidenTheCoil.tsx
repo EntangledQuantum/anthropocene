@@ -64,7 +64,7 @@ export default function WidenTheCoil({ prompt, turns = 30, length = 30, current 
           <CoilSection s={s} xs={xs} R={R} I={1} r={5} />
           <ScaleBar s={s} at={[-17.5, -6]} length={5} label="5 cm" />
           <Handle s={s} at={[xs[0], R]} color={C.position} step={0.2} r={9} label="Top of the coil: drag up to widen"
-            onChange={(p) => setR(Math.max(0.6, Math.min(5.5, p[1])))} />
+            onChange={(p) => setR(Math.max(0.6, Math.min(4.6, p[1])))} />
         </>}
       </Stage>
       <svg viewBox={`0 0 ${PW} ${PH}`} style={{ width: '100%', display: 'block', marginTop: 6 }} role="img"

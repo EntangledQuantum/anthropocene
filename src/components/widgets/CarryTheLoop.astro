@@ -1,0 +1,6 @@
+---
+// @graded — with `id`, carry the loop through the field without the needle stirring.
+import Island, { type CarryTheLoopProps } from '../viz/CarryTheLoop.tsx';
+const props = Astro.props as CarryTheLoopProps;
+---
+<Island client:visible {...props} />

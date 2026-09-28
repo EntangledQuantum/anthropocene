@@ -88,6 +88,8 @@ export function FlowDots({ paths, currents, pxPerAmp }: {
 }) {
   const cur = useRef(currents);
   cur.current = currents;
+  const geom = useRef(paths);
+  geom.current = paths;
   const phase = useRef<Record<string, number>>({});
   const dots = useRef<Record<string, (SVGCircleElement | null)[]>>({});
   const ids = Object.keys(paths);
@@ -98,8 +100,8 @@ export function FlowDots({ paths, currents, pxPerAmp }: {
     const frame = (now: number) => {
       const dt = Math.min((now - last) / 1000, 0.05);
       last = now;
-      for (const id of ids) {
-        const pts = paths[id];
+      for (const id of Object.keys(geom.current)) {
+        const pts = geom.current[id];
         const L = lengthOf(pts);
         const n = Math.max(1, Math.floor(L / SPACING));
         const gap = L / n;
@@ -118,7 +120,7 @@ export function FlowDots({ paths, currents, pxPerAmp }: {
     };
     raf = requestAnimationFrame(frame);
     return () => cancelAnimationFrame(raf);
-    // the wiring (key) decides which circles exist; currents are read from the ref
+    // the wiring (key) decides which circles exist; geometry and currents are read from refs
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [key, pxPerAmp]);
 

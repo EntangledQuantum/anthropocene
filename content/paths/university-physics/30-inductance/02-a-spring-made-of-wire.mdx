@@ -1,0 +1,122 @@
+---
+title: 'A spring made of wire'
+blurb: 'Watch charge slosh between a capacitor and a coil, catch the moment all the energy is in the coil, and tune a radio by sliding a core into its coil.'
+order: 2
+tier: 'core'
+minutes: 9
+teaches:
+  - 'lc-oscillation'
+requires:
+  - 'self-inductance'
+  - 'inductor-energy'
+  - 'capacitor-energy'
+  - 'simple-harmonic-motion'
+  - 'resonance'
+status: 'live'
+updated: 2026-09-28
+---
+
+<Step>
+
+A 100 µF capacitor charged to 10 V is wired straight across a 0.25 H coil. The charge starts
+to drain off the plates through the coil.
+
+<Predict
+  id="up-ch30-empty-capacitor"
+  question="At the instant the capacitor is completely empty, what is the current in the coil?"
+  options={[
+    { key: 'zero', misconception: 'up-ch30-empty-means-stopped', label: 'Zero: nothing is left to push it', why: 'That is how a lamp would behave. The coil will not let its current stop: with nothing left pushing either way, the current is at its largest. Watch the dots race as the plates go blank.' },
+    { key: 'peak', label: 'Its largest: all the energy is now in the coil', why: 'Right. The capacitor has handed over everything, so the coil holds it all as ½LI², and the current then carries on and charges the plates the other way up.' },
+    { key: 'half', label: 'Half its largest: it is running down', why: 'The current has been rising the whole time the capacitor drained. It only starts to fall once the plates begin charging the other way.' },
+    { key: 'reverse', label: 'It is just reversing direction', why: 'The reversal comes a quarter-cycle later, when the capacitor is full again the other way up and the current is momentarily zero.' },
+  ]}
+  correct="peak"
+>
+
+<SloshingLC prompt="Release the charge and watch the two energy bars." />
+
+</Predict>
+
+</Step>
+
+<Step>
+
+## Catch it in the coil
+
+Now the energy bars are covered. The circuit itself shows where the energy is.
+
+<SloshingLC
+  id="up-ch30-freeze-in-coil"
+  prompt="Release the charge, then freeze it at a moment when all the energy is in the coil."
+  explanation="Freeze it as the plates go blank: the capacitor holds nothing, and the current is at its peak, 0.20 A. That happens twice a cycle, every 15.7 ms, once in each direction."
+/>
+
+</Step>
+
+<Step>
+
+## Name it
+
+This is chapter 14's cart on a spring in electrical clothes. Charge is the position, current
+is the velocity, the coil is the mass and the capacitor is the spring:
+
+$$L\,\ddot q = -\frac{q}{C} \quad\longleftrightarrow\quad m\,\ddot x = -kx, \qquad \omega = \frac{1}{\sqrt{LC}}$$
+
+$\tfrac{q^2}{2C}$ is the spring's stored energy and $\tfrac12 LI^2$ the cart's kinetic
+energy, and their sum never changes.
+
+<Recall id="up-ch30-recall-lc-spring" concept="lc-oscillation">
+  <div slot="front">In an LC loop, which part plays the mass and which the spring? Where is the energy when the current is largest?</div>
+
+  The coil is the mass: it keeps the current going. The capacitor is the spring: it pushes
+  the charge back. At peak current the capacitor is empty and all the energy is ½LI² in the
+  coil, like a cart passing the middle at full speed.
+</Recall>
+
+</Step>
+
+<Step>
+
+## Tune the radio
+
+An AM radio picks one station out of dozens with exactly this loop. Turning its knob slides
+a ferrite slug into the coil, and it is sitting on 600 kHz.
+
+<TuneTheRadio
+  id="up-ch30-tune-the-radio"
+  prompt="Slide the slug until the station at 1200 kHz comes in."
+  explanation="About 88 µH, a quarter of the 352 µH you started from. The frequency goes as 1/√L, so doubling it takes a quarter of the inductance. Halving the coil only gets you to 849 kHz."
+/>
+
+</Step>
+
+<Step>
+
+## Twice the charge
+
+Charge the same capacitor to 20 V instead of 10 V, and release it into the same coil.
+
+<Predict
+  id="up-ch30-double-charge"
+  question="How long does it take to empty the first time, compared with 10 V?"
+  options={[
+    { key: 'longer', misconception: 'up-ch30-more-charge-slower', label: 'Longer: there is twice the charge to drain', why: 'Twice the charge also drives twice the current. More to move, moved faster: the two cancel exactly.' },
+    { key: 'shorter', label: 'Shorter: twice the voltage pushes it out faster', why: 'The faster current is real, but it has twice as far to go. Try both below and compare the two traces.' },
+    { key: 'same', label: 'Exactly the same, 7.9 ms', why: 'Right. Every part of the motion doubles together, so the timing cannot change. It is the bigger spring swing from chapter 14, on the same clock.' },
+  ]}
+  correct="same"
+>
+
+<SloshingLC prompt="Charge to 10 V and release, then to 20 V. The first run stays as a dashed ghost." volts={[10, 20]} />
+
+</Predict>
+
+## What to carry forward
+
+- **An LC loop is a mass on a spring.** The coil is the mass, the capacitor the spring, and $\omega = 1/\sqrt{LC}$.
+- **The energy sloshes, it never vanishes:** all in the capacitor when the current stops, all in the coil when the plates are empty.
+- **Real wire has resistance**, which drains a little every cycle, as friction does on a spring.
+
+Next: drive the loop with an alternating voltage, and it is chapter 14's resonance again.
+
+</Step>

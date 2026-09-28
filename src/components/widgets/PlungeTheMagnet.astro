@@ -1,0 +1,6 @@
+---
+// @graded — with `id` and `target`, the scene checks the needle's largest swing.
+import Island, { type PlungeTheMagnetProps } from '../viz/PlungeTheMagnet.tsx';
+const props = Astro.props as PlungeTheMagnetProps;
+---
+<Island client:visible {...props} />

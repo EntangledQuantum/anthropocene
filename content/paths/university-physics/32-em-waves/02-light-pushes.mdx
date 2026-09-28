@@ -1,0 +1,131 @@
+---
+title: 'Light pushes'
+blurb: 'Size a solar sail to reach a station in a day, sort the spectrum into one kind of wave, and measure the speed of light with a bar of chocolate.'
+order: 2
+tier: 'core'
+minutes: 10
+teaches:
+  - 'radiation-pressure'
+  - 'em-intensity'
+  - 'em-spectrum'
+requires:
+  - 'em-wave'
+  - 'momentum'
+  - 'standing-wave'
+status: 'live'
+updated: 2026-09-28
+---
+
+<Step>
+
+Two identical 10 m sails face the Sun, one silvered and one painted black. Sunlight pours
+1361 W onto every square metre of each.
+
+<Predict
+  id="up-ch32-mirror-or-black"
+  question="Which sail does the sunlight push harder?"
+  options={[
+    { key: 'black', misconception: 'up-ch32-black-pushed-harder', label: 'The black one: it soaks up all the energy', why: 'It does take all the energy, but a push is momentum handed over, not energy. Switch sails below and read the push.' },
+    { key: 'same', label: 'Both the same: the same light lands on each', why: 'The same light arrives, but it leaves differently. Light that stops hands over its momentum once; light turned straight round hands it over twice.' },
+    { key: 'mirror', label: 'The mirror, twice as hard', why: 'Right. Turning the light round takes twice the momentum that stopping it does: 0.91 mN on the mirror against 0.45 mN on the black sail.' },
+    { key: 'neither', label: 'Neither: light has no mass, so it cannot push', why: 'Light carries momentum without mass. The push is tiny, but it never lets up, and in a day it adds up to hundreds of kilometres.' },
+  ]}
+  correct="mirror"
+>
+
+<SizeTheSail choose side={10} prompt="Switch between the sails and launch each for a day." />
+
+</Predict>
+
+</Step>
+
+<Step>
+
+## Size the sail
+
+A 5 kg probe with a mirror sail waits at rest, and a relay station sits 373 km ahead.
+
+<SizeTheSail
+  id="up-ch32-size-the-sail"
+  prompt="Size the sail so the probe reaches the station after exactly one day."
+  side={5}
+  targetKm={373}
+  explanation="About 7.4 m. The 5 m sail managed 170 km, and the push goes with the area: 2.2 times the distance needs 2.2 times the area, which is 1.48 times the side. At 7.4 m the light pushes with 0.50 mN, and a steady 0.1 mm/s² for 86,400 s comes to 373 km."
+/>
+
+</Step>
+
+<Step>
+
+## Name it
+
+A wave of peak field $E_0$ brings energy at $I = \tfrac12 c\varepsilon_0 E_0^2$ through each square metre each second, and with every joule it brings momentum $1/c$. Stopping it takes that momentum; reflecting it takes twice as much:
+
+$$P_\text{absorb} = \frac{I}{c}, \qquad P_\text{reflect} = \frac{2I}{c}$$
+
+Sunlight's 1361 W/m² is a field swinging to about 1000 V/m, and it presses on a mirror with 9 µPa, a ten-billionth of air pressure that never stops.
+
+<Recall id="up-ch32-recall-mirror" concept="radiation-pressure">
+  <div slot="front">A laser beam is aimed at a black card and then at a mirror. Which is pushed harder, and by how much?</div>
+
+  The mirror, twice as hard. The black card stops the light and takes its momentum $U/c$
+  once, a pressure $I/c$. The mirror sends it straight back, so the light's momentum is
+  reversed, and the card takes $2U/c$.
+</Recall>
+
+</Step>
+
+<Step>
+
+## One wave, many sizes
+
+The wave you built in the last lesson comes in every wavelength.
+
+<Classify
+  id="up-ch32-classify-spectrum"
+  prompt="Which of these are that same wave, at another wavelength?"
+  buckets={[
+    { key: 'em', label: 'Electromagnetic wave', accent: 'ok' },
+    { key: 'not', label: 'Something else', accent: 'magenta' },
+  ]}
+  items={[
+    { key: 'radio', label: 'Long-wave radio, 1500 m from crest to crest', bucket: 'em', why: 'The same fields, 1.5 km from crest to crest.' },
+    { key: 'xray', label: 'A dental X-ray, 0.02 nm', bucket: 'em', why: 'The same wave, 75 trillion times shorter than the radio wave.' },
+    { key: 'bat', label: 'A bat’s squeak, 40 kHz, too high to hear', bucket: 'not', why: 'Sound: air pushed and pulled, not fields. Pump the air out and it is gone.' },
+    { key: 'wifi', label: 'Wi-Fi, 12 cm', bucket: 'em', why: 'A microwave, the same kind as the oven’s in the next step.' },
+    { key: 'fire', label: 'The warmth you feel from a fire across the room', bucket: 'em', why: 'Infrared, a few micrometres long. It reaches you at c, before the warm air does.' },
+    { key: 'quake', label: 'An earthquake arriving at 6 km/s', bucket: 'not', why: 'A wave in rock, and fifty thousand times slower than c. Every electromagnetic wave in vacuum goes at c.' },
+  ]}
+  explanation="Everything electromagnetic moves at c and obeys c = λf; only the wavelength differs, from kilometres to picometres. The bat and the earthquake are waves in matter and would stop dead in a vacuum."
+/>
+
+</Step>
+
+<Step>
+
+## Measure c with chocolate
+
+Take the turntable out of a microwave oven, heat a bar of chocolate for twenty seconds, and it melts in spots. The label on the back says 2.45 GHz.
+
+<PinTheWavelength
+  id="up-ch32-chocolate-c"
+  prompt="Put the pins exactly one wavelength apart."
+  explanation="12.2 cm, two spots apart. The wave bounces off the metal wall into a standing wave, and heating goes as E², so the up-loop and the down-loop both melt. Spots come every half wavelength, and 0.122 m × 2.45 × 10⁹ Hz = 3.0 × 10⁸ m/s."
+/>
+
+<Recall id="up-ch32-recall-oven" concept="em-spectrum">
+  <div slot="front">Neighbouring melted spots in a 2.45 GHz oven are 6.1 cm apart. What is the wavelength, and what speed does it give?</div>
+
+  12.2 cm. Heating goes as $E^2$, so both halves of each wavelength melt: spots come every
+  $\lambda/2$. Then $c = \lambda f = 0.122 \times 2.45\times10^9 = 3.0\times10^8$ m/s.
+</Recall>
+
+## What to carry forward
+
+- **Light carries momentum U/c.** Stopped, it pushes with I/c; turned straight round, with 2I/c.
+- **One wave at every wavelength.** Radio to gamma rays is the same field, going at c, with λf = c.
+- **A standing EM wave has hot spots every λ/2**, because the energy goes as E².
+
+Next: light in matter, where it slows down and bends.
+
+</Step>

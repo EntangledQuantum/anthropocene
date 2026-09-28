@@ -38,7 +38,7 @@ const BMIN = 0.05, BMAX = 0.4;
 const TRACK: [number, number] = [-40, -12]; // world x of the field track, cm
 const TRACK_Y = -11;
 const GUN_Y = -7;
-const WARP = 2.2e6; // one microsecond of flight takes 2.2 s on screen
+const WARP = 5e6; // one microsecond of flight takes 5 s on screen
 const V_ARROW = 6; // cm
 const F_ARROW = 26; // cm of arrow per tesla (the force grows with B at fixed speed)
 

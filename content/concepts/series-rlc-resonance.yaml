@@ -1,0 +1,18 @@
+title: 'Series RLC resonance'
+blurb: 'Driven at ω₀ = 1/√(LC), a coil''s and a capacitor''s voltages are equal and opposite and cancel. The current peaks at V/R, in step with the supply, and each of those two voltages is Q times the supply.'
+notation: '\omega_0 = \dfrac{1}{\sqrt{LC}},\qquad Q = \dfrac{1}{R}\sqrt{\dfrac{L}{C}},\qquad V_L = V_C = Q\,V_{\text{supply}}'
+tags:
+  - 'up-ch31'
+misconceptions:
+  - id: 'up-ch31-parts-below-supply'
+    name: 'No part of a circuit can have more voltage across it than the supply provides.'
+    signal: 'Rejects 50 V across a capacitor on a 10 V supply as impossible, or blames the meter.'
+    correction: 'The coil and the capacitor trade energy back and forth every cycle, and the drive tops that swing up like a well-timed push. Their voltages grow to Q times the supply, and they point opposite ways, so the loop still adds to 10 V.'
+  - id: 'up-ch31-ac-resonance-different'
+    name: 'Electrical resonance is a different phenomenon from a mass on a spring.'
+    signal: 'Treats the tuned circuit as a new idea with its own rules rather than chapter 14''s driven oscillator.'
+    correction: 'It is the same equation. Charge plays position, L plays mass, 1/C plays the spring constant and R plays damping. The peak at ω₀, the finite height set by damping and the Q-fold amplification all carry over.'
+  - id: 'up-ch31-supply-makes-extra'
+    name: 'At resonance the supply briefly pushes out more than its rated voltage.'
+    signal: 'Explains a large voltage across one part by a surge from the source.'
+    correction: 'The supply stays at 10 V throughout. At resonance its whole 10 V sits across the resistor; the large voltages belong to the coil and capacitor passing stored energy between them.'

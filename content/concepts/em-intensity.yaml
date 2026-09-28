@@ -1,0 +1,5 @@
+title: 'Intensity of an EM wave'
+blurb: 'The energy an EM wave carries through each square metre each second, the average of the Poynting vector. Sunlight above the atmosphere brings 1361 W/m², with a peak field of about 1000 V/m.'
+notation: 'I = \langle S\rangle = \tfrac12 c\varepsilon_0 E_0^2,\qquad \vec S = \dfrac{\vec E\times\vec B}{\mu_0}'
+tags:
+  - 'up-ch32'

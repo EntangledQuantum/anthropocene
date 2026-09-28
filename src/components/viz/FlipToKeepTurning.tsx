@@ -130,7 +130,7 @@ export default function FlipToKeepTurning({ id, prompt, turns = 3, explanation }
           return <>
             <PolesAndField s={s} x={[-7.9, 7.9]} y={[-4.4, 4.4]} label="B, 0.50 T" />
             <line x1={s.sx(0)} x2={s.sx(0)} y1={s.sy(3.9)} y2={s.sy(-3.9)} stroke={C.ok} strokeOpacity={0.5} strokeDasharray="2 6" />
-            <text x={s.sx(0.2)} y={s.sy(3.7)} fontSize={12} fill={C.ok} fillOpacity={0.85}>upright</text>
+            <text x={s.sx(-0.25)} y={s.sy(-3.75)} textAnchor="end" fontSize={12} fill={C.ok} fillOpacity={0.85}>upright</text>
             {[0, 1].map((k) => <line key={`a${k}`} ref={actG[k]} y1={s.sy(-HALF * 1.6)} y2={s.sy(HALF * 1.6)}
               stroke={C.force} strokeOpacity={0.3} strokeDasharray="4 5" />)}
             <line ref={bar} stroke={C.soft} strokeWidth={7} strokeLinecap="round" />

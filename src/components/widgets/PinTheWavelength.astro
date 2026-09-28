@@ -1,0 +1,6 @@
+---
+// @graded — when given `id`, the scene checks itself.
+import Island, { type PinTheWavelengthProps } from '../viz/PinTheWavelength.tsx';
+const props = Astro.props as PinTheWavelengthProps;
+---
+<Island client:visible {...props} />

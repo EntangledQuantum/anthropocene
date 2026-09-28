@@ -96,7 +96,7 @@ export default function DelayTheLamp({ id, prompt, halfAt = CH30_CORE.halfAt, to
           miss={`With ${L.toFixed(1)} H the current reaches half at ${th.toFixed(2)} s, ${Math.abs(off).toFixed(2)} s ${off < 0 ? 'too soon' : 'too late'}.`}
           hit={explanation} />}
       </div>}>
-      <svg viewBox="0 0 640 390" role="img" style={{ width: '100%', display: 'block', userSelect: 'none', fontFamily: 'var(--font-sans)' }}
+      <svg viewBox="0 0 640 400" role="img" style={{ width: '100%', display: 'block', userSelect: 'none', fontFamily: 'var(--font-sans)' }}
         aria-label={`Battery, switch, a ${L.toFixed(1)} henry coil with a sliding iron core, and a lamp. Current ${shown.I.toFixed(2)} amps.`}>
         <Wire pts={[[XB, TOP], [XS1, TOP]]} />
         <Wire pts={[[XS2, TOP], [X1, TOP]]} />
@@ -111,7 +111,7 @@ export default function DelayTheLamp({ id, prompt, halfAt = CH30_CORE.halfAt, to
         <DragX x={coreLeft + SPAN} y={AX} lo={X2} hi={X2 + SPAN} disabled={closed} label="Iron core position"
           onChange={(v) => { setX(1 - (v - X2) / SPAN); task.touch(); }} />
         <Lamp x={XL} y={LAMP_Y} glow={glow} />
-        <text x={XL - 4} y={LAMP_Y + 38} textAnchor="middle" fontSize={13} fill={C.soft}>lamp, {R} Ω</text>
+        <text x={XL - 24} y={LAMP_Y + 42} textAnchor="end" fontSize={13} fill={C.soft}>lamp, {R} Ω</text>
 
         {/* the trace: current against time */}
         {[0, Ifull / 2, Ifull].map((I) => <g key={I}>

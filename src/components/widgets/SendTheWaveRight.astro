@@ -1,0 +1,6 @@
+---
+// @graded — when given `id`, the scene checks itself.
+import Island, { type SendTheWaveRightProps } from '../viz/SendTheWaveRight.tsx';
+const props = Astro.props as SendTheWaveRightProps;
+---
+<Island client:visible {...props} />

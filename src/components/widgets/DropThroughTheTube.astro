@@ -1,0 +1,6 @@
+---
+// Ungraded: three pipes, one drop. The payoff for the chapter 29 pipe prediction.
+import Island, { type DropThroughTheTubeProps } from '../viz/DropThroughTheTube.tsx';
+const props = Astro.props as DropThroughTheTubeProps;
+---
+<Island client:visible {...props} />

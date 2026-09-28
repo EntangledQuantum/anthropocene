@@ -1,0 +1,18 @@
+title: 'Electromagnetic wave'
+blurb: 'A travelling pattern of electric and magnetic field that needs nothing to travel through. E and B stand at right angles to each other and to the direction of travel, peak together, and E = cB. E × B points the way it goes.'
+notation: '\vec E \perp \vec B \perp \hat k,\qquad E = cB'
+tags:
+  - 'up-ch32'
+misconceptions:
+  - id: 'up-ch32-em-needs-medium'
+    name: 'Light, like sound, needs something to travel through.'
+    signal: 'Expects no signal across a vacuum, or looks for an ether or air that carries the wave.'
+    correction: 'The thing that waves is the field itself, and the field is there in empty space. A kink in it runs outward at c with nothing else present.'
+  - id: 'up-ch32-field-change-instant'
+    name: 'Move a charge and its field everywhere moves with it at once.'
+    signal: 'Says a distant detector notices a shaken charge at the same instant.'
+    correction: 'Far away, the field still points at where the charge was. The change spreads outward as a kink at c, and a detector 9 m away learns of the move 30 ns later.'
+  - id: 'up-ch32-e-b-take-turns'
+    name: 'In a light wave the electric and magnetic parts take turns, like kinetic and potential energy in a pendulum.'
+    signal: 'Draws B a quarter wave behind E, or says B is biggest where E is zero.'
+    correction: 'In a travelling wave E and B peak at the same place and time. A quarter out of step is not a travelling wave: it splits into halves running opposite ways.'

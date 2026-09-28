@@ -111,7 +111,7 @@ export function Lamp({ x, y, glow, label }: { x: number; y: number; glow: Setter
   </g>;
 }
 
-/** Glow from current: brightness follows power I²R, drawn as √ so a quarter power still reads. */
+/** Glow from current: √(power) ∝ |I|, so a quarter of the power still reads as clearly lit. */
 export const glowOf = (I: number, Ifull: number) => Math.min(1, Math.abs(I) / Ifull);
 
 /* ── energy bar ────────────────────────────────────────────────────────── */
@@ -254,7 +254,3 @@ export function KnifeSwitch({ x1, x2, y, closed, onToggle, label = 'switch' }: {
     <text x={(x1 + x2) / 2} y={y + 22} textAnchor="middle" fontSize={13} fill={C.soft}>{label}</text>
   </g>;
 }
-
-/** Read a CSS custom property (for canvas-free colours in text). */
-export const cssVar = (name: string) =>
-  typeof document === 'undefined' ? '' : getComputedStyle(document.documentElement).getPropertyValue(name).trim();

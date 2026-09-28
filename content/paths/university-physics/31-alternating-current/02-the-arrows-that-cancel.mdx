@@ -1,0 +1,137 @@
+---
+title: 'The arrows that cancel'
+blurb: 'Tune a lamp, a coil and a capacitor to resonance, explain how a 10 V supply puts 50 V across one part, and turn a radio to a station.'
+order: 2
+tier: 'core'
+minutes: 10
+teaches:
+  - 'reactance'
+  - 'impedance'
+  - 'series-rlc-resonance'
+requires:
+  - 'phasor'
+  - 'current-voltage-phase'
+  - 'rms'
+  - 'resonance'
+  - 'damped-oscillation'
+  - 'lc-oscillation'
+  - 'resistance'
+  - 'capacitance'
+  - 'self-inductance'
+status: 'live'
+updated: 2026-09-28
+---
+
+<Step>
+
+A lamp, a coil and a capacitor sit in one loop on a 10 V supply whose frequency you can
+turn. You start low and turn it slowly up.
+
+<Predict
+  id="up-ch31-lamp-sweep"
+  question="What does the lamp do as the frequency rises?"
+  options={[
+    { key: 'up', misconception: 'up-ch31-capacitor-passes-high', label: 'Gets brighter and brighter: a capacitor passes high frequencies', why: 'True of the capacitor alone. But the coil in the same loop opposes high frequencies more and more, and past a point it wins.' },
+    { key: 'down', misconception: 'up-ch31-coil-blocks-high', label: 'Gets dimmer and dimmer: a coil chokes high frequencies', why: 'True of the coil alone. But at low frequency the capacitor barely has time to fill and chokes the current even harder.' },
+    { key: 'peak', label: 'Brightens, peaks, then dims', why: 'Right. The capacitor chokes the low end and the coil chokes the high end. In between is one frequency where neither does.' },
+    { key: 'same', label: 'Stays the same: the coil and the capacitor cancel', why: 'They cancel at one frequency only. Everywhere else one of them wins, by an amount that changes as you turn.' },
+  ]}
+  correct="peak"
+>
+
+<TuneTillTheyCancel prompt="Sweep the frequency and watch the lamp and the arrows." />
+
+</Predict>
+
+</Step>
+
+<Step>
+
+## Cancel the arrows
+
+On the right, each part's voltage is an arrow, drawn with the current pointing right. The
+coil's always points straight up, the capacitor's straight down, and together with the lamp's
+they must close on the supply's 10 V.
+
+<TuneTillTheyCancel
+  id="up-ch31-tune-to-cancel"
+  prompt="Tune until the coil's arrow and the capacitor's cancel exactly."
+  explanation="About 1592 Hz. The coil's 50 V up and the capacitor's 50 V down add to nothing, so the whole 10 V falls on the lamp: the current peaks at 10 V ÷ 80 Ω = 125 mA, in step with the supply. Below this frequency the capacitor's arrow wins and the current leads; above it the coil's wins and the current lags."
+/>
+
+</Step>
+
+<Step>
+
+## Fifty volts from ten
+
+At resonance a voltmeter across the capacitor alone reads 50 V. The supply is 10 V.
+
+<Predict
+  id="up-ch31-fifty-from-ten"
+  question="Where do the extra volts come from?"
+  options={[
+    { key: 'surge', misconception: 'up-ch31-supply-makes-extra', label: 'The supply surges above 10 V at resonance', why: 'Its arrow stayed 10 V long at every frequency. At resonance all 10 V sit across the lamp.' },
+    { key: 'kirchhoff', misconception: 'up-ch31-voltages-add-as-numbers', label: 'Kirchhoff’s loop rule fails for AC', why: 'It holds instant by instant. Added as arrows the three voltages close on 10 V; added as numbers they make 110 V, which is why numbers are the wrong way to add them.' },
+    { key: 'swing', label: 'The coil and capacitor pass energy back and forth, and the supply only tops it up', why: 'Right. Each cycle the capacitor’s field empties into the coil’s and back, like a swing pushed at its own rhythm. The two voltages are large but always opposite, so the loop still adds to 10 V.' },
+  ]}
+  correct="swing"
+/>
+
+</Step>
+
+<Step>
+
+## Name it
+
+Each part's opposition is its **reactance**, $X_L = \omega L$ rising with frequency and
+$X_C = 1/\omega C$ falling; adding the arrows gives the **impedance**. Where the two
+reactances cancel is resonance, and it is chapter 14's driven oscillator in wires: charge for
+position, $L$ for mass, $1/C$ for the spring, $R$ for damping.
+
+$$Z = R + i\left(\omega L - \frac{1}{\omega C}\right),\qquad \omega_0 = \frac{1}{\sqrt{LC}},\qquad V_C = Q\,V,\quad Q = \frac{1}{R}\sqrt{\frac{L}{C}} = 5$$
+
+<Recall id="up-ch31-recall-resonance" concept="series-rlc-resonance">
+  <div slot="front">You swap the tuned loop's 80 Ω lamp for a 40 Ω one. At resonance, what happens to the capacitor's voltage?</div>
+
+  It doubles, to 100 V. The resonant frequency does not move, since it depends only on $L$
+  and $C$, but the current doubles to $V/R$ and so does $Q$. Less damping, a taller peak,
+  exactly as for the spring in chapter 14.
+</Recall>
+
+</Step>
+
+<Step>
+
+## Tune the radio
+
+An AM radio's tuner is this loop, with the antenna as the supply and every station driving it
+at once. You turn a capacitor rather than the frequency, and the station at
+$1/(2\pi\sqrt{LC})$ is the one whose arrows cancel.
+
+<TurnTheTuningDial
+  id="up-ch31-tune-the-radio"
+  target={600000}
+  startOn={1200000}
+  prompt="You are on the 1.2 MHz station. Turn the knob to the station at 0.60 MHz, half the frequency."
+  explanation="About 281 pF, four times the 70 pF you started with. The frequency goes as 1/√C, so half the frequency takes four times the capacitance; doubling it only reaches the 0.85 MHz station. Every other station still pushes on the antenna, but off resonance its current is a few percent."
+/>
+
+<Recall id="up-ch31-recall-reactance" concept="reactance">
+  <div slot="front">You double the frequency across a coil, then across a capacitor. What happens to each one's reactance?</div>
+
+  The coil's doubles, $X_L = \omega L$: a faster change in current takes a bigger push. The
+  capacitor's halves, $X_C = 1/\omega C$: at a higher frequency the plates are refilled more
+  often, so more current flows for the same voltage.
+</Recall>
+
+## What to carry forward
+
+- **Series voltages add as arrows.** The coil's and capacitor's point opposite ways.
+- **Resonance is where they cancel**, at $\omega_0 = 1/\sqrt{LC}$: current biggest and in
+  step, and each of the two can carry $Q$ times the supply.
+- **Same oscillator, new costume**: a mass on a spring, a swing, a tuned radio.
+
+Next: transformers, and why power lines run at hundreds of kilovolts.
+
+</Step>

@@ -1,0 +1,6 @@
+---
+// @graded — with `id` and `target`, turn a radio's tuning capacitor to a station.
+import Island, { type TurnTheTuningDialProps } from '../viz/TurnTheTuningDial.tsx';
+const props = Astro.props as TurnTheTuningDialProps;
+---
+<Island client:visible {...props} />

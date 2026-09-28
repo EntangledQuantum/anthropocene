@@ -1,0 +1,14 @@
+title: 'Magnetic flux'
+blurb: 'How much magnetic field threads a loop: the part of the field straight through it, times the area it threads, summed over the loop. It has three handles: the field, the area and the angle between them.'
+notation: '\Phi_B = \int \vec B \cdot d\vec A = BA\cos\theta'
+tags:
+  - 'up-ch29'
+misconceptions:
+  - id: 'up-ch29-moving-in-field-makes-current'
+    name: 'A loop moving through a magnetic field always has a current in it.'
+    signal: 'Expects the needle to kick while a loop is carried about deep inside a uniform field.'
+    correction: 'Inside a uniform field the flux through the loop is the same wherever you carry it, so there is no EMF. The charges do feel a magnetic push, but the pushes on opposite sides of the loop point opposite ways round it and cancel. Only a changing flux drives current.'
+  - id: 'up-ch29-flux-is-field'
+    name: 'Magnetic flux is just another name for the field strength.'
+    signal: 'Expects tilting or squashing a loop in a steady field to change nothing, because the field did not change.'
+    correction: 'Flux is field times the area it threads, at an angle. Turn the loop edge-on or squash it flat and the flux falls to zero while the field has not changed at all.'

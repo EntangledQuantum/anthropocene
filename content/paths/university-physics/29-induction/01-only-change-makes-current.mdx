@@ -1,0 +1,128 @@
+---
+title: 'Only change makes current'
+blurb: 'Push a magnet into a coil, hold it, pull it out, and find that the needle answers to how fast the flux changes, never to how much there is.'
+order: 1
+tier: 'core'
+minutes: 9
+teaches:
+  - 'magnetic-flux'
+  - 'faradays-law'
+requires:
+  - 'magnetic-field'
+  - 'electric-flux'
+  - 'emf'
+status: 'live'
+updated: 2026-09-28
+---
+
+<Step>
+
+A coil of 500 turns is wired to a current meter. You slide a strong magnet into it and leave it
+sitting there, dead centre.
+
+<Predict
+  id="up-ch29-magnet-at-rest"
+  question="With the magnet sitting still inside, what does the meter read?"
+  options={[
+    { key: 'big', misconception: 'up-ch29-field-makes-current', label: 'A large steady current: the field in the coil is at its strongest', why: 'The field in the coil is at its strongest and the needle sits at zero. Try it below: the needle kicks only while the magnet moves.' },
+    { key: 'fade', misconception: 'up-ch29-current-fades-slowly', label: 'A current that slowly fades away', why: 'Nothing is running down. The needle drops to zero the instant the magnet stops, because at that instant nothing is changing.' },
+    { key: 'zero', label: 'Zero', why: 'Right. The needle kicks while the magnet moves and sits at zero the moment it stops, however strong the magnet.' },
+    { key: 'pole', label: 'It depends which pole points in', why: 'The pole decides which way the needle kicks while the magnet moves. At rest, either pole gives zero.' },
+  ]}
+  correct="zero"
+>
+
+<PlungeTheMagnet prompt="Drag the magnet into the coil, hold it still, then pull it out." />
+
+</Predict>
+
+</Step>
+
+<Step>
+
+## Faster is harder
+
+This time the magnet starts inside the coil. The green mark on the meter is 4 mA.
+
+<PlungeTheMagnet
+  id="up-ch29-kick-past-the-mark"
+  prompt="Pull the magnet out so the needle swings past the green mark."
+  start={0}
+  target={4}
+  explanation="A slow pull barely stirs the needle; a brisk one throws it past the mark. The kick is set by how fast the flux falls, not by how much there was. Pull three times faster and the kick is three times bigger but lasts a third as long, so the same 0.31 mC of charge goes round the coil either way."
+/>
+
+</Step>
+
+<Step>
+
+## Name it
+
+The shading in the coil is the **flux**: the field threading it, times the area it threads. Each
+drawn line carries the same flux, so the lines through the coil count it. The needle reads how
+fast that count changes:
+
+$$\mathcal E = -N\frac{d\Phi_B}{dt}, \qquad \Phi_B = \int \vec B\cdot d\vec A$$
+
+<Recall id="up-ch29-recall-faraday" concept="faradays-law">
+  <div slot="front">One coil has a weak magnet moving through it; another has a very strong magnet sitting still inside. Which drives more current?</div>
+
+  The moving weak one. EMF is the *rate of change* of flux. A still magnet, however strong,
+  drives none.
+</Recall>
+
+</Step>
+
+<Step>
+
+## Moving is not enough
+
+A square loop on leads to the same kind of meter, beside a patch of field pointing into the page.
+
+<CarryTheLoop
+  id="up-ch29-carry-quietly"
+  prompt="Carry the loop 30 cm through the field without the needle stirring."
+  distance={0.3}
+  explanation="Deep in the field the shading never changes, so the needle never moves. Every charge in the wire still feels a magnetic push as you carry it, but on the two sides of the loop those pushes point opposite ways round it and cancel. Only where an edge of the loop crosses the edge of the field does the flux, and so the current, change."
+/>
+
+</Step>
+
+<Step>
+
+## Three handles on a flux
+
+$\Phi_B = BA\cos\theta$: a field, an area, and the angle between the field and the loop's face.
+
+<Classify
+  id="up-ch29-what-swings-the-needle"
+  prompt="A coil is wired to a meter. Which of these swing the needle?"
+  buckets={[
+    { key: 'swings', label: 'Swings the needle', accent: 'ok' },
+    { key: 'still', label: 'Needle stays at zero', accent: 'magenta' },
+  ]}
+  items={[
+    { key: 'turn', label: 'Turning the coil in a steady field', bucket: 'swings', why: 'Turning changes the angle, so the flux changes. Every power-station generator does this.' },
+    { key: 'squash', label: 'Squashing the coil flat in a steady field', bucket: 'swings', why: 'Less area threaded, less flux.' },
+    { key: 'switch', label: 'Switching on an electromagnet beside the coil', bucket: 'swings', why: 'Nothing moves, but the field grows, and with it the flux.' },
+    { key: 'together', label: 'Carrying magnet and coil along together', bucket: 'still', why: 'The magnet never moves relative to the coil, so the flux through it never changes.' },
+    { key: 'spin', label: 'Spinning a round magnet about its own axis inside the coil', bucket: 'still', why: 'The field pattern turns into itself. The flux through the coil stays exactly the same.' },
+    { key: 'strong', label: 'Holding the strongest magnet in the world still inside', bucket: 'still', why: 'Lots of flux, no change, no current.' },
+  ]}
+  explanation="Every swing changes B, A or θ. The ones that leave the needle still can look dramatic, but the flux through the coil does not change, and flux change is the only thing the needle answers to."
+/>
+
+<Recall id="up-ch29-recall-flux" concept="magnetic-flux">
+  <div slot="front">A loop is tilted edge-on in a steady field. The field has not changed. Has the flux?</div>
+
+  Yes, it has fallen to zero. Flux is field times the area it threads *face-on*: $BA\cos\theta$.
+</Recall>
+
+## What to carry forward
+
+- **Current comes from change.** A flux that sits still drives nothing, however large.
+- **Flux has three handles:** the field, the area and the angle. Change any of them and the needle moves.
+
+Next: which way the needle swings, and why nature always picks that way.
+
+</Step>

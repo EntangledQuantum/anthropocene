@@ -1,0 +1,14 @@
+title: 'RMS value'
+blurb: 'The steady (DC) voltage that would heat the same resistor just as fast. For a sine it is the peak divided by √2, which is why 230 V mains peaks at 325 V.'
+notation: 'V_{\text{rms}} = \sqrt{\tfrac{1}{T}\int_0^T v^2\,dt} = \dfrac{V_0}{\sqrt2},\qquad \bar P = V_{\text{rms}} I_{\text{rms}}\cos\varphi'
+tags:
+  - 'up-ch31'
+misconceptions:
+  - id: 'up-ch31-rms-is-peak'
+    name: 'A 325 V-peak supply heats like 325 V DC.'
+    signal: 'Takes the peak as the effective voltage, and so expects twice the heating.'
+    correction: 'The supply only touches its peak for an instant, twice a cycle, and spends time near zero too. Heating goes as v², and the mean of v² over a cycle is half the peak''s square, so the effective voltage is the peak over √2: 230 V.'
+  - id: 'up-ch31-power-is-vi'
+    name: 'Average power is always V_rms times I_rms.'
+    signal: 'Multiplies the two meter readings for a capacitor or coil and expects that many watts.'
+    correction: 'That holds only when current and voltage rise and fall together. A quarter cycle out of step, the element takes energy in for one quarter and hands it all back in the next, so the average power is zero however large both meters read.'

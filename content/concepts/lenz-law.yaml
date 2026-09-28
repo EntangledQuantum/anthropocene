@@ -1,0 +1,14 @@
+title: 'Lenz''s law'
+blurb: 'The induced current always flows the way that opposes the change of flux that drives it: a ring ahead of an approaching magnet repels it, a ring behind a departing one pulls it back. It is the minus sign in Faraday''s law, and it is energy conservation.'
+notation: '\mathcal{E} = -\frac{d\Phi_B}{dt}'
+tags:
+  - 'up-ch29'
+misconceptions:
+  - id: 'up-ch29-lenz-optional'
+    name: 'Lenz''s law is bookkeeping: the minus sign only fixes a direction convention.'
+    signal: 'Treats the direction of an induced current as arbitrary, or as a sign to be chosen at the end.'
+    correction: 'If the induced current aided the change instead of opposing it, a nudge would make current, the current would push harder, and the motion would run away, making energy from nothing. The minus sign is what makes induction cost work.'
+  - id: 'up-ch29-rings-all-repel'
+    name: 'The induced currents push the magnet away on every side.'
+    signal: 'Sets the ring the magnet has already passed to repel it, which would push the magnet on its way.'
+    correction: 'Each ring opposes the change of its own flux. Below the magnet the flux is growing, so that ring repels; above it the flux is shrinking, so that ring attracts. Both forces point up, against the fall.'
