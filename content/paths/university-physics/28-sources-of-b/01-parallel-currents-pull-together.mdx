@@ -1,0 +1,140 @@
+---
+title: 'Parallel currents pull together'
+blurb: 'Point a compass beside a wire, place a third wire so the middle one feels nothing, and say why two electron beams do the opposite of two wires.'
+order: 1
+tier: 'core'
+minutes: 10
+teaches:
+  - 'wire-magnetic-field'
+  - 'biot-savart-law'
+  - 'parallel-current-force'
+requires:
+  - 'magnetic-field'
+  - 'lorentz-force'
+  - 'force-superposition'
+status: 'live'
+updated: 2026-09-27
+---
+
+<Step>
+
+Two long wires hang side by side, 4 cm apart, and neither carries any net charge. You switch on
+10 A in both, running the same way.
+
+<Predict
+  id="up-ch28-parallel-bet"
+  question="What do the wires do?"
+  options={[
+    { key: 'apart', misconception: 'up-ch28-like-currents-repel', label: 'Push apart: like currents repel, as like charges do', why: 'The rule for currents runs the other way. Each wire sits in the other one’s field, and the push on it points toward the other wire. Reverse B below and they do push apart.' },
+    { key: 'together', label: 'Pull together', why: 'Right: 0.5 mN on every metre of each wire. Currents the same way attract, which is the opposite of charges.' },
+    { key: 'nothing', misconception: 'up-ch28-neutral-wires-feel-nothing', label: 'Nothing: the wires are neutral', why: 'Neutral wires feel no electric force. But moving charge makes a magnetic field and feels one, and that is all that is left.' },
+    { key: 'twist', label: 'Twist until they cross at right angles', why: 'Parallel wires stay parallel: every metre of each is pulled the same way, straight toward the other. Nothing twists them.' },
+  ]}
+  correct="together"
+>
+
+<BalanceTheWire
+  prompt="Slide wire B closer or further, and reverse its current."
+  wires={[{ x: 0, I: 10, label: 'A' }, { x: 4, I: 10, label: 'B' }]}
+  mover={1}
+  flip
+  span={[-10, 14]}
+  arrowScale={0.008}
+/>
+
+</Predict>
+
+</Step>
+
+<Step>
+
+## The field goes round
+
+One wire now, seen end-on, carrying 20 A into the page: the cross is the tail of an arrow
+flying away from you. A small compass sits beside it.
+
+<AimTheCompass
+  id="up-ch28-aim-compass"
+  prompt="Drag the needle’s tip to the way it will settle."
+  current={-20}
+  at={[4, 2]}
+  start={90}
+  explanation="Across the line to the wire, pointing down and to the right. The field of a current never points at the wire or away from it: it circles it. Every needle round the ring agrees, and together they draw the field line, a circle, running clockwise when the current flies away from you."
+/>
+
+</Step>
+
+<Step>
+
+## Name it
+
+Grip the wire with your right hand, thumb along the current, and your fingers curl the way
+the field runs. Each short piece of current adds a field that circles it and falls as $1/r^2$,
+the **Biot–Savart law**; add the pieces of an endless line and the field falls as $1/r$:
+
+$$d\vec B = \frac{\mu_0}{4\pi}\,\frac{I\,d\vec\ell\times\hat r}{r^2}\qquad\Longrightarrow\qquad B = \frac{\mu_0 I}{2\pi r},\quad \mu_0 = 4\pi\times10^{-7}\ \mathrm{T\,m/A}$$
+
+<Recall id="up-ch28-recall-wire" concept="wire-magnetic-field">
+  <div slot="front">A long wire carries current straight up out of the floor. Which way does a compass beside it point, and how strong is the field 20 cm away compared with 10 cm?</div>
+
+  Round the wire, counterclockwise seen from above, and at right angles to the line to the
+  wire. At 20 cm it is half as strong: a line's field falls as $1/r$.
+</Recall>
+
+</Step>
+
+<Step>
+
+## Hold the middle wire still
+
+Wire A carries 3 A out of the page. Wire C, 10 cm from it, carries 1 A the same way, so A
+pulls it. Wire B carries 6 A; where it goes and which way its current runs are yours.
+
+<BalanceTheWire
+  id="up-ch28-balance-wire"
+  prompt="Place wire B, and choose its current’s direction, so that wire C feels no force."
+  wires={[{ x: 0, I: 3, label: 'A' }, { x: 10, I: 1, label: 'C' }, { x: 40, I: -6, label: 'B' }]}
+  mover={2}
+  probe={1}
+  flip
+  span={[-22, 46]}
+  arrowScale={1}
+  explanation="20 cm beyond C with its current reversed, so it runs the same way as C and pulls it away from A; or 20 cm on A's side, running against C, so it pushes. Twice A's current at twice A's distance: the pull falls as 1/d, not 1/d². Each wire sits in the others' field, and the push on it per metre is μ₀I₁I₂/2πd."
+/>
+
+<Recall id="up-ch28-recall-ampere-def" concept="parallel-current-force">
+  <div slot="front">Two long wires 1 m apart each carry 1 A the same way. What is the force on each metre of wire?</div>
+
+  $2\times10^{-7}$ N, pulling them together: $F/L = \mu_0 I_1 I_2 / 2\pi d$. Until 2019 this
+  was the definition of the ampere.
+</Recall>
+
+</Step>
+
+<Step>
+
+## Beams are not wires
+
+Take the metal away. Two beams of electrons fly side by side through a vacuum, the same way,
+like the currents in two wires.
+
+<Predict
+  id="up-ch28-beams"
+  question="What do the two beams do to each other?"
+  options={[
+    { key: 'attract', misconception: 'up-ch28-beams-attract-like-wires', label: 'Pull together: parallel currents attract', why: 'The magnetic pull is there. But in a wire the metal’s positive ions cancel the electrons’ charge, and in a beam nothing does.' },
+    { key: 'repel', label: 'Push apart', why: 'Right. Bare electrons repel electrically, and that push is c²/v² times the magnetic pull, bigger at every speed below light’s. A wire’s ions cancel the push, which leaves the small magnetic pull as the only thing you see.' },
+    { key: 'cancel', label: 'Nothing: the push and the pull cancel', why: 'They would cancel only at the speed of light. The magnetic pull is v²/c² of the electric push, always less.' },
+    { key: 'fast', label: 'Push apart when slow, pull together when fast enough', why: 'Faster does narrow the gap, since the ratio is v²/c². It reaches one only at light speed, so the push always wins.' },
+  ]}
+  correct="repel"
+/>
+
+## What to carry forward
+
+- **A current is circled by its field.** Right thumb along the current, fingers along the field; $B = \mu_0 I/2\pi r$, falling as $1/r$.
+- **Currents the same way attract**, with $F/L = \mu_0 I_1 I_2/2\pi d$, but only because the wires are neutral.
+
+Next: walk round a closed loop adding up the field, and find that only the current it wraps counts.
+
+</Step>

@@ -1,0 +1,5 @@
+title: 'Biot–Savart law'
+blurb: 'Every short piece of current makes a little field that circles it and falls as 1/r² from it. Add the pieces and you get the field of any wire: the Coulomb''s law of magnetostatics.'
+notation: 'd\vec B = \dfrac{\mu_0}{4\pi}\,\dfrac{I\,d\vec\ell\times\hat r}{r^2}'
+tags:
+  - 'up-ch28'

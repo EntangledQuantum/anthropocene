@@ -74,7 +74,7 @@ export default function ReshapeTheWire({
               fill={C.surface} stroke={C.ink} strokeWidth={1.5} />
             <text x={s.sx(0.575)} y={s.sy(SY) + 5} textAnchor="middle" fontSize={14} fill={C.ink} fontFamily="var(--font-mono)">{volts} V</text>
             <Dial cx={s.sx(1.225)} cy={s.sy(SY) - 8} value={I} max={target * 2} unit="A" />
-            <text x={s.sx(1.225)} y={s.sy(SY) + 58} textAnchor="middle" fontSize={12} fill={C.faint}>target {target} A</text>
+            <text x={s.sx(1.225) + 46} y={s.sy(SY) - 10} fontSize={12} fill={C.faint}>target {target} A</text>
             {/* a metre rule under the element */}
             <line x1={s.sx(0)} x2={s.sx(1.5)} y1={s.sy(-0.12)} y2={s.sy(-0.12)} stroke={C.faint} />
             {[0, 0.25, 0.5, 0.75, 1, 1.25, 1.5].map((m) => <g key={m}>

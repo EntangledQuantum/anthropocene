@@ -1,0 +1,124 @@
+---
+title: 'Count what threads the loop'
+blurb: 'Draw any loop among currents and predict its circulation, then cancel the field inside one coil with another and say why the coil''s width never mattered.'
+order: 2
+tier: 'core'
+minutes: 11
+teaches:
+  - 'amperes-law'
+  - 'solenoid-field'
+requires:
+  - 'wire-magnetic-field'
+  - 'gauss-law'
+status: 'live'
+updated: 2026-09-27
+---
+
+<Step>
+
+A coil of 30 turns, 30 cm long, carries 2 A. You unwind it and wind the same 30 turns onto a
+tube twice as wide, still 30 cm long, with the same current.
+
+<Predict
+  id="up-ch28-wider-coil"
+  question="What happens to the field in the middle of the coil?"
+  options={[
+    { key: 'weaker', misconception: 'up-ch28-wider-coil-weaker', label: 'Weaker: every turn is now further from the middle', why: 'Each turn is further away, but each turn is also a bigger ring carrying current all round it. Widen the coil below: the meter hardly moves.' },
+    { key: 'stronger', label: 'Stronger: each turn is a bigger ring, with more wire in it', why: 'More wire per turn, yes, but all of it further away. For a long coil the two cancel exactly.' },
+    { key: 'same', label: 'About the same', why: 'Right: 0.25 mT either way. Further away and more wire cancel for a long coil. Only the turns per metre and the current set the field inside.' },
+    { key: 'quarter', label: 'A quarter: twice as far, and fields fall as distance squared', why: 'That is a point charge’s rule. Even a single wire falls only as 1/r, and a coil’s bigger turns make up for their distance.' },
+  ]}
+  correct="same"
+>
+
+<WidenTheCoil prompt="Drag the top of the coil to widen or narrow it." turns={30} length={30} current={2} radius={1.2} />
+
+</Predict>
+
+</Step>
+
+<Step>
+
+## Walk round the wires
+
+Four long wires cross the page. Walk round any closed loop, adding up the part of the field
+along each step times the step's length: that total, $\oint \vec B\cdot d\vec\ell$, is the
+**circulation**, and the meter reads it for whatever loop you draw.
+
+<TraceTheLoop
+  id="up-ch28-trace-loop"
+  prompt="Draw a loop, any shape, that makes the meter read 2.51 µT·m."
+  wires={[{ x: -7, y: 2, I: 3 }, { x: -3, y: -3, I: -1 }, { x: 3, y: 3, I: 4 }, { x: 7, y: -2, I: -2 }]}
+  target={2}
+  explanation="Wrap the 3 A and the 1 A running the other way, or the 4 A and the 2 A: either way a net 2 A threads the loop, and 2.51 µT·m is 1.26 µT·m for every ampere. The loop's size and shape never entered, and every wire outside it added exactly nothing, however close you passed."
+/>
+
+</Step>
+
+<Step>
+
+## Name it
+
+Round any closed loop, the circulation counts only the current threading it, walked
+counterclockwise when that current comes out of the page. That is **Ampère's law**, the
+circulation cousin of Gauss's law, which counted the charge inside a closed surface:
+
+$$\oint \vec B\cdot d\vec\ell = \mu_0 I_{\text{enc}}$$
+
+<Recall id="up-ch28-recall-ampere" concept="amperes-law">
+  <div slot="front">A wire carrying 5 A passes through a square loop, well off-centre, and a second wire carrying 8 A runs just outside it. What is the circulation round the square?</div>
+
+  $\mu_0 \times 5\ \mathrm{A} \approx 6.3\ \mu\mathrm{T\,m}$. The square's shape and the wire's
+  position inside it do not matter, and the outside wire adds nothing, though it changes the
+  field all round the square.
+</Recall>
+
+</Step>
+
+<Step>
+
+## Cancel the core
+
+An inner coil has 30 turns and carries 2 A. Around it sits a coil two and a half times as
+wide and just as long, wound the other way and carrying 3 A.
+
+<CancelTheCore
+  id="up-ch28-cancel-core"
+  prompt="Hold to wind the outer coil until the field in the core is zero."
+  inner={{ turns: 30, current: 2, radius: 1 }}
+  outer={{ current: 3, radius: 2.5, start: 6 }}
+  length={30}
+  explanation="20 turns. Picture a rectangle with one long side down the core and the other outside both coils, where the field is nearly zero: 30 turns × 2 A thread it one way and 20 × 3 A the other, so nothing is enclosed and nothing runs along the core. The outer coil's width never entered. Slide that long side into the gap and only the outer winding threads it, which is why the field there survives. For one long coil the same rectangle gives Bℓ = μ₀(nℓ)I, so B = μ₀nI."
+/>
+
+<Recall id="up-ch28-recall-solenoid" concept="solenoid-field">
+  <div slot="front">A long coil has 2000 turns per metre and carries 0.5 A. What is the field inside, and what does doubling its radius do?</div>
+
+  $B = \mu_0 n I = 4\pi\times10^{-7} \times 2000 \times 0.5 \approx 1.3$ mT, the same all
+  across the middle. Doubling the radius changes nothing: there is no radius in $\mu_0 n I$.
+</Recall>
+
+</Step>
+
+<Step>
+
+## Three tesla
+
+An MRI scanner holds a steady 3 T in the bore you lie inside, a long coil of superconducting
+wire carrying 500 A.
+
+<Estimate
+  id="up-ch28-mri-estimate"
+  scenario="up-ch28-mri-turns"
+  prompt="How many turns of wire does each centimetre of the coil need?"
+  explanation="About 48 per centimetre. From B = μ₀nI, n = 3 / (1.26×10⁻⁶ × 500) ≈ 4800 per metre. One layer of millimetre wire gives only 10 per centimetre, so the coil is wound in many layers. The bore's width never entered, which is why a formula for a thin coil also sizes one you can lie inside."
+/>
+
+## What to carry forward
+
+- **Circulation counts what threads the loop:** $\oint \vec B\cdot d\vec\ell = \mu_0 I_{\text{enc}}$, for any shape, with outside currents adding nothing.
+- **Inside a long coil, $B = \mu_0 n I$**: uniform, along the axis, blind to the coil's width, and nearly zero outside.
+
+Next: let the field inside a coil change, and something starts pushing charge round a loop.
+
+</Step>

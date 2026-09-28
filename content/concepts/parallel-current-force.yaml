@@ -1,0 +1,18 @@
+title: 'Force between parallel currents'
+blurb: 'Two long parallel wires with currents the same way pull together; opposite ways, they push apart. The pull per metre is μ₀I₁I₂/2πd, and it once defined the ampere.'
+notation: '\dfrac{F}{L} = \dfrac{\mu_0 I_1 I_2}{2\pi d}'
+tags:
+  - 'up-ch28'
+misconceptions:
+  - id: 'up-ch28-like-currents-repel'
+    name: 'Currents the same way repel, as like charges do.'
+    signal: 'Predicts that two parallel wires carrying current the same way push apart.'
+    correction: 'The rule runs the other way for currents: the same way attract, opposite ways repel. Each wire sits in the other''s circling field, and I L × B points toward the other wire.'
+  - id: 'up-ch28-neutral-wires-feel-nothing'
+    name: 'Wires with no net charge cannot push or pull on each other.'
+    signal: 'Expects nothing to happen between two neutral wires when current flows.'
+    correction: 'Neutral wires feel no electric force, but moving charges make a magnetic field and feel one. The magnetic pull is all that is left, which is why it is so easy to measure.'
+  - id: 'up-ch28-beams-attract-like-wires'
+    name: 'Two beams of charge moving side by side attract, like two wires.'
+    signal: 'Applies "parallel currents attract" to bare beams of electrons or protons.'
+    correction: 'A wire''s moving electrons are matched by fixed positive ions, so only the magnetic pull survives. Bare beams also repel electrically, and that push is c²/v² times the pull, larger at every speed below light''s.'

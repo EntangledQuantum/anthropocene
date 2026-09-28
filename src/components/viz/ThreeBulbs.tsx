@@ -24,7 +24,7 @@ export interface ThreeBulbsProps {
 
 // node positions of the drawing (see TRIO_NODE in circuits.ts)
 const TOP = 96, BOT = 266, ABOVE = 40;
-const X = { bat: 60, tap: 130, aL: 190, aR: 290, j: 390, c: 480, s: 570 };
+const X = { bat: 60, tap: 130, aL: 190, aR: 290, j: 370, c: 470, s: 570 };
 const P = {
   T0: [X.bat, TOP], T1: [X.tap, TOP], T2: [X.aL, TOP], T3: [X.aR, TOP], T5: [X.j, TOP], T6: [X.c, TOP], T7: [X.s, TOP],
   P2: [X.aL, ABOVE], P3: [X.aR, ABOVE],
@@ -71,14 +71,18 @@ export default function ThreeBulbs({ id, prompt, spare = false, explanation }: T
     if (name === 'C') return [X.c, MID];
     return SOCKETS.find((s) => s.slot === slot)!.at;
   };
+  const horizontal = (name: string) => name === 'A' || (name === 'D' && (slot === 'series' || slot === 'alongA'));
   const readout = (name: string) => {
     const [x, y] = bulbAt(name);
     const side = name === 'D' && slot === 'alongA';
-    const tx = side ? x + 64 : x;
-    const ty = side ? y - 4 : y + 36;
-    return <text key={`t${name}`} x={tx} y={ty} textAnchor="middle" fontSize={12.5} fontFamily="var(--font-mono)" fill={C.soft}
+    const vert = !horizontal(name);
+    const tx = side ? x + 64 : vert ? x + 22 : x;
+    const ty = side ? y - 4 : vert ? y - 12 : y + 36;
+    const anchor = vert ? 'start' : 'middle';
+    return <text key={`t${name}`} x={tx} y={ty} textAnchor={anchor} fontSize={12.5} fontFamily="var(--font-mono)" fill={C.soft}
       stroke="var(--color-surface)" strokeWidth={4} paintOrder="stroke">
-      <tspan x={tx} fill={C.energy}>{watts(r.power[name])} W</tspan>
+      {vert && <tspan x={tx} fontFamily="var(--font-sans)" fontSize={14} fontWeight={600} fill={C.ink}>{name}</tspan>}
+      <tspan x={tx} dy={vert ? 16 : 0} fill={C.energy}>{watts(r.power[name])} W</tspan>
       <tspan x={tx} dy={15} fill={C.velocity}>{amps(r.current[name])} A</tspan>
     </text>;
   };
@@ -114,7 +118,7 @@ export default function ThreeBulbs({ id, prompt, spare = false, explanation }: T
         <FlowDots paths={paths} currents={currents} pxPerAmp={150} />
         <Battery x={X.bat} y={MID} label={`${CH26_EMF} V`} />
         {bulbs.map((b) => <Bulb key={b} x={bulbAt(b)[0]} y={bulbAt(b)[1]} power={r.power[b]} pMax={P_MAX}
-          label={b === 'A' || (b === 'D' && slot === 'series') ? undefined : b} />)}
+          label={b === 'D' && slot === 'alongA' ? 'D' : undefined} />)}
         {/* horizontal bulbs carry their letter below-left so the readout sits under them */}
         <text x={(X.aL + X.aR) / 2 - 30} y={TOP - 14} textAnchor="middle" fontSize={14} fontWeight={600} fill={C.ink}>A</text>
         {slot === 'series' && <text x={(X.aR + X.j) / 2 - 30} y={TOP - 14} textAnchor="middle" fontSize={14} fontWeight={600} fill={C.ink}>D</text>}

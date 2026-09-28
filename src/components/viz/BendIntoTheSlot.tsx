@@ -169,7 +169,7 @@ export default function BendIntoTheSlot({
               stroke={C.warn} strokeWidth={2.5} opacity={i === ticks.length - 1 ? 1 : 0.4} />)}
             {/* the gun */}
             <rect x={s.sx(-1.6)} y={s.sy(GUN_Y + 0.8)} width={s.len(3.2)} height={s.len(4.5)} rx={3} fill={C.surface} stroke={C.soft} strokeWidth={1.5} />
-            <text x={s.sx(2.4)} y={s.sy(GUN_Y - 1.4)} fontSize={13} fill={C.faint}>proton gun, {sci3(speed).replace('.000', '.0')} m/s</text>
+            <text x={s.sx(-2.4)} y={s.sy(GUN_Y - 1.4)} textAnchor="end" fontSize={13} fill={C.faint}>proton gun, {sci3(speed).replace('.000', '.0')} m/s</text>
             <polyline ref={trail} fill="none" stroke={C.position} strokeWidth={2.2} />
             <LoopArrow ref={fArrow} color={C.force} />
             <LoopArrow ref={vArrow} color={C.velocity} />

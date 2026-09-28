@@ -1,0 +1,14 @@
+title: 'Ampère''s law'
+blurb: 'Walk round any closed loop adding up B·dl: the total is μ₀ times the current threading the loop. The loop''s size and shape do not enter, and current outside it adds nothing.'
+notation: '\oint \vec B\cdot d\vec\ell = \mu_0 I_{\text{enc}}'
+tags:
+  - 'up-ch28'
+misconceptions:
+  - id: 'up-ch28-ampere-needs-circle'
+    name: 'Ampère''s law only works for a circular path round a wire.'
+    signal: 'Expects a square or lopsided loop to give a different total, or refuses to apply the law to one.'
+    correction: 'The law holds for every closed loop. A circle is only the loop on which the field happens to be the same all the way round, which is when the law hands you B.'
+  - id: 'up-ch28-ampere-counts-nearby-current'
+    name: 'A current just outside the loop adds to the circulation because it changes the field on the loop.'
+    signal: 'Expects a wire beside the loop to raise or lower the total.'
+    correction: 'An outside current strengthens the field on one side of the loop and weakens or reverses it on the other; walked all the way round, its share cancels exactly.'

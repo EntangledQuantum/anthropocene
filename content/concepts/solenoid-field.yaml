@@ -1,0 +1,14 @@
+title: 'Field of a solenoid'
+blurb: 'Inside a long coil the field is uniform, points along the axis and equals μ₀nI, whatever the coil''s width; outside it is nearly zero, and at each mouth it is half.'
+notation: 'B = \mu_0 n I'
+tags:
+  - 'up-ch28'
+misconceptions:
+  - id: 'up-ch28-wider-coil-weaker'
+    name: 'A wider coil makes a weaker field inside, because its wire is further from the axis.'
+    signal: 'Predicts the field in the middle of a coil falls when the coil is widened with the same turns per length.'
+    correction: 'Each turn is further away, but each turn is also bigger, and the two cancel exactly for a long coil. Ampère''s law gives B = μ₀nI with no radius in it.'
+  - id: 'up-ch28-lines-start-at-north'
+    name: 'Magnetic field lines begin at a north pole and end at a south pole, as electric lines begin and end on charges.'
+    signal: 'Draws field lines stopping at the ends of a coil or magnet.'
+    correction: 'Magnetic field lines never end. They run through the coil and close round outside it, spreading so thin there that the outside field is nearly zero.'

@@ -1,0 +1,14 @@
+title: 'Field of a long straight wire'
+blurb: 'A current is circled by its magnetic field, never pointed at. Grip the wire with your right thumb along the current and your fingers curl the way the field runs; its strength falls as 1/r.'
+notation: 'B = \dfrac{\mu_0 I}{2\pi r}'
+tags:
+  - 'up-ch28'
+misconceptions:
+  - id: 'up-ch28-b-points-at-wire'
+    name: 'The magnetic field of a wire points toward it or away from it, as an electric field points at a charge.'
+    signal: 'Turns a compass beside a wire to point along the line to the wire.'
+    correction: 'The field of a current runs round the wire, at right angles to the line joining you to it. A compass beside a wire lies across that line, and the needles all round form circles.'
+  - id: 'up-ch28-wire-field-inverse-square'
+    name: 'The field of a long wire falls as 1/r², like the field of a point charge.'
+    signal: 'Expects a wire twice as far away to act a quarter as strongly.'
+    correction: 'A long wire is a line, not a point. Its field falls as 1/r: twice as far, half as strong.'

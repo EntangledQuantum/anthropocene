@@ -87,14 +87,14 @@ export default function LevelTheJunction({ id, prompt, start = 4.5, tolerance = 
         <rect x={XB - 18} y={(Y0 + yTop) / 2 - 12} width={36} height={24} fill={C.surface} />
         <line x1={XB - 16} x2={XB + 16} y1={(Y0 + yTop) / 2 - 6} y2={(Y0 + yTop) / 2 - 6} stroke={C.ink} strokeWidth={3} />
         <line x1={XB - 8} x2={XB + 8} y1={(Y0 + yTop) / 2 + 6} y2={(Y0 + yTop) / 2 + 6} stroke={C.ink} strokeWidth={5} />
-        <text x={XB - 24} y={(Y0 + yTop) / 2 + 5} textAnchor="end" fontSize={13} fill={C.ink}>battery</text>
+        <text x={XB + 24} y={(Y0 + yTop) / 2 + 5} fontSize={13} fill={C.ink}>battery</text>
 
         <Drop x={XA} from={CH26_EMF} to={vm} i={f.inA} p={f.pA} name="A" />
         <Drop x={XBB} from={vm} to={0} i={f.outB} p={f.pB} name="B" />
         <Drop x={XC} from={vm} to={0} i={f.outC} p={f.pC} name="C" />
 
         <circle cx={XA} cy={yj} r={5} fill={ok ? C.ok : C.warn} />
-        <text x={XA + 12} y={vm > CH26_EMF - 1 ? yj + 20 : yj - 10} fontSize={13} fill={ok ? C.ok : C.warn}
+        <text x={XA + 12} y={vm >= CH26_EMF / 2 ? yj + 22 : yj - 10} fontSize={13} fill={ok ? C.ok : C.warn}
           stroke="var(--color-surface)" strokeWidth={4} paintOrder="stroke">junction {state}</text>
 
         <Handle s={api} at={[XH, vm]} step={0.1} color={C.position} label="Junction potential: drag up or down"
