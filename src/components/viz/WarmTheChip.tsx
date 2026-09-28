@@ -128,13 +128,14 @@ export default function WarmTheChip({ prompt }: WarmTheChipProps) {
           clamp={(p) => [40, p[1]]} onChange={(p) => set(300 - p[1])} />
 
         <g ref={g}>
-          {[CU, SI].map((b, k) => <rect key={k} x={BAR.x0} y={b.y0} width={BAR.x1 - BAR.x0} height={b.y1 - b.y0} rx={6} fill="none" stroke={C.rule} strokeWidth={2} />)}
+          {[CU, SI].map((b, k) => <rect key={k} x={BAR.x0} y={b.y0} width={BAR.x1 - BAR.x0} height={b.y1 - b.y0} rx={6} fill={k === 0 ? C.velocity : "none"} fillOpacity={k === 0 ? 0.28 : 0} stroke={C.rule} strokeWidth={2} />)}
           {[...cuIons, ...siIons].map((q, i) => <circle key={i} className="ion" cx={q[0]} cy={q[1]} r={4.5} fill="none" stroke={C.ghost} strokeWidth={1.5} />)}
           {cuE.map((p, i) => <circle key={i} className="cu-e" cx={p[0]} cy={p[1]} r={2.6} fill={C.velocity} />)}
-          {siH.map((p, i) => <circle key={i} className="si-h" cx={p[0]} cy={p[1]} r={3} fill="none" stroke={C.accel} strokeWidth={1.4} visibility="hidden" />)}
-          {siE.map((p, i) => <circle key={i} className="si-e" cx={p[0]} cy={p[1]} r={2.6} fill={C.velocity} visibility="hidden" />)}
+          {siH.map((p, i) => <circle key={i} className="si-h" cx={p[0]} cy={p[1]} r={2.4} fill="none" stroke={C.accel} strokeWidth={1.2} visibility="hidden" />)}
+          {siE.map((p, i) => <circle key={i} className="si-e" cx={p[0]} cy={p[1]} r={2.1} fill={C.velocity} visibility="hidden" />)}
         </g>
         <text x={BAR.x0} y={CU.y0 - 8} fontSize={14} fill={C.ink}>copper wire</text>
+        <text x={BAR.x1} y={CU.y0 - 8} textAnchor="end" fontSize={13} fill={C.soft}>a sea: one free electron per atom</text>
         <text x={BAR.x0} y={SI.y0 - 8} fontSize={14} fill={C.ink}>pure silicon chip</text>
         <text x={BAR.x1} y={SI.y0 - 8} textAnchor="end" fontSize={13} fill={C.soft} fontFamily="var(--font-mono)">
           {shownNow > CAP ? `${shownNow} dots (${CAP} drawn)` : `${shownNow} dot${shownNow === 1 ? '' : 's'}`}
