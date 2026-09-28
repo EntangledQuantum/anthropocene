@@ -43,8 +43,10 @@ export { useSetter };
  * [core[0], core[1]] along the axis. `field` receives a setter for the field
  * inside: magnitude 0..1 (opacity) with sign giving the direction.
  */
-export function Coil({ x1, x2, y, r = 22, turns = 9, lead = 0, core, field, label }: {
+export function Coil({ x1, x2, y, r = 22, turns = 9, lead = 0, core, field, label, reach = 22 }: {
   x1: number; x2: number; y: number; r?: number; turns?: number; lead?: number;
+  /** How far the drawn field lines run past each end of the coil, px. */
+  reach?: number;
   core?: readonly [number, number]; field?: Setter; label?: string;
 }) {
   const g = useRef<SVGGElement>(null);
@@ -67,7 +69,7 @@ export function Coil({ x1, x2, y, r = 22, turns = 9, lead = 0, core, field, labe
       {[-0.55, 0, 0.55].map((f) => {
         const yy = y + f * r;
         return <g key={f}>
-          <line x1={x1 - 22} x2={x2 + 22} y1={yy} y2={yy} stroke={C.field} strokeWidth={1.6} />
+          <line x1={x1 - reach} x2={x2 + reach} y1={yy} y2={yy} stroke={C.field} strokeWidth={1.6} />
           <path d={`M${cx + 7},${yy} l-10,-5 l0,10 z`} fill={C.field} />
         </g>;
       })}

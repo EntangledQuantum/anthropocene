@@ -139,7 +139,7 @@ export default function SloshingLC({ id, prompt, volts = [CH30_LC.V0], share = 0
         {/* coil */}
         <g transform={`rotate(90 ${XL} ${(TOP + BOT) / 2})`}>
           <rect x={XL - 58} y={(TOP + BOT) / 2 - 26} width={116} height={52} fill={C.surface} />
-          <Coil x1={XL - 50} x2={XL + 50} y={(TOP + BOT) / 2} r={20} turns={8} field={field} />
+          <Coil x1={XL - 50} x2={XL + 50} y={(TOP + BOT) / 2} r={20} turns={8} field={field} reach={8} />
         </g>
         <text x={XL + 30} y={(TOP + BOT) / 2 + 5} fontSize={13} fill={C.soft}>{L} H</text>
         {/* energy bars */}

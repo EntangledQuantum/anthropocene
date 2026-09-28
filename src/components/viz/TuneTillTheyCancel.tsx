@@ -70,7 +70,7 @@ export default function TuneTillTheyCancel({ id, prompt, start = 700, tolerance 
           <span style={{ display: 'flex', gap: 22 }}>
             <Meter label="Frequency" value={f.toFixed(0)} unit="Hz" />
             <Meter label="Current" value={(I * 1000).toFixed(0)} unit="mA" color={C.velocity} />
-            <Meter label="Current ahead by" value={`${phi >= 0 ? '' : '−'}${Math.abs(phi).toFixed(0)}`} unit="°" />
+            <Meter label="Current ahead by" value={`${Math.round(phi) < 0 ? '−' : ''}${Math.abs(Math.round(phi))}`} unit="°" />
           </span>
         </div>
         {id && <CheckBar verdict={task.verdict} done={task.done}
@@ -113,6 +113,7 @@ export default function TuneTillTheyCancel({ id, prompt, start = 700, tolerance 
         {arrow([O.x, O.y], tipS, C.ink, 3)}
         {lab(tipL[0] + 10, Math.max(tipL[1], 24) + 4, `coil ${VL.toFixed(1)} V`, C.position)}
         {lab(tipC[0] + 10, Math.min(tipC[1], 384) + 4, `capacitor ${VC.toFixed(1)} V`, C.position)}
+        {lab(O.x + 6, O.y + 22, `lamp ${VR.toFixed(1)} V`, C.position)}
         {lab(Math.max(tipS[0], tipR[0]) + 12, (tipS[1] + O.y) / 2 + 4, `supply ${TUNE.Vs} V`, C.ink)}
         <text x={630} y={O.y + 18} textAnchor="end" fontSize={12} fill={C.velocity}>current →</text>
         <text x={630} y={392} textAnchor="end" fontSize={11} fill={C.faint}>lamp's arrow lies along the current</text>

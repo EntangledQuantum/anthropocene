@@ -72,7 +72,7 @@ export default function LetTheCoilGo({ id, prompt, target = CH30_SPARK.target, t
   const f = opened ? energyFraction(opened.I, Ifull) : 0;
   const U = opened ? coilEnergy(L, opened.I) : 0;
   const pct = (v: number) => `${Math.round(100 * v)}%`;
-  const BX = 250, BW = 250;
+  const BX = 206, BW = 214;
 
   return (
     <SceneCard id={id} prompt={prompt}

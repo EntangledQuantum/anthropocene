@@ -1,0 +1,14 @@
+title: 'Total internal reflection'
+blurb: 'Light inside a slower material, meeting the surface beyond the critical angle, cannot get out at all and reflects completely. The escaping ray does not switch off; it swings flat along the surface and fades to nothing. It is how optical fibre carries light.'
+notation: '\sin\theta_c = \frac{n_2}{n_1}\quad (n_1 > n_2)'
+tags:
+  - 'up-ch33'
+misconceptions:
+  - id: 'up-ch33-tir-from-air'
+    name: 'Total internal reflection can happen for light going from air into glass.'
+    signal: 'Expects a steep enough beam from air to bounce off a glass surface completely.'
+    correction: 'Going into a slower material the ray bends toward the normal, and there is always an angle for it. Only light trying to leave a slower material can be trapped.'
+  - id: 'up-ch33-reflection-switches-on'
+    name: 'Below the critical angle there is no reflection; at it, reflection switches on.'
+    signal: 'Draws only the refracted ray for small angles, and only the reflected one beyond the critical angle.'
+    correction: 'Some light always reflects, about 4% at glass square-on. The reflected share grows as the angle rises, steeply in the last degree, and reaches all of it at the critical angle.'

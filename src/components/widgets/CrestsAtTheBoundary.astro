@@ -1,0 +1,6 @@
+---
+// Ungraded picture: crests crossing into a material whose index you set.
+import Island, { type CrestsAtTheBoundaryProps } from '../viz/CrestsAtTheBoundary.tsx';
+const props = Astro.props as CrestsAtTheBoundaryProps;
+---
+<Island client:visible {...props} />

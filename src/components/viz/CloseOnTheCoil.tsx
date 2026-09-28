@@ -85,7 +85,7 @@ export default function CloseOnTheCoil({ prompt }: CloseOnTheCoilProps) {
         <Lamp x={XA} y={(TOP + BOT) / 2} glow={glowA} label="A" />
         <g transform={`rotate(90 ${XC} 128)`}>
           <rect x={XC - 58} y={128 - 26} width={116} height={52} fill={C.surface} />
-          <Coil x1={XC - 50} x2={XC + 50} y={128} r={20} turns={8} field={field} />
+          <Coil x1={XC - 50} x2={XC + 50} y={128} r={20} turns={8} field={field} reach={8} />
         </g>
         <text x={XC + 30} y={132} fontSize={13} fill={C.soft}>coil, {CH30_TWIN_L} H</text>
         <text x={XC + 30} y={148} fontSize={12} fill={C.faint}>plain copper, no resistance</text>

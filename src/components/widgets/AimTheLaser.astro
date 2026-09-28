@@ -1,0 +1,6 @@
+---
+// @graded — with an `id`, every Fire is an attempt: land the beam on the coin.
+import Island, { type AimTheLaserProps } from '../viz/AimTheLaser.tsx';
+const props = Astro.props as AimTheLaserProps;
+---
+<Island client:visible {...props} />

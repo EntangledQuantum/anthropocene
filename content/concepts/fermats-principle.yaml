@@ -1,0 +1,14 @@
+title: 'Fermat''s principle'
+blurb: 'Light goes from one point to another by the route that takes the least time, not the shortest distance. Where it travels at different speeds, the quickest route bends at the boundary, and the bend is Snell''s law.'
+notation: 't = \int \frac{ds}{v} = \frac{1}{c}\int n\,ds \quad\text{is stationary}'
+tags:
+  - 'up-ch33'
+misconceptions:
+  - id: 'up-ch33-shortest-path'
+    name: 'Light takes the shortest path.'
+    signal: 'Expects the fastest route across a boundary to be the straight line between the two points.'
+    correction: 'Light takes the quickest path. The straight line spends too long in the slow medium; the quickest route runs further through the fast one and cuts the slow part short.'
+  - id: 'up-ch33-least-slow-distance'
+    name: 'The quickest route minimises the distance in the slow medium.'
+    signal: 'Heads to the point on the boundary nearest the target, then crosses straight.'
+    correction: 'That makes the fast leg too long. The best route trades the two legs off; it lies between the straight line and the shortest crossing.'

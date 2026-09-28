@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import {
-  DEG, N_GLASS, N_WATER, alongAxis, apparentPoint, brewsterAngle, criticalAngle, fastestEntry,
+  BEACH, DEG, N_GLASS, N_WATER, alongAxis, apparentPoint, brewsterAngle, criticalAngle, fastestEntry,
   frequencyInside, frequencyOf, fresnel, indexFor, laserLanding, malus, pathAngles, pathTime,
   planeWavePhase, snell, speedIn, stepsToKeep, straightEntry, throughFilters, transmittance,
   twistTransmission, wavelengthIn,
@@ -8,9 +8,7 @@ import {
 import { C } from '../emwaves.ts';
 
 describe('the quickest road is Snell’s law', () => {
-  // The lifeguard scene: chair 30 m up the beach, swimmer 50 m along and 20 m out.
-  const A = [0, 30] as const, B = [50, -20] as const;
-  const RUN = 5, SWIM = 2;
+  const { A, B, run: RUN, swim: SWIM } = BEACH;
 
   it('the time-minimising entry point satisfies n₁ sin θ₁ = n₂ sin θ₂ to 1e-6', () => {
     // Light, with n = c/v; and the lifeguard, with running speed playing c.
@@ -25,14 +23,14 @@ describe('the quickest road is Snell’s law', () => {
   it('is a true minimum: every other entry point is slower', () => {
     const x = fastestEntry(A, B, RUN, SWIM);
     const best = pathTime(A, B, x, RUN, SWIM);
-    for (let xx = 0; xx <= 50; xx += 0.25) expect(pathTime(A, B, xx, RUN, SWIM)).toBeGreaterThanOrEqual(best - 1e-12);
+    for (let xx = 0; xx <= 48; xx += 0.25) expect(pathTime(A, B, xx, RUN, SWIM)).toBeGreaterThanOrEqual(best - 1e-12);
   });
 
   it('beats both the straight line and the shortest swim, and lies between them', () => {
     const x = fastestEntry(A, B, RUN, SWIM);
     const t = pathTime(A, B, x, RUN, SWIM);
     const xs = straightEntry(A, B);
-    expect(xs).toBeCloseTo(30, 12);
+    expect(xs).toBeCloseTo(25.6, 12);
     expect(x).toBeGreaterThan(xs);
     expect(x).toBeLessThan(B[0]);
     expect(pathTime(A, B, xs, RUN, SWIM) - t).toBeGreaterThan(1);

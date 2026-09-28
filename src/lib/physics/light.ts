@@ -64,6 +64,9 @@ export const planeWavePhase = (n: number, theta: number, lambda0: number, x: num
 
 export type P2 = readonly [number, number];
 
+/** The lifeguard scene: chair 16 m up the beach, swimmer 48 m along and 14 m out. */
+export const BEACH = { A: [0, 16] as P2, B: [48, -14] as P2, run: 5, swim: 2 };
+
 /** Time along A → (x, 0) → B at speed v1 above the boundary and v2 below. */
 export function pathTime(A: P2, B: P2, x: number, v1: number, v2: number): number {
   return Math.hypot(x - A[0], A[1]) / v1 + Math.hypot(B[0] - x, B[1]) / v2;

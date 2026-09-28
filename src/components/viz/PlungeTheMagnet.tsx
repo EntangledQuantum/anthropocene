@@ -65,11 +65,11 @@ export default function PlungeTheMagnet({ id, prompt, start = -0.18, target, exp
     const n = Math.max(1, Math.round(dt / 1e-3)), h = dt / n;
     let Iavg = 0;
     for (let k = 0; k < n; k++) {
-      [st.x, st.v] = followStep(st.x, st.v, handRef.current, h);
+      [st.x, st.v] = followStep(st.x, st.v, handRef.current, h, 40);
       Iavg += coilCurrent(st.x, st.v) / n;
     }
     const mA = Iavg * 1000;
-    st.needle += (mA - st.needle) * Math.min(1, dt / 0.04); // the needle's own inertia
+    st.needle += (mA - st.needle) * Math.min(1, dt / 0.025); // the needle's own inertia
     if (Math.abs(st.needle) < 1e-4) st.needle = 0;
     if (target !== undefined && st.needle * Math.sign(target) > st.best * Math.sign(target)) st.best = st.needle;
     st.phase += Iavg * 1000 * 9 * dt;

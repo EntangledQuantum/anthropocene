@@ -65,7 +65,7 @@ export default function SpinThePhasor({ id, prompt, target, start = 0, tolerance
   const ms = (pos(theta) / (2 * Math.PI)) * PERIOD_MS;
   const want = target ? angleAt(target.volts, V0, target.falling) : 0;
   const hit = target ? Math.abs(deg(wrap(theta - want))) <= tolerance : false;
-  const sgn = (x: number) => `${x >= 0 ? '+' : '−'}${Math.abs(x).toFixed(0)}`;
+  const sgn = (x: number) => (Math.abs(x) < 0.5 ? '0' : `${x > 0 ? '+' : '−'}${Math.abs(x).toFixed(0)}`);
 
   // the inked wave: consecutive visited bins joined
   const segs: string[] = [];

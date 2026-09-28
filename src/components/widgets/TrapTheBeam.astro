@@ -1,0 +1,6 @@
+---
+// @graded — with an `id`, stop the laser where the escaping ray just vanishes.
+import Island, { type TrapTheBeamProps } from '../viz/TrapTheBeam.tsx';
+const props = Astro.props as TrapTheBeamProps;
+---
+<Island client:visible {...props} />

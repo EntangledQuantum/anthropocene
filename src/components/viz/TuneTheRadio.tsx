@@ -75,8 +75,8 @@ export default function TuneTheRadio({ id, prompt, explanation }: TuneTheRadioPr
         <line x1={CP - 8} x2={CP - 8} y1={TOP - 20} y2={TOP + 20} stroke={C.ink} strokeWidth={4} />
         <line x1={CP + 8} x2={CP + 8} y1={TOP - 20} y2={TOP + 20} stroke={C.ink} strokeWidth={4} />
         <text x={CP} y={TOP - 28} textAnchor="middle" fontSize={13} fill={C.soft}>{Cap * 1e12} pF</text>
-        <Coil x1={X1} x2={X2} y={AX} r={20} turns={8} lead={AX - 20 - TOP} core={[slugRight - SPAN, slugRight]} field={field} />
-        <text x={X1 - 10} y={AX + 5} textAnchor="end" fontSize={13} fill={C.soft}>coil</text>
+        <Coil x1={X1} x2={X2} y={AX} r={20} turns={8} lead={AX - 20 - TOP} core={[slugRight - SPAN, slugRight]} field={field} reach={8} />
+        <text x={X1 - 16} y={AX + 5} textAnchor="end" fontSize={13} fill={C.soft}>coil</text>
         <text x={slugRight - 4} y={AX + 40} textAnchor="end" fontSize={13} fill={C.faint}>ferrite slug</text>
         <DragX x={slugRight} y={AX} lo={X2} hi={X2 + SPAN} step={1} label="Ferrite slug position"
           onChange={(v) => { setX(1 - (v - X2) / SPAN); task.touch(); }} />

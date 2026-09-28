@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { fastestEntry, pathAngles, pathTime, pathTimeSlope, type P2 } from '../../lib/physics/light.ts';
+import { BEACH, fastestEntry, pathAngles, pathTime, pathTimeSlope } from '../../lib/physics/light.ts';
 import { Body, C, CheckBar, Handle, Meter, SceneCard, Stage, useTask, type Vec } from './scene.tsx';
 import { AngleArc, Medium, Normal, WATER_FILL } from './optics-kit-ch33.tsx';
 
@@ -25,10 +25,10 @@ export interface LifeguardDashProps {
   explanation?: string;
 }
 
-const A: P2 = [0, 30], B: P2 = [50, -20];
-const X0 = 30;
+const { A, B } = BEACH;
+const X0 = 26;
 
-export default function LifeguardDash({ id, prompt, run = 5, swim = 2, tolerance = 1.5, explanation }: LifeguardDashProps) {
+export default function LifeguardDash({ id, prompt, run = BEACH.run, swim = BEACH.swim, tolerance = 1.5, explanation }: LifeguardDashProps) {
   const task = useTask(id, 'lifeguard-dash');
   const [x, setX] = useState(X0);
   const [tried, setTried] = useState<number[]>([X0]);
@@ -40,7 +40,7 @@ export default function LifeguardDash({ id, prompt, run = 5, swim = 2, tolerance
   const tMax = pathTime(A, B, 0, run, swim);
 
   const set = (p: Vec) => {
-    const v = Math.round(Math.max(0, Math.min(56, p[0])) * 2) / 2;
+    const v = Math.round(Math.max(0, Math.min(54, p[0])) * 2) / 2;
     setX(v);
     setTried((a) => (a.includes(v) ? a : [...a, v]));
     task.touch();
@@ -61,16 +61,16 @@ export default function LifeguardDash({ id, prompt, run = 5, swim = 2, tolerance
           miss={`This route takes ${T.toFixed(2)} s, ${(T - Tbest).toFixed(2)} s slower than the best one. Entering the water ${later} saves time.`}
           hit={explanation} />}
       </div>}>
-      <Stage x={[-4, 56]} y={[-25, 35]} height={340} equal
+      <Stage x={[-8, 58]} y={[-17, 19]} height={360} equal
         label={`Beach. The lifeguard enters the water ${x.toFixed(1)} metres along and reaches the swimmer in ${T.toFixed(2)} seconds.`}>
         {(s) => <>
-          <rect x={s.sx(s.x[0])} y={s.sy(35)} width={s.sx(s.x[1]) - s.sx(s.x[0])} height={s.sy(0) - s.sy(35)} fill="var(--color-raised)" />
-          <Medium s={s} x={[s.x[0], s.x[1]]} y={[-25, 0]} fill={WATER_FILL} />
+          <rect x={s.sx(s.x[0])} y={s.sy(19)} width={s.sx(s.x[1]) - s.sx(s.x[0])} height={s.sy(0) - s.sy(19)} fill="var(--color-raised)" />
+          <Medium s={s} x={[s.x[0], s.x[1]]} y={[-17, 0]} fill={WATER_FILL} />
           <text x={s.sx(s.x[1]) - 8} y={s.sy(0) - 8} textAnchor="end" fontSize={13} fill={C.soft}>sand: run at {run} m/s</text>
           <text x={s.sx(s.x[1]) - 8} y={s.sy(0) + 20} textAnchor="end" fontSize={13} fill={C.soft}>water: swim at {swim} m/s</text>
           <line x1={s.sx(A[0])} y1={s.sy(A[1])} x2={s.sx(B[0])} y2={s.sy(B[1])} stroke={C.ghost} strokeDasharray="3 6" strokeWidth={1.5} />
           {task.done && <>
-            <Normal s={s} at={[x, 0]} len={14} />
+            <Normal s={s} at={[x, 0]} len={10} />
             <AngleArc s={s} at={[x, 0]} a0={Math.PI / 2} a1={Math.PI / 2 + theta1} r={46} label={`θ₁ ${(theta1 * 180 / Math.PI).toFixed(0)}°`} />
             <AngleArc s={s} at={[x, 0]} a0={-Math.PI / 2} a1={-Math.PI / 2 + theta2} r={46} label={`θ₂ ${(theta2 * 180 / Math.PI).toFixed(0)}°`} />
           </>}
@@ -82,7 +82,7 @@ export default function LifeguardDash({ id, prompt, run = 5, swim = 2, tolerance
           <Handle s={s} at={[x, 0]} step={0.5} label="Where you enter the water: drag along the waterline" clamp={(p) => [p[0], 0]} onChange={set} color={C.position} />
         </>}
       </Stage>
-      <Stage x={[0, 56]} y={[Tbest - 0.4, tMax + 0.2]} height={140} axes={{ x: 'where you enter the water (m)', y: 'time (s)' }}
+      <Stage x={[0, 54]} y={[Tbest - 0.4, tMax + 0.2]} height={140} axes={{ x: 'where you enter the water (m)', y: 'time (s)' }}
         label="Time to the swimmer for every entry point you have tried">
         {(p) => tried.map((v) => <circle key={v} cx={p.sx(v)} cy={p.sy(pathTime(A, B, v, run, swim))} r={v === x ? 6 : 4}
           fill={v === x ? C.position : C.surface} stroke={C.position} strokeWidth={2} />)}

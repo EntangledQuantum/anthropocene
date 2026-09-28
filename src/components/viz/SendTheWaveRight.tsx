@@ -124,7 +124,7 @@ export default function SendTheWaveRight({ id, prompt, startPhase = 90, explanat
             <text x={s.sx(-0.3)} y={s.sy(S_ROW) - 12} fontSize={13} fill={C.energy}>energy flow, E × B</text>
             {/* the receiver */}
             <rect x={s.sx(SPAN + 0.45)} y={s.sy(0.9)} width={s.len(0.28)} height={s.len(1.8)} rx={3} fill={C.surface} stroke={C.soft} strokeWidth={2} />
-            <text x={s.sx(SPAN + 0.59)} y={s.sy(1.0)} textAnchor="middle" fontSize={12} fill={C.soft}>receiver</text>
+            <text x={s.sx(SPAN + 0.73)} y={s.sy(1.0)} textAnchor="end" fontSize={12} fill={C.soft}>receiver</text>
             {!running && <Handle s={s} at={[xc + AMP * OX, AMP * OY]} step={0.05} color={C.ink}
               label="B's crest: drag it along the axis" onChange={(p) => setCrest(p[0] - AMP * OX)}
               clamp={(p) => [Math.max(AMP * OX, Math.min(LAMBDA + AMP * OX, p[0])), AMP * OY]} />}

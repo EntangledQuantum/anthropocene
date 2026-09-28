@@ -1,0 +1,14 @@
+title: 'Index of refraction'
+blurb: 'How many times slower light travels in a material than in vacuum. Inside, the wavelength shrinks by the same factor; the frequency does not change, because the boundary cannot create or swallow crests.'
+notation: 'n = \frac{c}{v},\qquad \lambda_{\text{inside}} = \frac{\lambda_0}{n},\qquad f_{\text{inside}} = f_0'
+tags:
+  - 'up-ch33'
+misconceptions:
+  - id: 'up-ch33-frequency-changes'
+    name: 'Light changes frequency when it enters a new material.'
+    signal: 'Predicts that light in glass has a lower frequency, or a different colour, than the same light in air.'
+    correction: 'Crests on the two sides meet along the boundary, so they arrive and leave at the same rate. The frequency is set by the source and never changes; the wavelength shrinks by n because the crests move slower.'
+  - id: 'up-ch33-wavelength-fixed'
+    name: 'Only the speed changes; the wavelength of light is fixed.'
+    signal: 'Says light in glass is slower but its wavelength is still 600 nm.'
+    correction: 'Speed is wavelength times frequency. If the frequency is fixed and the speed drops by n, the wavelength must drop by n too.'

@@ -1,0 +1,140 @@
+---
+title: 'Light takes the quickest road'
+blurb: 'Say which way a straw in water looks bent, find the quickest route across a boundary, aim a laser through a water surface, and trap light inside glass.'
+order: 1
+tier: 'core'
+minutes: 11
+teaches:
+  - 'fermats-principle'
+  - 'index-of-refraction'
+  - 'snells-law'
+  - 'total-internal-reflection'
+requires:
+  - 'em-wave'
+  - 'em-wave-speed'
+  - 'mechanical-wave'
+status: 'live'
+updated: 2026-09-28
+---
+
+<Step>
+
+A straight straw leans in a glass of water. You look at it from above the rim, off to one side.
+
+<Predict
+  id="up-ch33-straw-bet"
+  question="Where does the underwater half of the straw seem to be?"
+  options={[
+    { key: 'up', label: 'Bent upward: shallower than it really is', why: 'Right. Light from the tip bends away from the normal as it leaves the water, and your eye traces it back in a straight line to a point above the real one.' },
+    { key: 'down', misconception: 'up-ch33-looks-deeper', label: 'Bent downward: water makes things look deeper', why: 'Drag the eye below and watch: the tip always appears above where it is, never below. Pools look shallower than they are, which is why people misjudge them.' },
+    { key: 'none', misconception: 'up-ch33-no-bend-unless-slanted-eye', label: 'Straight: the bend comes from the curved glass wall', why: 'There is no wall in the way here. You look down through the open surface, and the straw still kinks exactly where it enters the water.' },
+    { key: 'side', label: 'Straight, just shifted sideways toward you', why: 'Every underwater point is shifted, but by more the deeper it is. Unequal shifts are what turn a straight straw into a bent one.' },
+  ]}
+  correct="up"
+>
+
+<BentStraw prompt="Drag your eye around the glass. Watch where the tip seems to be." />
+
+</Predict>
+
+</Step>
+
+<Step>
+
+## Run, then swim
+
+Light bends where its speed changes. A lifeguard faces the same problem: fast on sand, slow in water.
+
+<LifeguardDash
+  id="up-ch33-lifeguard-route"
+  prompt="Drag where you hit the waterline until you reach the swimmer as fast as you can."
+  explanation="About 42 m along, for 16.6 s. The straight line wastes time swimming; heading straight for the swimmer's shoreline wastes time running. At the best point the sines of the two angles stand in the ratio of the two speeds, 2.5 to 1. Nobody told the route about sines: they fall out of the race."
+/>
+
+</Step>
+
+<Step>
+
+## Name it
+
+Light does what the lifeguard did. It crosses from one point to another by the **quickest** route, which is Fermat's principle. Each material slows it by a factor $n$, its **index of refraction**, and the quickest route across a boundary obeys **Snell's law**:
+
+$$n = \frac{c}{v}, \qquad n_1 \sin\theta_1 = n_2 \sin\theta_2$$
+
+<Recall id="up-ch33-recall-quickest" concept="fermats-principle">
+  <div slot="front">Light goes from a point in air to a point under water. Why is its path not a straight line?</div>
+
+  It takes the quickest route, not the shortest. Light is 1.33 times slower in water, so the
+  quickest path runs further through the air and meets the surface more steeply below:
+  $\sin\theta_{\text{air}} = 1.33\,\sin\theta_{\text{water}}$.
+</Recall>
+
+</Step>
+
+<Step>
+
+## Hit the coin
+
+A coin lies on the floor of a pool 2 m deep. A laser on the deck fires only in a straight line, until it meets the water.
+
+<AimTheLaser
+  id="up-ch33-laser-coin"
+  prompt="Aim the laser, then fire. Land the beam on the coin."
+  explanation="You had to aim at a spot on the surface about 2.4 m out, well beyond the sight line to the coin. Aimed straight at the coin, the beam enters at 53° and bends to 37°, steeper than you aimed, and lands a metre short. Into slower water, light bends toward the normal."
+/>
+
+</Step>
+
+<Step>
+
+## What the boundary cannot change
+
+Light of wavelength 600 nm passes from air into glass, where it travels 1.5 times slower.
+
+<Predict
+  id="up-ch33-inside-glass"
+  question="Inside the glass, what happens to its wavelength and its frequency?"
+  options={[
+    { key: 'lam', label: 'The wavelength shrinks to 400 nm; the frequency stays the same', why: 'Right. The crests on the two sides meet along the surface, so they arrive and leave at the same rate. Slower crests at the same rate sit closer together.' },
+    { key: 'freq', misconception: 'up-ch33-frequency-changes', label: 'The frequency drops; the wavelength stays 600 nm', why: 'Count the crests below: as many cross the surface each second from above as leave it below. A frequency change would need crests to pile up or vanish at the surface.' },
+    { key: 'both', misconception: 'up-ch33-frequency-changes', label: 'Both drop by a factor of 1.5', why: 'Then the speed would drop by 1.5 × 1.5 = 2.25, not 1.5. Speed is wavelength times frequency, and the frequency is pinned by the crests matching at the surface.' },
+    { key: 'neither', misconception: 'up-ch33-wavelength-fixed', label: 'Neither: only the speed changes', why: 'Speed is wavelength times frequency. With both fixed, the speed could not change. Watch the crests below bunch up.' },
+  ]}
+  correct="lam"
+>
+
+<CrestsAtTheBoundary prompt="Drag the index of the material below. Watch the crests where they meet the surface." />
+
+</Predict>
+
+</Step>
+
+<Step>
+
+## Trap the light
+
+Now run it backwards: light inside glass, trying to get out into faster air. Leaving, it bends away from the normal.
+
+<TrapTheBeam
+  id="up-ch33-critical-angle"
+  prompt="Walk the laser round the glass. Stop where the ray escaping into the air just vanishes."
+  explanation="41.8°, where sin θ = 1/1.5. Beyond it the escaping ray would need a sine bigger than 1, so there is none, and every bit of light reflects. The escaping ray does not switch off: it swings flat along the surface and fades. An optical fibre keeps its light by striking its wall beyond this angle, bounce after bounce, for kilometres."
+/>
+
+<Recall id="up-ch33-recall-critical" concept="total-internal-reflection">
+  <div slot="front">Can light going from air into water ever be totally reflected?</div>
+
+  No. Going into a slower material the ray bends toward the normal, and there is always a
+  refracted ray. Only light trying to leave the slower material can be trapped, beyond
+  $\sin\theta_c = n_2/n_1$.
+</Recall>
+
+## What to carry forward
+
+- **Light takes the quickest road.** Where it crosses into a material $n$ times slower, $n_1\sin\theta_1 = n_2\sin\theta_2$.
+- **The frequency never changes at a boundary;** the wavelength shrinks by $n$.
+- **Leaving a slow material beyond the critical angle, nothing gets out.**
+
+Next: light's field points in a direction across its path, and a filter can choose it.
+
+</Step>

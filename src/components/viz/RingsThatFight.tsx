@@ -106,8 +106,8 @@ export default function RingsThatFight({ id, prompt, explanation }: RingsThatFig
             const F = force(w, dir[w]);
             if (!F) return null;
             const x = i === 0 ? -2.5 : 2.5;
-            return <Arrow key={w} s={s} from={[x, 0]} to={[x, F * MM_PER_MN]} color={C.force} width={3.5}
-              label={`${Math.abs(F).toFixed(0)} mN`} labelSide={i === 0 ? 1 : -1} />;
+            return <g key={w} pointerEvents="none"><Arrow s={s} from={[x, 0]} to={[x, F * MM_PER_MN]} color={C.force} width={3.5}
+              label={`${Math.abs(F).toFixed(0)} mN`} labelSide={i === 0 ? 1 : -1} /></g>;
           })}
         </>}
       </Stage>

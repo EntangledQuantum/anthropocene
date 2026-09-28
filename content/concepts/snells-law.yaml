@@ -1,0 +1,18 @@
+title: 'Snell''s law'
+blurb: 'Where light crosses a boundary, the product of index and the sine of the angle from the normal is the same on both sides. Into a slower material it bends toward the normal; out of one, away from it.'
+notation: 'n_1 \sin\theta_1 = n_2 \sin\theta_2'
+tags:
+  - 'up-ch33'
+misconceptions:
+  - id: 'up-ch33-looks-deeper'
+    name: 'Things under water look deeper than they are.'
+    signal: 'Predicts that the underwater half of a straw looks bent down, or that a pool looks deeper than it is.'
+    correction: 'Light from the underwater part bends away from the normal as it leaves the water, and your eye traces it back in a straight line to a point that is higher than the real one. Underwater things look shallower.'
+  - id: 'up-ch33-no-bend-unless-slanted-eye'
+    name: 'The bend is an illusion of the glass wall, not of the water surface.'
+    signal: 'Expects a straw seen from above through the open surface to look straight.'
+    correction: 'The water surface alone does it. The straw looks bent from any angle, because every ray from the underwater part changes direction where it leaves the water.'
+  - id: 'up-ch33-bends-away-entering'
+    name: 'Light entering a denser material bends away from the normal.'
+    signal: 'Aims a laser at a pool floor expecting the beam to go shallower once inside.'
+    correction: 'Slower means closer to the normal: sin θ₂ = sin θ₁ / n. The beam enters more steeply than it was aimed and lands short.'

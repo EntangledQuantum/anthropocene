@@ -104,7 +104,7 @@ export default function TurnTheTuningDial({ id, prompt, target, startOn = 1.2e6,
           <line x1={B.x0} x2={B.x1} y1={by(r)} y2={by(r)} stroke={r === 0 ? C.rule : C.grid} />
           <text x={B.x0 - 6} y={by(r) + 4} textAnchor="end" fontSize={11} fill={C.faint} fontFamily="var(--font-mono)">{r * 100}%</text>
         </g>)}
-        <text x={B.x0} y={B.y1 - 14} fontSize={12} fill={C.soft}>how loud each station comes through</text>
+        <text x={B.x0} y={B.y1 - 28} fontSize={12} fill={C.soft}>how loud each station comes through</text>
         {[0.5, 0.75, 1.0, 1.25, 1.5].map((m) => <text key={m} x={bx(m * 1e6)} y={B.y0 + 16} textAnchor="middle" fontSize={11} fill={C.faint} fontFamily="var(--font-mono)">{m.toFixed(2)}</text>)}
         <text x={B.x1} y={B.y0 + 32} textAnchor="end" fontSize={11} fill={C.faint}>MHz</text>
         <polyline points={curve} fill="none" stroke={C.soft} strokeWidth={1.3} strokeOpacity={0.6} />

@@ -53,7 +53,7 @@ export default function ShakeTheCharge({ id, prompt, mode = 'line', detectorAt =
   const root = useRef<SVGGElement | null>(null);
   const els = useRef<{ lines: (SVGPolylineElement | null)[]; charge?: SVGGElement | null; eArrow?: SVGLineElement | null; eHead?: SVGPathElement | null; det?: SVGRectElement | null }>({ lines: [] });
   const [shown, setShown] = useState<{ since: number | null; delay: number | null; speed: number | null; armed: boolean }>({ since: null, delay: null, speed: null, armed: false });
-  const rMax = around ? 8 : 16;
+  const rMax = around ? 11 : 16;
 
   useEffect(() => {
     let raf = 0, last = performance.now(), lastShown = 0;

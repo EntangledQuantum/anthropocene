@@ -120,10 +120,10 @@ export default function PlaceTheCurrent({ id, prompt, element, start = 0, tolera
     g.strokeStyle = c.i; g.beginPath(); g.moveTo(tipI[0], tipI[1]); g.lineTo(X(th), tipI[1]); g.stroke(); g.setLineDash([]);
     arrow(PC.x, PC.y, tipV[0], tipV[1], c.v, 3.5);
     arrow(PC.x, PC.y, tipI[0], tipI[1], c.i, 3.5);
-    txt('voltage', tipV[0] + 10 * Math.cos(th), tipV[1] - 10 * Math.sin(th) + 4, c.v, Math.cos(th) > 0.3 ? 'left' : Math.cos(th) < -0.3 ? 'right' : 'center', 13, 600);
-    if (Math.abs(wrap(of)) > rad(30)) txt('current', tipI[0] + 10 * Math.cos(th + of), tipI[1] - 10 * Math.sin(th + of) + 4, c.i, Math.cos(th + of) > 0.3 ? 'left' : Math.cos(th + of) < -0.3 ? 'right' : 'center', 13, 600);
+    txt('v', tipV[0] + 10 * Math.cos(th), tipV[1] - 10 * Math.sin(th) + 4, c.v, Math.cos(th) > 0.3 ? 'left' : Math.cos(th) < -0.3 ? 'right' : 'center', 15, 600);
+    if (Math.abs(wrap(of)) > rad(30)) txt('i', tipI[0] + 10 * Math.cos(th + of), tipI[1] - 10 * Math.sin(th + of) + 4, c.i, Math.cos(th + of) > 0.3 ? 'left' : Math.cos(th + of) < -0.3 ? 'right' : 'center', 15, 600);
     if (graded) { g.strokeStyle = c.i; g.lineWidth = 2.5; g.fillStyle = c.surf; g.beginPath(); g.arc(tipI[0], tipI[1], 8, 0, 2 * Math.PI); g.fill(); g.stroke(); }
-    txt('both turn anticlockwise', PC.x, PC.y - PC.r - 14, c.faint, 'center', 12);
+    txt('both turn anticlockwise', PC.x, PC.y + PC.r + 24, c.faint, 'center', 12);
 
     // ── the strip: one cycle of each shadow
     for (const k of [0, 1, 2, 3, 4]) { const x = ST.x0 + (k / 4) * (ST.x1 - ST.x0); g.strokeStyle = c.grid; g.beginPath(); g.moveTo(x, ST.y - ST.a); g.lineTo(x, ST.y + ST.a); g.stroke(); txt(`${k * 5}`, x, ST.y + ST.a + 16, c.faint, 'center', 11); }
@@ -180,7 +180,7 @@ export default function PlaceTheCurrent({ id, prompt, element, start = 0, tolera
           e.preventDefault(); setOffset((o) => wrap(o + rad(d))); task.touch();
         }} />
       <p className="hud-label" style={{ margin: '6px 0 0' }}>
-        slowed 200×: one cycle takes 4 s · iris: voltage · cyan: current
+        slowed 200×: one cycle takes 4 s · iris v: voltage · cyan i: current
       </p>
     </SceneCard>
   );
