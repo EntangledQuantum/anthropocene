@@ -11,7 +11,8 @@ const A: Source = { x: 0, y: 2.5 }, B: Source = { x: 0, y: -2.5 };
 const lambda = 2;
 
 /** Walk out along a ray from the origin until the path difference is `target`. */
-function pointWithDelta(target: number, angle: number): P2 {
+function pointWithDelta(target: number): P2 {
+  const angle = Math.sign(target) * Math.asin(Math.min(0.98, Math.abs(target) / 5 + 0.12));
   let lo = 0.01, hi = 200;
   const at = (r: number): P2 => [r * Math.cos(angle), r * Math.sin(angle)];
   const f = (r: number) => pathDifference(A, B, at(r)) - target;
@@ -24,7 +25,7 @@ describe('two sources: quiet where the path difference is a half-integer of wave
   it('the water is still wherever Δ = (m + ½)λ', () => {
     for (const m of [0, 1]) {
       for (const sign of [1, -1]) {
-        const p = pointWithDelta(sign * (m + 0.5) * lambda, sign * (0.2 + 0.2 * m));
+        const p = pointWithDelta(sign * (m + 0.5) * lambda);
         expect(Math.abs(pathDifference(A, B, p)) / lambda).toBeCloseTo(m + 0.5, 9);
         expect(intensity([A, B], p, lambda)).toBeLessThan(1e-12);
         // and it stays still at every instant, not just on average
@@ -35,7 +36,7 @@ describe('two sources: quiet where the path difference is a half-integer of wave
 
   it('a whole wavelength of path difference is loud, not dark: four times one source', () => {
     for (const m of [0, 1, 2]) {
-      const p = pointWithDelta(m * lambda, 0.1 + 0.25 * m);
+      const p: P2 = m === 0 ? [20, 0] : pointWithDelta(m * lambda);
       expect(intensity([A, B], p, lambda)).toBeCloseTo(4, 9);
       expect(intensity([A], p, lambda)).toBeCloseTo(1, 12);
     }
@@ -56,7 +57,7 @@ describe('two sources: quiet where the path difference is a half-integer of wave
 
   it('two sources that drift out of step leave no spot quiet on average', () => {
     // Averaged over every relative phase, each spot gets 1 + 1: the sum of the two alone.
-    const p = pointWithDelta(0.5 * lambda, 0.3);
+    const p = pointWithDelta(0.5 * lambda);
     let s = 0;
     const N = 720;
     for (let i = 0; i < N; i++) s += intensity([A, { ...B, phase: (2 * Math.PI * i) / N }], p, lambda);
@@ -114,8 +115,12 @@ describe('Young: the spacing λL/d comes out of the intensity', () => {
 
   it('covering one gap makes a dark fringe brighter', () => {
     const { d, lambda: lam } = SLITS, L = 20;
-    const spots = brightSpots(d, lam, L, 12);
-    const dark = (spots[spots.length / 2 - 1] + spots[spots.length / 2]) / 2; // between two loud spots
+    // the first dark spot above the centre: where the path difference is λ/2
+    let lo = 0, hi = firstSpot(d, lam, L);
+    const g = (y: number) => pathDifference({ x: 0, y: d / 2 }, { x: 0, y: -d / 2 }, [L, y]) - lam / 2;
+    for (let i = 0; i < 100; i++) { const m = (lo + hi) / 2; if (g(lo) * g(m) <= 0) hi = m; else lo = m; }
+    const dark = (lo + hi) / 2;
+    expect(brightSpots(d, lam, L, 12).length).toBeGreaterThan(2);
     const both = wallIntensity(dark, d, lam, L);
     const one = wallIntensity(dark, d, lam, L, true);
     expect(both).toBeLessThan(0.01);

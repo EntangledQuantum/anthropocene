@@ -101,6 +101,8 @@ export default function PinTheWavelength({ id, prompt, freqGHz = 2.45, explanati
             {/* the standing field, once revealed */}
             {showField && <g>
               <line x1={s.sx(0)} x2={s.sx(34)} y1={s.sy(WAVE_Y)} y2={s.sy(WAVE_Y)} stroke={C.grid} />
+              {[1, -1].map((sg) => <polyline key={sg} fill="none" stroke={C.field} strokeWidth={1} strokeDasharray="3 4" opacity={0.5}
+                points={Array.from({ length: 241 }, (_, i) => { const x = (34 * i) / 240; return `${s.sx(x).toFixed(1)},${s.sy(WAVE_Y + sg * WAVE_A * Math.abs(standingField(x, lam, 0))).toFixed(1)}`; }).join(' ')} />)}
               <polyline ref={curve} fill="none" stroke={C.field} strokeWidth={2.2} />
               <text x={s.sx(34)} y={s.sy(WAVE_Y + WAVE_A) - 4} textAnchor="end" fontSize={12} fill={C.field}>E along the bar</text>
             </g>}

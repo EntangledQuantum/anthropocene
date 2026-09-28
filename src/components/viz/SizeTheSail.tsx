@@ -63,10 +63,11 @@ export default function SizeTheSail({
         p.x += p.vx * dt * 9;
         const onSail = Math.abs(p.y) <= sd / 2;
         if (p.vx > 0 && onSail && p.x >= SAIL_X - 0.25) {
-          if (sf === 'reflect') { p.vx = -1; p.x = SAIL_X - 0.25; } else { p.x = s ? s.x[0] : -22; }
+          if (sf === 'reflect') { p.vx = -1; p.x = SAIL_X - 0.25; } else { p.x = (s ? s.x[0] : -22) - Math.random() * 10; }
         }
         const xl = s ? s.x[0] : -22, xr = s ? s.x[1] : 22;
-        if (p.x > xr || p.x < xl) { p.x = xl; p.vx = 1; }
+        // Leaving the view: come back in from the left after a random delay, so no rows fall into step.
+        if (p.x > xr || (p.vx < 0 && p.x < xl)) { p.x = xl - Math.random() * 10; p.vx = 1; }
         const el = e.ph[i];
         if (el && s) { el.setAttribute('cx', s.sx(p.x).toFixed(1)); el.setAttribute('cy', s.sy(p.y).toFixed(1)); el.setAttribute('opacity', p.vx > 0 ? '0.9' : '0.45'); }
       });
