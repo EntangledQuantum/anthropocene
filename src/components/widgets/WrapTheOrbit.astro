@@ -1,0 +1,6 @@
+---
+// @graded — drag the orbit's radius until a whole number of wavelengths closes on itself.
+import Island, { type WrapTheOrbitProps } from '../viz/WrapTheOrbit.tsx';
+const props = Astro.props as WrapTheOrbitProps;
+---
+<Island client:visible {...props} />

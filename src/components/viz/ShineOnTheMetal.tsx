@@ -47,7 +47,7 @@ export default function ShineOnTheMetal({
   const phi = METALS[metal].phi;
 
   useEffect(() => {
-    const e = Array.from({ length: POOL }, () => ({ on: false, x: 0, y: 0, vx: 0, vy: 0 }));
+    const e = Array.from({ length: POOL }, () => ({ on: false, x: 0, y: 0, vx: 0, vy: 0, age: 0 }));
     let raf = 0, last = performance.now(), due = 0, next = 0;
     const frame = (now: number) => {
       const dt = Math.min((now - last) / 1000, 0.05);
@@ -62,13 +62,13 @@ export default function ShineOnTheMetal({
         const K = k * Math.random(); // uniform on [0, K_max]
         const sp = PX_PER_EV * (electronSpeed(K) / electronSpeed(1));
         const ang = (Math.random() - 0.5) * 1.1;
-        Object.assign(p, { on: true, x: PLATE_X + 6, y: 72 + Math.random() * 126, vx: sp * Math.cos(ang), vy: sp * Math.sin(ang) });
+        Object.assign(p, { on: true, x: PLATE_X + 6, y: 72 + Math.random() * 126, vx: sp * Math.cos(ang), vy: sp * Math.sin(ang), age: 0 });
       }
       e.forEach((p, i) => {
         const el = dots.current[i];
         if (p.on) {
-          p.x += p.vx * dt; p.y += p.vy * dt;
-          if (p.x > TUBE.x1 - 8 || p.y < TUBE.y0 + 6 || p.y > TUBE.y1 - 6 || (p.vx < 3 && p.x > PLATE_X + 40)) p.on = false;
+          p.x += p.vx * dt; p.y += p.vy * dt; p.age += dt;
+          if (p.x > TUBE.x1 - 8 || p.y < TUBE.y0 + 6 || p.y > TUBE.y1 - 6 || p.age > 4) p.on = false;
         }
         if (el) {
           el.setAttribute('cx', p.x.toFixed(1)); el.setAttribute('cy', p.y.toFixed(1));
