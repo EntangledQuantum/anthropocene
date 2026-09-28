@@ -32,7 +32,7 @@ export interface SizeTheSailProps {
   explanation?: string;
 }
 
-const DAY = 86400, TRACK = 800, PLAY = 3, SAIL_X = 3, NPH = 46;
+const DAY = 86400, TRACK = 800, PLAY = 3, SAIL_X = 3, ROWS = 15, PER_ROW = 4, NPH = ROWS * PER_ROW;
 const MIN_SIDE = 2, MAX_SIDE = 16;
 
 export default function SizeTheSail({
@@ -47,7 +47,11 @@ export default function SizeTheSail({
   const flight = useRef<{ t0: number; km: number } | null>(null);
   const top = useRef<StageApi | null>(null), bot = useRef<StageApi | null>(null);
   const els = useRef<{ ph: (SVGCircleElement | null)[]; probe?: SVGGElement | null; trail?: SVGLineElement | null }>({ ph: [] });
-  const photons = useRef(Array.from({ length: NPH }, (_, i) => ({ x: -12 + (i * 17) / NPH, y: -7 + ((i * 7.31) % 14), vx: 1 })));
+  // Rows of photons, evenly spaced in height, staggered along each row.
+  const photons = useRef(Array.from({ length: NPH }, (_, i) => {
+    const row = i % ROWS, k = Math.floor(i / ROWS);
+    return { x: -22 + ((k * 11 + ((row * 7) % 11)) % 44), y: -7 + (14 * row) / (ROWS - 1), vx: 1 };
+  }));
 
   useEffect(() => {
     let raf = 0, last = performance.now();
@@ -59,9 +63,10 @@ export default function SizeTheSail({
         p.x += p.vx * dt * 9;
         const onSail = Math.abs(p.y) <= sd / 2;
         if (p.vx > 0 && onSail && p.x >= SAIL_X - 0.25) {
-          if (sf === 'reflect') { p.vx = -1; p.x = SAIL_X - 0.25; } else { p.x = -12; }
+          if (sf === 'reflect') { p.vx = -1; p.x = SAIL_X - 0.25; } else { p.x = s ? s.x[0] : -22; }
         }
-        if (p.x > 12 || p.x < -12) { p.x = -12; p.vx = 1; }
+        const xl = s ? s.x[0] : -22, xr = s ? s.x[1] : 22;
+        if (p.x > xr || p.x < xl) { p.x = xl; p.vx = 1; }
         const el = e.ph[i];
         if (el && s) { el.setAttribute('cx', s.sx(p.x).toFixed(1)); el.setAttribute('cy', s.sy(p.y).toFixed(1)); el.setAttribute('opacity', p.vx > 0 ? '0.9' : '0.45'); }
       });
@@ -135,7 +140,7 @@ export default function SizeTheSail({
             {Array.from({ length: NPH }, (_, i) => (
               <circle key={i} ref={(el) => { els.current.ph[i] = el; }} r={3} fill={C.energy} />
             ))}
-            <text x={s.sx(-11.6)} y={s.sy(7.2)} fontSize={13} fill={C.energy}>sunlight, 1361 W/m²</text>
+            <text x={s.sx(s.x[0]) + 4} y={s.sy(7.6)} fontSize={13} fill={C.energy}>sunlight from the left, 1361 W/m²</text>
             {/* the sail, edge-on, and the probe behind it */}
             <line x1={s.sx(SAIL_X)} x2={s.sx(SAIL_X)} y1={s.sy(side / 2)} y2={s.sy(-side / 2)}
               stroke={surface === 'reflect' ? C.ink : C.ghost} strokeWidth={6} strokeLinecap="round" />

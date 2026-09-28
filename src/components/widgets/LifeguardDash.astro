@@ -1,0 +1,6 @@
+---
+// @graded — with an `id`, drag the entry point to the fastest route and check.
+import Island, { type LifeguardDashProps } from '../viz/LifeguardDash.tsx';
+const props = Astro.props as LifeguardDashProps;
+---
+<Island client:visible {...props} />

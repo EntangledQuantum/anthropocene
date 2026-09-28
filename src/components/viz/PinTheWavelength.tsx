@@ -82,7 +82,7 @@ export default function PinTheWavelength({ id, prompt, freqGHz = 2.45, explanati
           miss={`Pins ${spacing.toFixed(1)} cm apart make light ${(v / 1e8).toFixed(2)} × 10⁸ m/s, ${(v / LIGHT).toFixed(2)} times its measured speed.`}
           hit={explanation} />}
       </div>}>
-      <Stage x={[-1.2, 34.5]} y={[-4.4, 6.6]} height={260} equal
+      <Stage x={[-1.2, 34.5]} y={[-4.4, 6.6]} height={214} equal
         label={`A chocolate bar melted in ${spots.length} spots. Pins at ${pins[0].toFixed(1)} and ${pins[1].toFixed(1)} centimetres.`}>
         {(s) => {
           api.current = s;
