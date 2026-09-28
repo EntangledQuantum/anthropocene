@@ -1,0 +1,122 @@
+---
+title: 'Light plus light makes dark'
+blurb: 'Land double-slit stripes on marks, read a laser''s wavelength off its stripes, and thin a soap film until it goes black.'
+order: 2
+tier: 'core'
+minutes: 10
+teaches:
+  - 'double-slit'
+  - 'thin-film-interference'
+requires:
+  - 'two-source-interference'
+  - 'path-difference'
+  - 'coherence'
+  - 'em-wave'
+  - 'index-of-refraction'
+status: 'live'
+updated: 2026-09-28
+---
+
+<Step>
+
+Straight ripples reach a barrier with two narrow gaps, and the far wall shows loud stripes
+between quiet ones. You slip a card over one gap.
+
+<Predict
+  id="up-ch35-cover-a-gap"
+  question="What happens at a spot on the wall that was quiet?"
+  options={[
+    { key: 'stays', misconception: 'up-ch35-intensities-add', label: 'It stays quiet: less water gets through', why: 'That adds brightnesses, not waves. The spot was quiet because two waves cancelled there. Take one away and nothing cancels the other.' },
+    { key: 'sloshes', label: 'It starts to slosh', why: 'Yes. Blocking a gap makes a dark stripe brighter, which only makes sense if light arrives as waves that can cancel.' },
+    { key: 'all', label: 'The whole wall goes quiet', why: 'One gap still spreads ripples across the whole wall. What vanishes is the stripes, not the sloshing.' },
+  ]}
+  correct="sloshes"
+>
+
+<LandTheFringes marks={false} prompt="Cover the upper gap and watch the quiet stripes on the wall." />
+
+</Predict>
+
+</Step>
+
+<Step>
+
+## Land the stripes
+
+Two marks sit on the far wall, 6 cm either side of centre. The wall slides.
+
+<LandTheFringes
+  id="up-ch35-land-fringes"
+  prompt="Drag the far wall until the first loud stripes land on the marks."
+  explanation="The stripes run out from the gaps along straight lines, so twice as far is twice as wide. Each loud line is a fixed path difference, one wavelength for the first."
+/>
+
+<Recall id="up-ch35-recall-energy" concept="double-slit">
+  <div slot="front">A loud stripe is four times as bright as one gap alone, a dark stripe zero. Was light destroyed?</div>
+
+  No, it was moved. Averaged over the wall, two gaps give exactly twice one gap. Interference
+  takes energy out of the dark stripes and puts it into the bright ones.
+</Recall>
+
+</Step>
+
+<Step>
+
+## Name it: Young's formula
+
+For a far wall, the $m$-th loud stripe sits at $y_m \approx m\lambda L/d$, so neighbours
+are evenly spaced:
+
+$$\Delta y = \frac{\lambda L}{d}$$
+
+In 1801 Young read it backwards and measured a wavelength of light.
+
+<Estimate
+  id="up-ch35-laser-wavelength"
+  scenario="up-ch35-laser"
+  prompt="A laser lights two slits 0.25 mm apart. On a wall 3.0 m away its bright stripes are 7.6 mm apart. What is its wavelength?"
+  explanation="633 nm, a helium-neon laser: λ = Δy·d/L = 7.6 mm × 0.25 mm ÷ 3.0 m. The wavelength is so small that it takes metres of lever arm to turn it into millimetres you can measure with a ruler."
+/>
+
+</Step>
+
+<Step>
+
+## A bubble goes black
+
+A soap film in white light shows bands of colour, set by its thickness. As it drains, the
+top gets thinner than any wavelength, just before it pops.
+
+<DrainTheFilm
+  id="up-ch35-drain-film"
+  prompt="Thin the film from the front until its top reflects no light."
+  explanation="Far thinner than a wavelength, the trip through the film adds almost nothing. But the front reflection, off the denser soap, comes back flipped; the back one, off air, does not. Crest meets trough for every colour at once, so the top goes black. The purple band near 200 nm only cancels green."
+/>
+
+</Step>
+
+<Step>
+
+## The flip is not optional
+
+Light reflecting off a denser medium comes back flipped by half a wave; off a thinner one,
+it does not. A soap film in air has one flip, so for a film of index $n$ and thickness $t$:
+
+$$2nt = m\lambda\;\;\text{dark},\qquad 2nt = \left(m+\tfrac12\right)\lambda\;\;\text{bright}$$
+
+<Recall id="up-ch35-recall-flip" concept="thin-film-interference">
+  <div slot="front">The thinnest film: both reflections travel almost the same distance. Why is it dark rather than bright?</div>
+
+  The front reflection, off the denser soap, is flipped by half a wave; the back one, off
+  air, is not. Equal paths plus one flip is crest on trough.
+</Recall>
+
+## What to carry forward
+
+- **Stripes are path difference made visible**: $\Delta y = \lambda L/d$, a ruler for wavelengths.
+- **Dark is light moved, not lost.** Block one wave and a dark spot lights up.
+- **Count the flips.** A soap film's one flip makes its thinnest part black.
+
+Next: a single wide slit, whose own edges interfere with each other.
+
+</Step>

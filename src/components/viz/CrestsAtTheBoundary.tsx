@@ -39,7 +39,7 @@ export default function CrestsAtTheBoundary({ prompt, incidence = 40, n0 = 1.5 }
   useEffect(() => {
     let raf = 0;
     const start = performance.now();
-    const col = { ink: cssVar('--color-ink'), faint: cssVar('--color-ink-faint'), rule: cssVar('--color-rule-bright'), field: cssVar('--color-orchid'), soft: cssVar('--color-ink-soft') };
+    const col = { surf: cssVar('--color-surface'), ink: cssVar('--color-ink'), faint: cssVar('--color-ink-faint'), rule: cssVar('--color-rule-bright'), field: cssVar('--color-orchid'), soft: cssVar('--color-ink-soft') };
     const frame = (now: number) => {
       const el = canvas.current;
       if (el) {
@@ -91,12 +91,12 @@ export default function CrestsAtTheBoundary({ prompt, incidence = 40, n0 = 1.5 }
           g.fillStyle = col.ink;
           g.beginPath(); g.moveTo(hx, hy); g.lineTo(hx - ux * 12 - uy * 5, hy - uy * 12 + ux * 5); g.lineTo(hx - ux * 12 + uy * 5, hy - uy * 12 - ux * 5); g.fill();
         }
-        g.font = '13px Inter, sans-serif'; g.fillStyle = col.soft; g.textAlign = 'left';
-        g.fillText('air, n = 1', 10, 20);
-        g.fillText(`below: n = ${nn.toFixed(2)}`, 10, H - 12);
-        g.textAlign = 'right';
-        g.fillText(`${(incidence).toFixed(0)}° in air`, W - 10, 20);
-        g.fillText(`${(t2 / DEG).toFixed(1)}° inside`, W - 10, H - 12);
+        g.font = '13px Inter, sans-serif'; g.lineWidth = 5; g.strokeStyle = col.surf; g.fillStyle = col.ink;
+        const label = (t: string, x: number, y: number, align: CanvasTextAlign) => { g.textAlign = align; g.strokeText(t, x, y); g.fillText(t, x, y); };
+        label('air, n = 1', 10, 20, 'left');
+        label(`below: n = ${nn.toFixed(2)}`, 10, H - 12, 'left');
+        label(`${incidence.toFixed(0)}° in air`, W - 10, 20, 'right');
+        label(`${(t2 / DEG).toFixed(1)}° inside`, W - 10, H - 12, 'right');
       }
       raf = requestAnimationFrame(frame);
     };

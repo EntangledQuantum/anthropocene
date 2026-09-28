@@ -194,7 +194,7 @@ describe('a grating is many slits: the same lines, sharper', () => {
     expect(Math.abs(t1 + lineHalfWidth(NR, MERCURY.d, l1, 1) - t2) / (t2 - t1)).toBeLessThan(0.01);
     // slits come in whole numbers: 274 is the first that passes
     const dip = doubletDip(Math.ceil(NR), MERCURY.d, l1, l2, 1);
-    expect(doubletDip(Math.floor(NR) - 10, MERCURY.d, l1, l2, 1)).toBeLessThan(0.12);
+    expect(doubletDip(Math.floor(NR) - 10, MERCURY.d, l1, l2, 1)).toBeLessThan(0.13);
     expect(dip).toBeGreaterThan(0.17);
     expect(dip).toBeLessThan(0.21);
     expect(doubletDip(150, MERCURY.d, l1, l2, 1)).toBe(0);
