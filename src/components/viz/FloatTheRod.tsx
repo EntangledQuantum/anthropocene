@@ -56,7 +56,7 @@ export default function FloatTheRod({
     let raf = 0, last = performance.now();
     const a = net / mass; // m/s²
     const frame = (now: number) => {
-      const dt = Math.min((now - last) / 1000, 0.05) * 0.35; // slowed so the start of the fall reads
+      const dt = Math.max(0, Math.min((now - last) / 1000, 0.05)) * 0.35; // slowed so the start of the fall reads
       last = now;
       vy.current += a * dt;
       y.current += vy.current * dt;

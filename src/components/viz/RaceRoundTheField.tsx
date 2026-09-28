@@ -44,7 +44,7 @@ export default function RaceRoundTheField({ prompt, start = 2 }: RaceRoundTheFie
     const frame = (now: number) => {
       const s = api.current;
       if (s) {
-        const frac = running ? Math.min(1, (now - t0.current) / 1000 / LAP_S) : 0;
+        const frac = running ? Math.min(1, Math.max(0, (now - t0.current) / 1000 / LAP_S)) : 0;
         laps.forEach((lap, k) => {
           const n = Math.min(lap.path.length - 1, Math.round(frac * STEPS));
           let pts = '';

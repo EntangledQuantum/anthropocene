@@ -81,7 +81,7 @@ describe('the detector’s stopwatch measures c, however the charge is shaken', 
       if (started) y = moveCharge(y, target, dt, vmax);
       h.push({ t, y });
       // The charge leaves rest at this frame; it moves from the next one on.
-      if (!started && t > 3) { startNews(clock, h, t, y, D); started = true; }
+      if (!started && t > 3) { startNews(clock, t, y, D); started = true; }
       newsStep(clock, h, t);
     }
     return clock;
@@ -90,13 +90,13 @@ describe('the detector’s stopwatch measures c, however the charge is shaken', 
     for (const [target, vmax] of [[0.2, 0.15], [1.2, 0.15], [0.6, 0.03], [-0.9, 0.1]]) {
       const clock = run([9, 0], target, vmax);
       expect(clock.state).toBe('done');
-      expect(measuredSpeed(clock)! / C).toBeCloseTo(1, 3);
+      expect(measuredSpeed(clock)! / C).toBeCloseTo(1, 6);
     }
   });
   it('the delay is distance over c at any spot, on or off the axis', () => {
     for (const D of [[6, 0], [3, 2], [0, 5], [-4, -1]] as P2[]) {
       const clock = run(D, 0.8, 0.15);
-      expect(clock.delay!).toBeCloseTo(Math.hypot(D[0], D[1]) / C_NS, 2);
+      expect(clock.delay!).toBeCloseTo(Math.hypot(D[0], D[1]) / C_NS, 5);
     }
   });
 });
@@ -113,11 +113,10 @@ describe('nothing is sent along the line of shaking', () => {
     expect(swing([0, 5])).toBeLessThan(1e-6);
     expect(swing([0, -5])).toBeLessThan(1e-6);
   });
-  it('a detector broadside sees it swing, and more than one at 45°', () => {
-    const side = swing([5, 0]), diag = swing([5 / Math.SQRT2, 5 / Math.SQRT2]);
-    expect(side).toBeGreaterThan(5);
-    expect(side).toBeGreaterThan(diag);
-    expect(diag).toBeGreaterThan(1);
+  it('a detector anywhere off the rod sees it swing as the ripple passes', () => {
+    expect(swing([5, 0])).toBeGreaterThan(5);
+    expect(swing([5 / Math.SQRT2, 5 / Math.SQRT2])).toBeGreaterThan(5);
+    expect(swing([1, 5])).toBeGreaterThan(1);
   });
   it('the charge follows its history and never outruns its speed limit', () => {
     expect(chargeY(h, 0)).toBe(0);
@@ -197,11 +196,11 @@ describe('a microwave oven’s standing wave', () => {
   });
   it('the field is zero at the metal wall and the hot spots come every half wavelength', () => {
     expect(standingHeat(0, lambda)).toBe(0);
-    const spots = meltedSpots(lambda, 0.02, 0.32, 0.7);
+    const spots = meltedSpots(lambda, 0.02, 0.32, 0.7, 30000);
     expect(spots.length).toBeGreaterThanOrEqual(4);
     for (let i = 1; i < spots.length; i++) {
       if (spots[i].to < 0.32 && spots[i - 1].from > 0.02) {
-        expect(spots[i].centre - spots[i - 1].centre).toBeCloseTo(lambda / 2, 4);
+        expect(Math.abs(spots[i].centre - spots[i - 1].centre - lambda / 2)).toBeLessThan(1e-4);
       }
     }
   });

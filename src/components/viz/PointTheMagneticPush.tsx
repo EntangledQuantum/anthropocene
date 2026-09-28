@@ -82,7 +82,7 @@ export default function PointTheMagneticPush({
           trail.current.setAttribute('points', '');
           ball.current.setAttribute('cx', `${s.sx(0)}`); ball.current.setAttribute('cy', `${s.sy(0)}`);
         } else {
-          const n = Math.min(p.length - 1, Math.floor(((now - t0.current) / LAP_MS) * (p.length - 1)));
+          const n = Math.min(p.length - 1, Math.max(0, Math.floor(((now - t0.current) / LAP_MS) * (p.length - 1))));
           let pts = '';
           for (let i = 0; i <= n; i++) pts += `${s.sx(p[i][0]).toFixed(1)},${s.sy(p[i][1]).toFixed(1)} `;
           trail.current.setAttribute('points', pts);

@@ -149,7 +149,8 @@ export function moveCharge(y: number, target: number, dt: number, vmax: number):
 /**
  * A stopwatch for the news. It starts when the charge leaves rest and stops
  * when the retarded time at the detector passes that start: the first moment
- * the detector's field is set by the charge's new motion. Nothing in it uses
+ * the detector's field is set by the charge's new motion. The arrival is
+ * found to a fraction of a picosecond by bisecting between frames. Nothing in it uses
  * c except through `retardedTime`, which is the physics being measured.
  */
 export interface NewsClock {
@@ -158,17 +159,16 @@ export interface NewsClock {
   yStart: number;
   D: P2;
   tPrev: number;
-  tauPrev: number;
   /** Time from leaving rest to arrival at D, ns. */
   delay: number | null;
 }
 
 export const createNewsClock = (): NewsClock =>
-  ({ state: 'idle', tStart: 0, yStart: 0, D: [0, 0], tPrev: 0, tauPrev: -Infinity, delay: null });
+  ({ state: 'idle', tStart: 0, yStart: 0, D: [0, 0], tPrev: 0, delay: null });
 
 /** Start timing: the charge, at height y, leaves rest now. */
-export function startNews(clock: NewsClock, h: History, t: number, y: number, D: P2, c = C_NS) {
-  Object.assign(clock, { state: 'armed', tStart: t, yStart: y, D: [D[0], D[1]], tPrev: t, tauPrev: retardedTime(h, D, t, c), delay: null });
+export function startNews(clock: NewsClock, t: number, y: number, D: P2) {
+  Object.assign(clock, { state: 'armed', tStart: t, yStart: y, D: [D[0], D[1]], tPrev: t, delay: null });
 }
 
 /** Advance the stopwatch to time t. Interpolates the arrival between frames. */
@@ -186,7 +186,6 @@ export function newsStep(clock: NewsClock, h: History, t: number, c = C_NS) {
     clock.state = 'done';
   }
   clock.tPrev = t;
-  clock.tauPrev = tau;
 }
 
 /** Distance from where the charge was when it left rest to the detector, m. */

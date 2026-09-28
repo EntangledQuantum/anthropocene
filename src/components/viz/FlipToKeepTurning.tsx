@@ -85,7 +85,7 @@ export default function FlipToKeepTurning({ id, prompt, turns = 3, explanation }
   useEffect(() => {
     let raf = 0, last = performance.now(), lastShown = 0;
     const frame = (now: number) => {
-      const dt = Math.min((now - last) / 1000, 0.05) * SLOW;
+      const dt = Math.max(0, Math.min((now - last) / 1000, 0.05)) * SLOW;
       last = now;
       const n = Math.round(dt / DT);
       let s = state.current;
