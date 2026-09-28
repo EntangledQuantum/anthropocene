@@ -1,0 +1,129 @@
+---
+title: 'One dot at a time'
+blurb: 'Watch single photons build a two-slit pattern, find the spots they never reach, and balance the momentum of an X-ray bouncing off an electron.'
+order: 2
+tier: 'core'
+minutes: 10
+teaches:
+  - 'wave-particle-duality'
+  - 'photon-momentum'
+requires:
+  - 'photon-energy'
+  - 'two-slit-interference'
+  - 'momentum-conservation'
+status: 'live'
+updated: 2026-09-28
+---
+
+<Step>
+
+A laser shines through two slits 0.25 mm apart and draws bright and dark stripes on a
+screen. You dim it until only one photon is in the apparatus at a time.
+
+<Predict
+  id="up-ch38-one-at-a-time"
+  question="What builds up on the screen?"
+  options={[
+    { key: 'bands', misconception: 'up-ch38-photons-on-rays', label: 'Two bright bands, one behind each slit', why: 'That is what little balls through one slit or the other would make. Fire them below and watch where the dots pile up.' },
+    { key: 'faint', misconception: 'up-ch38-duality-both-at-once', label: 'A faint copy of the stripes, brightening evenly', why: 'Each photon lands as one dot at one spot, never as a faint smear. The stripes appear only as the dots add up.' },
+    { key: 'none', misconception: 'up-ch38-interference-needs-crowd', label: 'Dots scattered anywhere: stripes need many photons at once', why: 'The stripes build up just the same one photon at a time. There is no other photon in the apparatus to interfere with.' },
+    { key: 'dots', label: 'Single dots, which slowly build the same stripes', why: 'Right. Each photon lands whole at one random spot, yet the dots avoid the dark stripes from the start.' },
+  ]}
+  correct="dots"
+>
+
+<PhotonsDotByDot run prompt="Fire the photons and watch the screen." />
+
+</Predict>
+
+</Step>
+
+<Step>
+
+## Where none will land
+
+Two hundred photons have landed. A narrow counter can sit anywhere on the screen.
+
+<PhotonsDotByDot
+  id="up-ch38-dark-counter"
+  preload={200}
+  counter={0}
+  prompt="Place the counter where the next 1000 photons will not land."
+  explanation="Your counter caught {n}: it sits on a dark stripe. Each photon lands at a random spot, and still none lands there. The dark stripes are 2.5 mm apart, λL/d, where the wave through one slit cancels the wave through the other."
+/>
+
+</Step>
+
+<Step>
+
+## Close a door
+
+The counter sits on the first dark stripe, where nothing arrives. You cover slit B, so every
+photon that gets through has only slit A.
+
+<Predict
+  id="up-ch38-cover-a-slit"
+  question="What does the counter do now?"
+  options={[
+    { key: 'still', misconception: 'up-ch38-photons-on-rays', label: 'Still nothing: covering a slit can only take photons away', why: 'That is the billiard-ball argument, and the counter refutes it. Cover B below and watch it tick.' },
+    { key: 'double', label: 'Counts twice as fast: the photons blocked at B go through A', why: 'Photons that hit the cover are simply absorbed, and half of those fired never get through. Even so, the counter now counts.' },
+    { key: 'counts', label: 'Starts counting', why: 'Right. With both slits open none of 1000 photons arrive there; with one covered, about 13 do. Opening the second slit took photons away from that spot, so each photon’s odds depend on both slits.' },
+  ]}
+  correct="counts"
+>
+
+<PhotonsDotByDot run cover counterAt="dark" prompt="Fire with both slits open, then cover B and fire again." />
+
+</Predict>
+
+</Step>
+
+<Step>
+
+## Name it
+
+Light is detected in whole photons, each at one spot, each carrying $hf$. Where one lands is
+random, and the odds follow the wave's intensity, dark stripes included:
+
+$$P(\text{lands near } y) \propto I(y)$$
+
+<Recall id="up-ch38-recall-duality" concept="wave-particle-duality">
+  <div slot="front">Photons go through two slits one at a time. What does a single photon leave on the screen, and what makes the stripes?</div>
+
+  One dot, at one spot. The stripes are the odds: the wave through both slits sets where
+  photons are likely to land, and the pattern appears only as dots pile up.
+</Recall>
+
+</Step>
+
+<Step>
+
+## A photon hits back
+
+X-rays of 71.1 pm strike a block of carbon, and those that come out at 90° are 2.4 pm longer,
+whatever the block is made of. Treat each X-ray as a photon of momentum $h/\lambda$ hitting one
+free electron.
+
+<KickTheElectron
+  id="up-ch38-compton-kick"
+  prompt="Drag the electron's momentum until momentum before equals momentum after."
+  explanation="The electron recoils down and to the right, carrying {ke} eV. That energy came out of the photon, which leaves at {lout} pm instead of 71.1. The shift, h/mc = 2.43 pm at 90°, is the same for every target: a collision with a particle of light."
+/>
+
+<Recall id="up-ch38-recall-compton" concept="photon-momentum">
+  <div slot="front">Why do scattered X-rays come out with a longer wavelength?</div>
+
+  The photon carries momentum $h/\lambda$ and kicks the electron, which leaves with kinetic
+  energy. That energy comes out of the photon, so $hc/\lambda$ drops and $\lambda$ grows, by
+  $\frac{h}{mc}(1 - \cos\theta)$.
+</Recall>
+
+## What to carry forward
+
+- **Light arrives in whole photons, each at one spot.** The wave sets the odds of where.
+- **Dark stripes need both slits.** Cover one and photons land where none did.
+- **A photon carries momentum $h/\lambda$** and bounces off an electron like a particle.
+
+Next: if light's waves come in lumps, matter's lumps come with waves.
+
+</Step>

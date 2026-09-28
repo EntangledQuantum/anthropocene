@@ -1,0 +1,127 @@
+---
+title: 'Electrons make rings'
+blurb: 'Fire electrons through a crystal, shrink their rings with a voltage knob, catch the beam Davisson and Germer found, and see why a baseball never diffracts.'
+order: 1
+tier: 'core'
+minutes: 10
+teaches:
+  - 'de-broglie-wavelength'
+  - 'electron-diffraction'
+requires:
+  - 'momentum'
+  - 'electron-volt'
+  - 'wave-superposition'
+  - 'double-slit-interference'
+  - 'photon'
+status: 'live'
+updated: 2026-09-28
+---
+
+<Step>
+
+A beam of electrons passes through a film of graphite a few atoms thick and lands on a
+glowing screen. Each electron makes one dot, and the dots pile up into rings.
+
+<Predict
+  id="up-ch39-rings-and-voltage"
+  question="You turn the accelerating voltage up, so every electron arrives faster. What do the rings do?"
+  options={[
+    { key: 'grow', misconception: 'up-ch39-faster-scatters-wider', label: 'Grow: faster electrons hit the atoms harder and fly off wider', why: 'That is the billiard-ball picture, and the screen refuses it. Turn the voltage up below: the rings pull in.' },
+    { key: 'shrink', label: 'Shrink towards the centre', why: 'Right. A faster electron carries a shorter wave, and the same crystal turns a shorter wave through a smaller angle.' },
+    { key: 'same', misconception: 'up-ch39-rings-are-crystal', label: 'Stay put: they are a picture of the crystal, which has not changed', why: 'Half right: the crystal decides which rings exist. Their size depends on the electrons too, and they move as you turn the knob.' },
+    { key: 'vanish', misconception: 'up-ch39-fast-goes-straight', label: 'Collapse into the centre spot: fast electrons punch straight through', why: 'They tighten towards the spot but never merge with it. At every voltage the tube can reach, the rings are still there.' },
+  ]}
+  correct="shrink"
+>
+
+<ShrinkTheRings prompt="Turn the voltage and watch the rings." />
+
+</Predict>
+
+</Step>
+
+<Step>
+
+## Half the ring
+
+The tube now starts at 1.2 kV. The dashed circle is half the size of the inner ring.
+
+<ShrinkTheRings
+  id="up-ch39-halve-the-ring"
+  halve
+  prompt="Turn the voltage until the inner ring sits on the mark."
+  explanation="About 4.7 kV, four times where you started. Doubling the voltage only takes the ring to 70 % of its size. The ring follows the electron's wavelength, and the wavelength goes as one over the square root of the voltage."
+/>
+
+</Step>
+
+<Step>
+
+## Name it
+
+The voltage gives each electron a momentum $p = \sqrt{2m_e eV}$, and the rings behave as if
+that momentum carries a wave:
+
+$$\lambda = \frac{h}{p} = \frac{h}{\sqrt{2m_e\,eV}}$$
+
+De Broglie guessed it in 1924 by running the photon's $p = h/\lambda$ backwards. Near light
+speed use the relativistic momentum: it moves λ by 0.2 % at 5 kV and 5 % in a 100 kV
+electron microscope.
+
+<Recall id="up-ch39-recall-de-broglie" concept="de-broglie-wavelength">
+  <div slot="front">A proton and an electron fall through the same 100 V. Whose wavelength is longer, and by how much?</div>
+
+  The electron's, by about 43 times. Both gain the same 100 eV, but $p = \sqrt{2m\,eV}$ and
+  the proton is 1836 times heavier: $\sqrt{1836} \approx 43$.
+</Recall>
+
+</Step>
+
+<Step>
+
+## Catch the echo
+
+In 1927 Davisson and Germer fired 54 V electrons straight down onto a nickel crystal, whose
+surface atoms sit in rows 0.215 nm apart. Every row sends back an echo, and a detector
+hears a strong beam only where the echoes arrive in step.
+
+<CatchTheEcho
+  id="up-ch39-catch-the-echo"
+  prompt="Swing the detector to where the echoes from every row arrive in step, then fire."
+  explanation="About 51°, where each row's echo is exactly one wavelength behind its neighbour's: D·sin φ = λ, the rule from chapter 35's two slits. Davisson and Germer found their peak at 50°. It was the first measurement of a matter wave, and λ = h/p had predicted it."
+/>
+
+<Recall id="up-ch39-recall-crystal" concept="electron-diffraction">
+  <div slot="front">A ruled grating diffracts light beautifully. Why is it useless for electrons, when a crystal works?</div>
+
+  A grating bends a wave strongly only when its spacing is not much bigger than the
+  wavelength. Electrons from tens to thousands of volts have λ between 0.2 and 0.02 nm, the
+  spacing of atoms in a crystal. Ruled lines are thousands of times too coarse.
+</Recall>
+
+</Step>
+
+<Step>
+
+## Why a baseball never diffracts
+
+Everything with momentum has a wavelength, not only electrons.
+
+<Estimate
+  id="up-ch39-baseball-wavelength"
+  scenario="up-ch39-baseball-wavelength"
+  prompt="A 145 g baseball leaves the pitcher's hand at 40 m/s. What is its de Broglie wavelength?"
+  explanation="About 10⁻³⁴ m, ten billion billion times smaller than a proton. Nothing in the universe is a fine enough slit to bend it, so the ball's wave never shows. That, not a different set of laws, is why the everyday world looks like particles."
+/>
+
+## What to carry forward
+
+- **Everything with momentum has a wavelength**, λ = h/p. Faster means shorter, and
+  heavier means much shorter.
+- **A crystal is a grating for electrons.** The angle of the beam measures λ, and λ = h/p
+  predicts it.
+
+Next: wrap an electron's wave round an atom, and find that only a few orbits let it close
+on itself.
+
+</Step>
