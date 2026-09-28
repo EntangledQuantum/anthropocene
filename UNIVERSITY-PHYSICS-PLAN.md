@@ -75,7 +75,7 @@ Tick when the chapter has its two flagship lessons live.
 - [x] 37 Relativity
 - [x] 38 Photons
 - [x] 39 Particles Behaving as Waves
-- [ ] 40 Quantum Mechanics I: Wave Functions
+- [x] 40 Quantum Mechanics I: Wave Functions
 - [x] 41 Quantum Mechanics II: Atomic Structure
 - [ ] 42 Molecules and Condensed Matter
 - [ ] 43 Nuclear Physics

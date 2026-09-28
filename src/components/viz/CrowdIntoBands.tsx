@@ -51,8 +51,8 @@ export default function CrowdIntoBands({ id, prompt, ratio, explanation }: Crowd
         <div style={{ display: 'flex', gap: 10, alignItems: 'center', flexWrap: 'wrap' }}>
           <button type="button" className="anth-btn" onClick={() => change(1)} disabled={N >= NMAX}>Add an atom</button>
           <button type="button" className="anth-btn" onClick={() => change(-1)} disabled={N <= 2}>Take one away</button>
-          <span className="readout" style={{ marginLeft: 'auto', fontSize: 16, color: C.ink }}>
-            {N} atoms · {bands[0].length} levels in each band · spacing {d.toFixed(2)} nm
+          <span className="readout" style={{ marginLeft: 'auto', fontSize: 14, color: C.ink }}>
+            {N} atoms · {bands[0].length} levels in each band · gap {Math.max(0, Math.min(...bands[1]) - Math.max(...bands[0])).toFixed(2)} eV · spacing {d.toFixed(2)} nm
           </span>
         </div>
         {graded && <CheckBar verdict={task.verdict} done={task.done}
@@ -60,7 +60,7 @@ export default function CrowdIntoBands({ id, prompt, ratio, explanation }: Crowd
           miss={`With ${N} atoms the band is ${r.toFixed(2)} times the pair's split. Each new atom adds a level, mostly inside.`}
           hit={explanation} />}
       </div>}>
-      <Stage x={[0, 10]} y={[-9, 1.4]} height={350} label={`Energy levels of ${N} atoms spaced ${d.toFixed(2)} nanometres apart`}
+      <Stage x={[0, 10]} y={[-8.3, 1.4]} height={340} label={`Energy levels of ${N} atoms spaced ${d.toFixed(2)} nanometres apart`}
         axes={{ xTicks: [], yTicks: [-8, -6, -4, -2, 0] }}>
         {(s) => <>
           {[['one atom', COLS.atom], ['two atoms', COLS.pair], [`your row of ${N}`, COLS.row]].map(([t, c]) =>
@@ -73,12 +73,9 @@ export default function CrowdIntoBands({ id, prompt, ratio, explanation }: Crowd
           {graded && <g stroke={C.ink} strokeWidth={1.5} strokeDasharray="5 4">
             {[lowC - half, lowC + half].map((e) => <line key={e} x1={s.sx(COLS.row[0]) - 12} x2={s.sx(COLS.row[1]) + 12} y1={s.sy(e)} y2={s.sy(e)} />)}
           </g>}
-          {graded && <text x={s.sx(COLS.row[1]) + 8} y={s.sy(lowC + half) - 8} textAnchor="end" fontSize={12} fill={C.ink}>
+          {graded && <text x={s.sx(COLS.row[1]) + 8} y={s.sy(lowC - half) + 18} textAnchor="end" fontSize={12} fill={C.ink}>
             {ratio} × the pair&apos;s split
           </text>}
-          <text x={s.sx(COLS.row[1])} y={s.sy(Math.min(...bands[1])) + 18} textAnchor="end" fontSize={12} fill={C.faint}>
-            gap {Math.max(0, Math.min(...bands[1]) - Math.max(...bands[0])).toFixed(2)} eV
-          </text>
         </>}
       </Stage>
       <Stage x={[-0.2, 5.8]} y={[-0.2, 0.2]} height={70} label={`A row of ${N} atoms, ${rowLen.toFixed(2)} nanometres long`}>
