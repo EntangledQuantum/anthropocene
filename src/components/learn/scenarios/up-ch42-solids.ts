@@ -19,7 +19,6 @@ export const estimate: Record<string, EstimateScenario> = {
     withinFactor: 100,
     truth: () => volumePerFreeElectron(293.15, DIAMOND_GAP),
     landmarks: [
-      { value: volumePerFreeElectron(293.15), label: 'silicon: a speck 6 µm across' },
       { value: 1e-6, label: 'a sugar cube' },
       { value: 2.5e3, label: 'an Olympic pool' },
       { value: 9e10, label: 'Lake Geneva' },

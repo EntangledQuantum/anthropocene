@@ -60,12 +60,13 @@ export default function CrowdIntoBands({ id, prompt, ratio, explanation }: Crowd
           miss={`With ${N} atoms the band is ${r.toFixed(2)} times the pair's split. Each new atom adds a level, mostly inside.`}
           hit={explanation} />}
       </div>}>
-      <Stage x={[0, 10]} y={[-8.6, 0.4]} height={330} label={`Energy levels of ${N} atoms spaced ${d.toFixed(2)} nanometres apart`}
-        axes={{ y: 'energy (eV)', xTicks: [], yTicks: [-8, -6, -4, -2, 0] }}>
+      <Stage x={[0, 10]} y={[-9, 1]} height={340} label={`Energy levels of ${N} atoms spaced ${d.toFixed(2)} nanometres apart`}
+        axes={{ xTicks: [], yTicks: [-8, -6, -4, -2, 0] }}>
         {(s) => <>
           {[['one atom', COLS.atom], ['two atoms', COLS.pair], [`your row of ${N}`, COLS.row]].map(([t, c]) =>
-            <text key={t as string} x={(s.sx((c as readonly number[])[0]) + s.sx((c as readonly number[])[1])) / 2} y={s.sy(0.4) + 16}
+            <text key={t as string} x={(s.sx((c as readonly number[])[0]) + s.sx((c as readonly number[])[1])) / 2} y={s.sy(1) + 16}
               textAnchor="middle" fontSize={13} fill={C.soft}>{t as string}</text>)}
+          <text transform={`translate(14 ${s.sy(-4)}) rotate(-90)`} textAnchor="middle" fontSize={13} fill={C.soft}>energy (eV)</text>
           {levels(s, COLS.atom, MODEL_ATOM.levels.map((l) => l.E), C.energy)}
           {pair.map((b, i) => <g key={i}>{shade(s, COLS.pair, b)}{levels(s, COLS.pair, b, C.energy)}</g>)}
           {bands.map((b, i) => <g key={i}>{shade(s, COLS.row, b)}{levels(s, COLS.row, b, C.energy)}</g>)}

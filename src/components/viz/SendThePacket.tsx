@@ -72,7 +72,7 @@ export default function SendThePacket({ prompt, width = 0.3 }: SendThePacketProp
         <button type="button" className="anth-btn" onClick={send} disabled={shown.running}>{shown.running ? 'Flying…' : 'Send it'}</button>
         <button type="button" className="anth-btn" onClick={reset}>Start over</button>
         <span style={{ marginLeft: 'auto', display: 'flex', gap: 22 }}>
-          <Meter label="Bounced back" value={pctOf(shown.back)} unit="%" color={C.position} />
+          <Meter label="Before the wall" value={pctOf(shown.back)} unit="%" color={C.position} />
           <Meter label="Beyond the wall" value={pctOf(shown.through)} unit="%" color={C.position} />
           <Meter label="Time" value={shown.t.toFixed(1)} unit="fs" color={C.soft} />
         </span>
@@ -88,8 +88,8 @@ export default function SendThePacket({ prompt, width = 0.3 }: SendThePacketProp
               fill="var(--color-surface)" fillOpacity={0.35} stroke={C.soft} strokeWidth={2} />
             <text x={s.sx(width) + 8} y={s.sy(V0) + 14} fontSize={13} fill={C.soft}>wall: {V0} eV tall, {width} nm thick</text>
             <EnergyLine s={s} E={E} from={-3.2} to={3.5} />
-            <text x={s.sx(-3.2)} y={s.sy(E) - 8} fontSize={13} fontWeight={600} fill={C.energy}>electron: {E} eV</text>
-            {shown.done && <text x={s.sx(8.4)} y={s.sy(0.95)} textAnchor="middle" fontSize={14} fontWeight={600} fill={C.position}>
+            <text x={s.sx(3.7)} y={s.sy(E) + 5} fontSize={13} fontWeight={600} fill={C.energy}>electron: {E} eV</text>
+            {shown.done && <text x={s.sx(8.4)} y={s.sy(0.5)} textAnchor="middle" fontSize={14} fontWeight={600} fill={C.position}>
               the ghost: {pctOf(shown.through)}%
             </text>}
             <line x1={s.sx(-12)} x2={s.sx(-7)} y1={s.sy(-0.22)} y2={s.sy(-0.22)} stroke={C.faint} strokeWidth={1.2} />

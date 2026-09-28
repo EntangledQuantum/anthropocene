@@ -72,7 +72,7 @@ export default function ThickenTheBarrier({ id, prompt, target = 0.01, start = 0
           <Meter label="Fraction through" value={last ? pct(last.T) : '?'} color={C.position} />
         </div>
         {id ? <CheckBar verdict={task.verdict} done={task.done} label={`Send ${N_SENT.toLocaleString('en-GB')}`} onCheck={send}
-          miss={`At ${a.toFixed(2)} nm, ${count(T)} of ${N_SENT.toLocaleString('en-GB')} get through (${pct(T)}): ${factor.toFixed(1)} times too ${far ? 'few' : 'many'}.`}
+          miss={`At ${a.toFixed(2)} nm, ${count(T)} of ${N_SENT.toLocaleString('en-GB')} ${count(T) === 1 ? 'gets' : 'get'} through (${pct(T)}): ${factor.toFixed(1)} times too ${far ? 'few' : 'many'}.`}
           hit={explanation} />
           : <button type="button" className="anth-btn" onClick={send}>Send {N_SENT.toLocaleString('en-GB')}</button>}
       </div>}>
@@ -84,7 +84,7 @@ export default function ThickenTheBarrier({ id, prompt, target = 0.01, start = 0
             <rect x={s.sx(0)} y={s.sy(V0)} width={s.sx(a) - s.sx(0)} height={s.sy(0) - s.sy(V0)}
               fill="var(--color-surface)" fillOpacity={0.5} stroke={C.soft} strokeWidth={2} />
             <EnergyLine s={s} E={E} from={X[0]} to={X[1] - 0.05} />
-            <text x={s.sx(X[0]) + 4} y={s.sy(E) - 42} fontSize={13} fontWeight={600} fill={C.energy}>electrons: {E} eV</text>
+            <text x={s.sx(X[1]) - 4} y={s.sy(E) + 30} textAnchor="end" fontSize={13} fontWeight={600} fill={C.energy}>electrons: {E} eV</text>
             <polyline ref={(el) => { line.current = el; }} fill="none" stroke={C.position} strokeWidth={3} strokeLinejoin="round" />
             <Handle s={s} at={[a, V0]} step={0.01} color={C.ink} label="Far edge of the wall: drag to thicken or thin it"
               clamp={(p) => [Math.min(A_RANGE[1], Math.max(A_RANGE[0], p[0])), V0]}

@@ -59,7 +59,7 @@ export default function CountTheNodes({ id, prompt, start = [1, 0], maxN = 4, ta
           {stepper('l', l, () => setState(n, l - 1), () => setState(n, l + 1), l > 0, l < n - 1)}
           <span style={{ marginLeft: 'auto', display: 'flex', gap: 22 }}>
             <Meter label="State" value={stateName(n, l)} color={C.position} />
-            <Meter label="Energy" value={energyEV(n).toFixed(2)} unit="eV" color={C.energy} />
+            <Meter label="Energy" value={energyEV(n).toFixed(2).replace('-', '−')} unit="eV" color={C.energy} />
           </span>
         </div>
         {graded && <CheckBar verdict={task.verdict} done={task.done}

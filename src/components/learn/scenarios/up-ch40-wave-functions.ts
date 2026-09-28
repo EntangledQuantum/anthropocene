@@ -23,7 +23,7 @@ export const estimate: Record<string, EstimateScenario> = {
     withinFactor: 1.6,
     truth: () => barrierTransmission(FERMI, FERMI + WORK_FUNCTION, 0.5) / barrierTransmission(FERMI, FERMI + WORK_FUNCTION, 0.6),
     landmarks: [
-      { value: 1.2, label: '20% less, in step with the gap' },
+      { value: 2, label: 'halved' },
       { value: 100, label: 'a hundredfold' },
     ],
   },

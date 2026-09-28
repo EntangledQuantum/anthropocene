@@ -23,6 +23,7 @@ export interface FlagTheFadeProps {
 const V0 = 2, W = 1.2, E = 1, SCALE = 0.3;
 const X: [number, number] = [-3.6, 1.8];
 const RANGE: [number, number] = [-3.3, 1.1];
+const nm = (v: number) => `${v < 0 ? '−' : ''}${Math.abs(v).toFixed(2)}`;
 
 export default function FlagTheFade({ id, prompt, explanation, tolerance = 0.1 }: FlagTheFadeProps) {
   const task = useTask(id, 'flag-the-fade');
@@ -55,12 +56,12 @@ export default function FlagTheFade({ id, prompt, explanation, tolerance = 0.1 }
     <SceneCard id={id} prompt={prompt}
       footer={<div style={{ display: 'grid', gap: 14 }}>
         <div style={{ display: 'flex', gap: 22, flexWrap: 'wrap' }}>
-          <Meter label="Flag at" value={flag.toFixed(2)} unit="nm" color={C.position} />
+          <Meter label="Flag at" value={nm(flag)} unit="nm" color={C.position} />
           <Meter label="Hill height at the flag" value={U(flag).toFixed(2)} unit="eV" color={C.energy} />
         </div>
         {id ? <CheckBar verdict={task.verdict} done={task.done} label="Send the wave"
           onCheck={() => { setSent(true); task.check(good, { flag }); }}
-          miss={`The wave swings until ${xt.toFixed(2)} nm, where the hill reaches the electron's ${E.toFixed(2)} eV. Your flag stands where the hill is ${U(flag).toFixed(2)} eV.`}
+          miss={`The wave swings until ${nm(xt)} nm, where the hill reaches the electron's ${E.toFixed(2)} eV. Your flag at ${nm(flag)} nm stands where the hill is ${U(flag).toFixed(2)} eV.`}
           hit={explanation} />
           : <button type="button" className="anth-btn" onClick={() => setSent(true)}>Send the wave</button>}
       </div>}>
@@ -74,7 +75,7 @@ export default function FlagTheFade({ id, prompt, explanation, tolerance = 0.1 }
               fill="var(--color-surface)" fillOpacity={0.5} stroke={C.soft} strokeWidth={2} />
             <text x={s.sx(0)} y={s.sy(V0) - 8} textAnchor="middle" fontSize={13} fill={C.soft}>hill, {V0} eV</text>
             <EnergyLine s={s} E={E} from={X[0]} to={X[1]} />
-            <text x={s.sx(X[0]) + 4} y={s.sy(E) - 10} fontSize={13} fontWeight={600} fill={C.energy}>electron: {E} eV</text>
+            <text x={s.sx(X[1]) - 4} y={s.sy(E) - 10} textAnchor="end" fontSize={13} fontWeight={600} fill={C.energy}>electron: {E} eV</text>
             {sent && <>
               <polygon fill={C.position} opacity={0.1}
                 points={`${pts(s, wave.xs, env.map((m) => E + SCALE * m))} ${pts(s, [...wave.xs].reverse(), [...env].reverse().map((m) => E - SCALE * m))}`} />
