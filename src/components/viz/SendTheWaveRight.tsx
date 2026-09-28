@@ -24,10 +24,10 @@ export interface SendTheWaveRightProps {
   explanation?: string;
 }
 
-const LAMBDA = 2, K = Math.PI, SPAN = 6, N = 17, AMP = 1.05;
+const LAMBDA = 2, K = Math.PI, SPAN = 6, N = 17, AMP = 0.85;
 const OX = -0.55, OY = -0.34;   // the z axis (out of the page) drawn down-left
 const SPEED = 0.5;              // world units of ct per real second while running
-const S_ROW = -1.62;
+const S_ROW = -1.7;
 
 export default function SendTheWaveRight({ id, prompt, startPhase = 90, explanation }: SendTheWaveRightProps) {
   const task = useTask(id, 'send-the-wave-right');
@@ -99,7 +99,7 @@ export default function SendTheWaveRight({ id, prompt, startPhase = 90, explanat
             : `B's crests sit ${outBy.toFixed(0)}° out of step with E's, so ${(left * 100).toFixed(0)}% of the energy runs left.`}
           hit={explanation} />}
       </div>}>
-      <Stage x={[-0.9, 7.2]} y={[-2.0, 1.4]} height={320} equal
+      <Stage x={[-0.9, 7.2]} y={[-2.15, 1.45]} height={330} equal
         label={`A frozen electromagnetic wave. B's crests sit ${outBy.toFixed(0)} degrees out of step with E's.`}>
         {(s) => {
           api.current = s;
@@ -121,7 +121,7 @@ export default function SendTheWaveRight({ id, prompt, startPhase = 90, explanat
               <g ref={(el) => { els.current.s[i] = el; }} style={{ display: 'none' }}><line stroke={C.energy} strokeWidth={2.4} strokeLinecap="round" /><path fill={C.energy} /></g>
             </g>)}
             <line x1={s.sx(-0.5)} x2={s.sx(SPAN + 0.3)} y1={s.sy(S_ROW)} y2={s.sy(S_ROW)} stroke={C.grid} />
-            <text x={s.sx(-0.3)} y={s.sy(S_ROW) - 12} fontSize={13} fill={C.energy}>energy flow, E × B</text>
+            <text x={s.sx(-0.3)} y={s.sy(S_ROW) + 20} fontSize={13} fill={C.energy}>energy flow, E × B</text>
             {/* the receiver */}
             <rect x={s.sx(SPAN + 0.45)} y={s.sy(0.9)} width={s.len(0.28)} height={s.len(1.8)} rx={3} fill={C.surface} stroke={C.soft} strokeWidth={2} />
             <text x={s.sx(SPAN + 0.73)} y={s.sy(1.0)} textAnchor="end" fontSize={12} fill={C.soft}>receiver</text>
