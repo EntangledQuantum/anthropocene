@@ -1,0 +1,14 @@
+title: 'Hydrogen''s standing waves'
+blurb: 'The electron in hydrogen is a three-dimensional standing wave round the proton. Its square, |ψ|², is a cloud: the chance per unit volume of finding the electron there. The cloud has no edge and no track; nothing in it goes round.'
+notation: '\psi_{n\ell m}(r,\theta,\phi) = R_{n\ell}(r)\,Y_{\ell m}(\theta,\phi)'
+tags:
+  - 'up-ch41'
+misconceptions:
+  - id: 'up-ch41-electron-at-bohr-radius'
+    name: 'The electron sits at the Bohr radius, 53 pm, like a planet on its orbit.'
+    signal: 'Says the electron is always found exactly 53 pm from the nucleus.'
+    correction: '53 pm is only the most likely distance. The 1s electron is found inside it a third of the time and farther out than 70 pm half the time. There is no track, just a cloud that thins out.'
+  - id: 'up-ch41-orbital-is-a-balloon'
+    name: 'An orbital is a balloon-shaped container the electron rides around in.'
+    signal: 'Draws a hard-edged lobe and says the electron is never outside it.'
+    correction: 'The lobes in textbooks are cut off where the cloud has thinned to some chosen level, usually 90%. The cloud itself has no surface. It thins forever, and the electron is not travelling round inside it.'

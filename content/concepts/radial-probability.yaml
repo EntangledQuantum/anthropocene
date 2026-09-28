@@ -1,0 +1,10 @@
+title: 'Radial probability'
+blurb: 'The chance of finding the electron at some distance r, in any direction, is the density |ψ|² times the area of the shell at that distance. Density falls away from the nucleus while shell area grows as r², so the most likely distance is not where the cloud is densest.'
+notation: 'P(r)\,dr = |\psi|^2\,4\pi r^2\,dr = r^2 R_{n\ell}^2\,dr'
+tags:
+  - 'up-ch41'
+misconceptions:
+  - id: 'up-ch41-densest-is-likeliest'
+    name: 'Where the cloud is densest is the distance you most likely find the electron.'
+    signal: 'Says the ground-state electron is most likely found at the nucleus because |ψ|² peaks there.'
+    correction: 'Density is chance per unit volume. A thin shell near the nucleus has almost no volume, so it catches almost nothing. Multiply by the shell''s area 4πr² and the 1s chance peaks at 53 pm.'

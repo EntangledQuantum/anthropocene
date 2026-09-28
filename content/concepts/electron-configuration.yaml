@@ -1,0 +1,10 @@
+title: 'Electron configuration'
+blurb: 'A many-electron atom in its ground state fills its slots from the bottom up, two per box: 1s 2s 2p 3s 3p 4s 3d. The inner electrons screen the nucleus, which is why 3s fills before 3p and 4s before 3d, and why each new shell starts with one loosely held electron.'
+notation: '\text{Na}: 1s^2\,2s^2\,2p^6\,3s^1'
+tags:
+  - 'up-ch41'
+misconceptions:
+  - id: 'up-ch41-bigger-atom-holds-tighter'
+    name: 'More protons always hold the outer electron more tightly.'
+    signal: 'Expects sodium''s outer electron to cost more than neon''s because sodium has one more proton.'
+    correction: 'The outer electron of sodium sits alone in a new shell, outside ten electrons that cancel most of the nucleus. It feels about +2 instead of neon''s +6, and leaves for a quarter of the energy.'

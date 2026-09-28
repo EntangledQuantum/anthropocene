@@ -3,7 +3,7 @@ import {
   CH37_TRAIN, addVelocity, arrivalGapOnWatchUs, boost, ctToUs, flashArrivals, trainStrikes, usToCt, type Event,
 } from '../../lib/physics/relativity.ts';
 import { C, CheckBar, Handle, Meter, SceneCard, Stage, useTask } from './scene.tsx';
-import { useFrame } from './relativity-kit-ch37.tsx';
+import { fmtSigned, useFrame } from './relativity-kit-ch37.tsx';
 
 /**
  * Lightning hits both ends of a train moving at 0.6c; a passenger sits halfway
@@ -116,8 +116,8 @@ export default function FlashesOnTheTrain({ id, prompt, tolerance = 0.04, explan
     g.strokeStyle = c.pos; g.lineWidth = 2.5; g.beginPath(); g.moveTo(xp, yPulse - 3); g.lineTo(xp, yBot - 4); g.stroke();
 
     // who is moving
-    const moverY = fr === 'platform' ? yTop - 14 : yTrack + 54;
-    const mx0 = fr === 'platform' ? xf + 10 : Wd * 0.62, dir = fr === 'platform' ? 1 : -1;
+    const moverY = fr === 'platform' ? yTop - 14 : yTrack + 60;
+    const mx0 = fr === 'platform' ? xr + 8 : Math.min(Wd * 0.3, xp - 120), dir = fr === 'platform' ? 1 : -1;
     g.strokeStyle = c.v; g.fillStyle = c.v; g.lineWidth = 3;
     g.beginPath(); g.moveTo(mx0, moverY); g.lineTo(mx0 + dir * 44, moverY); g.stroke();
     g.beginPath(); g.moveTo(mx0 + dir * 54, moverY); g.lineTo(mx0 + dir * 42, moverY - 6); g.lineTo(mx0 + dir * 42, moverY + 6); g.closePath(); g.fill();
@@ -136,7 +136,7 @@ export default function FlashesOnTheTrain({ id, prompt, tolerance = 0.04, explan
         }
         g.fillStyle = c.ink; g.fillText(`${name} strike`, x, 44);
         g.fillStyle = c.soft; g.font = '12.5px ui-monospace, monospace';
-        g.fillText(`t = ${ctToUs(e.ct).toFixed(2)} µs`, x, 60);
+        g.fillText(`t = ${fmtSigned(ctToUs(e.ct))} µs`, x, 60);
         const tEnd = Math.min(T, a.ct);
         const xe = px(e.x + sgn * (tEnd - e.ct));
         g.strokeStyle = c.ink; g.globalAlpha = 0.35; g.lineWidth = 2;
@@ -151,7 +151,7 @@ export default function FlashesOnTheTrain({ id, prompt, tolerance = 0.04, explan
       const first = E.aFront.ct < E.aRear.ct ? 'front' : 'rear';
       g.textAlign = 'center'; g.font = '600 13.5px Inter, sans-serif';
       g.fillStyle = gap < usToCt(tolerance) ? c.ok : c.ink;
-      g.fillText(gap < usToCt(tolerance) ? 'both flashes reach her together' : `${first} flash reaches her first`, xp, yTop - 12);
+      g.fillText(gap < usToCt(tolerance) ? 'both flashes reach her together' : `${first} flash reaches her first`, xp, yTrack + 60);
     }
   });
 
@@ -180,7 +180,7 @@ export default function FlashesOnTheTrain({ id, prompt, tolerance = 0.04, explan
           <button type="button" className="anth-btn" aria-pressed={frame === 'train'} onClick={() => setFrame('train')}
             style={frame === 'train' ? { borderColor: 'var(--color-accent)', color: 'var(--color-accent)' } : undefined}>From the train</button>
           <span style={{ marginLeft: 'auto', display: 'flex', gap: 22, flexWrap: 'wrap' }}>
-            <Meter label="Her watch: rear flash after front" value={gapUs.toFixed(2)} unit="µs" color={C.position} />
+            <Meter label="Her watch: rear flash after front" value={fmtSigned(gapUs)} unit="µs" color={C.position} />
           </span>
         </div>
         {id && <CheckBar verdict={task.verdict} done={task.done}
@@ -190,7 +190,7 @@ export default function FlashesOnTheTrain({ id, prompt, tolerance = 0.04, explan
             : `Now the rear flash reaches her ${(-gapUs).toFixed(2)} µs before the front one, by her watch.`}
           hit={explanation} />}
       </div>}>
-      <canvas ref={canvas} style={{ width: '100%', height: 250, display: 'block' }}
+      <canvas ref={canvas} style={{ width: '100%', height: 256, display: 'block' }}
         aria-label={`Lightning strikes both ends of a train moving at ${B}c, seen from the ${frame}. Her watch puts the rear flash ${gapUs.toFixed(2)} microseconds after the front one.`} />
     </SceneCard>
   );

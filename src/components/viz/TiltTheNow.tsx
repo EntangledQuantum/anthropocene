@@ -1,7 +1,7 @@
 import { useId, useState } from 'react';
 import { CH37_PAIRS, CH37_TILT_MAX, ctToUs, dctIn, interval, simultaneousBeta, type Ch37Pair } from '../../lib/physics/relativity.ts';
 import { C, CheckBar, Handle, Meter, SceneCard, Stage, useTask, type StageApi } from './scene.tsx';
-import { LIGHT } from './relativity-kit-ch37.tsx';
+import { LIGHT, fmtSigned } from './relativity-kit-ch37.tsx';
 
 /**
  * The platform's spacetime diagram: position across, ct up, light at 45°.
@@ -51,13 +51,13 @@ export default function TiltTheNow({ id, prompt, pair = 'strikes', tolerance = 0
     <SceneCard id={id} prompt={prompt}
       footer={<div style={{ display: 'grid', gap: 12 }}>
         <div style={{ display: 'flex', gap: 22, flexWrap: 'wrap' }}>
-          <Meter label="Train speed" value={`${beta >= 0 ? '' : '−'}${Math.abs(beta).toFixed(2)}c`} color={C.velocity} />
-          <Meter label={`On the train, ${P.bLabel} after ${P.aLabel}`} value={dUs.toFixed(2)} unit="µs" color={C.position} />
+          <Meter label="Train speed" value={`${fmtSigned(beta)}c`} color={C.velocity} />
+          <Meter label={`On the train, ${P.bLabel} after ${P.aLabel}`} value={fmtSigned(dUs)} unit="µs" color={C.position} />
           <Meter label="Interval (cΔt)² − Δx², any frame" value={(s2 / 1000).toFixed(0)} unit="×10³ m²" />
         </div>
         {id && <CheckBar verdict={task.verdict} done={task.done}
           onCheck={() => task.check(target !== null && Math.abs(beta - target) <= tolerance, { beta, dUs })}
-          miss={`On a ${beta.toFixed(2)}c train the ${P.bLabel} comes ${Math.abs(dUs).toFixed(2)} µs ${dUs > 0 ? 'after' : 'before'} the ${P.aLabel}: the dashed line through the ${P.aLabel} passes ${dUs > 0 ? 'below' : 'above'} the ${P.bLabel}.`}
+          miss={`On a ${fmtSigned(beta)}c train the ${P.bLabel} comes ${Math.abs(dUs).toFixed(2)} µs ${dUs > 0 ? 'after' : 'before'} the ${P.aLabel}: the dashed line through the ${P.aLabel} passes ${dUs > 0 ? 'below' : 'above'} the ${P.bLabel}.`}
           hit={explanation} />}
       </div>}>
       <Stage x={X} y={Y} height={400} equal label={`Spacetime diagram with a train at ${beta.toFixed(2)}c`}
@@ -67,7 +67,11 @@ export default function TiltTheNow({ id, prompt, pair = 'strikes', tolerance = 0
             const c = clip(s, p, d);
             return c && <line {...c} {...props} />;
           };
-          const top: [number, number] = [A[0] + beta * (TOP - A[1]), TOP];
+          // the handle sits where the worldline leaves the view: the top edge, or the left edge when it leans far left
+          const xMin = s.x[0] + 18;
+          const top: [number, number] = A[0] + beta * (TOP - A[1]) >= xMin
+            ? [A[0] + beta * (TOP - A[1]), TOP]
+            : [xMin, A[1] + (xMin - A[0]) / beta];
           const lx = s.sx(s.x[1]) - 6;
           return <g>
             <defs><clipPath id={clipId}><rect x={s.sx(s.x[0])} y={s.sy(Y[1])} width={s.sx(s.x[1]) - s.sx(s.x[0])} height={s.sy(Y[0]) - s.sy(Y[1])} /></clipPath></defs>
@@ -88,7 +92,7 @@ export default function TiltTheNow({ id, prompt, pair = 'strikes', tolerance = 0
             {seg(Bv, [1, beta], { stroke: C.position, strokeWidth: 1.5, strokeDasharray: '8 6', strokeOpacity: 0.6 })}
             <text x={lx} y={s.sy(A[1] + beta * (s.x[1] - A[0])) - 8} textAnchor="end" fontSize={13} fill={C.position}
               stroke="var(--color-surface)" strokeWidth={4} paintOrder="stroke">train's now</text>
-            <text x={s.sx(top[0]) + 14} y={s.sy(top[1]) + 22} fontSize={13} fill={C.position}
+            <text x={s.sx(Math.max(top[0], s.x[0] + 60)) + 14} y={s.sy(top[1]) + 22} fontSize={13} fill={C.position}
               stroke="var(--color-surface)" strokeWidth={4} paintOrder="stroke">train's worldline</text>
 
             {/* events */}
@@ -99,8 +103,11 @@ export default function TiltTheNow({ id, prompt, pair = 'strikes', tolerance = 0
             </g>)}
 
             <Handle s={s} at={top} color={C.position} step={TOP * 0.01} label="Top of the train's worldline: tilt to set its speed"
-              clamp={(p) => [Math.max(A[0] - CH37_TILT_MAX * (TOP - A[1]), Math.min(A[0] + CH37_TILT_MAX * (TOP - A[1]), p[0])), TOP]}
-              onChange={(p) => { setBeta(Math.round(((p[0] - A[0]) / (TOP - A[1])) * 1000) / 1000); task.touch(); }} />
+              onChange={(p) => {
+                const b = (p[0] - A[0]) / Math.max(p[1] - A[1], 20);
+                setBeta(Math.round(Math.max(-CH37_TILT_MAX, Math.min(CH37_TILT_MAX, b)) * 1000) / 1000);
+                task.touch();
+              }} />
           </g>;
         }}
       </Stage>

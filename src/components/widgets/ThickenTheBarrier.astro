@@ -1,0 +1,6 @@
+---
+// @graded — set the wall's thickness so the target fraction gets through.
+import Island, { type ThickenTheBarrierProps } from '../viz/ThickenTheBarrier.tsx';
+const props = Astro.props as ThickenTheBarrierProps;
+---
+<Island client:visible {...props} />

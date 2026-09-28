@@ -72,3 +72,9 @@ export function fmtBeta(b: number): string {
   if (b < 0.9999) return `${b.toFixed(5)}c`;
   return `${b.toFixed(6)}c`;
 }
+
+/** A signed number with a true minus sign and no negative zero. */
+export function fmtSigned(v: number, digits = 2): string {
+  const t = Math.abs(v).toFixed(digits);
+  return v < 0 && Number(t) !== 0 ? `−${t}` : t;
+}

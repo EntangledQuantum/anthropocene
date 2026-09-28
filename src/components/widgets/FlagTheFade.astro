@@ -1,0 +1,6 @@
+---
+// @graded — plant the flag where the wave stops swinging and starts to fade.
+import Island, { type FlagTheFadeProps } from '../viz/FlagTheFade.tsx';
+const props = Astro.props as FlagTheFadeProps;
+---
+<Island client:visible {...props} />

@@ -56,10 +56,12 @@ describe('the lesson-1 hook: dense is not likely', () => {
     expect(near).toBeLessThan(atA0 / 5);
   });
 
-  it('the electron is not on a circle: 1s spends a third of its chance inside a₀ and a third beyond 1.35 a₀', () => {
+  it('the electron is not on a circle: 1s is inside a₀ a third of the time, beyond 70 pm half the time', () => {
     const inside = 1 - probabilityBeyond(1, 0, 1);
     expect(inside).toBeCloseTo(1 - 5 * Math.exp(-2), 6); // 0.323
-    expect(probabilityBeyond(1, 0, 1.35)).toBeGreaterThan(0.25);
+    const beyond70 = probabilityBeyond(1, 0, 70 / A0_PM);
+    expect(beyond70).toBeGreaterThan(0.49);
+    expect(beyond70).toBeLessThan(0.52);
   });
 
   it('for l = n − 1 the most likely radius is n² a₀ (the Bohr radii, as peaks, not tracks)', () => {

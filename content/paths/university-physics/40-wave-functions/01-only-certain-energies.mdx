@@ -1,0 +1,139 @@
+---
+title: 'Only certain energies fit'
+blurb: 'Raise an electron''s energy in a box until its wave fits, catch it with detectors, and see why it can never sit still.'
+order: 1
+tier: 'core'
+minutes: 11
+teaches:
+  - 'wave-function'
+  - 'schrodinger-equation'
+  - 'particle-in-a-box'
+  - 'born-rule'
+requires:
+  - 'de-broglie-wavelength'
+  - 'standing-wave'
+status: 'live'
+updated: 2026-09-28
+---
+
+<Step>
+
+An electron is shut in a box 1 nm wide, between walls it can never climb. You drain away its energy, as much as you can.
+
+<Predict
+  id="up-ch40-can-it-rest"
+  question="Can it end up sitting still at the bottom, with zero energy?"
+  options={[
+    { key: 'rest', misconception: 'up-ch40-can-rest', label: 'Yes: take away all its energy and it stops', why: 'A marble in a bowl does that. Try it below: at zero energy the wave is a straight ramp, and it hits the far wall at full height instead of at zero.' },
+    { key: 'floor', label: 'No: its lowest energy is above zero', why: 'Right. The wave must be zero at both walls, and a wave only bends back to zero if it has energy to bend with. The lowest fit is 0.38 eV.' },
+    { key: 'middle', label: 'Yes, if it sits exactly in the middle', why: 'Pinning it to one spot is the tightest squeeze of all, and squeezing a wave costs energy. Watch the far wall below as you raise the line from zero.' },
+    { key: 'kicks', misconception: 'up-ch40-walls-add-energy', label: 'No: the walls keep knocking it and give it energy', why: 'Nothing adds energy here; the walls do no work. The floor comes from the fit alone, which you can see below.' },
+  ]}
+  correct="floor"
+>
+
+<RaiseTheLevel prompt="Start at zero and drag the energy line up. Watch what the wave does at the far wall." start={0} />
+
+</Predict>
+
+</Step>
+
+<Step>
+
+## The next one that fits
+
+The wave fits at 0.38 eV, and at no energy just above it. Keep going.
+
+<RaiseTheLevel
+  id="up-ch40-second-fit"
+  prompt="Drag the energy line to the next energy at which the wave fits."
+  start={0.6}
+  target={2}
+  explanation="1.50 eV, four times the first. Now a whole wavelength spans the box and the wave crosses zero once, in the middle. At every energy in between, the wave arrives at the far wall with something left over and runs away inside it."
+/>
+
+</Step>
+
+<Step>
+
+## Name it
+
+The wave obeys the Schrödinger equation: it bends back toward zero, and bends harder the more kinetic energy $E - U$ it has. Pinned to zero at both walls, it fits only when whole half-wavelengths span the box, $L = n\lambda/2$, and de Broglie's $\lambda = h/p$ turns that into a ladder of energies:
+
+$$-\frac{\hbar^2}{2m}\psi'' + U\psi = E\psi \qquad\Longrightarrow\qquad E_n = \frac{n^2h^2}{8mL^2}$$
+
+It is chapter 15's rope again: still at both ends, so only certain notes.
+
+<Recall id="up-ch40-recall-floor" concept="particle-in-a-box">
+  <div slot="front">Why can an electron in a box never have zero energy?</div>
+
+  Its wave must be zero at both walls, so at least half a wavelength has to span the box. A
+  wavelength that short means momentum $h/\lambda$, and so kinetic energy: $h^2/8mL^2$.
+</Recall>
+
+</Step>
+
+<Step>
+
+## Where you catch it
+
+The electron is in the second level now, the wave with one crossing. You cannot see it; you can only fire detectors at the box and count clicks.
+
+<CatchTheElectron
+  id="up-ch40-second-detector"
+  prompt="Detector A sits under the crest. Put detector B where it will click just as often, then fire."
+  level={2}
+  explanation="Under the trough, at 0.75 nm. The chance of finding the electron goes as ψ², and a trough squared is as big as a crest. The sign of ψ is invisible to a detector."
+/>
+
+</Step>
+
+<Step>
+
+## Never in the middle
+
+The dots are where 400 electrons were found. Plenty on the left, plenty on the right, and almost none at the centre.
+
+<Predict
+  id="up-ch40-cross-the-middle"
+  question="How does an electron get from one side to the other without ever being found in the middle?"
+  options={[
+    { key: 'fast', misconception: 'up-ch40-hidden-path', label: 'It crosses the middle too fast to be caught', why: 'However fast, a crossing electron must be somewhere on the way, and a detector parked at the centre would catch it sometimes. It never does: the chance there is exactly zero.' },
+    { key: 'two', misconception: 'up-ch40-some-left-some-right', label: 'It does not cross: some electrons live on the left, some on the right', why: 'Every electron here is in the same state, spread over both sides. Fire them one at a time and each can turn up on either side.' },
+    { key: 'nopath', label: 'The question assumes a path, and ψ has none to offer', why: 'Right. The wave function gives the chance of each place, ψ², and the middle gets zero. It does not describe a route between places.' },
+  ]}
+  correct="nopath"
+/>
+
+The rule you used: the chance of finding it between $x$ and $x + dx$ is $|\psi|^2\,dx$, and all the chances add to one, $\int|\psi|^2\,dx = 1$.
+
+<Recall id="up-ch40-recall-born" concept="born-rule">
+  <div slot="front">A detector sits under a trough of ψ, where ψ is negative. Does it click less than one under a crest of the same size?</div>
+
+  No. Clicks go as ψ², and a trough squared is as big as a crest. Only a node, where ψ is zero,
+  never clicks.
+</Recall>
+
+</Step>
+
+<Step>
+
+## Squeeze the box
+
+Back to the lowest level: 0.38 eV in a 1 nm box. This time the right-hand wall is yours to move.
+
+<SqueezeTheBox
+  id="up-ch40-squeeze-four"
+  prompt="Set the wall where the lowest level will be four times higher, then squeeze."
+  factor={4}
+  explanation="0.50 nm: half the width. The level goes as 1/L², so a quarter of the width would have made it sixteen times higher. In a box the size of an atom, 0.1 nm, the floor is 38 eV, bigger than the energies that hold atoms together."
+/>
+
+## What to carry forward
+
+- **A trapped wave fits only at certain energies.** Zero at both walls means whole half-wavelengths, $E_n = n^2h^2/8mL^2$, and the lowest is never zero.
+- **ψ² is where you find it.** A trough counts as much as a crest; a node never clicks.
+
+Next: a wall that is tall but thin, and a wave that leaks through it.
+
+</Step>

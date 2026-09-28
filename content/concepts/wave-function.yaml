@@ -1,0 +1,13 @@
+title: 'The wave function'
+blurb: 'A particle''s state is a wave, ψ(x). It is not a path and not a smeared-out particle: it is the thing that adds and interferes, and ψ² gives the chance of finding the particle at each place.'
+notation: '\psi(x)'
+tags: ['up-ch40']
+misconceptions:
+  - id: 'up-ch40-hidden-path'
+    name: 'Between detections the particle follows a path we just cannot see.'
+    signal: 'Explains a node by saying the particle crosses it too fast to be caught, or sneaks round it.'
+    correction: 'The wave function has no path to offer. It gives the chance of each place, and at a node that chance is exactly zero, while the particle is still found on both sides. Asking how it gets across assumes a trajectory that the state does not contain.'
+  - id: 'up-ch40-psi-squared-is-state'
+    name: 'ψ² is the whole state; the sign and phase of ψ are bookkeeping.'
+    signal: 'Treats two waves with the same ψ² as the same state.'
+    correction: 'ψ² is what one detector sees, but ψ is what adds. Waves add before they are squared, so a sign or phase that no single detector can see decides where two waves reinforce or cancel.'

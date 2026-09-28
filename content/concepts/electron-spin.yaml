@@ -1,0 +1,14 @@
+title: 'Electron spin'
+blurb: 'An electron carries a tiny magnetic moment that, measured along any axis you choose, comes out one of exactly two ways: up or down. It is a fourth label beside n, l and m, with two values.'
+notation: 'm_s = \pm\tfrac12,\qquad \mu_{\text{axis}} = \mp\mu_B'
+tags:
+  - 'up-ch41'
+misconceptions:
+  - id: 'up-ch41-moments-point-anywhere'
+    name: 'Each atom''s magnet points in some random direction, so the deflections spread out evenly.'
+    signal: 'Predicts one smeared band on the Stern–Gerlach plate.'
+    correction: 'That is what compass needles would do, and it is not what silver atoms do. Every atom, asked along the magnet''s axis, answers fully up or fully down: two spots, nothing between.'
+  - id: 'up-ch41-spin-is-a-spinning-ball'
+    name: 'Spin is the electron physically spinning like a tiny ball.'
+    signal: 'Expects the answer to depend on which way the ball''s axis happened to point.'
+    correction: 'A spinning ball could point any way and would give every deflection in between. Spin gives two answers along whatever axis you measure, however you turn the magnet. It is a two-valued label with no ball behind it.'

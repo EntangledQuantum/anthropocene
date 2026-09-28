@@ -1,0 +1,6 @@
+---
+// @graded — with `id`, the scene checks itself: leave the shell where it catches the most.
+import Island, { type CatchTheShellProps } from '../viz/CatchTheShell.tsx';
+const props = Astro.props as CatchTheShellProps;
+---
+<Island client:visible {...props} />

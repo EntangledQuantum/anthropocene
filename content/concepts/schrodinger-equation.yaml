@@ -1,0 +1,9 @@
+title: 'The Schrödinger equation'
+blurb: 'The rule a matter wave obeys in a landscape U(x): where its energy is above the landscape it bends back toward the axis and swings, faster where there is more kinetic energy; where it is below, it bends away and grows or decays.'
+notation: '-\frac{\hbar^2}{2m}\,\psi'''' + U(x)\,\psi = E\,\psi'
+tags: ['up-ch40']
+misconceptions:
+  - id: 'up-ch40-any-energy-fits'
+    name: 'A trapped particle can have any energy, like a marble in a bowl.'
+    signal: 'Expects a bound wave to exist at every energy, just bigger or smaller.'
+    correction: 'The equation can be solved at any energy, but a trapped wave must also be zero at both walls. Shot from one wall, it lands on zero at the other only at special energies; at every other energy it arrives with something left over and blows up.'

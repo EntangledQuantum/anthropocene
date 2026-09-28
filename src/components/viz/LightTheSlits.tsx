@@ -138,13 +138,13 @@ export default function LightTheSlits({ id, prompt, start = 2, slack = 0.2, expl
       footer={<div style={{ display: 'grid', gap: 14 }}>
         <div style={{ display: 'flex', gap: 22, flexWrap: 'wrap' }}>
           <Meter label="Slits uncovered" value={`${N}`} color={C.position} />
-          <Meter label="Width uncovered" value={`${(N / 600).toFixed(2)} mm`} />
+          <Meter label="Width uncovered" value={N < 60 ? `${((N / 600) * 1000).toFixed(1)} µm` : `${(N / 600).toFixed(2)} mm`} />
           <Meter label="Dip between the yellow lines" value={`${(100 * dip).toFixed(0)}%`} />
         </div>
         {id && <CheckBar verdict={task.verdict} done={task.done}
           onCheck={() => task.check(hitNow, { N })}
           miss={N < NR
-            ? `With ${N} slits the 579 nm peak still sits inside the 577 nm line’s first dark gap; the dip between them is ${(100 * dip).toFixed(0)}%.`
+            ? `With ${N} slits the 579 nm peak still sits on the 577 nm line’s bright hump, short of its first dark; the dip between them is ${(100 * dip).toFixed(0)}%.`
             : `Two clean lines, but ${N} slits is more than it takes: the 579 nm peak is well past the 577 nm line’s first dark. Cover some up.`}
           hit={explanation} />}
       </div>}>

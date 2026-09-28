@@ -1,0 +1,17 @@
+title: 'Tunnelling'
+blurb: 'Where a wave meets a barrier higher than its energy it does not stop at the turning point: it decays as e^{-κx}. If the barrier is thin, some of the wave is left on the far side, and that fraction falls exponentially with thickness.'
+notation: 'T \approx e^{-2\kappa a}, \qquad \kappa = \frac{\sqrt{2m(U-E)}}{\hbar}'
+tags: ['up-ch40']
+misconceptions:
+  - id: 'up-ch40-wall-stops-all'
+    name: 'A particle with less energy than a barrier always bounces back, like a cart below the top of a hill.'
+    signal: 'Expects nothing at all beyond a barrier that is higher than the energy.'
+    correction: 'That is the cart''s rule. A wave past the turning point decays rather than stopping, and whatever is left at the far side carries on. The thinner the barrier, the more is left.'
+  - id: 'up-ch40-tunnel-costs-energy'
+    name: 'Tunnelling means going through the hill with some leftover kinetic energy, so the particle comes out slower.'
+    signal: 'Expects the transmitted particle to have less energy than it arrived with.'
+    correction: 'Nothing is paid. On flat ground beyond the barrier the transmitted wave has the same wavelength, so the same momentum and the same energy, as the wave that arrived. Only its amount is smaller.'
+  - id: 'up-ch40-thickness-linear'
+    name: 'Doubling the barrier halves what gets through.'
+    signal: 'Scales the transmitted fraction in proportion to thickness.'
+    correction: 'Each slice of barrier multiplies what gets through by the same factor, so two thicknesses multiply it twice. 1% through becomes a few thousandths of a percent, not a half percent.'

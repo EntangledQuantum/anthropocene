@@ -1,0 +1,6 @@
+---
+// @graded — with `id` and `cup`, the scene checks itself: place the cup, fire, and catch a spot.
+import Island, { type SplitTheBeamProps } from '../viz/SplitTheBeam.tsx';
+const props = Astro.props as SplitTheBeamProps;
+---
+<Island client:visible {...props} />

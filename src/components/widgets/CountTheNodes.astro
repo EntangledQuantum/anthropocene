@@ -1,0 +1,6 @@
+---
+// @graded — with `id` and `target`, the scene checks itself: step n and l until the cloud shows the wanted dark circles and lines.
+import Island, { type CountTheNodesProps } from '../viz/CountTheNodes.tsx';
+const props = Astro.props as CountTheNodesProps;
+---
+<Island client:visible {...props} />

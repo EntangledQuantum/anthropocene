@@ -1,0 +1,13 @@
+title: 'The Born rule'
+blurb: 'The chance of finding the particle between x and x + dx is ψ² dx, and all the chances add to one. A trough is as likely as a crest; a node is never.'
+notation: 'P(a<x<b) = \int_a^b |\psi|^2\,dx, \qquad \int |\psi|^2\,dx = 1'
+tags: ['up-ch40']
+misconceptions:
+  - id: 'up-ch40-negative-less-likely'
+    name: 'Where ψ is negative the particle is less likely to be found.'
+    signal: 'Reads ψ itself as the probability, and avoids the troughs.'
+    correction: 'Probability goes as ψ². A trough squared is exactly as big as a crest, so a detector under the trough clicks just as often. Only where ψ crosses zero is the particle never found.'
+  - id: 'up-ch40-some-left-some-right'
+    name: 'Some electrons live on the left side and some on the right.'
+    signal: 'Explains a two-humped pattern as two kinds of electron.'
+    correction: 'Every electron here is in the same state, spread over both humps. Each one, found one at a time, can turn up on either side.'

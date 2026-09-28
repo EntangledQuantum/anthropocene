@@ -1,0 +1,10 @@
+title: 'Pauli exclusion'
+blurb: 'No two electrons in an atom can share all four labels n, l, m and spin. Each standing wave (n, l, m) is a box with two places, one per spin, so a subshell holds 2(2l + 1) and a shell 2n².'
+notation: '\text{subshell: } 2(2\ell+1),\qquad \text{shell: } 2n^2'
+tags:
+  - 'up-ch41'
+misconceptions:
+  - id: 'up-ch41-exclusion-is-repulsion'
+    name: 'Electrons stay out of each other''s slot because they repel electrically.'
+    signal: 'Says a third electron cannot fit into 1s because the other two push it away.'
+    correction: 'Repulsion is real but it only costs energy; it never forbids anything. Exclusion is a rule about identical particles: two electrons with all four labels the same are not allowed at all, however much energy you offer.'

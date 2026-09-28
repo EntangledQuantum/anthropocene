@@ -1,0 +1,17 @@
+title: 'A particle in a box'
+blurb: 'A particle between two walls it cannot climb has a wave that must be zero at both. Only whole half-wavelengths fit, so only a ladder of energies is allowed, and the lowest rung is above zero.'
+notation: 'E_n = \frac{n^2 h^2}{8 m L^2}'
+tags: ['up-ch40']
+misconceptions:
+  - id: 'up-ch40-can-rest'
+    name: 'Take away all its energy and a trapped particle sits still.'
+    signal: 'Says the lowest energy of a particle in a box is zero.'
+    correction: 'At zero energy the wave does not bend at all, so it cannot leave one wall at zero and come back to zero at the other. At least half a wavelength must span the box, and that short a wavelength means momentum h/λ and kinetic energy h²/8mL².'
+  - id: 'up-ch40-walls-add-energy'
+    name: 'The walls keep knocking the particle, and that is its leftover energy.'
+    signal: 'Explains the zero-point energy as energy the walls hand over.'
+    correction: 'The walls do no work, and nothing adds energy. The floor comes from the fit alone: the wave has to turn round inside the box, and turning costs energy.'
+  - id: 'up-ch40-zero-point-rounding'
+    name: 'Zero-point energy is a tiny correction nobody needs to worry about.'
+    signal: 'Treats the lowest level as effectively zero.'
+    correction: 'It grows as 1/L². In a 1 nm box it is 0.38 eV; in a box the size of an atom, 0.1 nm, it is about 38 eV, bigger than the energies that hold atoms together.'

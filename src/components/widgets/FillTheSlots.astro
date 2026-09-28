@@ -1,0 +1,6 @@
+---
+// @graded — with `id`, the scene checks itself: place the ground state of element `z`.
+import Island, { type FillTheSlotsProps } from '../viz/FillTheSlots.tsx';
+const props = Astro.props as FillTheSlotsProps;
+---
+<Island client:visible {...props} />

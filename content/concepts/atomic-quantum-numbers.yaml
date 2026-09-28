@@ -1,0 +1,10 @@
+title: 'n, l and m'
+blurb: 'Three whole numbers label hydrogen''s standing waves the way harmonics label a string''s. The cloud has n − 1 dark nodes in all: n − l − 1 dark spheres and l dark planes or cones through the nucleus. m picks how the angular pattern is turned. In hydrogen the energy depends on n alone.'
+notation: 'E_n = -\frac{13.6\ \text{eV}}{n^2},\quad \ell = 0,\dots,n-1,\quad m = -\ell,\dots,\ell'
+tags:
+  - 'up-ch41'
+misconceptions:
+  - id: 'up-ch41-more-lobes-more-energy'
+    name: 'In hydrogen a d cloud costs more energy than an s cloud of the same n.'
+    signal: 'Ranks 3s below 3p below 3d in hydrogen.'
+    correction: 'All three have n − 1 = 2 nodes and all sit at −1.51 eV. They only split in atoms with more than one electron, where the inner electrons screen the nucleus differently for each shape.'

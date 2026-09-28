@@ -1,0 +1,108 @@
+---
+title: 'A wave leaks through the wall'
+blurb: 'Throw an electron at a wall it cannot climb, find where its wave starts to fade, and set a wall so that exactly one in a hundred gets through.'
+order: 2
+tier: 'core'
+minutes: 10
+teaches:
+  - 'quantum-tunnelling'
+requires:
+  - 'turning-points'
+  - 'schrodinger-equation'
+  - 'born-rule'
+status: 'live'
+updated: 2026-09-28
+---
+
+<Step>
+
+In chapter 7 a cart that met a hill taller than its energy turned round, every time. Now throw an electron with 1 eV at a wall 2 eV tall and 0.3 nm thick.
+
+<Predict
+  id="up-ch40-ghost-bet"
+  question="What turns up on the far side of the wall?"
+  options={[
+    { key: 'none', misconception: 'up-ch40-wall-stops-all', label: 'Nothing: it turns round, like the cart', why: 'That is the cart’s rule, and a wave does not follow it. Send it below: about a sixth of the wave turns up beyond the wall.' },
+    { key: 'ghost', label: 'A small part of it, moving as fast as it came in', why: 'Right. Most of the wave bounces, but a ghost comes out the far side and moves off at the same speed as the reflection.' },
+    { key: 'slow', misconception: 'up-ch40-tunnel-costs-energy', label: 'A small part of it, slowed down by the climb', why: 'Nothing is paid to cross. On the flat ground beyond, the ghost has the same 1 eV it arrived with, and keeps pace with the part that bounced.' },
+    { key: 'all', label: 'All of it, after a delay', why: 'Most of it bounces straight back. Watch the two meters: the split is roughly five to one.' },
+  ]}
+  correct="ghost"
+>
+
+<SendThePacket prompt="Send the electron at the wall and watch both sides." width={0.3} />
+
+</Predict>
+
+</Step>
+
+<Step>
+
+## Where the wave gives up
+
+Real hills are smooth. This one peaks at 2 eV, and the electron still arrives with 1 eV.
+
+<FlagTheFade
+  id="up-ch40-flag-the-fade"
+  prompt="Plant the flag where the wave will stop swinging and start to fade, then send it."
+  explanation="At −0.60 nm, where the hill reaches the electron's 1.00 eV. That is chapter 7's turning point: where the cart would turn round, the wave stops swinging and starts to decay. On the way up the flank its wavelength stretches, because its kinetic energy is running out."
+/>
+
+</Step>
+
+<Step>
+
+## Thicker wall, fainter ghost
+
+Back to a flat-topped wall, 2 eV tall, and a steady stream of 1 eV electrons. You choose the thickness.
+
+<ThickenTheBarrier
+  id="up-ch40-one-percent"
+  prompt="Drag the wall's far edge to the thickness that lets exactly 1% through, then send."
+  target={0.01}
+  start={0.3}
+  explanation="About 0.58 nm. Every extra 0.1 nm cuts what gets through by the same factor, 2.8, which is why your dots fall on a straight line on the log scale. Double the wall to 1.17 nm and only 0.0025% gets through, not 0.5%."
+/>
+
+</Step>
+
+<Step>
+
+## Name it
+
+Where $E$ is below $U$, the Schrödinger equation bends the wave away from the axis instead of back, so it decays instead of swinging:
+
+$$\psi \propto e^{-\kappa x},\qquad \kappa = \frac{\sqrt{2m(U-E)}}{\hbar},\qquad T \approx e^{-2\kappa a}$$
+
+Chapter 7's turning point is where the swinging stops and the decay begins.
+
+<Recall id="up-ch40-recall-thicker" concept="quantum-tunnelling">
+  <div slot="front">A barrier lets 1% through. Make it twice as thick. Roughly how much gets through now?</div>
+
+  Far less than half: each thickness multiplies what gets through by about $e^{-2\kappa a}$, so two
+  of them multiply it twice. For a 1 eV electron and a 2 eV wall, 1% becomes 0.0025%.
+</Recall>
+
+</Step>
+
+<Step>
+
+## One atom higher
+
+A scanning tunnelling microscope holds a metal tip a fraction of a nanometre above a surface. Electrons cross the gap through a barrier 4.5 eV above their energy, and the current counts how many get through.
+
+<Estimate
+  id="up-ch40-stm-lift"
+  scenario="up-ch40-stm-lift"
+  prompt="Lift the tip from 0.5 nm to 0.6 nm above the surface, less than the width of one atom. By what factor does the current fall?"
+  explanation="About ninefold. Each 0.1 nm of gap costs a factor of $e^{2\kappa \times 0.1\,\text{nm}}$ with $\kappa \approx 11$ per nm, so a bump one atom high changes the current nearly tenfold, and the microscope maps atoms by holding the current steady. Alpha decay is the same leak from inside a nucleus, which is why half-lives range from microseconds to billions of years."
+/>
+
+## What to carry forward
+
+- **Past the turning point a wave decays; it does not stop.** Whatever is left at the far side carries on with the energy it came in with.
+- **What gets through falls exponentially with thickness**, $T \approx e^{-2\kappa a}$: a little more wall, a lot less ghost.
+
+Next: hydrogen, where the electron's standing wave fills three dimensions.
+
+</Step>
