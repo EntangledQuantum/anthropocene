@@ -1,0 +1,6 @@
+---
+// @graded — turn the voltage until the inner diffraction ring sits on a mark half its size.
+import Island, { type ShrinkTheRingsProps } from '../viz/ShrinkTheRings.tsx';
+const props = Astro.props as ShrinkTheRingsProps;
+---
+<Island client:visible {...props} />

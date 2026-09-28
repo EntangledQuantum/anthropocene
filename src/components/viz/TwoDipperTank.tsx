@@ -32,7 +32,7 @@ export default function TwoDipperTank({ prompt }: TwoDipperTankProps) {
         <span className="hud-label" style={{ marginLeft: 'auto' }}><WaterKey /></span>
       </div>}>
       <RippleStage spec={spec} stage={(capture) =>
-        <Stage x={[-1.5, 30]} y={[-11, 11]} height={340} equal
+        <Stage x={[-1.5, 41]} y={[-11, 11]} height={340} equal
           label={`Ripple tank seen from above, ${both ? 'both dippers' : 'one dipper'} running, wavelength ${TANK.lambda} cm.`}>
           {(s) => { capture(s); return <>
             <line x1={s.sx(-0.8)} x2={s.sx(-0.8)} y1={s.sy(-11)} y2={s.sy(11)} stroke={C.rule} strokeWidth={2} />

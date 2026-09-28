@@ -1,0 +1,6 @@
+---
+// @graded — swing the detector to where the echoes from every row arrive in step.
+import Island, { type CatchTheEchoProps } from '../viz/CatchTheEcho.tsx';
+const props = Astro.props as CatchTheEchoProps;
+---
+<Island client:visible {...props} />

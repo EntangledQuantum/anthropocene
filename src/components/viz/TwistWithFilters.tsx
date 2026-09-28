@@ -66,14 +66,14 @@ export default function TwistWithFilters({ id, prompt, target = 0.8, start = 2, 
           <Beam s={s} x0={30} x1={x0} y={Y} b={lit ? 1 : 0} glow={glow} />
           {lit && xs.map((x, i) => <Beam key={i} s={s} x0={x} x1={i + 1 < n ? xs[i + 1] : 590} y={Y} b={after[i]} glow={glow} />)}
           <Lamp s={s} at={[30, Y]} glow={glow} on={lit} />
-          <FieldArrow s={s} at={[92, Y + 72]} deg={0} len={22} />
+          <FieldArrow s={s} at={[92, Y + 64]} deg={0} len={22} />
           <text x={s.sx(92)} y={s.sy(Y - 48)} textAnchor="middle" fontSize={12} fill={C.faint}>vertical, in</text>
           {xs.map((x, i) => <g key={i}>
             <Filter s={s} at={[x, Y]} r={r} deg={axes[i]} slots={r > 22} />
-            {lit && <FieldArrow s={s} at={[x, Y + 72]} deg={axes[i]} len={22 * Math.sqrt(after[i])} />}
+            {lit && <FieldArrow s={s} at={[x, Y + 64]} deg={axes[i]} len={22 * Math.sqrt(after[i])} />}
           </g>)}
           <Screen s={s} at={[590, Y]} b={lit ? out : 0} glow={glow} h={96} />
-          <text x={s.sx(590)} y={s.sy(Y + 72) + 4} textAnchor="end" fontSize={12} fill={C.faint}>field after each filter</text>
+          <text x={s.sx(x0) - 26} y={s.sy(Y + 100)} fontSize={12} fill={C.faint}>field in, and after each filter</text>
         </>}
       </Stage>
       <p className="hud-label" style={{ margin: '6px 0 0' }}>

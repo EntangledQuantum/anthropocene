@@ -95,7 +95,7 @@ export default function FindTheStillCork({ id, prompt, detune = 0, start, explan
   };
 
   const clamp = (q: Vec): Vec => {
-    let x = Math.max(1.2, Math.min(28.5, q[0]));
+    let x = Math.max(1.2, Math.min(39, q[0]));
     const y = Math.max(-10.3, Math.min(10.3, q[1]));
     if (x < 2.5 && Math.abs(Math.abs(y) - 2.5) < 1.5) x = 2.5;
     return [x, y];
@@ -119,7 +119,7 @@ export default function FindTheStillCork({ id, prompt, detune = 0, start, explan
           hit={hit} />}
       </div>}>
       <RippleStage spec={spec} onFrame={onFrame} stage={(capture) =>
-        <Stage x={[-1.5, 30]} y={[-11, 11]} height={340} equal
+        <Stage x={[-1.5, 41]} y={[-11, 11]} height={340} equal
           label={`Ripple tank from above. Cork at ${p[0].toFixed(1)}, ${p[1].toFixed(1)} cm, bobbing ±${amp.toFixed(2)} cm.`}>
           {(s) => { capture(s); return <>
             <line x1={s.sx(-0.8)} x2={s.sx(-0.8)} y1={s.sy(-11)} y2={s.sy(11)} stroke={C.rule} strokeWidth={2} />

@@ -98,8 +98,8 @@ export default function TrimTheMirror({
             <Beam s={s} from={P} to={img} dash />
           </g>)}
           {task.done && <g>
-            <line x1={s.sx(-0.07)} x2={s.sx(-0.07)} y1={s.sy(least.bottom)} y2={s.sy(least.top)} stroke={C.energy} strokeWidth={1.2} />
-            <text x={s.sx(-0.12)} y={s.sy((least.bottom + least.top) / 2) + 4} textAnchor="end" fontSize={13} fill={C.energy}
+            <line x1={s.sx(0.07)} x2={s.sx(0.07)} y1={s.sy(least.bottom)} y2={s.sy(least.top)} stroke={C.energy} strokeWidth={1.2} />
+            <text x={s.sx(0.14)} y={s.sy((least.bottom + least.top) / 2) + 4} textAnchor="start" fontSize={13} fill={C.energy}
               stroke="var(--color-surface)" strokeWidth={4} paintOrder="stroke">{`${least.height.toFixed(2)} m = half of ${height.toFixed(2)} m`}</text>
           </g>}
           <Glass s={s} a={[0, bottom]} b={[0, top]} front={[-1, 1]} />

@@ -28,7 +28,7 @@ export interface MakeAMagnifierProps {
   explanation?: string;
 }
 
-const XL = -36, XR = 30, YR = 5.5, N = 9;
+const XL = -34, XR = 44, YR = 5.5, N = 9;
 
 export default function MakeAMagnifier({
   id, prompt, f = 10, R = 3.5, h = 1, start = 16, target = 2, tolerance = 0.15, explanation,
@@ -86,7 +86,7 @@ export default function MakeAMagnifier({
             {imgOn && <ArrowMark s={s} x={c.x} h={c.y} virtual={virtual} label={virtual ? 'image (virtual)' : 'image (real)'} />}
             {virtual && !imgOn && !far && <text x={s.sx(XL) + 6} y={s.sy(YR) + 16} fontSize={12} fill={C.position}>image off the page to the left</text>}
             {!virtual && !imgOn && !far && <text x={s.sx(XR) - 6} y={s.sy(YR) + 16} textAnchor="end" fontSize={12} fill={C.position}>image off the page to the right</text>}
-            <g transform={`translate(${s.sx(XR - 3)},${s.sy(0.9)})`} pointerEvents="none">
+            <g transform={`translate(${s.sx(XR - 3)},${s.sy(1.3)})`} pointerEvents="none">
               <path d="M15,0 Q0,-12 -15,0 Q0,12 15,0 Z" fill={C.surface} stroke={C.ink} strokeWidth={1.8} />
               <circle cx={-6} cy={0} r={4.5} fill={C.ink} />
               <text x={0} y={-17} textAnchor="middle" fontSize={12} fill={C.soft}>your eye</text>

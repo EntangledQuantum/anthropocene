@@ -53,7 +53,7 @@ export default function SpreadTheDippers({ id, prompt, explanation }: SpreadTheD
           hit={<>{`At ${d.toFixed(2)} cm apart the leaf is ${Math.abs(delta).toFixed(2)} cm farther from one dipper: ${waves.toFixed(2)} λ. `}{explanation}</>} />}
       </div>}>
       <RippleStage spec={spec} onFrame={onFrame} stage={(capture) =>
-        <Stage x={[-1.5, 30]} y={[-11, 11]} height={340} equal
+        <Stage x={[-1.5, 41]} y={[-11, 11]} height={340} equal
           label={`Ripple tank from above. Dippers ${d.toFixed(2)} cm apart; the leaf bobs ±${amp.toFixed(2)} cm.`}>
           {(s) => { capture(s); return <>
             <line x1={s.sx(-0.8)} x2={s.sx(-0.8)} y1={s.sy(-11)} y2={s.sy(11)} stroke={C.rule} strokeWidth={2} />

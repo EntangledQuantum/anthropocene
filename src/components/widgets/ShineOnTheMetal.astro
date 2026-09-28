@@ -1,0 +1,6 @@
+---
+// @graded — when given `id` and `targetEv`, the scene checks itself.
+import Island, { type ShineOnTheMetalProps } from '../viz/ShineOnTheMetal.tsx';
+const props = Astro.props as ShineOnTheMetalProps;
+---
+<Island client:visible {...props} />

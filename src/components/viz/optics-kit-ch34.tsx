@@ -122,6 +122,6 @@ export function AxisScale({ s, from, to, step, every, unit }: {
   return <g pointerEvents="none">
     <line x1={s.sx(from)} x2={s.sx(to)} y1={s.sy(0)} y2={s.sy(0)} stroke={C.rule} strokeWidth={1.2} />
     {ticks}
-    <text x={s.sx(to)} y={s.sy(0) + 34} textAnchor="end" fontSize={11} fill={C.faint}>{unit} from the lens</text>
+    <text x={s.sx(from)} y={s.sy(0) + 52} fontSize={11} fill={C.faint}>distance from the lens ({unit})</text>
   </g>;
 }
