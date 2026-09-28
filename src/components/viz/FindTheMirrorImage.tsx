@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { floorMirror, mirrorImage, reflectionPoint } from '../../lib/physics/optics.ts';
-import { C, CheckBar, Handle, SceneCard, Stage, useTask, type Vec } from './scene.tsx';
+import { C, CheckBar, Handle, SceneCard, Stage, useTask, type StageApi, type Vec } from './scene.tsx';
 import { Beam, Glass } from './optics-kit-ch34.tsx';
 
 /**
@@ -23,7 +23,7 @@ export interface FindTheMirrorImageProps {
   explanation?: string;
 }
 
-function EyeMark({ s, at, toward, label }: { s: Parameters<typeof Beam>[0]['s']; at: Vec; toward: Vec; label: string }) {
+function EyeMark({ s, at, toward, label }: { s: StageApi; at: Vec; toward: Vec; label: string }) {
   const cx = s.sx(at[0]), cy = s.sy(at[1]);
   const a = (Math.atan2(s.sy(toward[1]) - cy, s.sx(toward[0]) - cx) * 180) / Math.PI;
   return <g pointerEvents="none">
