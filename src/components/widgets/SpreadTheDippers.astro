@@ -1,0 +1,6 @@
+---
+// @graded — with `id`, the scene checks itself: slide one dipper until the leaf floats still.
+import Island, { type SpreadTheDippersProps } from '../viz/SpreadTheDippers.tsx';
+const props = Astro.props as SpreadTheDippersProps;
+---
+<Island client:visible {...props} />

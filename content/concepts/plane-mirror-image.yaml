@@ -7,4 +7,4 @@ misconceptions:
   - id: 'up-ch34-step-back-see-more'
     name: 'Step back from a mirror and you see more of yourself.'
     signal: 'Says a small bathroom mirror would show your whole body if you stood far enough away.'
-    correction: 'The part of you a mirror shows is fixed by where its edges are, not by where you stand. The sight line to each edge reflects and lands halfway between that edge''s height doubled and your eye, whatever the distance, because the image steps back exactly as far as you do. What does change with distance is how much of the room behind you shows.'
+    correction: 'The part of you a mirror shows is fixed by where its edges are, not by where you stand. The sight line to each edge reflects back onto your body at twice the edge''s height minus your eye height, whatever the distance, because your image steps back exactly as far as you do. What does change with distance is how much of the room behind you shows.'
