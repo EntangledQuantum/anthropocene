@@ -1,6 +1,6 @@
 title: 'Sources of Magnetic Field'
-question: 'A wire through a loop that is not circular: can Ampere still give B?'
+question: 'A wire through a loop that is not circular: can Ampère still give B?'
 blurb: >-
-  Currents make magnetic fields. Ampere is the circulation cousin of Gauss, and it is always true but only sometimes useful - symmetry decides which.
+  Currents make magnetic fields that circle them. Ampère's law is the circulation cousin of Gauss's: it counts only the current threading a loop, it is always true, and symmetry decides when it hands you the field.
 order: 28
-status: 'draft'
+status: 'live'

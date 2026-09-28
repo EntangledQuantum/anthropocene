@@ -59,10 +59,9 @@ export default function SagTheBattery({ prompt, emf = 1.5, r = 0.5, bulb = 3, sl
             <line x1={x} x2={x} y1={206} y2={RAIL.bot} stroke={lit ? C.soft : C.ghost} strokeWidth={2} strokeDasharray={lit ? undefined : '4 4'} />
             {lit ? <Lamp cx={x} cy={186} glow={bright} />
               : <circle cx={x} cy={186} r={18} fill="none" stroke={C.ghost} strokeDasharray="4 4" />}
-            {!lit && <text x={x} y={232} textAnchor="middle" fontSize={12} fill={C.faint}>empty</text>}
           </g>;
         })}
-        <text x={RAIL.x1} y={RAIL.bot - 8} textAnchor="end" fontSize={13} fill={C.soft}>{bulb} Ω bulbs, in parallel</text>
+        <text x={RAIL.x1} y={RAIL.top - 10} textAnchor="end" fontSize={13} fill={C.soft}>{bulb} Ω bulbs, in parallel</text>
       </CellLoop>
       <Stage x={[0, AXIS_I]} y={[0, emf * 1.4]} height={170}
         axes={{ x: 'current (A)', y: 'terminal voltage (V)', yTicks: [0, 0.5, 1, 1.5, 2].filter((v) => v <= emf * 1.4) }}
