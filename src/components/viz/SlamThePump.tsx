@@ -127,7 +127,7 @@ export default function SlamThePump({ id, prompt, target = 430, explanation }: S
           return <PxArrow key={f} x1={x} y1={BY - BH / 2 - 2} x2={x} y2={BY - BH / 2 - 26} width={2}
             label={f === 0.3 ? 'heat out' : undefined} anchor="end" dx={-8} dy={0} />;
         })}
-        <Handle s={api} at={[handleV + 70 / PXL, 0.5]} onChange={(p) => drag(p[0] - 70 / PXL)} step={0.01}
+        <Handle s={api} at={[handleV + 70 / PXL, 0.5]} onChange={(p) => drag(p[0] - 70 / PXL)} step={0.05}
           clamp={(p) => [p[0], 0.5]} color={C.ink} label="Pump handle: drag left to squeeze" />
 
         {/* the same run on the p–V plane, sharing the volume axis */}
