@@ -1,45 +1,54 @@
 # University Physics — how to continue
 
 Handoff note for the next orchestrator or agent picking this up cold. Last rewritten
-2026-09-28, when the first orchestrator wrapped up with chapters 1–42 done.
+2026-10-02, when chapters 43 and 44 landed and the final pass was done.
 
 ## 0. Where it stands — read this first
 
 | Chapters | State |
 |---|---|
-| **1–42** | **Done.** Two focused lessons each, reviewed and committed one chapter at a time (`git log --oneline \| grep "university-physics ch"`). |
-| — | (Chapters 35–39 were finished by their agents and committed after this note was first written. The review recipe for any chapter whose agent was cut off: run `npm run content:check`, `npx vitest run src/lib/physics`, and `bash scripts/preview/preview.sh chNN /learn/university-physics/<slug>/<lesson>`, read the screenshots, drive the graded scenes, fix what is broken, set `chapter.yaml` to `status: 'live'` and commit as `university-physics chNN done: …`.) |
-| **43–44** | **Not started.** Launch a chapter agent for each. |
+| **1–44** | **Done.** Two focused lessons each (88 lessons), reviewed in a browser and committed one chapter at a time (`git log --oneline \| grep "university-physics ch"`). |
 
-**Gate at handoff (2026-09-28):** `npm run content:check` 0 errors / 0 gaps, `npm test` 2000 tests in 95 files passing, `npm run build` complete. The only `tsc` error is the known out-of-scope `src/lib/numerics/sph.ts(298)`.
+**Gate (2026-10-02):** `npm run content:check` 0 errors / 0 warnings / 0 gaps, `npm test`
+2059 tests in 98 files passing, `npm run build` complete (191 pages). The only `tsc` error is
+the known out-of-scope `src/lib/numerics/sph.ts(298)`.
 
-**Open items for the final pass** (after 43 and 44 land):
-1. Run the whole gate: `npm run content:check && npm test && npm run build`. Fix any gap
-   where a `requires:` id guessed by an agent does not match the id another chapter created
-   (`content:check` lists them).
-2. Chapter 19's `SlamThePump`: the plunger moves 0.01 L per key press, so the pump step
-   cannot be passed with the keyboard alone. Give it a coarser key step or a "stroke" key.
-3. Spot-check screenshots of a sample of lessons across the path, especially any that lean
-   on graphs, against `AGENTS.md` §2a (including the new "Graphs" rules).
-4. Tick the chapters in `UNIVERSITY-PHYSICS-PLAN.md` and update this table.
+**Final pass, done:**
+- Chapter 19's `SlamThePump` moves 0.05 L per key press, so a quick four-press stroke reaches
+  the target by keyboard alone (driven in Playwright: 445 K, Solved).
+- §2a audit across the path: no `<SketchCurve>` anywhere, no lesson built on a bare `<Plot>`,
+  every lesson 5–9 steps. Screenshots of graph-adjacent lessons (chapters 2, 12, 16, 25, 39)
+  show the object first with the graph as a live companion.
+- `<Estimate>` readouts now show three significant figures and the unit ("17,200 years").
+- `blackbody-radiation` is owned by chapter 44 lesson 2 (the stretching-light step names
+  Wien's law), which closed the last gap.
+
+**What is worth doing next, if anyone continues** (none of it is broken):
+1. A human read-through of the later chapters (30–44). Their agents drove every graded
+   scene, but the orchestrator reviewed them by screenshot, not by playing every step.
+2. Chapter 43's drag handlers were exercised by keyboard only; try them with a mouse.
+3. The curriculum lists ~12 lessons per chapter and this pass shipped the two flagship
+   lessons per chapter. A third lesson per chapter is the obvious growth path; brief it with
+   `AGENT-BRIEF.md` exactly as before, and keep §2a's "same move twice" rule across the
+   whole chapter.
 
 **To resume, paste this into a fresh session:**
 
-> Continue the University Physics rewrite in this repo. Read
-> `docs/orchestrator-university/CONTINUE-HERE.md` first: §0 has the exact state. Chapters
-> 1–42 are done. For 43–44, launch one chapter agent each (about eight at a time) using
-> `docs/orchestrator-university/AGENT-BRIEF.md` and the hooks in §0. Review every chapter in
-> a browser with `scripts/preview/preview.sh` before committing it. Then do the final pass
-> in §0. Follow `AGENTS.md` §2a strictly: one decision per screen, act on real objects, no
-> repeated sketch-the-graph, graphs live and secondary. Commit and push to the current
-> branch as you go.
+> Continue the University Physics path in this repo. Read
+> `docs/orchestrator-university/CONTINUE-HERE.md` first: §0 has the exact state. All 44
+> chapters have two focused lessons and the gate is green. Pick up "What is worth doing
+> next" in §0: for new lessons, launch one chapter agent each (about eight at a time) using
+> `docs/orchestrator-university/AGENT-BRIEF.md`, and review every chapter in a browser with
+> `scripts/preview/preview.sh` before committing it. Follow `AGENTS.md` §2a strictly: one
+> decision per screen, act on real objects, no repeated sketch-the-graph, graphs live and
+> secondary. Commit and push to the current branch as you go.
 
-**How each remaining chapter was briefed:** every agent prompt was
+**How each chapter was briefed:** every agent prompt was
 "read `docs/orchestrator-university/AGENT-BRIEF.md` and follow it exactly", plus one
 paragraph naming the chapter directory and slug, two lesson ideas with an opening bet, the
 physics lib to write and the claims its tests must pin, the concept ids to `require`, the
-preview tag `chNN` and widget ids `up-chNN-…`. Copy that shape. Suggested hooks for the
-unfinished ones:
+preview tag `chNN` and widget ids `up-chNN-…`. Copy that shape. The hooks used for the last
+chapters, as examples:
 - **40 Wave functions:** particle in a box (raise the energy line until ψ fits both walls;
   E₁ > 0; |ψ|² node for n = 2), then tunnelling (thicken a barrier, ln T falls ≈ −2κ;
   chapter 7's turning point is where the wave starts to decay). Lib: Numerov shooting.
