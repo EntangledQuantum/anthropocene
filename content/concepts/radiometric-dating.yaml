@@ -1,0 +1,4 @@
+title: 'Radiometric dating'
+blurb: 'Compare how much of a radioactive nuclide a sample has with how much it started with, and count the halvings. Carbon-14, with a half-life of 5,730 years, dates things that were once alive.'
+notation: 't = t_{1/2}\,\log_2\!\frac{N_0}{N}'
+tags: ['up-ch43']

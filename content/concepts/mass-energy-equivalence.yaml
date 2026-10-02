@@ -1,0 +1,13 @@
+title: 'Mass–energy equivalence'
+blurb: 'Mass and energy are one quantity in two units. When a reaction releases energy Q, its products weigh less than its reactants by exactly Q/c².'
+notation: 'E = mc^2, \qquad Q = \left(\textstyle\sum m_{\text{before}} - \sum m_{\text{after}}\right)c^2'
+tags: ['up-ch43']
+misconceptions:
+  - id: 'up-ch43-mass-conserved'
+    name: 'In a reaction mass is conserved, so the products weigh exactly what the reactants weighed.'
+    signal: 'Expects a balance holding the reactants and the products to stay level.'
+    correction: 'Only the number of nucleons and the total charge are conserved. The energy that leaves takes mass with it: 17.6 MeV of energy is 17.6 MeV/c², or 0.0189 u, of missing mass.'
+  - id: 'up-ch43-glue-weighs'
+    name: 'A bound nucleus weighs more than its parts, because the binding adds something.'
+    signal: 'Puts the extra mass on the side of the more tightly bound nuclei.'
+    correction: 'Binding is energy that was given off when the parts came together, so the bound nucleus is lighter. Helium-4 is 0.76% lighter than two protons and two neutrons.'

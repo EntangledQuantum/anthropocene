@@ -1,0 +1,6 @@
+---
+// @graded — slide the rider until D + T balances He-4 + n, then let go.
+import Island, { type WeighTheFusionProps } from '../viz/WeighTheFusion.tsx';
+const props = Astro.props as WeighTheFusionProps;
+---
+<Island client:visible {...props} />

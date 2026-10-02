@@ -1,0 +1,6 @@
+---
+// @graded — when given `id` and `alarmFor`, set the stopwatch alarm and the scene checks itself.
+import Island, { type DecayBoxProps } from '../viz/DecayBox.tsx';
+const props = Astro.props as DecayBoxProps;
+---
+<Island client:visible {...props} />

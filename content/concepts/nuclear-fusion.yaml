@@ -1,0 +1,9 @@
+title: 'Nuclear fusion'
+blurb: 'Light nuclei join into heavier ones lower in the valley. Deuterium and tritium make helium-4 and a neutron, releasing 17.6 MeV: per nucleon, several times what fission gives.'
+notation: '{}^{2}\mathrm{H} + {}^{3}\mathrm{H} \to {}^{4}\mathrm{He} + n, \quad Q = 17.6\ \text{MeV}'
+tags: ['up-ch43']
+misconceptions:
+  - id: 'up-ch43-opposites-cancel'
+    name: 'Fusion and fission are opposites, so if one releases energy the other must cost it.'
+    signal: 'Expects only one of joining and splitting to be able to pay.'
+    correction: 'Each is the opposite of the other only for the same nuclei. Fusion runs on light nuclei and fission on heavy ones, and both move toward iron at the bottom of the valley, so both release energy.'

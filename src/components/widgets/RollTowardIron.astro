@@ -1,0 +1,6 @@
+---
+// Ungraded: the valley of binding, with a nucleus to drag from carbon to uranium.
+import Island, { type RollTowardIronProps } from '../viz/RollTowardIron.tsx';
+const props = Astro.props as RollTowardIronProps;
+---
+<Island client:visible {...props} />

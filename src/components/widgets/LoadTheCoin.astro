@@ -1,0 +1,6 @@
+---
+// @graded — load the per-tick decay chance so the box halves in ten ticks.
+import Island, { type LoadTheCoinProps } from '../viz/LoadTheCoin.tsx';
+const props = Astro.props as LoadTheCoinProps;
+---
+<Island client:visible {...props} />

@@ -1,0 +1,4 @@
+title: 'Nuclear fission'
+blurb: 'A heavy nucleus splits into two middle-sized ones. Both fragments sit deeper in the valley than the parent, so about 0.9 MeV per nucleon, about 200 MeV per uranium nucleus, is released.'
+notation: 'n + {}^{235}\mathrm{U} \to {}^{141}\mathrm{Ba} + {}^{92}\mathrm{Kr} + 3n, \quad Q \approx 173\ \text{MeV}'
+tags: ['up-ch43']

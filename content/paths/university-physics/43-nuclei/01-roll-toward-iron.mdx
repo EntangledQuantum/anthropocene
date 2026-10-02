@@ -1,0 +1,115 @@
+---
+title: 'Roll toward iron'
+blurb: 'Split uranium, weigh a fusion, and read one valley that explains why both release energy and why stars stop at iron.'
+order: 1
+tier: 'core'
+minutes: 10
+teaches:
+  - 'nuclear-binding-energy'
+  - 'mass-energy-equivalence'
+  - 'nuclear-fusion'
+  - 'nuclear-fission'
+requires:
+  - 'coulombs-law'
+status: 'live'
+updated: 2026-10-02
+---
+
+<Step>
+
+The Sun shines by fusing hydrogen into helium. A reactor runs by splitting uranium into two smaller nuclei.
+
+<Predict
+  id="up-ch43-both-pay"
+  question="Joining nuclei and splitting them are opposite processes. Can both release energy?"
+  options={[
+    { key: 'one', misconception: 'up-ch43-opposites-cancel', label: 'No: if joining releases energy, splitting must cost the same', why: 'That holds for the same nuclei run backwards. But the Sun joins the lightest nuclei and the reactor splits the heaviest, and below they sit on opposite slopes of one valley.' },
+    { key: 'any', misconception: 'up-ch43-any-reaction-pays', label: 'Yes: any nuclear reaction releases energy', why: 'Drag the nucleus below to iron. Fusing it with a twin costs 23 MeV, and so does splitting it. Nuclear does not mean free.' },
+    { key: 'ends', label: 'Yes, but only light nuclei joining and heavy nuclei splitting', why: 'Right. Both moves end with middle-sized nuclei, which hold every nucleon more tightly. Drag the nucleus below and watch which arrow turns solid.' },
+    { key: 'more', label: 'Yes, and splitting pays more for each nucleon involved', why: 'Both pay, but per nucleon it is the other way round: D–T fusion releases 3.5 MeV per nucleon, uranium fission under 1. One fission releases more in total only because 236 nucleons take part.' },
+  ]}
+  correct="ends"
+>
+
+<RollTowardIron prompt="Drag the nucleus from carbon to uranium and watch which move pays." start={16} />
+
+</Predict>
+
+</Step>
+
+<Step>
+
+## Cut where it pays most
+
+Uranium-235 swallows a neutron and becomes a quivering drop of 236 nucleons. Then it splits in two.
+
+<SplitTheUranium
+  id="up-ch43-split-for-most"
+  prompt="Drag the cut, then split. Find the split that frees the most energy."
+  explanation="Down the middle: about 183 MeV. Both halves land near 8.4 MeV per nucleon, 0.8 deeper than uranium’s 7.6, and 236 nucleons each dropping 0.8 MeV is the payout. Real uranium splits lopsided, near 95 and 140, because closed shells the drop model leaves out favour those sizes, and it pays almost as much."
+/>
+
+</Step>
+
+<Step>
+
+## Weigh what is left
+
+Deuterium and tritium fuse into helium-4 and a neutron, releasing 17.6 MeV. The reactants sit on the left pan, the products on the right.
+
+<WeighTheFusion
+  id="up-ch43-weigh-the-fusion"
+  prompt="Slide the rider so the beam will stay level, then let go."
+  explanation="17.6 MeV/c² on the products’ side: they are 0.0189 u lighter than what went in. No nucleon was destroyed; every one is now held more tightly, and the energy that left carried that mass away with it."
+/>
+
+</Step>
+
+<Step>
+
+## Name it
+
+The mass a nucleus is missing, times $c^2$, is its binding energy:
+
+$$B = \left(Z m_\text{H} + N m_n - M\right)c^2$$
+
+$B/A$ is the depth of the valley you dragged the nucleus along. A reaction releases $Q = \Delta m\,c^2$, exactly what its nucleons gain by settling deeper.
+
+<Recall id="up-ch43-recall-fission-pays" concept="nuclear-binding-energy">
+  <div slot="front">Pulling a nucleus apart always costs energy. So why does splitting uranium release it?</div>
+
+  The split does not stop at loose nucleons. The two fragments hold each nucleon about 0.8 MeV
+  more tightly than uranium did, so 236 nucleons each settle 0.8 MeV deeper: nearly 200 MeV.
+</Recall>
+
+</Step>
+
+<Step>
+
+## Why stars stop at iron
+
+A heavy star burns one fuel after another in its core, and each fuel is the ash of the last. The question is what each stage is worth.
+
+<RankOrder
+  id="up-ch43-rank-star-fuels"
+  prompt="Rank these core reactions by the energy released per nucleon of fuel."
+  lowLabel="least, or costs"
+  highLabel="most"
+  items={[
+    { key: 'h', label: 'Four hydrogen-1 into helium-4', why: '6.7 MeV per nucleon: from the rim of the valley into the deep helium pothole.' },
+    { key: 'he', label: 'Three helium-4 into carbon-12', why: '0.61 MeV per nucleon. Helium already sits deep, and carbon is only a little deeper.' },
+    { key: 'si', label: 'Two silicon-28 into nickel-56', why: '0.20 MeV per nucleon. Nickel is on the floor, and silicon was nearly there.' },
+    { key: 'fe', label: 'Two iron-56 into tellurium-112', why: 'It costs about 0.37 MeV per nucleon. From the floor, every move climbs.' },
+  ]}
+  correct={['fe', 'si', 'he', 'h']}
+  explanation="Each stage pays far less than the one before. Once the core is iron it has no fuel at all: nothing it can fuse or split lands deeper. The core stops holding itself up, collapses, and the star explodes."
+/>
+
+## What to carry forward
+
+- **Binding is missing mass.** A nucleus weighs less than its parts by $B/c^2$, and a reaction releases whatever mass its products lose.
+- **Everything rolls toward iron.** Light nuclei pay by fusing, heavy ones by splitting, and iron, on the floor, pays neither way.
+
+Next: heavy nuclei do not wait to be split. They decay on their own, at random, and the randomness keeps perfect time.
+
+</Step>

@@ -1,0 +1,116 @@
+---
+title: 'Half-life is a coin, not a timer'
+blurb: 'Watch a box of nuclei decay at random, load the coin that sets a half-life, catch the moment a tenth are left, and date charcoal by counting halvings.'
+order: 2
+tier: 'core'
+minutes: 10
+teaches:
+  - 'radioactive-decay-law'
+  - 'half-life'
+  - 'radiometric-dating'
+requires:
+  - 'nuclear-binding-energy'
+  - 'quantum-tunnelling'
+status: 'live'
+updated: 2026-10-02
+---
+
+<Step>
+
+A sealed box holds 200 radioactive nuclei of a kind with a 10-second half-life. You wait 20 seconds.
+
+<Predict
+  id="up-ch43-two-half-lives"
+  question="How many nuclei are still there?"
+  options={[
+    { key: 'zero', misconception: 'up-ch43-half-life-timer', label: 'None: two halves make a whole', why: 'That treats the half-life as a fuse burning down. Run the box: after 20 s about 50 are still there, and a few outlast the whole minute.' },
+    { key: 'fifty', label: 'About 50', why: 'Right. The first 10 s take half of 200; the next 10 s take half of the 100 that are left.' },
+    { key: 'hundred', misconception: 'up-ch43-overdue', label: 'About 100: the tough ones that survived the first half-life last longer', why: 'Survivors are not tougher. Every live nucleus faces the same chance every second, so the second 10 s halve the box again.' },
+    { key: 'unknowable', label: 'No way to say: every decay is random', why: 'Each decay is random, and yet the count is not: 200 independent coins land near 50 nearly every time. Try a new box and run it again.' },
+  ]}
+  correct="fifty"
+>
+
+<DecayBox prompt="Start the clock. Then try a new box and run it again." />
+
+</Predict>
+
+</Step>
+
+<Step>
+
+## Load the coin
+
+Now run the box in ticks. On every tick each live nucleus flips the same coin, and if it lands one way, that nucleus decays.
+
+<LoadTheCoin
+  id="up-ch43-load-the-coin"
+  prompt="Set the chance per tick so that half the box is gone after 10 ticks, then run."
+  explanation="6.7% a tick, not 5%. Each tick takes its share of whoever is still there, so the losses shrink as the box empties: at 5%, ten ticks leave 0.95¹⁰ = 60%. The coin that halves the box in ten ticks solves (1 − p)¹⁰ = ½."
+/>
+
+</Step>
+
+<Step>
+
+## Name it
+
+A fixed chance per unit time, $\lambda$, for every nucleus, is the whole law:
+
+$$N = N_0\,e^{-\lambda t} = N_0\left(\tfrac12\right)^{t/t_{1/2}}, \qquad t_{1/2} = \frac{\ln 2}{\lambda}$$
+
+The half-life is not a lifetime. It is how long the same coin takes to halve whatever is there.
+
+<Recall id="up-ch43-recall-overdue" concept="radioactive-decay-law">
+  <div slot="front">A nucleus has survived five half-lives. What is its chance of decaying during the next one?</div>
+
+  50%, the same as a nucleus made a moment ago. Nothing inside it counts time, so no nucleus is
+  ever overdue.
+</Recall>
+
+</Step>
+
+<Step>
+
+## Set the alarm
+
+A fresh box of 200, half-life 10 s again. You want to catch the moment only 20 are left.
+
+<DecayBox
+  id="up-ch43-alarm-twenty"
+  prompt="Set the stopwatch alarm for when 20 will be left, then start the clock."
+  alarmFor={20}
+  seed={48}
+  explanation="About 33 s. 200 → 100 → 50 → 25 takes three half-lives, 30 s, and 25 down to 20 takes another third of one: 10 s × log₂ 10 = 33.2 s. The box’s own count wanders a few either side of 20, because 200 coins follow the law closely but never exactly."
+/>
+
+</Step>
+
+<Step>
+
+## Count the halvings
+
+A living tree keeps topping up its carbon-14 from the air. When it dies the top-ups stop, and the coin flipping runs on alone with a half-life of 5,730 years.
+
+<Estimate
+  id="up-ch43-charcoal-age"
+  scenario="up-ch43-charcoal-age"
+  prompt="Charcoal from an old hearth holds 1/8 of the carbon-14 that living wood holds. How old is it?"
+  explanation="About 17,200 years: 1/8 is three halvings, 3 × 5,730. You never needed to know how much charcoal there was, or which atoms would go first."
+/>
+
+<Recall id="up-ch43-recall-two-half-lives" concept="half-life">
+  <div slot="front">What fraction of a radioactive sample is left after two half-lives? After ten?</div>
+
+  A quarter, then about a thousandth ($2^{-10}$). Each half-life halves what is there, so the
+  sample thins out forever instead of running out on schedule.
+</Recall>
+
+## What to carry forward
+
+- **Each nucleus is a coin.** The same chance every second, whatever its age, and nothing says which goes next. In alpha decay the coin is chapter 40's tunnelling: the alpha particle hits the wall again and again with the same tiny chance of getting through.
+- **The count halves on a schedule.** Two half-lives leave a quarter, and the half-life is the same from any starting point.
+
+Next: every decay must balance its books, and the ledger has more columns than charge and energy.
+
+</Step>

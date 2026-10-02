@@ -1,0 +1,13 @@
+title: 'Half-life'
+blurb: 'The time in which any sample of a radioactive nuclide loses half of whatever it has. It is the same for the first half as for the next, so two half-lives leave a quarter, not nothing.'
+notation: 't_{1/2} = \frac{\ln 2}{\lambda}, \qquad N = N_0 \left(\tfrac12\right)^{t/t_{1/2}}'
+tags: ['up-ch43']
+misconceptions:
+  - id: 'up-ch43-half-life-timer'
+    name: 'Half-life is half the lifetime, so the sample is gone after two half-lives.'
+    signal: 'Expects zero nuclei left after two half-lives.'
+    correction: 'Each half-life takes half of what is still there. After two, a quarter is left; after ten, about a thousandth. It never reaches a planned end.'
+  - id: 'up-ch43-linear-decay'
+    name: 'If half goes in ten ticks, then 5% goes each tick.'
+    signal: 'Divides the half by the half-life to get a fixed loss per tick.'
+    correction: 'Each tick takes a share of the nuclei still there, not of the original count. At 5% a tick, ten ticks leave 0.95¹⁰ = 60%. Halving in ten ticks needs 6.7% a tick.'

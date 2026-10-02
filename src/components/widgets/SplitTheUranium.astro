@@ -1,0 +1,6 @@
+---
+// @graded — drag the cut through uranium-236 and split it for the most energy.
+import Island, { type SplitTheUraniumProps } from '../viz/SplitTheUranium.tsx';
+const props = Astro.props as SplitTheUraniumProps;
+---
+<Island client:visible {...props} />

@@ -1,0 +1,9 @@
+title: 'The radioactive decay law'
+blurb: 'Every nucleus of a radioactive kind has the same fixed chance per second of decaying, whatever its age. Nothing decides which one goes next; the count falls by the same fraction in every equal stretch of time.'
+notation: '\frac{dN}{dt} = -\lambda N, \qquad N = N_0 e^{-\lambda t}'
+tags: ['up-ch43']
+misconceptions:
+  - id: 'up-ch43-overdue'
+    name: 'A nucleus that has waited a long time is overdue and more likely to decay soon.'
+    signal: 'Picks the oldest nuclei as the next to go, or expects survivors to be either fragile or tough.'
+    correction: 'A nucleus has no clock inside. One that has survived five half-lives has exactly the same 50% chance of surviving the next one as a nucleus made a moment ago.'

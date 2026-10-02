@@ -1,0 +1,13 @@
+title: 'Nuclear binding energy'
+blurb: 'A nucleus weighs less than its protons and neutrons apart. The missing mass, times c², is the energy that holds it together; per nucleon it traces a valley whose floor is iron and nickel, about 8.8 MeV deep.'
+notation: 'B = \left(Z m_{\mathrm{H}} + N m_n - M\right)c^2'
+tags: ['up-ch43']
+misconceptions:
+  - id: 'up-ch43-any-reaction-pays'
+    name: 'Any nuclear reaction releases energy, because nuclei are full of energy.'
+    signal: 'Expects splitting iron, or fusing two heavy nuclei, to release energy too.'
+    correction: 'A rearrangement pays only when the products hold their nucleons more tightly than the reactants did. Iron already sits on the floor of the valley, so splitting it and fusing it both cost energy.'
+  - id: 'up-ch43-breaking-releases'
+    name: 'Fission releases energy because breaking the nucleus apart frees the energy stored in it.'
+    signal: 'Thinks pulling nucleons apart releases energy, as if bonds were stores of energy.'
+    correction: 'Pulling a nucleus fully apart costs its whole binding energy, about 1,800 MeV for uranium. Fission pays because the two fragments are more tightly bound than the uranium was, so reassembling the nucleons into them gives back more than the split costs.'
