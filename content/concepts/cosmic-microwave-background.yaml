@@ -1,0 +1,10 @@
+title: 'The cosmic microwave background'
+blurb: 'Light released everywhere when the universe cooled to about 3000 K and became transparent, stretched about 1100 times since. It arrives from every direction as a 2.7 K glow peaking near 1 mm.'
+notation: 'T_{\text{now}} = \frac{T_{\text{then}}}{1+z} \approx \frac{3000\ \text{K}}{1100} \approx 2.7\ \text{K}'
+tags:
+  - 'up-ch44'
+misconceptions:
+  - id: 'up-ch44-cmb-from-a-place'
+    name: 'The microwave background comes from the place where the Big Bang happened.'
+    signal: 'Expects the glow to come from one direction.'
+    correction: 'The hot gas filled all of space, so its light arrives from every direction equally. We see the shell of it whose light has just had time to reach us.'

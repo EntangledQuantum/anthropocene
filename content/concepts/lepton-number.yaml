@@ -1,0 +1,10 @@
+title: 'Lepton number'
+blurb: 'Electrons, muons and their neutrinos count +1; their antiparticles count −1. The total never changes, and neither does the count for each family separately, which is why β decay must emit an antineutrino and not a neutrino.'
+notation: '\sum L_{\text{before}} = \sum L_{\text{after}},\qquad L_{e^-} = L_{\nu_e} = +1,\ L_{\bar\nu_e} = -1'
+tags:
+  - 'up-ch44'
+misconceptions:
+  - id: 'up-ch44-any-neutrino-will-do'
+    name: 'A neutrino is a neutrino: any neutral, nearly massless particle balances the books.'
+    signal: 'Completes n → p + e⁻ + ? with νₑ or γ.'
+    correction: 'The electron already brings lepton number +1 out of a neutron that had 0. Only a particle with −1, the antineutrino, brings the total back to 0.'

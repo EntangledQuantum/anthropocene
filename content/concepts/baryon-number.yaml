@@ -1,0 +1,10 @@
+title: 'Baryon number'
+blurb: 'Protons and neutrons count +1, their antiparticles −1, everything else 0. In every reaction ever seen the total is the same before and after, which is why the proton, the lightest particle that counts +1, does not decay.'
+notation: '\sum B_{\text{before}} = \sum B_{\text{after}},\qquad B_p = B_n = +1'
+tags:
+  - 'up-ch44'
+misconceptions:
+  - id: 'up-ch44-charge-and-energy-suffice'
+    name: 'If charge and energy balance, a reaction can happen.'
+    signal: 'Accepts p → e⁺ + γ because both sides carry charge +1 and the proton has energy to spare.'
+    correction: 'Charge and energy are only two of the counts. Baryon number goes 1 → 0 and lepton number 0 → −1, and nobody has ever seen a proton decay.'

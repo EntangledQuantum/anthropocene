@@ -1,0 +1,6 @@
+---
+// @graded — when given `id`, the scene checks itself: fire at the least energy that makes an antiproton.
+import Island, { type CollideForAntiprotonProps } from '../viz/CollideForAntiproton.tsx';
+const props = Astro.props as CollideForAntiprotonProps;
+---
+<Island client:visible {...props} />

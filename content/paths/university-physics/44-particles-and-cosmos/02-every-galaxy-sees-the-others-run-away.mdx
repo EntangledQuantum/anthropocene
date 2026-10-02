@@ -1,0 +1,148 @@
+---
+title: 'Every galaxy sees the others run away'
+blurb: 'Stand on any galaxy of an expanding universe, read its age off the speeds, and turn 3000 K light into the 2.7 K microwave sky by stretching it.'
+order: 2
+tier: 'core'
+minutes: 11
+teaches:
+  - 'hubble-law'
+  - 'cosmological-redshift'
+  - 'cosmic-microwave-background'
+requires:
+  - 'doppler-effect'
+  - 'photon'
+  - 'em-spectrum'
+  - 'blackbody-radiation'
+status: 'live'
+updated: 2026-10-02
+---
+
+<Step>
+
+Every distant galaxy is moving away from us, and the farther it is, the faster it goes. The
+universe has been doing this for about 14 billion years.
+
+<Predict
+  id="up-ch44-where-is-the-centre"
+  question="So where is the centre it is all flying away from?"
+  options={[
+    { key: 'bang', misconception: 'up-ch44-big-bang-explosion', label: 'At the spot where the Big Bang went off, somewhere far away', why: 'Then galaxies on the near side of that spot would recede slowly and those beyond it fast. Stand on galaxies below: from every one the pattern is the same.' },
+    { key: 'us', misconception: 'up-ch44-we-are-the-centre', label: 'Near us: everything is moving away from us', why: 'Stand on any other galaxy below. It sees exactly what we see, every arrow pointing away from it.' },
+    { key: 'none', label: 'Nowhere: every galaxy sees all the others recede the same way', why: 'Right. Every distance on the sheet grows by the same factor, so every galaxy is the centre of its own view and none is the centre of the sheet.' },
+  ]}
+  correct="none"
+>
+
+<StandOnAnyGalaxy prompt="Stand on a few galaxies, near the middle and at the edges." />
+
+</Predict>
+
+</Step>
+
+<Step>
+
+## Speed belongs to the pair
+
+Q sits near a corner of the sheet. How fast it recedes depends on who is asking.
+
+<StandOnAnyGalaxy
+  id="up-ch44-q-flees-fastest"
+  target={6}
+  prompt="Stand on the galaxy that sees Q flee fastest."
+  explanation="The galaxy farthest from Q, about 480 Mpc away, sees it recede at about 33,600 km/s. Speed is not a property of Q. It belongs to the pair, and it is proportional to the distance between them, from wherever you stand."
+/>
+
+</Step>
+
+<Step>
+
+## Name it
+
+Every distance grows by the same fraction each second, so from every galaxy speed is
+proportional to distance. That is **Hubble's law**, and its slope is the Hubble constant; a
+megaparsec is 3.3 million light-years.
+
+$$v = H_0\, d,\qquad H_0 \approx 70\ \text{km/s per Mpc}$$
+
+<Recall id="up-ch44-recall-hubble" concept="hubble-law">
+  <div slot="front">Astronomers in a galaxy 500 Mpc from us measure the Milky Way's motion. What do they see?</div>
+
+  The Milky Way receding from them at about 35,000 km/s, exactly as fast as we see them recede.
+  Each sees the other run away. Neither is the centre.
+</Recall>
+
+</Step>
+
+<Step>
+
+## Run the film backwards
+
+Suppose every galaxy has always moved at today's speed. B is nearly twice as far from us as A.
+
+<RewindTheGalaxies
+  id="up-ch44-when-they-meet"
+  prompt="Run the clock back to the moment the galaxies meet."
+  explanation="14.0 billion years, for A and B at once. B is farther but recedes faster in the same proportion, so every pair takes d/v = 1/H₀ to close. Nothing converged on a point: the whole sheet was dense everywhere at once. The measured age, 13.8 billion years, is close by a near coincidence: the expansion slowed for billions of years and has been speeding up since."
+/>
+
+</Step>
+
+<Step>
+
+## Light stretches too
+
+The sheet stretches whatever crosses it, light included. Light left glowing 3000 K gas
+everywhere at once, when the young universe cooled enough to become transparent.
+
+<StretchTheLight
+  id="up-ch44-stretch-to-microwaves"
+  prompt="Stretch the universe until this light is today's 2.7 K sky."
+  explanation="About 1100 times. The wavelength grew 1100-fold, from about 1 µm to about 1 mm, and each photon kept 1/1100 of its energy. That is the cosmic microwave background: leftover light from a hot universe, arriving from every direction because the hot gas was everywhere."
+/>
+
+<Recall id="up-ch44-recall-redshift" concept="cosmological-redshift">
+  <div slot="front">A photon left a galaxy when the universe was a third of its present size. What has happened to its wavelength, and to its energy?</div>
+
+  Its wavelength is three times longer, $1 + z = 3$, and it carries a third of the energy it
+  left with.
+</Recall>
+
+</Step>
+
+<Step>
+
+## What does not stretch
+
+Hubble's law describes things that nothing holds together. Andromeda is 0.78 Mpc from us.
+
+<Classify
+  id="up-ch44-what-stretches"
+  prompt="Which of these grow with the universe?"
+  buckets={[
+    { key: 'grows', label: 'Grows with the universe', accent: 'cyan' },
+    { key: 'held', label: 'Held together: keeps its size', accent: 'iris' },
+  ]}
+  items={[
+    { key: 'clusters', label: 'The gap between two galaxy clusters 300 Mpc apart', bucket: 'grows', why: 'Nothing binds them across that distance: the flow carries them apart at 21,000 km/s.' },
+    { key: 'light', label: 'The wavelength of light crossing that gap', bucket: 'grows', why: 'Light in flight is not held by anything. That stretch is the redshift you just used.' },
+    { key: 'atom', label: 'A hydrogen atom', bucket: 'held', why: 'Electric attraction holds it at 0.05 nm whatever the universe does.' },
+    { key: 'orbit', label: 'The Earth’s orbit round the Sun', bucket: 'held', why: 'Across one astronomical unit the flow adds 3 × 10⁻¹⁰ km/s. Earth orbits at 30 km/s.' },
+    { key: 'galaxy', label: 'The Milky Way', bucket: 'held', why: 'Across the Sun’s orbit the flow would add about half a km/s. The Sun orbits at 230 km/s.' },
+    { key: 'andromeda', label: 'The distance from us to Andromeda', bucket: 'held', why: 'Hubble’s law says it should recede at 55 km/s. It approaches at 110 km/s: gravity wins this close.' },
+  ]}
+  explanation="Expansion is the drift of things nothing holds. Wherever gravity or electric forces bind something it keeps its size, which is why your rulers can measure the stretch at all."
+/>
+
+## What to carry forward
+
+- **No centre.** Every distance grows by the same factor, so every galaxy sees $v = H_0 d$, and
+  about $1/H_0 \approx 14$ billion years ago every distance was zero, everywhere at once.
+- **Light stretches with the sheet:** $1 + z = a_{\text{now}}/a_{\text{then}}$. The microwave sky
+  is 3000 K light stretched 1100 times.
+- **The ledger and the sheet** are the reusable pictures: what can happen is decided by what is
+  conserved, and the largest thing that happened is still stretching.
+
+That closes the path. Every lesson in it made the same move, finding what stays the same and
+letting it decide what can happen, and the universe turned out to obey it on every scale.
+
+</Step>

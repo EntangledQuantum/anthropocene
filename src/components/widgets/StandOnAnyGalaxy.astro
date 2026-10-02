@@ -1,0 +1,6 @@
+---
+// @graded — when given `id` and `target`, the scene checks itself: stand where Q flees fastest.
+import Island, { type StandOnAnyGalaxyProps } from '../viz/StandOnAnyGalaxy.tsx';
+const props = Astro.props as StandOnAnyGalaxyProps;
+---
+<Island client:visible {...props} />

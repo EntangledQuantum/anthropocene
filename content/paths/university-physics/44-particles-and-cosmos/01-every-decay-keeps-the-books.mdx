@@ -1,0 +1,143 @@
+---
+title: 'Every decay keeps the books'
+blurb: 'Decide whether a proposed reaction can happen by adding up charge, baryon number and lepton number, and find the particle a decay is missing.'
+order: 1
+tier: 'core'
+minutes: 10
+teaches:
+  - 'baryon-number'
+  - 'lepton-number'
+  - 'antiparticle'
+requires:
+  - 'electric-charge'
+  - 'photon'
+  - 'momentum-conservation'
+  - 'mass-energy-equivalence'
+status: 'live'
+updated: 2026-10-02
+---
+
+<Step>
+
+Someone proposes that a proton can turn into a positron and a flash of light, p → e⁺ + γ.
+Charge is +1 on both sides, and the proton's 938 MeV is plenty to make a 0.511 MeV positron.
+
+<Predict
+  id="up-ch44-proton-decay-bet"
+  question="Does it happen?"
+  options={[
+    { key: 'yes', misconception: 'up-ch44-charge-and-energy-suffice', label: 'Yes: charge balances and there is energy to spare', why: 'Then the protons in you would be fizzing into light. The ledger below keeps two more counts, and both of them change.' },
+    { key: 'momentum', label: 'No: two products cannot share the momentum', why: 'Two products fly apart back to back with equal and opposite momenta. That is the easiest decay there is to balance.' },
+    { key: 'count', label: 'No: something else is counted, and it does not balance', why: 'Right. Baryon number goes from 1 to 0 and lepton number from 0 to −1. A tank of 50,000 tonnes of water in Japan has watched about 10³⁴ protons for decades, and not one has decayed.' },
+  ]}
+  correct="count"
+>
+
+<BalanceTheDecay parent="p" known={['e+', 'gamma']} prompt="The proposal and its books. Which rows fail?" />
+
+</Predict>
+
+</Step>
+
+<Step>
+
+## Find what is missing
+
+A free neutron lives about fifteen minutes, then leaves a proton and an electron behind. Those
+two alone do not balance the books.
+
+<BalanceTheDecay
+  id="up-ch44-complete-beta"
+  parent="n"
+  known={['p', 'e-']}
+  tray={['gamma', 'nu_e', 'nubar_e', 'e+', 'pi0']}
+  prompt="Add the one particle that balances every row."
+  explanation="The electron antineutrino, ν̄ₑ: no charge, no baryon number, and lepton number −1 to cancel the electron's +1. A neutrino would push lepton number to 2. Watch the proton as it decays: it barely moves, because the light electron and antineutrino carry the momentum away."
+/>
+
+</Step>
+
+<Step>
+
+## Name it
+
+Every particle carries three counts: charge $Q$, baryon number $B$ and lepton number $L$, and
+its antiparticle carries each with the opposite sign. A reaction happens only if every total is
+the same after as before, and a decay only if the products weigh no more than the parent.
+
+| | $Q$ | $B$ | $L$ |
+|---|---|---|---|
+| p, n | +1, 0 | +1 | 0 |
+| e⁻, νₑ | −1, 0 | 0 | +1 |
+| γ, π⁰ | 0 | 0 | 0 |
+
+<Recall id="up-ch44-recall-baryon" concept="baryon-number">
+  <div slot="front">A free neutron decays in minutes. Why can a free proton not do the same?</div>
+
+  Both carry baryon number 1, so each must leave a baryon behind. The neutron is heavier than
+  the proton and can turn into it. The proton is the lightest baryon: there is nothing lighter
+  for it to become.
+</Recall>
+
+</Step>
+
+<Step>
+
+## Which count breaks
+
+Physicists propose reactions on paper all the time. Most of them die on the books.
+
+<Classify
+  id="up-ch44-which-count-breaks"
+  prompt="Sort each proposal by what it does to the books."
+  buckets={[
+    { key: 'ok', label: 'Happens', accent: 'ok' },
+    { key: 'Q', label: 'Breaks charge', accent: 'warn' },
+    { key: 'B', label: 'Breaks baryon number', accent: 'magenta' },
+    { key: 'L', label: 'Breaks lepton number', accent: 'iris' },
+  ]}
+  items={[
+    { key: 'e-decay', label: 'Electron decay: e⁻ → νₑ + γ', bucket: 'Q', why: 'Lepton number is fine, 1 → 1, but charge goes from −1 to 0. The electron is the lightest charged particle, so it has nowhere to go: it never decays.' },
+    { key: 'p-pions', label: 'Proton decay: p → π⁺ + π⁰', bucket: 'B', why: 'Charge +1 → +1, no leptons, energy to spare. Baryon number goes from 1 to 0.' },
+    { key: 'pi-nu', label: 'Pion decay: π⁻ → e⁻ + νₑ', bucket: 'L', why: 'The pion has no lepton number. An electron and a neutrino make 2. With an antineutrino, π⁻ → e⁻ + ν̄ₑ, it happens.' },
+    { key: 'annihilate', label: 'Positron meets electron: e⁺ + e⁻ → γ + γ', bucket: 'ok', why: 'Charge 0 → 0, lepton number −1 + 1 = 0 → 0. A particle meeting its antiparticle can vanish into light because every count cancels.' },
+    { key: 'pbar', label: 'Proton meets antiproton: p + p̄ → π⁺ + π⁻ + π⁰', bucket: 'ok', why: 'Baryon number +1 − 1 = 0 before, 0 after; charge 0 → 0. Proton and antiproton annihilate into pions all the time at accelerators.' },
+  ]}
+  explanation="Each count is its own law. Charge is why the electron is stable, baryon number why the proton is, and lepton number why a decay that makes an electron must also make an antineutrino."
+/>
+
+</Step>
+
+<Step>
+
+## An antiproton never comes alone
+
+Two proton beams meet head on, each with the same kinetic energy. You want an antiproton,
+whose rest energy is 938 MeV, the same as a proton's.
+
+<CollideForAntiproton
+  id="up-ch44-least-energy-antiproton"
+  prompt="Fire at the least energy per beam that makes an antiproton."
+  explanation="Just over 938 MeV per beam: a whole proton's worth each, not half. A lone p̄ would turn charge +2 into +1 and baryon number 2 into 1, so it must leave with a new proton beside it, and the collision pays for two masses. Against a proton at rest the same pair costs 5.6 GeV, because the debris must also carry the beam's momentum. The Bevatron at Berkeley was built to reach 6.2 GeV for exactly this reason, and found the antiproton in 1955."
+/>
+
+<Recall id="up-ch44-recall-antiparticle" concept="antiparticle">
+  <div slot="front">A collision has made an antiproton. What else, at the least, must it have made?</div>
+
+  Something that puts charge +1 and baryon number +1 back: in practice a proton. Antimatter is
+  made in step with matter, which is why a universe made almost entirely of matter is still an
+  open puzzle.
+</Recall>
+
+## What to carry forward
+
+- **A reaction is a ledger.** Charge, baryon number and lepton number are the same before and
+  after, and a decay needs the products to weigh no more than the parent.
+- **A count that will not balance points at a missing particle**, or at a reaction that never
+  happens.
+- **Antimatter is made with matter**, so making a p̄ pays for two masses.
+
+Next: what these particles did on the largest scale there is, in a universe that is still
+stretching.
+
+</Step>

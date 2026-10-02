@@ -1,0 +1,14 @@
+title: 'Cosmological redshift'
+blurb: 'Light crossing an expanding universe is stretched with it: its wavelength grows by the same factor as every distance between galaxies, so each photon arrives with less energy. Things held together, atoms, planets, galaxies, do not stretch.'
+notation: '1 + z = \frac{\lambda_{\text{obs}}}{\lambda_{\text{emit}}} = \frac{a_{\text{now}}}{a_{\text{then}}},\qquad E_{\text{obs}} = \frac{E_{\text{emit}}}{1+z}'
+tags:
+  - 'up-ch44'
+misconceptions:
+  - id: 'up-ch44-everything-stretches'
+    name: 'If space expands, rulers, atoms and galaxies expand with it.'
+    signal: 'Expects the Earth''s orbit or the Milky Way to grow with the universe.'
+    correction: 'Expansion is the slow drift of things nothing holds together. An atom or an orbit is held by forces vastly larger than the drift, and keeps its size.'
+  - id: 'up-ch44-redshift-only-dims'
+    name: 'Light from far away only gets fainter; its colour does not change.'
+    signal: 'Expects 3000 K light seen across the universe to still glow orange, just dimmer.'
+    correction: 'The wavelength itself is stretched by the expansion, so the colour moves to the red, the infrared and beyond, and each photon carries less energy.'

@@ -1,0 +1,6 @@
+---
+// @graded — when given `id`, the scene checks itself: pick the missing product so every count balances.
+import Island, { type BalanceTheDecayProps } from '../viz/BalanceTheDecay.tsx';
+const props = Astro.props as BalanceTheDecayProps;
+---
+<Island client:visible {...props} />

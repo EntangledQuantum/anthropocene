@@ -1,0 +1,10 @@
+title: 'Antiparticles'
+blurb: 'Every particle has a partner of the same mass with every count reversed: charge, baryon number, lepton number. Because those counts are conserved, an antiparticle is made together with a particle that cancels its counts.'
+notation: 'm_{\bar p} = m_p,\qquad Q_{\bar p} = -1,\quad B_{\bar p} = -1'
+tags:
+  - 'up-ch44'
+misconceptions:
+  - id: 'up-ch44-antimatter-from-energy-alone'
+    name: 'Enough energy can make a single antiparticle.'
+    signal: 'Gives each colliding proton half an antiproton''s rest energy, 469 MeV.'
+    correction: 'A lone p̄ would change charge and baryon number. It must leave with a partner proton, so the collision must make two particles'' worth of new mass: 938 MeV per beam.'

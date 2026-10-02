@@ -1,0 +1,14 @@
+title: 'Hubble''s law'
+blurb: 'Distant galaxies recede at a speed proportional to their distance, the same rule seen from every galaxy, because every distance on the sheet grows by the same factor. Run backwards at today''s speeds, every distance reaches zero about 1/H₀ ≈ 14 billion years ago.'
+notation: 'v = H_0\,d,\qquad H_0 \approx 70\ \text{km/s per Mpc},\qquad t \approx 1/H_0 \approx 14\ \text{Gyr}'
+tags:
+  - 'up-ch44'
+misconceptions:
+  - id: 'up-ch44-big-bang-explosion'
+    name: 'The Big Bang was an explosion at a point, into space that was already there.'
+    signal: 'Looks for the spot the galaxies are flying away from.'
+    correction: 'Stand on any galaxy and all the others recede from you by the same rule, v = H₀d. There is no centre on the sheet: every distance grows at once.'
+  - id: 'up-ch44-we-are-the-centre'
+    name: 'Everything recedes from us, so we must be near the centre.'
+    signal: 'Takes our view of the receding galaxies as evidence of a special place.'
+    correction: 'Every galaxy sees exactly the same pattern. Ours is the view from one dot on a stretching sheet, and every dot has it.'

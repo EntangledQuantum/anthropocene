@@ -1,0 +1,6 @@
+---
+// @graded — when given `id`, the scene checks itself: stop the clock when the galaxies first meet.
+import Island, { type RewindTheGalaxiesProps } from '../viz/RewindTheGalaxies.tsx';
+const props = Astro.props as RewindTheGalaxiesProps;
+---
+<Island client:visible {...props} />
