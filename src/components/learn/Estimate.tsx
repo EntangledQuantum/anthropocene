@@ -4,6 +4,12 @@ import { formatValue } from '../viz/chart-core.ts';
 import { useWidget } from '../../lib/use-lesson.ts';
 import { ESTIMATE_SCENARIOS } from './estimate-scenarios.ts';
 
+/** A log-scale guess deserves three significant figures, not three decimals. */
+const sig3 = (v: number): string =>
+  !Number.isFinite(v) ? '—'
+  : Math.abs(v) >= 1e6 || (v !== 0 && Math.abs(v) < 1e-3) ? v.toExponential(2)
+  : Number(v.toPrecision(3)).toLocaleString('en-US', { maximumFractionDigits: 6 });
+
 /* ─────────────────────────────────────────────────────────────────────────
    Commit to an order of magnitude before seeing the answer.
 
@@ -38,6 +44,7 @@ export default function Estimate({ id, prompt, scenario, explanation }: Estimate
 
   const truth = useMemo(() => spec.truth(), [spec]);
   const guess = 10 ** logGuess;
+  const withUnit = (v: number) => (spec.unit ? `${sig3(v)} ${spec.unit}` : sig3(v));
 
   const factor = guess > truth ? guess / truth : truth / guess;
   const close = factor <= spec.withinFactor;
@@ -117,9 +124,9 @@ export default function Estimate({ id, prompt, scenario, explanation }: Estimate
         </div>
 
         <ReadoutRow>
-          <Readout label="your estimate" value={guess >= 1e4 ? guess.toExponential(1) : formatValue(guess, 3)} accent="cyan" />
+          <Readout label="your estimate" value={withUnit(guess)} accent="cyan" />
           {revealed && (
-            <Readout label="actual" value={truth >= 1e4 ? truth.toExponential(1) : formatValue(truth, 3)} accent="magenta" />
+            <Readout label="actual" value={withUnit(truth)} accent="magenta" />
           )}
           {revealed && (
             <Readout label="off by" value={`${formatValue(factor, 2)}×`} accent={close ? 'ok' : 'warn'} />

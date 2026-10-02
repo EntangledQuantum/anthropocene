@@ -1,4 +1,4 @@
 title: 'Thermal (blackbody) radiation'
 blurb: 'A hot, dense body glows with a spectrum set only by its temperature. The peak wavelength is inversely proportional to the temperature: hotter glows bluer.'
 notation: '\lambda_{\text{peak}} T = 2.898 \times 10^{-3}\ \text{m·K}'
-tags: []
+tags: ['up-ch44']
