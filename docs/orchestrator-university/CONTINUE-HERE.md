@@ -23,6 +23,12 @@ the known out-of-scope `src/lib/numerics/sph.ts(298)`.
 - `blackbody-radiation` is owned by chapter 44 lesson 2 (the stretching-light step names
   Wien's law), which closed the last gap.
 
+**In progress (2026-10-02): third lessons.** One agent per chapter adds `03-<slug>.mdx`
+following [`THIRD-LESSON-BRIEF.md`](THIRD-LESSON-BRIEF.md). Chapters 1–16 launched; 17–44
+not yet. A chapter is done when `03-*.mdx` exists, its preview has been reviewed and a
+`university-physics chNN lesson 3: …` commit exists (`git log --oneline | grep "lesson 3"`).
+Any `03-*.mdx` without that commit is unreviewed agent work: run the review recipe on it.
+
 **What is worth doing next, if anyone continues** (none of it is broken):
 1. A human read-through of the later chapters (30–44). Their agents drove every graded
    scene, but the orchestrator reviewed them by screenshot, not by playing every step.
